@@ -15,7 +15,8 @@ except ImportError:
     pass
 
 
-scalar = numpy.complex128
+from qupy.scalar import scalar
+
 zero = scalar(0.)
 
 from qupy import abstract
@@ -181,24 +182,30 @@ class Qu(AbstractQu):
         flatop = H.get_flatop()
         H1 = flatop.do(H)
 
-        if verbose:print("eig...", end=' ');sys.stdout.flush()
-        #eigvals, eigvecs = scipy.linalg.eigh(H1.v)
+        if verbose:
+            print("eig...", end=' ', flush=True)
         eigvals, eigvecs = numpy.linalg.eigh(H1.v)
-        if verbose:print("done")
+        N = len(eigvals)
+        if verbose:
+            print("done")
 
-        if H.rank != 2:
-            raise NotImplementedError
+        idxs = [i for i, ud in enumerate(H.valence) if ud=='d']
+        shape = [H.shape[i] for i in idxs]
 
-        d = H.shape[0]
         items = []
-        for eigval, eigvec in zip(eigvals, eigvecs):
-            v = Qu((d,), 'u', eigvec, True)
-            items.append((eigval, v))
+        for i in range(N):
+            vec = eigvecs[:, i]
+            vec.shape = shape
+            val = eigvals[i]
+            v = Qu(shape, 'u'*len(shape), vec, True)
+            items.append((val, v))
         return items
 
     @property
     def shape(self):
         assert hasattr(self.v, 'shape'), self.v
+        assert self.v.shape == self.space.shape, \
+            "%r != %r"%(self.v.shape, self.space.shape)
         assert self.v.shape == self.space.shape, "v changed shape but not my space!"
         return self.v.shape
 
@@ -838,11 +845,12 @@ def build():
     X.name = 'X'
     Gate.X = X
 
-    Y = Gate((2, 2))
-    Y[0, 1] = -1.j
-    Y[1, 0] = 1.j
-    Y.name = 'Y'
-    Gate.Y = Y
+    if scalar == numpy.complex128:
+        Y = Gate((2, 2))
+        Y[0, 1] = -1.j
+        Y[1, 0] = 1.j
+        Y.name = 'Y'
+        Gate.Y = Y
 
     Z = Gate((2, 2))
     Z[0, 0] = 1.
