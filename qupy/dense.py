@@ -446,10 +446,14 @@ class Qu(AbstractQu):
 
     def __div__(A, r):
         return (1./r)*A
+    __floordiv__ = __div__
+    __truediv__ = __div__
 
     def __idiv__(A, r):
         A.v /= r
         return A
+    __ifloordiv__ = __idiv__
+    __itruediv__ = __idiv__
 
     def tensor(A, B):
         if not isinstance(B, Qu):

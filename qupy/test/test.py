@@ -1,6 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
+import collections
 
 # ----------------------------------------------------------------------------
 # driver for the tests
@@ -20,27 +21,27 @@ def harvest(*modules):
         match = ''
     funcs = []
     for module in modules:
-        for name, value in module.__dict__.items():
-            if name.startswith('test') and callable(value) and match in name:
+        for name, value in list(module.__dict__.items()):
+            if name.startswith('test') and isinstance(value, collections.Callable) and match in name:
                 funcs.append(value)
-    funcs.sort(key = lambda f : (f.__module__, f.func_code.co_firstlineno))
+    funcs.sort(key = lambda f : (f.__module__, f.__code__.co_firstlineno))
     for func in funcs:
-        print "%s.%s"%(func.__module__, func.__name__),
+        print("%s.%s"%(func.__module__, func.__name__), end=' ')
         try:
             func()
-            print ": OK"
+            print(": OK")
         except AssertionError:
-            print ": FAIL"
+            print(": FAIL")
             traceback.print_exc()
             fails += 1
         except test.Skip:
-            print ": SKIP"
+            print(": SKIP")
             skip += 1
         except:
-            print ": WAH"
+            print(": WAH")
             raise
         count += 1
-    print "%d tests run, %d failed, %d skipped"%(count, fails, skip)
+    print("%d tests run, %d failed, %d skipped"%(count, fails, skip))
 
 if __name__ == "__main__":
     from qupy.test import test_qu

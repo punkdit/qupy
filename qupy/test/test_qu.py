@@ -1,9 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import math
 import numpy
 from random import choice, randint, seed, shuffle
+from functools import reduce
 seed(0)
 
 from operator import mul
@@ -297,15 +298,15 @@ def test_bell_basis():
 
     A = (Gate.H * Gate.I) | Gate.CN
 
-    print
+    print()
     xs = Qu.bell_basis(2)
     for x in xs:
-        print x.shortstr()
+        print(x.shortstr())
 
-    print
+    print()
     for i, word in enumerate(['00', '01', '10', '11']):
         x = bits(word)
-        print (A|x).shortstr()
+        print((A|x).shortstr())
 
 
 def test_transpose():
@@ -497,9 +498,9 @@ def test_shor_code():
     rank = z.rank
     space = Space(2**rank, 'u')
     H = Qu.random_hermitian(space*~space)
-    print "H:", H.space
+    print("H:", H.space)
     U = H.evolution_operator(1.)
-    print "U:", U.space, "rank:", U.rank
+    print("U:", U.space, "rank:", U.rank)
 
     op = z.get_flatop()
     z = op.do(z)
@@ -510,9 +511,9 @@ def test_shor_code():
         space = z.space * ~z.space
     #    U = Qu.random_unitary(space)
         H = Qu.random_hermitian(space)
-        print "H:", H.space
+        print("H:", H.space)
         U = H.evolution_operator(1.)
-        print "U:", U.space, "rank:", U.rank
+        print("U:", U.space, "rank:", U.rank)
 
         z1 = U | z
 
