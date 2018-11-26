@@ -2,7 +2,7 @@
 
 import sys
 import math
-from operator import mul
+from operator import mul, matmul
 
 import numpy
 
@@ -149,7 +149,7 @@ class CharMatrix(object):
                             if G is None:
                                 raise ParseError(self, row, col, "cannot find gate %r"%op)
                             factors[tracks.index(row)] = G
-                A += reduce(mul, factors)
+                A += reduce(matmul, factors)
 
         elif 'x' in ops:
             if ops != ['x', 'x']:
@@ -157,7 +157,7 @@ class CharMatrix(object):
             row0, row1 = rows
             factors = [Gate.I]*(self.rank-1)
             factors[row0] = Gate.SWAP
-            A = reduce(mul, factors)
+            A = reduce(matmul, factors)
             A.swap2(tracks.index(row0)+1, tracks.index(row1))
         else:
             raise ParseError(self, rows, col, 'no control or swap found')
@@ -193,7 +193,7 @@ class CharMatrix(object):
                 if A is None:
                     raise ParseError(self, row, col, "cannot find gate %r"%op)
                 block = [Gate.I if tracks[i]!=row else A for i in range(self.rank)]
-                A = reduce(mul, block)
+                A = reduce(matmul, block)
                 yield A
             row += 1
 

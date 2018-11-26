@@ -3,7 +3,7 @@
 import sys
 import math
 
-from operator import mul
+from operator import mul, matmul
 
 import numpy
 import numpy.random
@@ -436,8 +436,10 @@ class Qu(AbstractQu):
         return A
 
     def __rmul__(self, r):
+        #print("\n__rmul__", r)
         w = self.clone()
         w.v *= r
+        #print("__rmul__: done")
         return w
 
     def __imul__(A, r):
@@ -463,7 +465,8 @@ class Qu(AbstractQu):
         w = Qu(A.shape + B.shape, A.valence + B.valence, v, True)
         #w.v[:] = v
         return w
-    __mul__ = tensor
+    #__mul__ = tensor
+    __matmul__ = tensor
 
     def contract(self, i, j):
         assert 0 <= i < self.rank
@@ -524,8 +527,8 @@ class Qu(AbstractQu):
 
         return C
 
-    def __ror__(self, other):
-        return other * self # __rmul__
+#    def __ror__(self, other):
+#        return other * self # __rmul__
 
     def __pow__(self, count):
         if type(count) != int:
@@ -536,7 +539,7 @@ class Qu(AbstractQu):
             return self
         A = self
         while count > 1:
-            A = self * A
+            A = self @ A
             count -= 1
         return A
 
@@ -575,7 +578,7 @@ class Qu(AbstractQu):
 #        "0-th bit is control, 1st bit is self"
 #        n = self.rank
 #        I = Gate.identity(n)
-#        A = Gate.dyads[0]*I + Gate.dyads[1]*self
+#        A = Gate.dyads[0]@I + Gate.dyads[1]@self
 #        return A
 
     def control(self, target=1, *source):
@@ -593,7 +596,7 @@ class Qu(AbstractQu):
                 factors[bit_idx] = Gate.dyads[ctrl[idx]]
             if 0 not in ctrl: # all 1's
                 factors[target] = self
-            A += reduce(mul, factors)
+            A += reduce(matmul, factors)
         return A
 
     def get_flatop(self):
@@ -875,7 +878,7 @@ def build():
 
     # basis
     v0, v1 = [1, 0], [0, 1]
-    Gate.dyads = (Ket(v0)*Bra(v0), Ket(v1)*Bra(v1))
+    Gate.dyads = (Ket(v0)@Bra(v0), Ket(v1)@Bra(v1))
     # make a method ??
 
 build()

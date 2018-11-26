@@ -29,7 +29,7 @@ class Space(object):
         self.shape = tuple(shape)
         self.valence = valence
 
-    def __mul__(self, other):
+    def __matmul__(self, other):
         shape = self.shape + other.shape
         valence = self.valence + other.valence
         return Space(shape, valence)
