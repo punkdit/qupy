@@ -10,19 +10,19 @@ def test_abstract():
     A = AbstractQu(shape, valence)
     B = AbstractQu(shape, valence)
 
-    C = A|B
+    C = A*B
 
-    assert isinstance(C, LazyOrQu)
+    assert isinstance(C, LazyMulQu)
     assert C.shape == shape
     assert C.valence == valence
 
     I = IdentityQu(shape, valence)
 
-    assert I|A is A
+    assert I*A is A
 
     assert A.dag().valence == 'du'
 
-    B = A | A.dag()
+    B = A * A.dag()
 
     #shape = (2, 2, 2, 2)
     #valence = "udud"

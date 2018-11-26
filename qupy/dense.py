@@ -90,8 +90,8 @@ class MonoidalFlatten(object):
         self.valence = valence
         self.target_space = Space(self.shape, self.valence)
 
-    def __or__(self, other):
-        space = self.space | other.space
+    def __mul__(self, other):
+        space = self.space * other.space
         return MonoidalFlatten(space)
 
     def do(self, box):
@@ -495,11 +495,11 @@ class Qu(AbstractQu):
                 box[idx0+idx1] = r
         return box
 
-    def __or__(A, B):
+    def __mul__(A, B):
         dn_count = A.valence.count('d')
         up_count = B.valence.count('u')
         if dn_count != up_count:
-            raise ValueError("cannot match valence %s | %s" % (A.valence, B.valence))
+            raise ValueError("cannot match valence %s * %s" % (A.valence, B.valence))
 
         idxs = [i for i in range(A.rank) if A.valence[i]=='d']
         jdxs = [i for i in range(B.rank) if B.valence[i]=='u']
@@ -527,7 +527,7 @@ class Qu(AbstractQu):
 
         return C
 
-#    def __ror__(self, other):
+#    def __rmul__(self, other):
 #        return other * self # __rmul__
 
     def __pow__(self, count):
@@ -544,7 +544,7 @@ class Qu(AbstractQu):
         return A
 
     def dot(A, B):
-        return (~A|B)
+        return (~A*B)
 
     @classmethod
     def bell_basis(self, n=2):
@@ -736,7 +736,7 @@ class Gate(Qu):
             space = Space((n, n), 'ud')
         assert space.is_square()
         A = Qu.random(space.shape, space.valence)
-        A = A.dag() | A
+        A = A.dag() * A
         A = Gate.promote(A)
         return A
 
@@ -752,9 +752,9 @@ class Gate(Qu):
         for i in range(n):
             v = Qu.random(n, 'u')
             for u in vs:
-                r = u.dag() | v
+                r = u.dag() * v
                 v -= r * u
-                #assert abs((u.transpose() | v)) < 1e-10
+                #assert abs((u.transpose() * v)) < 1e-10
             v.normalize()
             vs.append(v)
             U[i,:] = v
@@ -782,7 +782,7 @@ class Gate(Qu):
     def is_unitary(self, epsilon=1e-10):
         assert self.space.is_square()
         A = self
-        A = A | ~A
+        A = A * ~A
         I = self.identity(self.shape[0])
         v = A.v - I.v
         v = v.ravel()
@@ -800,7 +800,7 @@ class Gate(Qu):
 
     def is_pure(A, epsilon=1e-10):
         assert A.space.is_square()
-        A = A|A
+        A = A*A
         A = Gate.promote(A)
         return is_close(A.trace(), 1., epsilon)
 
@@ -885,10 +885,10 @@ build()
 
 
 def commutator(A, B):
-    return (A|B) - (B|A)
+    return (A*B) - (B*A)
 
 def anticommutator(A, B):
-    return (A|B) + (B|A)
+    return (A*B) + (B*A)
 
 #def is_close(a, b, epsilon=1e-10):
 #    return abs(a-b) < epsilon

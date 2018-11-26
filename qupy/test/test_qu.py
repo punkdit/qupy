@@ -127,14 +127,14 @@ def test_space_pipe():
 
     a = Space(2, 'u')
     b = Space(2, 'd')
-    assert b|a == Space((), '')
+    assert b*a == Space((), '')
 
     a = Space((2, 3), 'ud')
     b = Space((3, 4), 'ud')
-    assert a|b == Space((2, 4), 'ud')
+    assert a*b == Space((2, 4), 'ud')
 
     a = Space((2, 2, 2, 2), 'udud')
-    assert a|a == a, a|a
+    assert a*a == a, a*a
 
     for i in range(100):
         n = randint(0, 5)
@@ -142,26 +142,26 @@ def test_space_pipe():
         shuffle(valence)
         valence = ''.join(valence)
         a = Space((2,)*(2*n), valence)
-        assert a|a == a, (a|a, a)
+        assert a*a == a, (a*a, a)
 
 
 def test_pipe_op():
 
     a = Qu(2, 'u', [0, 1])
     b = Qu(2, 'd', [1, 2])
-    c = b | a # dot product!
+    c = b * a # dot product!
     assert type(c) is scalar
     assert is_close(c, 2)
 
     A = Qu((2, 2), 'ud')
     v = Qu(2, 'u')
-    u = A | v
+    u = A * v
     assert u.space == v.space
 
     # The pipe operator: valence
 
     A = Gate.I @ Gate.X
-    B0 = A | A
+    B0 = A * A
     B1 = A@A
 
     assert B1.valence == "udududud"
@@ -175,12 +175,12 @@ def test_pipe_op():
 
     assert B0.is_close(B1)
 
-    #assert (1.j|A).is_close(1.j*A) # use left multiply for this...
+    #assert (1.j*A).is_close(1.j*A) # use left multiply for this...
 
     B = A.clone()
-    A |= A
+    A = A*A
 
-    assert A.is_close(B|B)
+    assert A.is_close(B*B)
 
 
 def test_pipe_tensor():
@@ -188,9 +188,9 @@ def test_pipe_tensor():
     I, X, Y, Z, H = Gate.I, Gate.X, Gate.Y, Gate.Z, Gate.H
     CN = Gate.CN
 
-    assert I@I|I@I == I@I
+    assert (I@I)*(I@I) == I@I
 
-    A = (X@I@H | I@Z@I)
+    A = (X@I@H) * (I@Z@I)
     B = (X@Z@H)
 
     C = A.unify(B)
@@ -200,36 +200,36 @@ def test_pipe_tensor():
     #print A.v.transpose(perm).shape
     #print [B.valence[i] for i in perm]
 
-    assert X@I@H | I@Z@I == X@Z@H
-    CN@I | I@CN
+    assert (X@I@H) * (I@Z@I) == X@Z@H
+    (CN@I) * (I@CN)
 
 
 def test_gate_truth():
 
     # FLIP truth table (NOT gate)
     A = Gate.X
-    assert (A | bits('0')).is_close(bits('1'))
-    assert (A | bits('1')).is_close(bits('0'))
+    assert (A * bits('0')).is_close(bits('1'))
+    assert (A * bits('1')).is_close(bits('0'))
 
     # Identity @ FLIP truth table
     A = Gate.I @ Gate.X
-    assert (A | bits('00')).is_close(bits('01'))
-    assert (A | bits('01')).is_close(bits('00'))
-    assert (A | bits('10')).is_close(bits('11'))
-    assert (A | bits('11')).is_close(bits('10'))
+    assert (A * bits('00')).is_close(bits('01'))
+    assert (A * bits('01')).is_close(bits('00'))
+    assert (A * bits('10')).is_close(bits('11'))
+    assert (A * bits('11')).is_close(bits('10'))
 
     # Controlled-NOT truth table
     A = Gate.CN
-    assert (A | bits('00')).is_close(bits('00'))
-    assert (A | bits('01')).is_close(bits('01'))
-    assert (A | bits('10')).is_close(bits('11'))
-    assert (A | bits('11')).is_close(bits('10'))
+    assert (A * bits('00')).is_close(bits('00'))
+    assert (A * bits('01')).is_close(bits('01'))
+    assert (A * bits('10')).is_close(bits('11'))
+    assert (A * bits('11')).is_close(bits('10'))
 
     A = Gate.SWAP
-    assert (A | bits('00')).is_close(bits('00'))
-    assert (A | bits('01')).is_close(bits('10'))
-    assert (A | bits('10')).is_close(bits('01'))
-    assert (A | bits('11')).is_close(bits('11'))
+    assert (A * bits('00')).is_close(bits('00'))
+    assert (A * bits('01')).is_close(bits('10'))
+    assert (A * bits('10')).is_close(bits('01'))
+    assert (A * bits('11')).is_close(bits('11'))
 
 
 def test_gate_identities():
@@ -238,31 +238,31 @@ def test_gate_identities():
 
     zero = Qu((2, 2), 'ud')
 
-    assert (X | X) == I
-    assert (Y | Y) == I
-    assert (Z | Z) == I
+    assert (X * X) == I
+    assert (Y * Y) == I
+    assert (Z * Z) == I
 
     assert anticommutator(X, Z) == zero
     assert anticommutator(Y, Z) == zero
     assert anticommutator(X, Y) == zero
 
-    assert (Z|X) == 1.j*Y
-    assert (X|Y) == 1.j*Z
-    assert (Y|Z) == 1.j*X
+    assert (Z*X) == 1.j*Y
+    assert (X*Y) == 1.j*Z
+    assert (Y*Z) == 1.j*X
 
     CZ = Z.control()
-    A = (I@H)|CZ|(I@H)
+    A = (I@H)*CZ*(I@H)
     CX = X.control()
     assert A == CX
 
-    assert CZ|CX == (Z|X).control()
-    assert CX|CZ == (X|Z).control()
+    assert CZ*CX == (Z*X).control()
+    assert CX*CZ == (X*Z).control()
 
-    assert (X.control() | (H@I)) | ((H@I) | X.control()) == I@I
+    assert (X.control() * (H@I)) * ((H@I) * X.control()) == I@I
 
     assert H==~H
-    assert H|~H==I
-    assert H|X|~H==Z
+    assert H*~H==I
+    assert H*X*~H==Z
 
 
 def test_pow():
@@ -296,7 +296,7 @@ def test_bell_basis():
 
     raise test.Skip
 
-    A = (Gate.H @ Gate.I) | Gate.CN
+    A = (Gate.H @ Gate.I) * Gate.CN
 
     print()
     xs = Qu.bell_basis(2)
@@ -306,20 +306,20 @@ def test_bell_basis():
     print()
     for i, word in enumerate(['00', '01', '10', '11']):
         x = bits(word)
-        print((A|x).shortstr())
+        print((A*x).shortstr())
 
 
 def test_transpose():
 
     a = Qu.random(2, 'u')
-    r = ~a | a
+    r = ~a * a
     assert is_close(r, a.norm()**2)
 
     v = a.v[:]
     v.shape = v.shape + (1,)
     A = Qu(v.shape, 'ud', v)
 
-    r = ~A | A
+    r = ~A * A
     assert is_close(r[0, 0], a.norm()**2)
 
 
@@ -330,8 +330,8 @@ def test_control():
     assert X.control() == CN
 
     A = Z.control()
-    assert A | (off @ I) == off @ I
-    assert A | (on @ I) == on @ Z
+    assert A * (off @ I) == off @ I
+    assert A * (on @ I) == on @ Z
 
 
 def test_pure():
@@ -352,9 +352,9 @@ def test_pure():
 def test_adjoint():
 
     for A in Gate.I, Gate.X, Gate.Y, Gate.Z, Gate.H:
-        B = A | ~A
+        B = A * ~A
         assert B.is_close(Gate.I)
-        B = ~A | A
+        B = ~A * A
         assert B.is_close(Gate.I)
 
     A = Qu.random((2, 3), 'ud')
@@ -362,7 +362,7 @@ def test_adjoint():
     assert (~A).shape == (2, 3)
     assert (~A).valence == 'du'
 
-    H = ~A | A
+    H = ~A * A
     assert Gate.promote(H).is_hermitian()
 
     B = Qu.random((4, 2), 'ud')
@@ -402,19 +402,19 @@ def test_evolve():
     U = H.evolution_operator(t)
     W = H.evolution_operator(t/2)
 
-    #print (W|W).shortstr()
+    #print (W*W).shortstr()
 
-    assert (W|W).is_close(U)
+    assert (W*W).is_close(U)
 
     v = Qu.random(2, 'u')
     v.normalize()
 
     #print
-    w = U|v
+    w = U*v
     #print w.shortstr()
 
-    x = W|v
-    x = W|x
+    x = W*v
+    x = W*x
     #print x.shortstr()
     assert w.is_close(x)
 
@@ -429,30 +429,30 @@ def test_bitflip_code():
     A[:, 0, :, :] = x0
     A[:, 1, :, :] = x1
 
-    assert ( A | off ).is_close(x0)
-    assert ( A | on ).is_close(x1)
+    assert ( A * off ).is_close(x0)
+    assert ( A * on ).is_close(x1)
 
     B = Gate.CN
-    B = B | (Gate.I @ off)
+    B = B * (Gate.I @ off)
     B = B @ off
 
     C = Gate.CN @ Gate.I
-    assert (C | bits('000')).decode() == '000'
-    assert (C | bits('100')).decode() == '110'
-    assert (C | bits('111')).decode() == '101'
+    assert (C * bits('000')).decode() == '000'
+    assert (C * bits('100')).decode() == '110'
+    assert (C * bits('111')).decode() == '101'
     C = C.swap((2, 4), (3, 5)) # yuck...
-    assert (C | bits('000')).decode() == '000'
-    assert (C | bits('100')).decode() == '101'
-    assert (C | bits('111')).decode() == '110'
+    assert (C * bits('000')).decode() == '000'
+    assert (C * bits('100')).decode() == '101'
+    assert (C * bits('111')).decode() == '110'
 
-    B = C | B
+    B = C * B
 
     assert B.is_close( A )
 
     x = Qu.random(2, 'u')
     x.normalize()
 
-    y = A | x # encode
+    y = A * x # encode
 
     # now entangle with environment...
 
@@ -463,7 +463,7 @@ def test_bitflip_code():
     space = z.space @ ~z.space
     U = Qu.random_unitary(space)
 
-    z1 = U | z
+    z1 = U * z
 
 
 def test_shor_code():
@@ -483,7 +483,7 @@ def test_shor_code():
     x = Qu.random(2, 'u')
     x.normalize()
 
-    y = A | x # encode
+    y = A * x # encode
 
     # now entangle with environment...
 
@@ -505,7 +505,7 @@ def test_shor_code():
     op = z.get_flatop()
     z = op.do(z)
 
-    z1 = U | z
+    z1 = U * z
 
     if 0:
         space = z.space @ ~z.space
@@ -515,7 +515,7 @@ def test_shor_code():
         U = H.evolution_operator(1.)
         print("U:", U.space, "rank:", U.rank)
 
-        z1 = U | z
+        z1 = U * z
 
 
 

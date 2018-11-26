@@ -90,10 +90,10 @@ def test_parse_diagrams():
       |
     --x--
     """)
-    assert swap|off@I@off == off@I@off
-    assert swap|on@I@off == off@I@on
-    assert swap|off@I@on == on@I@off
-    assert swap|on@I@on == on@I@on
+    assert swap*(off@I@off) == off@I@off
+    assert swap*(on@I@off) == off@I@on
+    assert swap*(off@I@on) == on@I@off
+    assert swap*(on@I@on) == on@I@on
 
     encode_bell = parse("""
     -H--.--
@@ -108,10 +108,10 @@ def test_parse_diagrams():
       |
     --+--
     """)
-    assert toffoli|off@off@I == off@off@I
-    assert toffoli|on@off@I == on@off@I
-    assert toffoli|off@on@I == off@on@I
-    assert toffoli|on@on@I == on@on@X
+    assert toffoli*(off@off@I) == off@off@I
+    assert toffoli*(on@off@I) == on@off@I
+    assert toffoli*(off@on@I) == off@on@I
+    assert toffoli*(on@on@I) == on@on@X
 
     assert toffoli == X.control(2, 1, 0)
 
@@ -122,10 +122,10 @@ def test_parse_diagrams():
       |
     --.--
     """)
-    assert A|off@I@off == off@I@off
-    assert A|on@I@off == on@I@off
-    assert A|off@I@on == off@I@on
-    assert A|on@I@on == on@Z@on
+    assert A*(off@I@off) == off@I@off
+    assert A*(on@I@off) == on@I@off
+    assert A*(off@I@on) == off@I@on
+    assert A*(on@I@on) == on@Z@on
 
     assert A == Z.control(1, 0, 2)
 
@@ -167,8 +167,8 @@ def test_parse_diagrams():
       |
     --.--
     """)
-    assert A | (I@I@off) == I@I@off
-    assert A | (I@I@on) == X@I@on
+    assert A * (I@I@off) == I@I@off
+    assert A * (I@I@on) == X@I@on
 
     A = parse("""
     --.--
@@ -177,8 +177,8 @@ def test_parse_diagrams():
       |
     --+--
     """)
-    assert A | (off@I@I) == off@I@I
-    assert A | (on@I@I) == on@X@X
+    assert A * (off@I@I) == off@I@I
+    assert A * (on@I@I) == on@X@X
 
     A = parse("""
     --+--
@@ -187,8 +187,8 @@ def test_parse_diagrams():
       |
     --+--
     """)
-    assert A | (I@off@I) == I@off@I
-    assert A | (I@on@I) == X@on@X
+    assert A * (I@off@I) == I@off@I
+    assert A * (I@on@I) == X@on@X
 
     A = parse("""
     --.--
@@ -197,8 +197,8 @@ def test_parse_diagrams():
       |
     --H--
     """)
-    assert A | (off@I@I) == off@I@I
-    assert A | (on@I@I) == on@H@H
+    assert A * (off@I@I) == off@I@I
+    assert A * (on@I@I) == on@H@H
 
     X12 = parse("""
     --.--
@@ -224,10 +224,10 @@ def test_parse_diagrams():
     --X--
     """)
 
-    assert (X12|X13) == (X13|X12)
-    assert (X13|X23) == (X23|X13)
+    assert (X12*X13) == (X13*X12)
+    assert (X13*X23) == (X23*X13)
 
-    assert (X13|X23) | (X23|X13) == I@I@I
+    assert (X13*X23) * (X23*X13) == I@I@I
 
 
 def test_parse_shor_encoder():
@@ -255,7 +255,7 @@ def test_parse_shor_encoder():
     """
 
     SHOR = parse(shor)
-    SHOR = SHOR | I@off@off@off@off@off@off@off@off
+    SHOR = SHOR * (I@off@off@off@off@off@off@off@off)
 
     # phase-flip encoder
     P = parse("""
@@ -266,7 +266,7 @@ def test_parse_shor_encoder():
     --------+--
     """)
 
-    P = P|I@off@off # ancilla bits
+    P = P*(I@off@off) # ancilla bits
 
     # bit-flip encoder
     B = parse("""
@@ -276,7 +276,7 @@ def test_parse_shor_encoder():
          |  
     -----+--
     """)
-    B = B|I@off@off # ancilla
+    B = B*(I@off@off) # ancilla
 
     if 0:
         # Boo.. P has three outputs not one :-(
@@ -288,14 +288,14 @@ def test_parse_shor_encoder():
         -----+--P--
         """, locals())
 
-    S = P@P@P | B
+    S = P@P@P * B
 
     r2 = math.sqrt(2)
     x0 = (1./(2*r2)) * (bits('000') + bits('111')) @ (bits('000') + bits('111')) @ (bits('000') + bits('111'))
     x1 = (1./(2*r2)) * (bits('000') - bits('111')) @ (bits('000') - bits('111')) @ (bits('000') - bits('111'))
 
-    assert S|off == x0
-    assert S|on == x1
+    assert S*off == x0
+    assert S*on == x1
 
     assert S == SHOR
 

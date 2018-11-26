@@ -210,7 +210,7 @@ class CharMatrix(object):
                 #    print "PARSE:", A.valence
                 #else:
                 #    print "PARSE: I**n"
-                circuit = A | circuit
+                circuit = A * circuit
         return circuit
 
 

@@ -73,7 +73,7 @@ class Space(object):
         perm = [perm.index(i) for i in range(len(perm))]
         return perm
 
-#    def __or__(self, other):
+#    def __mul__(self, other):
 #        assert self.valence.count('d') == other.valence.count('u')
 #        up_shape = [n for idx, n in enumerate(self.shape) if
 #            self.valence[idx]=='u']
@@ -83,7 +83,7 @@ class Space(object):
 #        valence = 'u'*len(up_shape) + 'd'*len(dn_shape)
 #        return Space(shape, valence)
 
-    def __or__(A, B):
+    def __mul__(A, B):
         i = 0
         j = 0
         rank0 = len(A.shape)
@@ -160,7 +160,7 @@ class AbstractQu(object):
         dn_count = self.valence.count('d')
         up_count = other.valence.count('u')
         assert dn_count == up_count,\
-            "cannot match valence %s | %s" % (self.valence, other.valence)
+            "cannot match valence %s * %s" % (self.valence, other.valence)
 
     def unify(A, B):
         if not isinstance(B, AbstractQu):
@@ -188,9 +188,9 @@ class AbstractQu(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def __or__(self, other):
+    def __mul__(self, other):
         self.match_valence(other)
-        box = LazyOrQu(self, other)
+        box = LazyMulQu(self, other)
         return box
 
     def dag(self):
@@ -204,7 +204,7 @@ class AbstractQu(object):
         return list(self.valence).count('u') == list(self.valence).count('d')
 
 
-class LazyOrQu(AbstractQu):
+class LazyMulQu(AbstractQu):
     def __init__(self, left, right):
         shape = left.shape
         valence = left.valence
@@ -212,16 +212,16 @@ class LazyOrQu(AbstractQu):
         self.left = left
         self.right = right
 
-    def __or__(self, other):
+    def __mul__(self, other):
         self.match_valence(other)
         # Try to right associate. Possibly recursive:
-        return self.left | (self.right | other)
+        return self.left * (self.right * other)
 
     def inverse(self):
-        return self.right.inverse() | self.left.inverse()
+        return self.right.inverse() * self.left.inverse()
 
     def dag(self):
-        return self.right.dag() | self.left.dag()
+        return self.right.dag() * self.left.dag()
 
 
 class LazyDagQu(AbstractQu):
@@ -239,7 +239,7 @@ class IdentityQu(AbstractQu):
     def __init__(self, shape, valence):
         AbstractQu.__init__(self, shape, valence)
 
-    def __or__(self, other):
+    def __mul__(self, other):
         self.match_valence(other)
         return other
 
@@ -257,11 +257,11 @@ class PermutationQu(AbstractQu):
 #        assert valence == self.valence
         self.perm = perm
 
-    def __or__(self, other):
+    def __mul__(self, other):
         # XXX does this make sense ?????
         self.match_valence(other)
         if not isinstance(other, Qu): # ConcreteQu ?
-            return AbstractQu.__or__(self, other)
+            return AbstractQu.__mul__(self, other)
 
         valence = tuple(self.valence[i] for i in perm)
 
