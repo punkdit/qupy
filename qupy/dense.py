@@ -15,7 +15,7 @@ except ImportError:
     pass
 
 
-from qupy.scalar import scalar
+from qupy.scalar import scalar, EPSILON, MAX_TENSOR
 
 zero = scalar(0.)
 
@@ -37,12 +37,12 @@ def find(items, item, count):
 
 
 def shortstr(x):
-    if x.imag == 0.:
+    if abs(x.imag) < EPSILON:
         x = x.real
         if x == int(x):
             x = int(x)
         xs = str(x)
-    elif x.real == 0.:
+    elif abs(x.real) < EPSILON:
         x = x.imag
         if x == int(x):
             x = int(x)
@@ -129,7 +129,7 @@ class Qu(AbstractQu):
             shape = (shape,)
         assert type(valence) is str
         AbstractQu.__init__(self, shape, valence)
-        assert len(shape) < 33, "ouch, this is getting big: rank=%d"%len(shape)
+        assert len(shape) <= MAX_TENSOR, "ouch, this is getting big: rank=%d"%len(shape)
         if dtype is None:
             dtype = scalar
         if nocopy:
@@ -137,7 +137,7 @@ class Qu(AbstractQu):
             assert isinstance(v, numpy.ndarray)
             self.v = v
         else:
-            assert reduce(mul, shape, 1) < 2**31, "too big: %d"%reduce(mul, shape, 1)
+            assert reduce(mul, shape, 1) < 2**MAX_TENSOR, "too big: %d"%reduce(mul, shape, 1)
             self.v = numpy.zeros(shape, dtype)
             if v is not None:
                 self.v[()] = v
@@ -217,7 +217,7 @@ class Qu(AbstractQu):
     def shortstr(self):
         ss = []
         for idx in genidx(self.shape):
-            if self[idx] != 0.+0.j:
+            if abs(self[idx]) > EPSILON:
                 ss.append("%s : %s" % (idx, self[idx]))
         return "{%s}"%', '.join(ss)
 
@@ -367,7 +367,7 @@ class Qu(AbstractQu):
         return s
     __repr__ = __str__
 
-    def is_close(self, other, epsilon=1e-10):
+    def is_close(self, other, epsilon=EPSILON):
         v0, v1 = self.v, other.v
         perm = self.space.unify(other.space)
         if perm is None:
@@ -639,17 +639,17 @@ class Qu(AbstractQu):
         A = flatop.undo(A)
         return A
 
-    def is_hermitian(A, epsilon=1e-10):
+    def is_hermitian(A, epsilon=EPSILON):
         flatop = MonoidalFlatten(A.space)
         A = flatop.do(A)
         return A.is_hermitian(epsilon)
 
-    def is_unitary(A, epsilon=1e-10):
+    def is_unitary(A, epsilon=EPSILON):
         flatop = MonoidalFlatten(A.space)
         A = flatop.do(A)
         return A.is_unitary(epsilon)
 
-    def is_identity(A, epsilon=1e-10):
+    def is_identity(A, epsilon=EPSILON):
         n = A.shape[0]
         assert A.shape == (n, n)
         for i in range(n):
@@ -667,7 +667,7 @@ class Qu(AbstractQu):
         A = flatop.do(A)
         return A.trace()
 
-    def is_pure(A, epsilon=1e-10):
+    def is_pure(A, epsilon=EPSILON):
         flatop = MonoidalFlatten(A.space)
         A = flatop.do(A)
         return A.is_pure(epsilon)
@@ -718,6 +718,15 @@ on[1] = 1.
 
 bits = Qu.bits
 up, dn = 'u', 'd'
+
+
+def bitvec(*bits, base=2):
+    n = len(bits)
+    v = Qu((base,)*n, 'u'*n)
+    v[bits] = 1.
+    return v
+
+
 
 
 class Gate(Qu):
@@ -778,7 +787,7 @@ class Gate(Qu):
             A[i, i] = 1.
         return A
 
-    def is_hermitian(self, epsilon=1e-10):
+    def is_hermitian(self, epsilon=EPSILON):
         assert self.space.is_square()
         B = self - ~self
         v = B.v.ravel()
@@ -786,7 +795,7 @@ class Gate(Qu):
         r = numpy.sum(v)
         return r < epsilon
 
-    def is_unitary(self, epsilon=1e-10):
+    def is_unitary(self, epsilon=EPSILON):
         assert self.space.is_square()
         A = self
         A = A * ~A
@@ -805,7 +814,7 @@ class Gate(Qu):
             r += A.v[i, i]
         return r
 
-    def is_pure(A, epsilon=1e-10):
+    def is_pure(A, epsilon=EPSILON):
         assert A.space.is_square()
         A = A*A
         A = Gate.promote(A)
@@ -845,13 +854,6 @@ def build():
     X.name = 'X'
     Gate.X = X
 
-    if scalar == numpy.complex128:
-        Y = Gate((2, 2))
-        Y[0, 1] = -1.j
-        Y[1, 0] = 1.j
-        Y.name = 'Y'
-        Gate.Y = Y
-
     Z = Gate((2, 2))
     Z[0, 0] = 1.
     Z[1, 1] = -1.
@@ -889,6 +891,21 @@ def build():
     Gate.dyads = (Ket(v0)@Bra(v0), Ket(v1)@Bra(v1))
     # make a method ??
 
+    if scalar == numpy.complex128:
+        Y = Gate((2, 2))
+        Y[0, 1] = -1.j
+        Y[1, 0] = 1.j
+        Y.name = 'Y'
+        Gate.Y = Y
+
+        # The S gate
+        Gate.S = bitvec(0) @ ~bitvec(0) + 1.j*bitvec(1)@~bitvec(1)
+    
+        # The T gate
+        r = numpy.exp(1.j*numpy.pi/4)
+        Gate.T = bitvec(0) @ ~bitvec(0) + r*bitvec(1)@~bitvec(1)
+
+
 build()
 
 
@@ -898,10 +915,10 @@ def commutator(A, B):
 def anticommutator(A, B):
     return (A*B) + (B*A)
 
-#def is_close(a, b, epsilon=1e-10):
+#def is_close(a, b, epsilon=EPSILON):
 #    return abs(a-b) < epsilon
 
-def is_close(v0, v1, epsilon=1e-10):
+def is_close(v0, v1, epsilon=EPSILON):
     #if type(v0) != type(v1):
     #    return False
     if isinstance(v0, Qu):

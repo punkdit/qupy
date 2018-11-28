@@ -9,6 +9,11 @@ def use_reals():
     global scalar
     scalar = numpy.float64
 
+EPSILON = 1e-8
+
+MAX_TENSOR = 32
+
+
 
 
 
