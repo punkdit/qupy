@@ -3,6 +3,7 @@
 from qupy.scalar import EPSILON
 
 
+# does not need hashable operators
 def mulclose(gen, verbose=False, maxsize=None):
     ops = list(gen)
     bdy = gen
@@ -20,6 +21,28 @@ def mulclose(gen, verbose=False, maxsize=None):
         if maxsize and len(ops) >= maxsize:
             break
     return ops
+
+
+# uses hashable operators
+def mulclose_fast(gen, verbose=False, maxsize=None):
+    els = set(gen)
+    bdy = list(els)
+    changed = True 
+    while bdy: 
+        #if verbose:
+        #    print "mulclose:", len(els)
+        _bdy = [] 
+        for A in gen: 
+            for B in bdy: 
+                C = A*B  
+                if C not in els: 
+                    els.add(C)
+                    _bdy.append(C)
+                    if maxsize and len(els)>=maxsize:
+                        return list(els)
+        bdy = _bdy 
+    return els  
+
 
 
 
