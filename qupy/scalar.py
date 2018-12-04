@@ -13,6 +13,7 @@ EPSILON = 1e-8
 
 MAX_TENSOR = 32
 
+MAX_GATE_SIZE = 12 # conservative
 
 
 

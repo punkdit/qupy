@@ -9,7 +9,6 @@ import numpy
 
 from qupy import scalar
 #scalar.use_reals()
-scalar.EPSILON = 1e-6
 
 from qupy.scalar import EPSILON
 
@@ -18,57 +17,12 @@ from qupy.dense import Qu, Gate, Vector
 #from qupy.dense import genidx, bits, is_close, on, off, scalar
 from qupy.dense import bitvec
 from qupy.argv import argv
+from qupy.util import mulclose, show_spec, FuzzyDict
 
 
 I, X, Z, H = Gate.I, Gate.X, Gate.Z, Gate.H
 S, T = Gate.S, Gate.T
 SWAP = Gate.SWAP
-
-def show_spec(A):
-    items = A.eigs()
-    for val, vec in items:
-        print(val, vec.shortstr())
-
-
-class FuzzyDict(object):
-    def __init__(self, epsilon=EPSILON):
-        self._items = [] 
-        self.epsilon = epsilon
-
-    def __getitem__(self, x):
-        epsilon = self.epsilon
-        for key, value in self._items:
-            if abs(key - x) < epsilon:
-                return value
-        raise KeyError
-
-    def get(self, x, default=None):
-        epsilon = self.epsilon
-        for key, value in self._items:
-            if abs(key - x) < epsilon:
-                return value
-        return default
-
-    def __setitem__(self, x, y):
-        epsilon = self.epsilon
-        items = self._items
-        idx = 0
-        while idx < len(items):
-            key, value = items[idx]
-            if abs(key - x) < epsilon:
-                items[idx] = (x, y)
-                return
-            idx += 1 
-        items.append((x, y))
-
-    def __str__(self):
-        return "{%s}"%(', '.join("%s: %s"%item for item in self._items))
-
-    def items(self):
-        for key, value in self._items:
-            yield (key, value)
-
-
 
 
 class POVM(object):
@@ -89,23 +43,23 @@ class POVM(object):
         return cls(items)
 
 
-def mulclose(gen, verbose=False):
-    ops = list(gen)
-    bdy = gen
-    while bdy:
-        _bdy = []
-        for g in bdy:
-            for h in gen:
-                k = g*h
-                if k not in ops:
-                    ops.append(k)
-                    _bdy.append(k)
-        bdy = _bdy
-        if verbose:
-            print("mulclose:", len(ops))
-    return ops
 
+def test_universal():
 
+    G = mulclose([Z, X]) # real pauli group
+    assert len(G) == 8
+
+    G = mulclose([Z, X, S])
+    assert len(G) == 32
+
+    G = mulclose([Z, X, S, T])
+    assert len(G) == 128
+
+    G = mulclose([Z, X, S, H])
+    assert len(G) == 192
+
+    G = mulclose([Z, X, S, T, H], maxsize=1000) # infinite group
+    assert len(G) >= 1000
 
 
 def test():
@@ -177,7 +131,6 @@ def test():
     gen = [TH, TX, TZ]
 
     G = mulclose(gen) # generate a group
-    print("|G| =", len(G))
     assert len(G) == 16
 
     # make 4 dimensional rep
@@ -186,7 +139,7 @@ def test():
     # is it irreducible ? No
     chi = [complex(g.trace()) for g in GB]
     x = sum((x*x.conjugate()).real for x in chi)/len(G)
-    print("(chi, chi) = ", x)
+    assert abs(x-2.) < EPSILON
 
     # ----------------------------------------------
 
@@ -195,16 +148,16 @@ def test():
     gen = [(~B) * g * B for g in gen]
 
     G = mulclose(gen) # generate a group
-    print("|G| =", len(G))
     assert len(G) == 192
 
     # is it irreducible ? Yes
     chi = [complex(g.trace()) for g in G]
     x = sum((x*x.conjugate()).real for x in chi)/len(G)
-    print("(chi, chi) = ", x)
+    assert abs(x-1.) < EPSILON
 
     # ----------------------------------------------
 
+    print("OK")
     
 
 

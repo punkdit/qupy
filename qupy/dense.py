@@ -218,7 +218,7 @@ class Qu(AbstractQu):
         ss = []
         for idx in genidx(self.shape):
             if abs(self[idx]) > EPSILON:
-                ss.append("%s : %s" % (idx, self[idx]))
+                ss.append("%s : %s" % (idx, shortstr(self[idx])))
         return "{%s}"%', '.join(ss)
 
     @property
@@ -898,7 +898,7 @@ def build():
         Y.name = 'Y'
         Gate.Y = Y
 
-        # The S gate
+        # The S gate, A.K.A. the P gate
         Gate.S = bitvec(0) @ ~bitvec(0) + 1.j*bitvec(1)@~bitvec(1)
     
         # The T gate
