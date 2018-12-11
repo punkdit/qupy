@@ -55,6 +55,9 @@ def test_universal():
     G = mulclose([Z, X, S, T])
     assert len(G) == 128
 
+    G = mulclose([Z, X, T])
+    assert len(G) == 128
+
     G = mulclose([Z, X, S, H])
     assert len(G) == 192
 
