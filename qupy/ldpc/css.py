@@ -25,12 +25,14 @@ from qupy.ldpc.solve import (
     pop2, insert2, append2, pushout,
     array2, zeros2, identity2, parse)
 #from qupy.ldpc.tool import write, load, save
-#from qupy.ldpc.decoder import Decoder
+
+from qupy.ldpc.decoder import Decoder, RandomDecoder
 #from qupy.ldpc.dynamic import Tanner
 #from qupy.ldpc.chain import Chain, ChainMap
 #
-#from qupy.ldpc.bpdecode import RadfordBPDecoder, PyCodeBPDecoder
-#from qupy.ldpc.cluster import ClusterCSSDecoder
+from qupy.ldpc.bpdecode import RadfordBPDecoder
+
+from qupy.ldpc.cluster import ClusterCSSDecoder
 #from qupy.ldpc import ensemble
 #from qupy.ldpc import lp
 #
@@ -1233,27 +1235,71 @@ def lookup_distance(code):
     for i0 in range(n):
         u[i0] = 1
         if dot2(Hz, u).sum() == 0:
-            print("*", shortstr(u))
+            #print("*", shortstr(u))
             d = min(d, 1)
         for i1 in range(i0+1, n):
             u[i1] = 1
             if dot2(Hz, u).sum() == 0:
-                print("*", shortstr(u))
+                #print("*", shortstr(u))
+                if d>2:
+                    print("d=", d)
                 d = min(d, 2)
             for i2 in range(i1+1, n):
                 u[i2] = 1
                 if dot2(Hz, u).sum() == 0:
-                    print("*", shortstr(u))
+                    #print("*", shortstr(u))
+                    if d>3:
+                        print("d=", d)
                     d = min(d, 3)
                 for i3 in range(i2+1, n):
                     u[i3] = 1
                     if dot2(Hz, u).sum() == 0:
-                        print("*", shortstr(u))
+                        #print("*", shortstr(u))
                         d = min(d, 4)
                     u[i3] = 0
                 u[i2] = 0
             u[i1] = 0
         u[i0] = 0
+    return d
+
+
+# is this any faster than the above?
+def lookup_distance(code):
+    n = code.n
+    Hz, Tx = code.Hz, code.Tx
+
+    d = n
+    v = zeros2(len(Hz))
+    for i0 in range(n):
+        v += Hz[:, i0]; v %= 2
+        if v.sum() == 0:
+            if d>1:
+                print("d=1")
+            d = min(d, 1)
+            return d
+        for i1 in range(i0+1, n):
+            v += Hz[:, i1]; v %= 2
+            if v.sum() == 0:
+                if d>2:
+                    print("d=2")
+                d = min(d, 2)
+            for i2 in range(i1+1, n):
+                v += Hz[:, i2]; v %= 2
+                if v.sum() == 0:
+                    if d>3:
+                        print("d=3")
+                    d = min(d, 3)
+                for i3 in range(i2+1, n):
+                    v += Hz[:, i3]; v %= 2
+                    if v.sum() == 0:
+                        if d>4:
+                            print("d=4")
+                        d = min(d, 4)
+                    v += Hz[:, i3] #; v %= 2
+                v += Hz[:, i2] #; v %= 2
+            v += Hz[:, i1] #; v %= 2
+        v += Hz[:, i0] #; v %= 2
+        print(i0, end=" ", flush=True)
     return d
 
 
@@ -2177,7 +2223,10 @@ def main():
         print("distance <=", d)
     elif argv.distance=='lookup':
         d = lookup_distance(code)
-        print("distance <=", d)
+        if d <= 4:
+            print("distance =", d)
+        else:
+            print("distance <=", d)
 
     if argv.distance:
         return
