@@ -13,18 +13,18 @@ import sys, os
 Fraction = lambda a, b=1: 1.*a/b
 from random import randint, shuffle, seed
 
-def fstr(x):
-    if int(x) == x:
-        return str(int(x))
-    return str(x)
-
-
 from qupy.tool import write
 from qupy.scalar import EPSILON
 
 class scalar(object):
     one = 1.0
     zero = 0.0
+
+
+def fstr(x):
+    if abs(x.imag)<1e-8 and abs(x.real-int(round(x.real)))<1e-8:
+        return str(int(round(x.real)))
+    return str(x)
 
 
 def tpl_add(a, b):
@@ -59,7 +59,7 @@ def tpl_compare(a, b):
 
 def is_scalar(x):
     try:
-        float(x)
+        complex(x)
     except TypeError:
         return False
     return True
@@ -77,12 +77,12 @@ class Poly(object):
         for key, value in list(cs.items()):
             assert rank is None or rank == len(key)
             rank = len(key)
-            assert is_scalar(value)
+            assert is_scalar(value), repr(value)
             if abs(value)<EPSILON:
                 continue
             if head is None or tpl_compare(key, head):
                 head = key
-            coefs[key] = float(value)
+            coefs[key] = complex(value)
             degree = max(degree, sum(key))
         if head is None:
             head = (0,)*rank
@@ -214,8 +214,8 @@ class Poly(object):
                 elif exp == 1:
                     item.append("%s" % (names[i],))
                 else:
-                    item.append("%s^%d" % (names[i], exp))
-            item = ' '.join(item)
+                    item.append("%s**%d" % (names[i], exp))
+            item = '*'.join(item)
             if not item:
                 item = str(val)
             elif val==1:

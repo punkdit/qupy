@@ -24,7 +24,16 @@ def cyclotomic(n):
 
 def build():
 
-    global Oct, Tetra, Ico
+    global Oct, Tetra, Ico, Sym
+
+    
+    gen = [
+        [[0, 1], [1, 0]],
+    ]
+    gen = [Qu((2, 2), 'ud', v) for v in gen]
+
+    Sym = mulclose(gen)
+    assert len(Sym)==2
 
     # ----------------------------------
     # binary octahedral group
@@ -84,6 +93,10 @@ def build():
 build()
 
 
+#class Ring(object):
+#    def __init__(self):
+
+
 def main():
 
     I = Poly.identity(2)
@@ -91,10 +104,38 @@ def main():
     x = Poly({(1, 0): 1.})
     y = Poly({(0, 1): 1.})
 
-    print( (x+I) ** 3 )
+    #print( (x+I) ** 3 )
 
+    def act(g, p):
+        #print("act", g, p)
+        #print(g[0, 0])
+        x_1 = g[0, 0]*x + g[1, 0]*y
+        x_2 = g[0, 1]*x + g[1, 1]*y
+        s = str(p)
+        p = eval(s, {}, locals())
+        return p
 
+    def average(G, p):
+        p1 = zero
+        for g in G:
+            p1 = p1 + act(g, p)
+        return p1
 
+    assert average(Sym, x*y**2) == x*y**2 + x**2*y
+
+    p = average(Tetra, x**8)
+    print(p)
+
+    degree = argv.get("degree", 8)
+    #for degree in range(5, 10):
+    for _ in range(10):
+        #p = Poly.random(2, degree)
+        p = (x+y+I)**8
+        #print(p)
+        q = average(Tetra, p)
+        if q.degree > 0:
+            print(q)
+            break
 
 
 if __name__ == "__main__":
