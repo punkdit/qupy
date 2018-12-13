@@ -5,7 +5,7 @@ import sys
 import numpy
 
 
-write = lambda s : print(s, end='', flush=True)
+from qupy.tool import write
 
 
 
