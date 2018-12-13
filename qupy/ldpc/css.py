@@ -28,8 +28,8 @@ from qupy.ldpc.solve import (
 
 from qupy.ldpc.decoder import Decoder, RandomDecoder
 #from qupy.ldpc.dynamic import Tanner
-#from qupy.ldpc.chain import Chain, ChainMap
-#
+from qupy.ldpc.chain import Chain, ChainMap
+
 from qupy.ldpc.bpdecode import RadfordBPDecoder
 
 from qupy.ldpc.cluster import ClusterCSSDecoder
