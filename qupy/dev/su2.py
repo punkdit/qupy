@@ -24,7 +24,7 @@ def cyclotomic(n):
 
 def build():
 
-    global Oct, Tetra, Ico, Sym
+    global Oct, Tetra, Icosa, Sym
 
     
     gen = [
@@ -86,8 +86,8 @@ def build():
     
     gen = [Qu((2, 2), 'ud', v) for v in gen]
 
-    Ico = mulclose(gen)
-    assert len(Ico)==120
+    Icosa = mulclose(gen)
+    assert len(Icosa)==120
 
 
 build()
@@ -123,19 +123,21 @@ def main():
 
     assert average(Sym, x*y**2) == x*y**2 + x**2*y
 
-    p = average(Tetra, x**8)
-    print(p)
+    #p = average(Tetra, x**8)
+    #print(p)
+
+    G = eval(argv.get("G", "Tetra"))
 
     degree = argv.get("degree", 8)
-    #for degree in range(5, 10):
-    for _ in range(10):
+    for degree in range(1, degree+1):
         #p = Poly.random(2, degree)
-        p = (x+y+I)**8
+        #p = (x+y+I)**8
         #print(p)
-        q = average(Tetra, p)
+        p = x**degree
+        q = average(G, p)
         if q.degree > 0:
+            print("degree:", q.degree)
             print(q)
-            break
 
 
 if __name__ == "__main__":
