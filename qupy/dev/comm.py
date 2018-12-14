@@ -13,18 +13,13 @@ import sys, os
 Fraction = lambda a, b=1: 1.*a/b
 from random import randint, shuffle, seed
 
-from qupy.tool import write
+from qupy.tool import write, fstr
 from qupy.scalar import EPSILON
 
 class scalar(object):
     one = 1.0
     zero = 0.0
 
-
-def fstr(x):
-    if abs(x.imag)<1e-8 and abs(x.real-int(round(x.real)))<1e-8:
-        return str(int(round(x.real)))
-    return str(x)
 
 
 def tpl_add(a, b):

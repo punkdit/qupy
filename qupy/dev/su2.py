@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-#from math import sqrt
+from math import sqrt
 #from random import choice, randint, seed, shuffle
-#from functools import reduce
-#from operator import mul, matmul, add
+
+from functools import reduce
+from operator import mul, matmul, add
 
 import numpy
 from numpy import exp, pi
@@ -13,6 +14,7 @@ from qupy import scalar
 from qupy.scalar import EPSILON, MAX_GATE_SIZE
 from qupy.dense import Qu
 from qupy.util import mulclose, show_spec
+from qupy.tool import fstr
 from qupy.argv import argv
 
 from qupy.dev.comm import Poly
@@ -24,8 +26,10 @@ def cyclotomic(n):
 
 def build():
 
-    global Oct, Tetra, Icosa, Sym
+    global Octa, Tetra, Icosa, Sym, Pauli, RealPauli, RealCliff
 
+    # ----------------------------------
+    #
     
     gen = [
         [[0, 1], [1, 0]],
@@ -34,6 +38,46 @@ def build():
 
     Sym = mulclose(gen)
     assert len(Sym)==2
+
+
+    # ----------------------------------
+    #
+
+    gen = [
+        [[0, 1], [1, 0]],
+        [[1, 0], [0, -1]],
+    ]
+    gen = [Qu((2, 2), 'ud', v) for v in gen]
+
+    RealPauli = mulclose(gen)
+    assert len(RealPauli)==8
+
+    # ----------------------------------
+    #
+
+    r = 1./sqrt(2)
+    gen = [
+        [[0, 1], [1, 0]],  # X
+        [[1, 0], [0, -1]], # Z
+        [[r, r], [r, -r]], # Hadamard
+    ]
+    gen = [Qu((2, 2), 'ud', v) for v in gen]
+
+    RealCliff = mulclose(gen)
+    assert len(RealCliff)==16
+
+    # ----------------------------------
+    #
+
+    gen = [
+        [[0, 1], [1, 0]],
+        [[1, 0], [0, -1]],
+        [[0, 1.j], [-1.j, 0]],
+    ]
+    gen = [Qu((2, 2), 'ud', v) for v in gen]
+
+    Pauli = mulclose(gen)
+    assert len(Pauli)==16
 
     # ----------------------------------
     # binary octahedral group
@@ -49,8 +93,8 @@ def build():
     ]
     gen = [Qu((2, 2), 'ud', v) for v in gen]
 
-    Oct = mulclose(gen)
-    assert len(Oct)==48
+    Octa = mulclose(gen)
+    assert len(Octa)==48
 
     # ----------------------------------
     # binary tetrahedral group ... hacked
@@ -65,9 +109,9 @@ def build():
     gen = [Qu((2, 2), 'ud', v) for v in gen]
 
     Tetra = mulclose(gen)
-    assert len(Tetra)==48 # whoops it must be another Oct ... 
+    assert len(Tetra)==48 # whoops it must be another Octa ... 
     
-    Tetra = [g for g in Tetra if g in Oct]  # hack this
+    Tetra = [g for g in Tetra if g in Octa]  # hack this
     Tetra = mulclose(Tetra)
     assert len(Tetra)==24 # works!
 
@@ -97,7 +141,9 @@ build()
 #    def __init__(self):
 
 
-def main():
+def test_c():
+
+    "build invariant commutative polynomials"
 
     I = Poly.identity(2)
     zero = Poly.zero(2)
@@ -138,6 +184,175 @@ def main():
         if q.degree > 0:
             print("degree:", q.degree)
             print(q)
+
+
+class Tensor(object):
+
+    """ Some kind of graded ring element... I*I*I + X*X*X etc.
+    """
+
+    zero = 0.0
+    one = 1.0
+    def __init__(self, items, grade=None):
+        # map key -> coeff, key is ("A", "B") etc.
+        assert items or (grade is not None)
+        keys = list(items.keys())
+        keys.sort()
+        self.items = {} 
+        nz = [] 
+        for key in keys:
+            assert grade is None or grade==len(key)
+            grade = len(key)
+            v = items[key]
+            if abs(v) > EPSILON:
+                self.items[key] = v # uniquify
+                nz.append(key)
+        self.keys = nz 
+        self.grade = grade
+
+    def get_zero(self):
+        return Tensor({}, self.grade)
+
+    def __add__(self, other):
+        assert self.grade == other.grade
+        items = dict(self.items)
+        for (k, v) in other.items.items():
+            items[k] = items.get(k, self.zero) + v
+        return Tensor(items, self.grade)
+
+    def __sub__(self, other):
+        assert self.grade == other.grade
+        items = dict(self.items)
+        for (k, v) in other.items.items():
+            items[k] = items.get(k, self.zero) - v
+        return Tensor(items, self.grade)
+
+    def __matmul__(self, other):
+        items = {} 
+        for (k1, v1) in self.items.items():
+          for (k2, v2) in other.items.items():
+            k = k1+k2
+            assert k not in items
+            items[k] = v1*v2
+        return Tensor(items, self.grade+other.grade)
+
+    def __rmul__(self, r):
+        items = {}
+        for (k, v) in self.items.items():
+            items[k] = r*v
+        return Tensor(items, self.grade)
+
+    def __len__(self):
+        return len(self.items)
+
+    def subs(self, rename):
+        the_op = Tensor({}, self.grade) # zero
+        one = self.one
+        for (k, v) in self.items.items():
+            final = None
+            for ki in k:
+                op = rename.get(ki, Tensor({ki : one}))
+                if final is None:
+                    final = op
+                else:
+                    final = final @ op # tensor
+            the_op = the_op + v*final
+        return the_op
+
+    def __str__(self):
+        ss = []
+        for k in self.keys:
+            v = self.items[k]
+            s = ''.join(str(ki) for ki in k)
+            if abs(v-1) < EPSILON:
+                pass
+            elif abs(v+1) < EPSILON:
+                s = "-"+s
+            else:
+                s = fstr(v)+"*"+s
+            ss.append(s)
+        ss = '+'.join(ss) or "0"
+        ss = ss.replace("+-", "-")
+        return ss
+
+    def __repr__(self):
+        return "Tensor(%s)"%(self.items)
+
+    def norm(self):
+        return sum(abs(val) for val in self.items.values())
+
+    def __eq__(self, other):
+        return (self-other).norm() < EPSILON
+
+    def __ne__(self, other):
+        return (self-other).norm() > EPSILON
+
+    #def __hash__(self):
+    #    return hash((str(self), self.grade))
+
+
+def test_nc():
+
+    "build invariant non-commutative polynomials"
+
+    I = Tensor({"I" : 1})
+    X = Tensor({"X" : 1})
+    Y = Tensor({"Y" : 1})
+    Z = Tensor({"Z" : 1})
+
+    II = I@I
+    XI = X@I
+    IX = I@X
+    XX = X@X
+    assert II+II == 2*II
+
+    assert X@(XI + IX) == X@X@I + X@I@X
+
+    assert ((I-Y)@I + I@(I-Y)) == 2*I@I - I@Y - Y@I
+    assert (XI + IX).subs({"X": I-Y}) == ((I-Y)@I + I@(I-Y))
+
+    A = Tensor({"A":1})
+    B = Tensor({"B":1})
+    p = A@A@A + B@B@A + B@A@B + A@B@B
+    q = A@A@A + B@B@B
+    p1 = p.subs({"A": A+B, "B": A-B})
+    assert p1 == 4*A@A@A + 4*B@B@B
+
+
+    def act(g, op):
+        A1 = g[0, 0]*A + g[1, 0]*B
+        B1 = g[0, 1]*A + g[1, 1]*B
+        op = op.subs({"A" : A1, "B" : B1})
+        return op
+
+    def average(G, p):
+        p1 = p.get_zero()
+        for g in G:
+            p1 = p1 + act(g, p)
+        return p1
+
+    assert average(Sym, A@A) == A@A + B@B
+
+
+    G = eval(argv.get("G", "Tetra"))
+    degree = argv.get("degree", 8)
+    items = [A]*degree
+    p = reduce(matmul, items)
+    p1 = average(G, p)
+    if argv.show:
+        print(p1)
+    print("terms:", len(p1))
+
+    if argv.check:
+        for g in G:
+            assert act(g, p1) == p1
+            print(".", end=" ", flush=True)
+
+    print("OK")
+
+
+    
+
 
 
 if __name__ == "__main__":
