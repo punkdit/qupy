@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+"""
+Fooling around with polynomial invariants of
+finite subgroups of SU(2).
+"""
+
 from math import sqrt
 #from random import choice, randint, seed, shuffle
 
@@ -26,7 +31,7 @@ def cyclotomic(n):
 
 def build():
 
-    global Octa, Tetra, Icosa, Sym, Pauli, RealPauli, RealCliff
+    global Octa, Tetra, Icosa, Sym, Pauli, RealPauli, RealCliff, Cliff
 
     # ----------------------------------
     #
@@ -63,8 +68,22 @@ def build():
     ]
     gen = [Qu((2, 2), 'ud', v) for v in gen]
 
-    RealCliff = mulclose(gen)
-    assert len(RealCliff)==16
+    RealCliff = mulclose(gen) # 
+    assert len(RealCliff)==16 # D_16 ?
+
+    # ----------------------------------
+    #
+
+    gen = [
+        [[0, 1], [1, 0]],  # X
+        [[1, 0], [0, -1]], # Z
+        [[1, 0], [0, 1.j]], # S
+        [[r, r], [r, -r]], # Hadamard
+    ]
+    gen = [Qu((2, 2), 'ud', v) for v in gen]
+
+    Cliff = mulclose(gen) # Is this the correct name?
+    assert len(Cliff)==192
 
     # ----------------------------------
     #
@@ -155,40 +174,42 @@ def test_c():
     def act(g, p):
         #print("act", g, p)
         #print(g[0, 0])
-        x_1 = g[0, 0]*x + g[1, 0]*y
-        x_2 = g[0, 1]*x + g[1, 1]*y
+        x1 = g[0, 0]*x + g[1, 0]*y
+        y1 = g[0, 1]*x + g[1, 1]*y
         s = str(p)
-        p = eval(s, {}, locals())
+        p = eval(s, {}, {"x":x1, "y":y1})
         return p
 
-    def average(G, p):
+    def orbit_sum(G, p):
         p1 = zero
         for g in G:
             p1 = p1 + act(g, p)
         return p1
 
-    assert average(Sym, x*y**2) == x*y**2 + x**2*y
+    assert orbit_sum(Sym, x*y**2) == x*y**2 + x**2*y
 
-    #p = average(Tetra, x**8)
+    #p = orbit_sum(Tetra, x**8)
     #print(p)
 
     G = eval(argv.get("G", "Tetra"))
 
     degree = argv.get("degree", 8)
     for degree in range(1, degree+1):
-        #p = Poly.random(2, degree)
-        #p = (x+y+I)**8
-        #print(p)
-        p = x**degree
-        q = average(G, p)
-        if q.degree > 0:
-            print("degree:", q.degree)
-            print(q)
+        for i in range(degree+1):
+            items = [x]*i + [y]*(degree-i)
+            assert len(items)==degree
+            p = reduce(mul, items)
+            q = orbit_sum(G, p)
+            if q.degree > 0:
+                print("degree:", q.degree)
+                print(q)
 
 
 class Tensor(object):
 
     """ Some kind of graded ring element... I*I*I + X*X*X etc.
+        There is no real reason to make this homogeneous,
+        but i do for now.
     """
 
     zero = 0.0
@@ -214,7 +235,7 @@ class Tensor(object):
         return Tensor({}, self.grade)
 
     def __add__(self, other):
-        assert self.grade == other.grade
+        assert self.grade == other.grade # i guess this is not necessary...
         items = dict(self.items)
         for (k, v) in other.items.items():
             items[k] = items.get(k, self.zero) + v
@@ -259,6 +280,20 @@ class Tensor(object):
             the_op = the_op + v*final
         return the_op
 
+    def evaluate(self, rename):
+        the_op = None
+        one = self.one
+        for (k, v) in self.items.items():
+            final = None
+            for ki in k:
+                op = rename[ki]
+                if final is None:
+                    final = op
+                else:
+                    final = final @ op # tensor
+            the_op = v*final if the_op is None else the_op + v*final
+        return the_op
+
     def __str__(self):
         ss = []
         for k in self.keys:
@@ -282,9 +317,13 @@ class Tensor(object):
         return sum(abs(val) for val in self.items.values())
 
     def __eq__(self, other):
+        if not isinstance(other, Tensor) and other==0:
+            other = self.get_zero()
         return (self-other).norm() < EPSILON
 
     def __ne__(self, other):
+        if not isinstance(other, Tensor) and other==0:
+            other = self.get_zero()
         return (self-other).norm() > EPSILON
 
     #def __hash__(self):
@@ -325,30 +364,89 @@ def test_nc():
         op = op.subs({"A" : A1, "B" : B1})
         return op
 
-    def average(G, p):
+    def orbit_sum(G, p):
         p1 = p.get_zero()
         for g in G:
             p1 = p1 + act(g, p)
         return p1
 
-    assert average(Sym, A@A) == A@A + B@B
+    assert orbit_sum(Sym, A@A) == A@A + B@B
 
 
     G = eval(argv.get("G", "Tetra"))
     degree = argv.get("degree", 8)
-    items = [A]*degree
-    p = reduce(matmul, items)
-    p1 = average(G, p)
-    if argv.show:
-        print(p1)
-    print("terms:", len(p1))
+    #items = [A]*degree
+    for i in range(degree+1):
+        items = [A]*i + [B]*(degree-i)
+        assert len(items)==degree
+        p = reduce(matmul, items)
+        p1 = orbit_sum(G, p)
+        if p1==0:
+            continue
+        if argv.show:
+            print(p1)
+            print("terms:", len(p1))
+
+    return
 
     if argv.check:
         for g in G:
             assert act(g, p1) == p1
             print(".", end=" ", flush=True)
 
-    print("OK")
+    I = Qu((2, 2), 'ud', [[1, 0], [0, 1]])
+    X = Qu((2, 2), 'ud', [[0, 1], [1, 0]])
+    Z = Qu((2, 2), 'ud', [[1, 0], [0, -1]])
+    Y = Qu((2, 2), 'ud', [[0, 1.j], [-1.j, 0]])
+    
+    P = p1.evaluate({"A" : I, "B" : X})
+    print(P.shape)
+    #P /= len(G)
+
+    print("building transversal gates")
+    GT = []
+    count = 0
+    for g in G:
+        op = reduce(matmul, [g]*degree)
+        #GT.append(op)
+        if op*P == P*op:
+            count += 1
+            print(".", end=" ", flush=True)
+    print("count:", count)
+    return
+
+    items = P.eigs()
+    for val, vec in items:
+        print(fstr(val), end=" ")
+
+    for val, vec in items:
+        #print(val, vec.shortstr())
+        #if abs(val) < EPSILON:
+        #    continue
+        #print()
+        #print("-"*79)
+        print("val=%s" % fstr(val), end=" ")
+
+        vec.normalize()
+        count = 0
+        for g in GT:
+            wec = g*vec
+            if (wec-vec).norm() < 1e-6:
+                count += 1
+            #r = ~wec*vec
+            #print(fstr(r), end=" ")
+        print("stab:", count, end=" ", flush=True)
+
+#        for g in GT:
+#            wec = g*vec
+#            xec = P*wec
+#            if xec.norm()<EPSILON:
+#                continue
+#            r = ~(xec.normalized())*wec
+#            print(fstr(r), end=" ")
+
+    print()
+
 
 
     

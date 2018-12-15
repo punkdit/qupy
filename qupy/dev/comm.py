@@ -86,6 +86,13 @@ class Poly(object):
         self.degree = degree
         self.head = head
         assert sum(head) == degree, str(self)
+        if rank==1:
+            names = ["x"]
+        elif rank==2:
+            names = ["x", "y"]
+        else:
+            names = ["x_%d"%(i+1) for i in range(rank)]
+        self.names = names
 
     @classmethod
     def identity(cls, rank):
@@ -189,12 +196,7 @@ class Poly(object):
 
     def __str__(self):
         rank = self.rank
-#        if rank==0:
-#            return 
-        if rank>1:
-            names = ["x_%d"%(i+1) for i in range(rank)]
-        else:
-            names = ["x"]
+        names = self.names
         items = []
         cs = list(self.cs.items())
         #cs.sort(key = lambda (k,v):list(reversed(k)))
