@@ -94,6 +94,9 @@ class Poly(object):
             names = ["x_%d"%(i+1) for i in range(rank)]
         self.names = names
 
+    def get_keys(self):
+        return list(self.cs.keys())
+
     @classmethod
     def identity(cls, rank):
         key = (0,)*rank

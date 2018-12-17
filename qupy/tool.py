@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+import numpy
 
 write = lambda s : print(s, end='', flush=True)
 
@@ -15,4 +18,31 @@ def fstr(x):
                 x = rx
         
     return str(x)
+
+
+def XXastr(A):
+    B = numpy.zeros(A.shape, dtype=object)
+    for idx in numpy.ndindex(A.shape):
+        #print(idx, A[idx])
+        B[idx] = fstr(A[idx])
+    return repr(B)
+
+
+def astr(A):
+    m, n = A.shape
+    rows = []
+    for i in range(m):
+        row = ' '.join(fstr(x) for x in A[i])
+        rows.append(row)
+    s = '\n'.join(rows)
+    return s
+
+
+def cross(itemss):
+    if len(itemss)==0:
+        yield ()
+    else:
+        for head in itemss[0]:
+            for tail in cross(itemss[1:]):
+                yield (head,)+tail
 

@@ -2,7 +2,8 @@
 
 """
 Fooling around with polynomial invariants of
-finite subgroups of SU(2).
+finite subgroups of SU(2), both commutative and
+non-commutative polynomials.
 """
 
 from math import sqrt
@@ -19,7 +20,7 @@ from qupy import scalar
 from qupy.scalar import EPSILON, MAX_GATE_SIZE
 from qupy.dense import Qu
 from qupy.util import mulclose, show_spec
-from qupy.tool import fstr
+from qupy.tool import fstr, astr, cross
 from qupy.argv import argv
 
 from qupy.dev.comm import Poly
@@ -195,14 +196,25 @@ def test_c():
 
     degree = argv.get("degree", 8)
     for degree in range(1, degree+1):
+        ops = []
         for i in range(degree+1):
             items = [x]*i + [y]*(degree-i)
             assert len(items)==degree
             p = reduce(mul, items)
             q = orbit_sum(G, p)
             if q.degree > 0:
-                print("degree:", q.degree)
-                print(q)
+                #print("degree:", q.degree)
+                #print(q)
+                ops.append(q)
+        if not ops:
+            continue
+        print("degree:", degree)
+        print("found:", len(ops))
+        _ops = linear_independent(ops)
+        if argv.show:
+            for op in _ops:
+                print(op)
+        print("dimension:", len(_ops))
 
 
 class Tensor(object):
@@ -233,6 +245,12 @@ class Tensor(object):
 
     def get_zero(self):
         return Tensor({}, self.grade)
+
+    def get_keys(self):
+        return list(self.keys)
+
+    def __getitem__(self, key):
+        return self.items.get(key, self.zero)
 
     def __add__(self, other):
         assert self.grade == other.grade # i guess this is not necessary...
@@ -330,6 +348,123 @@ class Tensor(object):
     #    return hash((str(self), self.grade))
 
 
+def swap_row(A, j, k):
+    row = A[j, :].copy()
+    A[j, :] = A[k, :]
+    A[k, :] = row
+
+
+def swap_col(A, j, k):
+    col = A[:, j].copy()
+    A[:, j] = A[:, k]
+    A[:, k] = col
+
+
+def row_reduce(A, truncate=False, inplace=False, check=False, verbose=False):
+    """ Remove zero rows if truncate==True
+    """
+
+    assert len(A.shape)==2, A.shape
+    m, n = A.shape
+    if not inplace:
+        A = A.copy()
+
+    if m*n==0:
+        if truncate and m:
+            A = A[:0, :]
+        return A
+
+    if verbose:
+        print("row_reduce")
+        #print("%d rows, %d cols" % (m, n))
+
+    i = 0
+    j = 0
+    while i < m and j < n:
+        if verbose:
+            print("i, j = %d, %d" % (i, j))
+            print("A:")
+            print(shortstrx(A))
+
+        assert i<=j
+        if i and check:
+            assert (numpy.abs(A[i:,:j])>EPSILON).sum() == 0
+
+        # first find a nonzero entry in this col
+        for i1 in range(i, m):
+            if abs(A[i1, j])>EPSILON:
+                break
+        else:
+            j += 1 # move to the next col
+            continue # <----------- continue ------------
+
+        if i != i1:
+            if verbose:
+                print("swap", i, i1)
+            swap_row(A, i, i1)
+
+        assert abs(A[i, j]) > EPSILON
+        for i1 in range(i+1, m):
+            if abs(A[i1, j])>EPSILON:
+                if verbose:
+                    print("add row %s to %s" % (i, i1))
+                r = -A[i1, j] / A[i, j]
+                A[i1, :] += r*A[i, :]
+                assert abs(A[i1, j]) < EPSILON
+
+        i += 1
+        j += 1
+
+    if truncate:
+        m = A.shape[0]-1
+        #print("sum:", m, A[m, :], A[m, :].sum())
+        while m>=0 and (numpy.abs(A[m, :])>EPSILON).sum()==0:
+            m -= 1
+        A = A[:m+1, :]
+
+    if verbose:
+        print()
+
+    return A
+
+
+def linear_independent(ops):
+    "ops: list of Tensor's or list of Poly's"
+    assert len(ops) 
+    keys = set()
+    for op in ops:
+        keys.update(op.get_keys())
+        cls = op.__class__ # Poly or Tensor
+    keys = list(keys)
+    keys.sort()
+    #print("keys:", keys)
+
+    #A = numpy.zeros((len(ops), len(keys)), dtype=numpy.complex128)
+    A = numpy.zeros((len(ops), len(keys)))
+    for i, op in enumerate(ops):
+        for j, key in enumerate(keys):
+            val = op[key]
+            A[i, j] = val.real
+
+    #print("A:")
+    #print(A)
+    B = row_reduce(A, truncate=True)
+    #print("B:")
+    #print(B)
+
+    m = len(B)
+    _ops = []
+    for i in range(m):
+        cs = {}
+        for j, key in enumerate(keys):
+            if abs(B[i, j])>EPSILON:
+                cs[key] = B[i, j]
+        assert len(cs)
+        op = cls(cs)
+        _ops.append(op)
+    return _ops
+
+
 def test_nc():
 
     "build invariant non-commutative polynomials"
@@ -359,8 +494,9 @@ def test_nc():
 
 
     def act(g, op):
-        A1 = g[0, 0]*A + g[1, 0]*B
-        B1 = g[0, 1]*A + g[1, 1]*B
+        # argh,  numpy.complex128 doesn't play nice with Tensor.__getitem__
+        A1 = complex(g[0, 0])*A + complex(g[1, 0])*B 
+        B1 = complex(g[0, 1])*A + complex(g[1, 1])*B
         op = op.subs({"A" : A1, "B" : B1})
         return op
 
@@ -372,52 +508,64 @@ def test_nc():
 
     assert orbit_sum(Sym, A@A) == A@A + B@B
 
-
-    G = eval(argv.get("G", "Tetra"))
-    degree = argv.get("degree", 8)
-    #items = [A]*degree
-    for i in range(degree+1):
-        items = [A]*i + [B]*(degree-i)
-        assert len(items)==degree
-        p = reduce(matmul, items)
-        p1 = orbit_sum(G, p)
-        if p1==0:
-            continue
-        if argv.show:
-            print(p1)
-            print("terms:", len(p1))
-
-    return
-
-    if argv.check:
-        for g in G:
-            assert act(g, p1) == p1
-            print(".", end=" ", flush=True)
+    def show_spec(P):
+        items = P.eigs()
+        for val, vec in items:
+            print(fstr(val), end=" ")
+        print()
 
     I = Qu((2, 2), 'ud', [[1, 0], [0, 1]])
     X = Qu((2, 2), 'ud', [[0, 1], [1, 0]])
     Z = Qu((2, 2), 'ud', [[1, 0], [0, -1]])
     Y = Qu((2, 2), 'ud', [[0, 1.j], [-1.j, 0]])
-    
-    P = p1.evaluate({"A" : I, "B" : X})
-    print(P.shape)
-    #P /= len(G)
 
-    print("building transversal gates")
-    GT = []
-    count = 0
-    for g in G:
-        op = reduce(matmul, [g]*degree)
-        #GT.append(op)
-        if op*P == P*op:
-            count += 1
-            print(".", end=" ", flush=True)
-    print("count:", count)
+    G = eval(argv.get("G", "Tetra"))
+    degree = argv.get("degree", 8)
+    ops = []
+    pair = [A, B]
+    remain = [items for items in cross((pair,)*degree)]
+    while remain:
+        items = iter(remain).__next__()
+        remain.remove(items)
+        assert len(items)==degree
+        p = reduce(matmul, items)
+        p1 = orbit_sum(G, p)
+        if p1==0:
+            continue
+        ops.append(p1)
+        print(".", end=" ", flush=True)
+    print()
+
+    print("found ops:", len(ops))
+    if not ops:
+        return
+    _ops = linear_independent(ops)
+    print("dimension:", len(_ops))
+
+    if argv.show:
+        for op in _ops:
+            print(op)
+
     return
 
-    items = P.eigs()
-    for val, vec in items:
-        print(fstr(val), end=" ")
+    for p1 in ops:
+    
+        P = p1.evaluate({"A" : I, "B" : X})
+        #print(P.shape)
+        #P /= len(G)
+    
+        print("transversal gates...")
+        GT = []
+        count = 0
+        for g in G:
+            op = reduce(matmul, [g]*degree)
+            #GT.append(op)
+            if op*P == P*op:
+                count += 1
+                print(".", end=" ", flush=True)
+        print("commutes with", count, "transversal gates")
+        print("spec:", end=" ")
+        show_spec(P)
 
     for val, vec in items:
         #print(val, vec.shortstr())
