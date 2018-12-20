@@ -269,8 +269,8 @@ def test_pow():
 
     for A in (Gate.I, Gate.Z):
         assert A**1 == A
-        assert A**2 == A@A
-        assert A**3 == A@A@A
+        assert A**2 == A*A
+        assert A**3 == A*A*A
 
 def test_swap():
 

@@ -546,7 +546,7 @@ class Qu(AbstractQu):
             return self
         A = self
         while count > 1:
-            A = self @ A
+            A = self * A
             count -= 1
         return A
 

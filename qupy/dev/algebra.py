@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 #from math import sqrt
-#from random import choice, randint, seed, shuffle
+from random import choice, randint, seed, shuffle
 
 from functools import reduce
 from operator import mul, matmul, add
@@ -137,9 +137,9 @@ class Tensor(object):
         self.coefs = dict((k, v) for (k, v) in coefs.items() if v!=scalar.zero)
         self._str = None
 
-    def __str__(self):
+    def str(self, sep=''):
         #return "Tensor(%s)"%(self.coefs,)
-        if self._str is not None:
+        if self._str is not None and sep=='':
             return self._str
         algebra = self.algebra
         keys = list(self.coefs.keys())
@@ -148,7 +148,7 @@ class Tensor(object):
         for idx in keys:
             val = self.coefs[idx]
             assert val != scalar.zero
-            name = ''.join(algebra.names[i] for i in idx)
+            name = sep.join(algebra.names[i] for i in idx)
             if val == 1:
                 term = name
             elif val == -1:
@@ -159,8 +159,11 @@ class Tensor(object):
         s = '+'.join(terms)
         s = s.replace("+-", "-")
         s = s or "0"
-        self._str = s
+        if sep=='':
+            self._str = s
         return s
+
+    __str__ = str
 
     def __hash__(self):
         return hash(self.__str__())
@@ -223,6 +226,9 @@ class Tensor(object):
     def __rmul__(self, r):
         coefs = dict((key, r*v) for (key, v) in self.coefs.items())
         return Tensor(self.n, self.algebra, coefs)
+
+    def __neg__(self):
+        return -1*self
 
     def __mul__(self, other):
         # slow but it works...
@@ -309,9 +315,12 @@ def build_algebra(names, rel):
 
 class StabilizerCode(object):
     def __init__(self, algebra, ops):
-        ops = ops.split()
-        self.n = len(ops[0])
-        ops = [algebra.parse(s) for s in ops]
+        if type(ops) is str:
+            ops = ops.split()
+            ops = [algebra.parse(s) for s in ops]
+        else:
+            ops = list(ops)
+        self.n = ops[0].n
         for g in ops:
           for h in ops:
             assert g*h == h*g 
@@ -319,7 +328,7 @@ class StabilizerCode(object):
 
     def get_projector(self):
         G = mulclose_fast(self.ops)
-
+        #print("get_projector:", len(G))
         # build projector onto codespace
         #P = (1./len(G))*reduce(add, G)
         P = reduce(add, G)
@@ -380,10 +389,56 @@ def test():
     assert P*P == 64*P
 
 
+def test_random():
+
+    "build a small random stabilizer code"
+
+    algebra = build_algebra("IXZY",
+        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    I, X, Z, Y = algebra.basis
+
+    n = argv.get("n", 4)
+    ops = []
+    negi = -reduce(matmul, [I]*n)
+    items = [I, X, Z, Y]
+    itemss = [[I, X], [I, Z]]
+    while len(ops) < n-1:
+        if argv.css:
+            items = choice(itemss)
+        op = [choice(items) for _ in range(n)]
+        op = reduce(matmul, op)
+        for op1 in ops:
+            if op1*op != op*op1:
+                break
+        else:
+            #print(op)
+            ops.append(op)
+            G = mulclose_fast(ops)
+            if negi in G:
+                ops = []
+
+    for op in ops:
+        print(op, end=" ")
+    print()
+    code = StabilizerCode(algebra, ops)
+    #G = mulclose_fast(ops)
+    #for g in G:
+    #    print(g, negi==g)
+
+    P = code.get_projector()
+    print(P.str())
+    print(P.str("@"))
+
+
 
 
 
 if __name__ == "__main__":
+
+    _seed = argv.seed
+    if _seed is not None:
+        seed(_seed)
 
     name = argv.next() or "test"
 

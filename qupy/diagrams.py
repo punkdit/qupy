@@ -203,7 +203,7 @@ class CharMatrix(object):
         #print self
         #print
         mask = list(self.data.keys())
-        circuit = Gate.I ** self.rank
+        circuit = reduce(matmul, [Gate.I]*self.rank)
         for col in range(self.cols):
             for A in self.unpack(mask, col, namespace):
                 #if A != (Gate.I**self.rank):

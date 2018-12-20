@@ -23,6 +23,31 @@ def mulclose(gen, verbose=False, maxsize=None):
     return ops
 
 
+def mulclose_names(gen, names, verbose=False, maxsize=None):
+    ops = list(gen)
+    words = dict((g, names[i]) for (i, g) in enumerate(gen))
+    bdy = gen
+    while bdy:
+        _bdy = []
+        for g in bdy:
+            for h in gen:
+                k = g*h
+                try:
+                    idx = ops.index(k)
+                    if len(words[g]+words[h]) < len(words[ops[idx]]):
+                        words[ops[idx]] = words[g]+words[h]
+                except ValueError:
+                    words[k] = words[g]+words[h]
+                    ops.append(k)
+                    _bdy.append(k)
+        bdy = _bdy
+        if verbose:
+            print("mulclose:", len(ops))
+        if maxsize and len(ops) >= maxsize:
+            break
+    return ops, words
+
+
 # uses hashable operators
 def mulclose_fast(gen, verbose=False, maxsize=None):
     els = set(gen)
