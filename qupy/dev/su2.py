@@ -28,6 +28,12 @@ from qupy.dev.comm import Poly
 EPSILON=1e-8
 
 
+class scalar(object):
+    zero = 0.0
+    one = 1.0
+    dtype = numpy.complex128
+
+
 def cyclotomic(n):
     return numpy.exp(2*numpy.pi*1.j/n)
 
@@ -131,7 +137,7 @@ def build():
 
     Octa, words = mulclose_names(gen, "AB")
     assert len(Octa)==48
-    print("Octa:", words.values())
+    #print("Octa:", words.values())
 
     # Octa is a subgroup of Cliff:
     for g in octa_gen:
@@ -259,6 +265,117 @@ def test_c():
     print(",".join(str(dim) for dim in dims))
 
 
+class Algebra(object):
+    def __init__(self, dim, names=None, struct=None):
+        self.dim = dim 
+        if names is None:
+            names = "IABCDEFGHJKLMNOPQRSTUVWXYZ"[:dim]
+        assert len(names)==dim
+        self.names = names
+
+        if struct is not None:
+            struct = numpy.array(struct)
+            self.struct = struct
+            self.build_lookup()
+        basis = []
+        for i in range(dim):
+            op = Tensor({(i,):scalar.one}, 1, self)
+            basis.append(op)
+        self.basis = basis
+
+    def build_lookup(self):
+        lookup = {}
+        dim = self.dim
+        struct = self.struct
+        for i in range(dim):
+          for j in range(dim):
+            v = struct[i, j]
+            coefs = {}
+            for k in range(dim):
+                if abs(v[k])>EPSILON:
+                    coefs[(k,)] = v[k]
+            v = Tensor(coefs, 1, self)
+            lookup[i, j] = v
+        self.lookup = lookup
+
+    def is_associative(self):
+        for a in self.basis:
+         for b in self.basis:
+          for c in self.basis:
+            if (a*b)*c != a*(b*c):
+                #print(a, b, c)
+                return False
+        return True
+
+    def parse(self, desc):
+        n = len(desc)
+        idxs = tuple(self.names.index(c) for c in desc)
+        return Tensor({idxs : scalar.one}, n, self)
+
+    def __getattr__(self, attr):
+        if attr in self.names:
+            return self.parse(attr)
+        raise AttributeError
+
+
+class StabilizerCode(object):
+    def __init__(self, algebra, ops):
+        if type(ops) is str:
+            ops = ops.split()
+            ops = [algebra.parse(s) for s in ops]
+        else:
+            ops = list(ops)
+        self.n = ops[0].grade
+        for g in ops:
+          for h in ops:
+            assert g*h == h*g , "%s %s"%(g, h)
+        self.ops = list(ops)
+
+    def get_projector(self):
+        G = mulclose(self.ops, verbose=False)
+        #print("get_projector:", len(G))
+        # build projector onto codespace
+        #P = (1./len(G))*reduce(add, G)
+        P = reduce(add, G)
+        return P
+
+
+
+
+def build_algebra(names, rel):
+    names = list(names)
+    assert names[0] == "I" # identity
+    dim = len(names)
+    struct = {}
+    struct[0, 0, 0] = scalar.one
+    for i in range(1, dim):
+        struct[0, i, i] = scalar.one
+        struct[i, 0, i] = scalar.one
+
+    eqs = rel.split()
+    for eq in eqs:
+        lhs, rhs = eq.split("=")
+        A, B = lhs.split("*")
+        i = names.index(A)
+        j = names.index(B)
+        rhs, C = rhs[:-1], rhs[-1]
+        k = names.index(C)
+        if not rhs:
+            val = scalar.one
+        elif rhs == "-":
+            val = -scalar.one
+        else:
+            assert 0, repr(eq)
+        assert struct.get((i, j, k)) is None
+        struct[i, j, k] = val
+
+    A = numpy.zeros((dim, dim, dim), dtype=scalar.dtype)
+    for key, value in struct.items():
+        A[key] = value
+    algebra = Algebra(dim, names, A)
+    return algebra
+
+
 class Tensor(object):
 
     """ Some kind of graded ring element... I*I*I + X*X*X etc.
@@ -268,71 +385,86 @@ class Tensor(object):
 
     zero = 0.0
     one = 1.0
-    def __init__(self, items, grade=None):
+    def __init__(self, coefs, grade=None, algebra=None):
         # map key -> coeff, key is ("A", "B") etc.
-        assert items or (grade is not None)
-        keys = list(items.keys())
-        keys.sort()
-        self.items = {} 
-        nz = [] 
-        for key in keys:
-            assert grade is None or grade==len(key)
+        assert coefs or (grade is not None)
+#        keys = list(coefs.keys())
+#        #keys.sort()
+#        self.coefs = {} 
+#        nz = [] 
+#        for key in keys:
+#            assert grade is None or grade==len(key)
+#            assert type(key) is tuple, repr(key)
+#            grade = len(key)
+#            v = coefs[key]
+#            if abs(v) > EPSILON:
+#                self.coefs[key] = v
+#                nz.append(key)
+#        self.keys = nz 
+        if grade is None:
+            key = iter(coefs.keys()).__next__()
             grade = len(key)
-            v = items[key]
-            if abs(v) > EPSILON:
-                self.items[key] = v # uniquify
-                nz.append(key)
-        self.keys = nz 
+        #self.keys = keys
+        self.coefs = dict(coefs)
         self.grade = grade
+        self.algebra = algebra
 
     def get_zero(self):
-        return Tensor({}, self.grade)
+        return Tensor({}, self.grade, self.algebra)
 
     def get_keys(self):
-        return list(self.keys)
+        return list(self.coefs.keys())
 
     def __getitem__(self, key):
-        return self.items.get(key, self.zero)
+        return self.coefs.get(key, self.zero)
 
     def __add__(self, other):
         assert self.grade == other.grade # i guess this is not necessary...
-        items = dict(self.items)
-        for (k, v) in other.items.items():
-            items[k] = items.get(k, self.zero) + v
-        return Tensor(items, self.grade)
+        coefs = dict(self.coefs)
+        for (k, v) in other.coefs.items():
+            coefs[k] = coefs.get(k, self.zero) + v
+        return Tensor(coefs, self.grade, self.algebra)
 
     def __sub__(self, other):
         assert self.grade == other.grade
-        items = dict(self.items)
-        for (k, v) in other.items.items():
-            items[k] = items.get(k, self.zero) - v
-        return Tensor(items, self.grade)
+        coefs = dict(self.coefs)
+        for (k, v) in other.coefs.items():
+            coefs[k] = coefs.get(k, self.zero) - v
+        return Tensor(coefs, self.grade, self.algebra)
 
     def __matmul__(self, other):
-        items = {} 
-        for (k1, v1) in self.items.items():
-          for (k2, v2) in other.items.items():
+        coefs = {} 
+        for (k1, v1) in self.coefs.items():
+          for (k2, v2) in other.coefs.items():
             k = k1+k2
-            assert k not in items
-            items[k] = v1*v2
-        return Tensor(items, self.grade+other.grade)
+            assert k not in coefs
+            coefs[k] = v1*v2
+        return Tensor(coefs, self.grade+other.grade, self.algebra)
 
     def __rmul__(self, r):
-        items = {}
-        for (k, v) in self.items.items():
-            items[k] = r*v
-        return Tensor(items, self.grade)
+        coefs = {}
+        for (k, v) in self.coefs.items():
+            coefs[k] = complex(r)*v
+        return Tensor(coefs, self.grade, self.algebra)
+
+    def __neg__(self):
+        coefs = {}
+        for (k, v) in self.coefs.items():
+            coefs[k] = -v
+        return Tensor(coefs, self.grade, self.algebra)
 
     def __len__(self):
-        return len(self.items)
+        return len(self.coefs)
 
     def subs(self, rename):
-        the_op = Tensor({}, self.grade) # zero
+        the_op = Tensor({}, self.grade, self.algebra) # zero
+        algebra = self.algebra
         one = self.one
-        for (k, v) in self.items.items():
+        for (k, v) in self.coefs.items():
             final = None
             for ki in k:
-                op = rename.get(ki, Tensor({ki : one}))
+                c = algebra.names[ki]
+                op = rename.get(c, Tensor({(ki,) : one}, algebra=self.algebra))
                 if final is None:
                     final = op
                 else:
@@ -341,12 +473,14 @@ class Tensor(object):
         return the_op
 
     def evaluate(self, rename):
+        algebra = self.algebra
         the_op = None
         one = self.one
-        for (k, v) in self.items.items():
+        for (k, v) in self.coefs.items():
             final = None
             for ki in k:
-                op = rename[ki]
+                c = algebra.names[ki]
+                op = rename[c]
                 if final is None:
                     final = op
                 else:
@@ -356,9 +490,10 @@ class Tensor(object):
 
     def __str__(self):
         ss = []
-        for k in self.keys:
-            v = self.items[k]
-            s = ''.join(str(ki) for ki in k)
+        algebra = self.algebra
+        for k in self.coefs.keys():
+            v = self.coefs[k]
+            s = ''.join(algebra.names[ki] for ki in k)
             if abs(v-1) < EPSILON:
                 pass
             elif abs(v+1) < EPSILON:
@@ -371,10 +506,10 @@ class Tensor(object):
         return ss
 
     def __repr__(self):
-        return "Tensor(%s)"%(self.items)
+        return "Tensor(%s)"%(self.coefs)
 
     def norm(self):
-        return sum(abs(val) for val in self.items.values())
+        return sum(abs(val) for val in self.coefs.values())
 
     def __eq__(self, other):
         if not isinstance(other, Tensor) and other==0:
@@ -388,6 +523,58 @@ class Tensor(object):
 
     #def __hash__(self):
     #    return hash((str(self), self.grade))
+
+    def __mul__(self, other):
+        # slow but it works...
+        assert self.algebra is not None
+        assert self.algebra is other.algebra
+        assert self.grade == other.grade
+        zero = scalar.zero
+        algebra = self.algebra
+        struct = algebra.struct
+        dim = algebra.dim
+        n = self.grade
+#        A = self.get_zero()
+        coefs = {}
+        for idx, val in self.coefs.items():
+          for jdx, wal in other.coefs.items():
+            r = val*wal
+            if abs(r)<EPSILON:
+                continue
+            tens_ops = [algebra.lookup[idx[i], jdx[i]] for i in range(n)]
+            tensor_reduce(tens_ops, complex(r), coefs)
+            #v = complex(r) * v
+            #A = A+v
+
+        A = Tensor(coefs, self.grade, algebra)
+        return A
+
+
+def tensor_reduce(ops, r, coefs):
+
+    grade = reduce(add, [op.grade for op in ops])
+    algebra = ops[0].algebra
+    n = len(ops)
+
+    shape = tuple(len(op.get_keys()) for op in ops)
+    keyss = [op.get_keys() for op in ops]
+    #print(keyss) # [[(0,)], [(2,)], [(3,)], [(3,)], [(2,)]]
+    assert shape == (1,)*len(shape)
+
+    #for idx in numpy.ndindex(shape):
+    #for keyss in cross([op.get_keys() for op in ops]):
+    keyss = [k[0] for k in keyss]
+    #print(keyss) # [(0,), (2,), (3,), (3,), (2,)]
+
+    if 1:
+        val = 1.
+        key = ()
+        for i in range(n):
+            key = key + keyss[i]
+            val *= ops[i].coefs[keyss[i]]
+        coefs[key] = coefs.get(key, 0.) + r*val
+
+
 
 
 def swap_row(A, j, k):
@@ -511,10 +698,25 @@ def test_nc():
 
     "build invariant non-commutative polynomials"
 
-    I = Tensor({"I" : 1})
-    X = Tensor({"X" : 1})
-    Y = Tensor({"Y" : 1})
-    Z = Tensor({"Z" : 1})
+    #algebra = Algebra("IXYZ")
+    pauli = build_algebra("IXZY",
+        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    I = pauli.I
+    X = pauli.X
+    Y = pauli.Y
+    Z = pauli.Z
+
+    assert I*X == X
+    assert X*X==I 
+    assert Z*Z==I 
+    assert Y*Y==-I 
+    assert X*Z==Y 
+    assert Z*X==-Y 
+    assert X*Y==Z 
+    assert Y*X==-Z 
+    assert Z*Y==-X 
+    assert Y*Z==X
 
     II = I@I
     XI = X@I
@@ -527,8 +729,9 @@ def test_nc():
     assert ((I-Y)@I + I@(I-Y)) == 2*I@I - I@Y - Y@I
     assert (XI + IX).subs({"X": I-Y}) == ((I-Y)@I + I@(I-Y))
 
-    A = Tensor({"A":1})
-    B = Tensor({"B":1})
+    algebra = Algebra(2, "AB") # no multiplication specified
+    A = algebra.A
+    B = algebra.B
     p = A@A@A + B@B@A + B@A@B + A@B@B
     q = A@A@A + B@B@B
     p1 = p.subs({"A": A+B, "B": A-B})
@@ -754,10 +957,13 @@ build_quaternion()
 
 def test_code():
 
-    I = Tensor({"I" : 1})
-    X = Tensor({"X" : 1})
-    Z = Tensor({"Z" : 1})
-    Y = Tensor({"Y" : 1})
+    pauli = build_algebra("IXZY",
+        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    I = pauli.I
+    X = pauli.X
+    Y = pauli.Y
+    Z = pauli.Z
 
     II = I@I
     XI = X@I
@@ -770,30 +976,33 @@ def test_code():
     assert ((I-Y)@I + I@(I-Y)) == 2*I@I - I@Y - Y@I
     assert (XI + IX).subs({"X": I-Y}) == ((I-Y)@I + I@(I-Y))
 
-    if argv.five:
+    if argv.two:
+        code = StabilizerCode(pauli, "XX ZZ")
+        op = code.get_projector()
+    elif argv.four:
+        code = StabilizerCode(pauli, "XXII ZZII IIXX IIZZ")
+        op = code.get_projector()
+    elif argv.five:
+        code = StabilizerCode(pauli, "XZZXI IXZZX XIXZZ ZXIXZ")
         op = (I@I@I@I@I+I@X@Z@Z@X-I@Z@Y@Y@Z-I@Y@X@X@Y
             +X@I@X@Z@Z-X@X@Y@I@Y+X@Z@Z@X@I-X@Y@I@Y@X
             -Z@I@Z@Y@Y+Z@X@I@X@Z+Z@Z@X@I@X-Z@Y@Y@Z@I
             -Y@I@Y@X@X-Y@X@X@Y@I-Y@Z@I@Z@Y-Y@Y@Z@I@Z)
+        assert op == code.get_projector()
     elif argv.steane:
-        op = (I@I@I@I@I@I@I+I@I@X@X@X@X@I+I@I@Z@Z@Z@Z@I+I@I@Y@Y@Y@Y@I
-            +I@X@I@X@X@I@X+I@X@X@I@I@X@X+I@X@Z@Y@Y@Z@X+I@X@Y@Z@Z@Y@X
-            +I@Z@I@Z@Z@I@Z+I@Z@X@Y@Y@X@Z+I@Z@Z@I@I@Z@Z+I@Z@Y@X@X@Y@Z
-            +I@Y@I@Y@Y@I@Y+I@Y@X@Z@Z@X@Y+I@Y@Z@X@X@Z@Y+I@Y@Y@I@I@Y@Y
-            +X@I@I@X@I@X@X+X@I@X@I@X@I@X+X@I@Z@Y@Z@Y@X+X@I@Y@Z@Y@Z@X
-            +X@X@I@I@X@X@I+X@X@X@X@I@I@I+X@X@Z@Z@Y@Y@I+X@X@Y@Y@Z@Z@I
-            +X@Z@I@Y@Z@X@Y+X@Z@X@Z@Y@I@Y+X@Z@Z@X@I@Y@Y+X@Z@Y@I@X@Z@Y
-            +X@Y@I@Z@Y@X@Z+X@Y@X@Y@Z@I@Z+X@Y@Z@I@X@Y@Z+X@Y@Y@X@I@Z@Z
-            +Z@I@I@Z@I@Z@Z+Z@I@X@Y@X@Y@Z+Z@I@Z@I@Z@I@Z+Z@I@Y@X@Y@X@Z
-            +Z@X@I@Y@X@Z@Y+Z@X@X@Z@I@Y@Y+Z@X@Z@X@Y@I@Y+Z@X@Y@I@Z@X@Y
-            +Z@Z@I@I@Z@Z@I+Z@Z@X@X@Y@Y@I+Z@Z@Z@Z@I@I@I+Z@Z@Y@Y@X@X@I
-            +Z@Y@I@X@Y@Z@X+Z@Y@X@I@Z@Y@X+Z@Y@Z@Y@X@I@X+Z@Y@Y@Z@I@X@X
-            +Y@I@I@Y@I@Y@Y+Y@I@X@Z@X@Z@Y+Y@I@Z@X@Z@X@Y+Y@I@Y@I@Y@I@Y
-            +Y@X@I@Z@X@Y@Z+Y@X@X@Y@I@Z@Z+Y@X@Z@I@Y@X@Z+Y@X@Y@X@Z@I@Z
-            +Y@Z@I@X@Z@Y@X+Y@Z@X@I@Y@Z@X+Y@Z@Z@Y@I@X@X+Y@Z@Y@Z@X@I@X
-            +Y@Y@I@I@Y@Y@I+Y@Y@X@X@Z@Z@I+Y@Y@Z@Z@X@X@I+Y@Y@Y@Y@I@I@I)
-    elif argv.rand:
-        op = I@I@I@I-I@Y@Y@X-X@I@Z@Z+X@Y@X@Y+Z@I@X@Z+Z@Y@Z@Y+Y@I@Y@I+Y@Y@I@X
+        code = StabilizerCode(pauli, "XXXXIII XXIIXXI XIXIXIX ZZZZIII ZZIIZZI ZIZIZIZ")
+        op = code.get_projector()
+    elif argv.rm:
+        s = """
+        1.1.1.1.1.1.1.1
+        .11..11..11..11
+        ...1111....1111
+        .......11111111
+        """.replace(".", "I")
+        sx = s.replace("1", "X")
+        sz = s.replace("1", "Z")
+        code = StabilizerCode(pauli, sx+sz)
+        op = code.get_projector()
     else:
         op = argv.op
         if op:
@@ -801,7 +1010,7 @@ def test_code():
 
     if op is not None:
         ops = [op]
-        print(op)
+        #print(op)
     
     def act(g, op):
         # argh,  numpy.complex128 doesn't play nice with Tensor.__getitem__
@@ -866,6 +1075,23 @@ def test_code():
     G = eval(argv.get("G2", "Tetra")) # the "internal" group
 
     def find_transversal(op):
+    
+        degree = op.grade
+        P = op
+    
+        print("promote")
+        _G = promote(pauli, G)
+        GT = []
+        count = 0
+        for g in _G:
+            print(".", end=" ", flush=True)
+            op = reduce(matmul, [g]*degree)
+            if op*P == P*op:
+                count += 1
+                print("+", end=" ", flush=True)
+        print("commutes with", count, "transversal gates")
+
+    def find_transversal_XXX(op):
         I = Qu((2, 2), 'ud', [[1, 0], [0, 1]])
         X = Qu((2, 2), 'ud', [[0, 1], [1, 0]])
         Z = Qu((2, 2), 'ud', [[1, 0], [0, -1]])
@@ -895,16 +1121,65 @@ def test_code():
     for op in ops:
         find_transversal(op)
 
+
+def decompose(basis, op):
+    _basis = []
+    norms = []
+    for a in basis: 
+        a = a.v.flatten()
+        r = numpy.linalg.norm(a)
+        a = a/r
+        norms.append(r)
+        _basis.append(a)
+    norms = numpy.array(norms)
+    U = numpy.array(_basis)
+    Ut = U.transpose()
+    I = numpy.dot(Ut, U)
+    assert numpy.allclose(I, numpy.eye(len(basis))), "need orthonormal basis"
+    v = op.v.flatten()
+    #r = numpy.linalg.norm(v)
+    v = numpy.dot(U, v)
+    v = v/r # hack this
+    return v
+
+
+def promote(pauli, G):
+    I = Qu((2, 2), 'ud', [[1, 0], [0, 1]])
+    X = Qu((2, 2), 'ud', [[0, 1], [1, 0]])
+    Z = Qu((2, 2), 'ud', [[1, 0], [0, -1]])
+    Y = X*Z
+        
+    basis = [I, X, Z, Y]
+    v = decompose(basis, I)
+    assert numpy.allclose(v, [1, 0, 0, 0])
+
+    v = decompose(basis, I+X)
+    assert numpy.allclose(v, [1, 1, 0, 0])
+
+    #pauli = build_algebra("IXZY",
+    #    "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    for op in G:
+        v = decompose(basis, op)
+        g = Tensor({}, 1, pauli)
+        for i in range(pauli.dim):
+            g = g + complex(v[i])*pauli.basis[i] # ARGH!
+        yield g
+
+
 def main():
     pass
-
 
 
 if __name__ == "__main__":
 
     name = argv.next() or "main"
 
-    fn = eval(name)
-    fn()
+    if argv.profile:
+        import cProfile as profile
+        profile.run("%s()"%name)
+    else:
+        fn = eval(name)
+        fn()
 
 

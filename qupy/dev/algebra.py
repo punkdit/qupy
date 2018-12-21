@@ -323,7 +323,7 @@ class StabilizerCode(object):
         self.n = ops[0].n
         for g in ops:
           for h in ops:
-            assert g*h == h*g 
+            assert g*h == h*g , "%s %s"%(g, h)
         self.ops = list(ops)
 
     def get_projector(self):
@@ -387,6 +387,25 @@ def test():
     P = code.get_projector()
 
     assert P*P == 64*P
+
+    # -----------------------------
+
+    s = """
+    1.1.1.1.1.1.1.1
+    .11..11..11..11
+    ...1111....1111
+    .......11111111
+    """.replace(".", "I")
+    sx = s.replace("1", "X")
+    sz = s.replace("1", "Z")
+    code = algebra.build_code(sx+sz)
+
+    P = code.get_projector()
+    print(P.str("@"))
+
+    assert P*P == 256*P
+
+
 
 
 def test_random():
