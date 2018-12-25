@@ -83,7 +83,6 @@ def build():
 
     r = 1./sqrt(2)
     gen = [
-        [[0, 1], [1, 0]],  # X
         [[1, 0], [0, -1]], # Z
         [[r, r], [r, -r]], # Hadamard
     ]
@@ -96,8 +95,8 @@ def build():
     #
 
     gen = [
-        [[0, 1], [1, 0]],  # X
-        [[1, 0], [0, -1]], # Z
+        #[[0, 1], [1, 0]],  # X
+        #[[1, 0], [0, -1]], # Z
         [[1, 0], [0, 1.j]], # S
         [[r, r], [r, -r]], # Hadamard
     ]
@@ -976,6 +975,13 @@ def test_code():
     assert ((I-Y)@I + I@(I-Y)) == 2*I@I - I@Y - Y@I
     assert (XI + IX).subs({"X": I-Y}) == ((I-Y)@I + I@(I-Y))
 
+    def mk_stab(s):
+        s = s.replace(".", "I")
+        sx = s.replace("1", "X")
+        sz = s.replace("1", "Z")
+        code = StabilizerCode(pauli, sx+sz)
+        return code
+
     if argv.two:
         code = StabilizerCode(pauli, "XX ZZ")
         op = code.get_projector()
@@ -998,10 +1004,16 @@ def test_code():
         .11..11..11..11
         ...1111....1111
         .......11111111
-        """.replace(".", "I")
-        sx = s.replace("1", "X")
-        sz = s.replace("1", "Z")
-        code = StabilizerCode(pauli, sx+sz)
+        """
+        code = mk_stab(s)
+        op = code.get_projector()
+    elif argv.toric:
+        s = """
+        11.11...
+        .111..1.
+        1...11.1
+        """
+        code = mk_stab(s)
         op = code.get_projector()
     else:
         op = argv.op
