@@ -7,7 +7,7 @@ non-commutative polynomials.
 """
 
 from math import sqrt
-from random import choice #, randint, seed, shuffle
+from random import choice, seed
 
 from functools import reduce
 from operator import mul, matmul, add
@@ -203,8 +203,7 @@ def bravyi_kitaev():
     assert T**2 != I
     assert T**3 == -I
 
-    assert T in Octa
-    
+    assert T in Tetra
 
 
 def test_c():
@@ -397,12 +396,14 @@ class Tensor(object):
         self.coefs = dict(coefs)
         self.grade = grade
         self.algebra = algebra
+        self.keys = list(self.coefs.keys()) # cache this
 
     def get_zero(self):
         return Tensor({}, self.grade, self.algebra)
 
     def get_keys(self):
-        return list(self.coefs.keys())
+        #return list(self.coefs.keys())
+        return self.keys
 
     def __getitem__(self, key):
         return self.coefs.get(key, self.zero)
@@ -517,7 +518,7 @@ class Tensor(object):
     #def __hash__(self):
     #    return hash((str(self), self.grade))
 
-    def __mul__(self, other):
+    def __mul__(self, other): # HOTSPOT
         # slow but it works...
         assert self.algebra is not None
         assert self.algebra is other.algebra
@@ -527,7 +528,6 @@ class Tensor(object):
         struct = algebra.struct
         dim = algebra.dim
         n = self.grade
-#        A = self.get_zero()
         coefs = {}
         for idx, val in self.coefs.items():
           for jdx, wal in other.coefs.items():
@@ -536,8 +536,6 @@ class Tensor(object):
                 continue
             tens_ops = [algebra.lookup[idx[i], jdx[i]] for i in range(n)]
             _tensor_reduce(tens_ops, complex(r), coefs)
-            #v = complex(r) * v
-            #A = A+v
 
         A = Tensor(coefs, self.grade, algebra)
         return A
@@ -552,29 +550,14 @@ class Tensor(object):
         return A
         
 
-
-def _tensor_reduce(ops, r, coefs):
-
-    algebra = ops[0].algebra
-    n = len(ops)
-
-    shape = tuple(len(op.get_keys()) for op in ops)
-    keyss = [op.get_keys() for op in ops]
-    #print(keyss) # [[(0,)], [(2,)], [(3,)], [(3,)], [(2,)]]
-    assert shape == (1,)*len(shape)
-
-    #for idx in numpy.ndindex(shape):
-    #for keyss in cross([op.get_keys() for op in ops]):
-    keyss = [k[0] for k in keyss]
-    #print(keyss) # [(0,), (2,), (3,), (3,), (2,)]
-
+def _tensor_reduce(ops, r, coefs): # HOTSPOT
     val = 1.
     key = ()
-    for i in range(n):
-        key = key + keyss[i]
-        val *= ops[i].coefs[keyss[i]]
+    for op in ops:
+        k = op.keys[0]
+        key = key + k
+        val *= op.coefs[k]
     coefs[key] = coefs.get(key, 0.) + r*val
-
 
 
 def swap_row(A, j, k):
@@ -1370,7 +1353,11 @@ def test_code2():
 
 def test_internal():
 
-    """
+    r"""
+        The internal group acts as P \mapsto g^{-1} P g.
+        Average over this action to build invariant operators.
+        Take as input a codespace projector.
+        The average is not always a projector.
     """
 
     pauli = build_algebra("IXZY",
@@ -1427,32 +1414,80 @@ def test_internal():
     print(Q)
     print(Q*Q)
 
-#    for g in G:
-#        g = reduce(matmul, [g]*degree)
-#        print(g.shape)
+    if argv.check:
+        for i in range(n):
+            Q1 = TG[inv[i]] * Q * TG[i]
+            assert Q1 == Q
 
-    if 0:
-        I = Qu((2, 2), 'ud', [[1, 0], [0, 1]])
-        X = Qu((2, 2), 'ud', [[0, 1], [1, 0]])
-        Z = Qu((2, 2), 'ud', [[1, 0], [0, -1]])
 
-        # which Y to use?
-        #Y = Qu((2, 2), 'ud', [[0, 1.j], [-1.j, 0]]) 
-        Y = X*Z
-        
-        P = op.evaluate({"I":I, "X":X, "Z":Z, "Y":Y})
-        #print(P.shape)
-        #P /= len(G)
-    
-        degree = op.grade
-    
-        if argv.show:
-            print(op)
+def test_internal_series():
 
-        GT = []
-        count = 0
-        for g in G:
-            op = reduce(matmul, [g]*degree)
+    r"""
+        The internal group acts as P \mapsto g^{-1} P g.
+        Average over this action to build invariant operators.
+        Take as input a codespace projector.
+        The average is not always a projector.
+    """
+
+    pauli = build_algebra("IXZY",
+        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    I = pauli.I
+    X = pauli.X
+    Z = pauli.Z
+    Y = pauli.Y
+
+    G = eval(argv.get("G2", "Tetra")) # the "internal" group
+    n = len(G)
+
+    # group identity
+    identity = None
+    for i in range(n):
+        for j in range(i+1, n):
+            g = G[i]*G[j]
+            k = G.index(g)
+            if k==i:
+                assert identity is None or identity==j
+                identity = j
+
+    # group _inverse
+    inv = [None]*len(G)
+    for i, g in enumerate(G):
+        for j, h in enumerate(G):
+            gh = g*h
+            k = G.index(gh)
+            if k==identity:
+                assert inv[i] is None or inv[i]==j
+                inv[i] = j
+
+    # express each g as a sum of pauli's
+    G = [g for g in promote(pauli, G)]
+
+    # transverse operators
+    print("transverse operators")
+    degree = argv.get("degree", 2)
+    TG = [reduce(matmul, [g]*degree) for g in G]
+
+    found = []
+    for op in cross(([I, X, Z, Y],)*degree):
+        P = reduce(matmul, op)
+
+        Q = P.get_zero()
+        for i in range(n):
+            Q = Q + TG[inv[i]] * P * TG[i]
+
+        if Q==Q.get_zero():
+            continue
+        print(P)
+        print(Q)
+        found.append(Q)
+
+    print("found ops:", len(found))
+    if not found:
+        return
+    found = linear_independent(found, algebra=pauli)
+    print("dimension:", len(found))
+
 
 
 def main():
@@ -1460,6 +1495,10 @@ def main():
 
 
 if __name__ == "__main__":
+
+    _seed = argv.seed
+    if _seed is not None:
+        seed(_seed)
 
     name = argv.next() or "main"
 
