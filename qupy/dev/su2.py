@@ -7,7 +7,7 @@ non-commutative polynomials.
 """
 
 from math import sqrt
-#from random import choice, randint, seed, shuffle
+from random import choice #, randint, seed, shuffle
 
 from functools import reduce
 from operator import mul, matmul, add
@@ -89,19 +89,23 @@ def build():
     gen = [Qu((2, 2), 'ud', v) for v in gen]
 
     RealCliff, words = mulclose_names(gen, "XZH") # 
-    assert len(RealCliff)==16 # D_16 ?
+    assert len(RealCliff)==16 # D_16
 
     # ----------------------------------
     #
 
     gen = [
-        #[[0, 1], [1, 0]],  # X
-        #[[1, 0], [0, -1]], # Z
+        [[0, 1], [1, 0]],  # X == HZH
+        [[1, 0], [0, -1]], # Z == S*S
         [[1, 0], [0, 1.j]], # S
         [[r, r], [r, -r]], # Hadamard
     ]
     gen = [Qu((2, 2), 'ud', v) for v in gen]
     cliff_gen = gen
+
+    X, Z, S, H = gen
+    assert Z == S*S
+    assert X == H*Z*H
 
     Cliff, words = mulclose_names(gen, "XZSH") # Is this the correct name?
     assert len(Cliff)==192
@@ -387,23 +391,9 @@ class Tensor(object):
     def __init__(self, coefs, grade=None, algebra=None):
         # map key -> coeff, key is ("A", "B") etc.
         assert coefs or (grade is not None)
-#        keys = list(coefs.keys())
-#        #keys.sort()
-#        self.coefs = {} 
-#        nz = [] 
-#        for key in keys:
-#            assert grade is None or grade==len(key)
-#            assert type(key) is tuple, repr(key)
-#            grade = len(key)
-#            v = coefs[key]
-#            if abs(v) > EPSILON:
-#                self.coefs[key] = v
-#                nz.append(key)
-#        self.keys = nz 
         if grade is None:
             key = iter(coefs.keys()).__next__()
             grade = len(key)
-        #self.keys = keys
         self.coefs = dict(coefs)
         self.grade = grade
         self.algebra = algebra
@@ -468,7 +458,7 @@ class Tensor(object):
                     final = op
                 else:
                     final = final @ op # tensor
-            the_op = the_op + v*final
+            the_op = the_op + complex(v)*final # ARRGGGHHH !!
         return the_op
 
     def evaluate(self, rename):
@@ -484,16 +474,20 @@ class Tensor(object):
                     final = op
                 else:
                     final = final @ op # tensor
-            the_op = v*final if the_op is None else the_op + v*final
+            the_op = complex(v)*final if the_op is None else the_op + complex(v)*final
         return the_op
 
     def __str__(self):
         ss = []
         algebra = self.algebra
-        for k in self.coefs.keys():
+        keys = list(self.coefs.keys())
+        keys.sort()
+        for k in keys:
             v = self.coefs[k]
             s = ''.join(algebra.names[ki] for ki in k)
-            if abs(v-1) < EPSILON:
+            if abs(v) < EPSILON:
+                continue
+            elif abs(v-1) < EPSILON:
                 pass
             elif abs(v+1) < EPSILON:
                 s = "-"+s
@@ -541,17 +535,26 @@ class Tensor(object):
             if abs(r)<EPSILON:
                 continue
             tens_ops = [algebra.lookup[idx[i], jdx[i]] for i in range(n)]
-            tensor_reduce(tens_ops, complex(r), coefs)
+            _tensor_reduce(tens_ops, complex(r), coefs)
             #v = complex(r) * v
             #A = A+v
 
         A = Tensor(coefs, self.grade, algebra)
         return A
 
+    @classmethod
+    def tensor(cls, ops):
+        coefs = {}
+        _tensor_reduce(ops, 1., coefs)
+        grade = reduce(add, [op.grade for op in ops])
+        algebra = ops[0].algebra
+        A = Tensor(coefs, grade, algebra)
+        return A
+        
 
-def tensor_reduce(ops, r, coefs):
 
-    grade = reduce(add, [op.grade for op in ops])
+def _tensor_reduce(ops, r, coefs):
+
     algebra = ops[0].algebra
     n = len(ops)
 
@@ -565,14 +568,12 @@ def tensor_reduce(ops, r, coefs):
     keyss = [k[0] for k in keyss]
     #print(keyss) # [(0,), (2,), (3,), (3,), (2,)]
 
-    if 1:
-        val = 1.
-        key = ()
-        for i in range(n):
-            key = key + keyss[i]
-            val *= ops[i].coefs[keyss[i]]
-        coefs[key] = coefs.get(key, 0.) + r*val
-
+    val = 1.
+    key = ()
+    for i in range(n):
+        key = key + keyss[i]
+        val *= ops[i].coefs[keyss[i]]
+    coefs[key] = coefs.get(key, 0.) + r*val
 
 
 
@@ -656,7 +657,7 @@ def row_reduce(A, truncate=False, inplace=False, check=False, verbose=False):
     return A
 
 
-def linear_independent(ops):
+def linear_independent(ops, **kw):
     "ops: list of Tensor's or list of Poly's"
     assert len(ops) 
     keys = set()
@@ -688,15 +689,12 @@ def linear_independent(ops):
             if abs(B[i, j])>EPSILON:
                 cs[key] = B[i, j]
         assert len(cs)
-        op = cls(cs)
+        op = cls(cs, **kw)
         _ops.append(op)
     return _ops
 
 
-def test_nc():
-
-    "build invariant non-commutative polynomials"
-
+def test_pauli():
     #algebra = Algebra("IXYZ")
     pauli = build_algebra("IXZY",
         "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
@@ -727,6 +725,11 @@ def test_nc():
 
     assert ((I-Y)@I + I@(I-Y)) == 2*I@I - I@Y - Y@I
     assert (XI + IX).subs({"X": I-Y}) == ((I-Y)@I + I@(I-Y))
+
+
+def test_nc():
+
+    "build invariant non-commutative polynomials with two variables"
 
     algebra = Algebra(2, "AB") # no multiplication specified
     A = algebra.A
@@ -841,12 +844,12 @@ def test_nc():
 
 
 
-def build_quaternion():
+def build_external():
 
     # See:
     # https://homepages.warwick.ac.uk/~masda/McKay/Carrasco_Project.pdf
 
-    global Q8, QT, QO, QI, Sym44, Sym54
+    global Q8, QT, QO, QI, Sym44, Sym54, H4
 
     def quaternion(a, b, c, d): 
         # build matrix representation of quaternion
@@ -918,28 +921,6 @@ def build_quaternion():
     # ----------------------------------
     #
 
-    gen = [
-        [[-1, 1], [0, 1]],
-        [[1, 0], [1, -1]],
-    ]
-    s1 = numpy.array([
-        [-1, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 0, 1, 0],
-        [0, 0, 0, 1]])
-    
-    s2 = numpy.array([
-        [1, 0, 0, 0],
-        [1, -1, 0, 0],
-        [0, 0, 1, 0],
-        [0, 0, 0, 1]])
-    
-    s3 = numpy.array([
-        [1, 0, 0, 0],
-        [0, -1, 1, 0],
-        [0, 0, 1, 0],
-        [0, 0, 0, 1]])
-
     # gap> IrreducibleRepresentations(SymmetricGroup(5));
     gen = [
         [[ 0, -1, 0, 0 ], [ 0, 0, 0, 1 ], [ 1, -1, -1, -1 ], [ 0, 0, 1, 0 ]], 
@@ -950,30 +931,74 @@ def build_quaternion():
     Sym54 = mulclose(gen)
     assert len(Sym54)==24*5
 
+    # ----------------------------------
+    #
 
-build_quaternion()
+    H = 1./2*numpy.array([
+        [1, 1, 1, 1],
+        [1, 1, -1, -1],
+        [1, -1, 1, -1],
+        [1, -1, -1, 1]])
+
+    H = Qu((4, 4), 'ud', H)
+
+    H4 = mulclose([H])
+    assert len(H4) == 2
 
 
-def test_code():
+build_external()
 
-    pauli = build_algebra("IXZY",
-        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
 
+def decompose(basis, op):
+    _basis = []
+    norms = []
+    for a in basis: 
+        a = a.v.flatten()
+        r = numpy.linalg.norm(a)
+        a = a/r
+        norms.append(r)
+        _basis.append(a)
+    norms = numpy.array(norms)
+    U = numpy.array(_basis)
+    Ut = U.transpose()
+    I = numpy.dot(Ut, U)
+    assert numpy.allclose(I, numpy.eye(len(basis))), "need orthonormal basis"
+    v = op.v.flatten()
+    #r = numpy.linalg.norm(v)
+    v = numpy.dot(U, v)
+    v = v/r # hack this
+    return v
+
+
+def promote(pauli, G):
+    I = Qu((2, 2), 'ud', [[1, 0], [0, 1]])
+    X = Qu((2, 2), 'ud', [[0, 1], [1, 0]])
+    Z = Qu((2, 2), 'ud', [[1, 0], [0, -1]])
+    Y = X*Z
+        
+    basis = [I, X, Z, Y]
+    v = decompose(basis, I)
+    assert numpy.allclose(v, [1, 0, 0, 0])
+
+    v = decompose(basis, I+X)
+    assert numpy.allclose(v, [1, 1, 0, 0])
+
+    #pauli = build_algebra("IXZY",
+    #    "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    for op in G:
+        v = decompose(basis, op)
+        g = Tensor({}, 1, pauli)
+        for i in range(pauli.dim):
+            g = g + complex(v[i])*pauli.basis[i] # ARGH!
+        yield g
+
+
+def build_code(pauli):
     I = pauli.I
     X = pauli.X
     Y = pauli.Y
     Z = pauli.Z
-
-    II = I@I
-    XI = X@I
-    IX = I@X
-    XX = X@X
-    assert II+II == 2*II
-
-    assert X@(XI + IX) == X@X@I + X@I@X
-
-    assert ((I-Y)@I + I@(I-Y)) == 2*I@I - I@Y - Y@I
-    assert (XI + IX).subs({"X": I-Y}) == ((I-Y)@I + I@(I-Y))
 
     def mk_stab(s):
         s = s.replace(".", "I")
@@ -1019,6 +1044,28 @@ def test_code():
         op = argv.op
         if op:
             op = eval(op, locals())
+    return op
+
+
+def test_code():
+
+    """
+        Build some non-commuting polynomials in four variables: I X Z Y.
+        Apply averaging operator to get invariant polynomials over 
+        the "external" group which acts on (I X Z Y).
+        Look for transversal gates built from the "internal" group, which
+        is a finite subgroup of U(2).
+    """
+
+    pauli = build_algebra("IXZY",
+        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    I = pauli.I
+    X = pauli.X
+    Y = pauli.Y
+    Z = pauli.Z
+
+    op = build_code(pauli)
 
     if op is not None:
         ops = [op]
@@ -1066,12 +1113,8 @@ def test_code():
         print("found ops:", len(ops))
         if not ops:
             return
-        ops = linear_independent(ops)
+        ops = linear_independent(ops, algebra=pauli)
         print("dimension:", len(ops))
-
-    if argv.show:
-        for op in ops:
-            print(op)
 
     # ------------------------------------------
 
@@ -1087,6 +1130,7 @@ def test_code():
     G = eval(argv.get("G2", "Tetra")) # the "internal" group
 
     def find_transversal(op):
+        # slow..... boo
     
         degree = op.grade
         P = op
@@ -1103,11 +1147,13 @@ def test_code():
                 print("+", end=" ", flush=True)
         print("commutes with", count, "transversal gates")
 
-    def find_transversal_XXX(op):
+    def find_transversal_dense(op):
         I = Qu((2, 2), 'ud', [[1, 0], [0, 1]])
         X = Qu((2, 2), 'ud', [[0, 1], [1, 0]])
         Z = Qu((2, 2), 'ud', [[1, 0], [0, -1]])
-        #Y = Qu((2, 2), 'ud', [[0, 1.j], [-1.j, 0]])
+
+        # which Y to use?
+        #Y = Qu((2, 2), 'ud', [[0, 1.j], [-1.j, 0]]) 
         Y = X*Z
         
         P = op.evaluate({"I":I, "X":X, "Z":Z, "Y":Y})
@@ -1116,6 +1162,9 @@ def test_code():
     
         degree = op.grade
     
+        if argv.show:
+            print(op)
+
         GT = []
         count = 0
         for g in G:
@@ -1131,52 +1180,279 @@ def test_code():
 
     print("transversal gates...")
     for op in ops:
-        find_transversal(op)
+        find_transversal_dense(op)
 
 
-def decompose(basis, op):
-    _basis = []
-    norms = []
-    for a in basis: 
-        a = a.v.flatten()
-        r = numpy.linalg.norm(a)
-        a = a/r
-        norms.append(r)
-        _basis.append(a)
-    norms = numpy.array(norms)
-    U = numpy.array(_basis)
-    Ut = U.transpose()
-    I = numpy.dot(Ut, U)
-    assert numpy.allclose(I, numpy.eye(len(basis))), "need orthonormal basis"
-    v = op.v.flatten()
-    #r = numpy.linalg.norm(v)
-    v = numpy.dot(U, v)
-    v = v/r # hack this
-    return v
+def random_code(pauli, degree=4):
+
+    "build a small random stabilizer code"
+
+    I = pauli.I
+    X = pauli.X
+    Z = pauli.Z
+    Y = pauli.Y
+
+    ops = []
+    negi = -reduce(matmul, [I]*degree)
+    items = [I, X, Z, Y]
+    itemss = [[I, X], [I, Z]]
+    while len(ops) < degree-1:
+        if argv.css:
+            items = choice(itemss)
+        op = [choice(items) for _ in range(degree)]
+        op = reduce(matmul, op)
+        for op1 in ops:
+            if op1*op != op*op1:
+                break
+        else:
+            #print(op)
+            ops.append(op)
+#            G = mulclose_fast(ops)
+            G = mulclose(ops)
+            if negi in G:
+                ops = []
+
+#    for op in ops:
+#        print(op, end=" ")
+#    print()
+    code = StabilizerCode(pauli, ops)
+    #G = mulclose_fast(ops)
+    #for g in G:
+    #    print(g, negi==g)
+
+    P = code.get_projector()
+#    print(P)
+
+    return P
 
 
-def promote(pauli, G):
-    I = Qu((2, 2), 'ud', [[1, 0], [0, 1]])
-    X = Qu((2, 2), 'ud', [[0, 1], [1, 0]])
-    Z = Qu((2, 2), 'ud', [[1, 0], [0, -1]])
-    Y = X*Z
+def test_code2():
+
+    """
+        Build some non-commuting polynomials in four variables: I X Z Y,
+        from projector onto codespace of stabilizer code.
+        Apply averaging operator to get invariant polynomials over 
+        the "external" group which acts on (I X Z Y).
+        Look for transversal gates built from the "internal" group, which
+        is a finite subgroup of U(2).
+    """
+
+    pauli = build_algebra("IXZY",
+        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    I = pauli.I
+    X = pauli.X
+    Z = pauli.Z
+    Y = pauli.Y
+
+    degree = argv.get("degree", 2)
+    #op = build_code(pauli)
+    op = random_code(pauli, degree)
+    
+    def act(g, op):
+        # argh,  numpy.complex128 doesn't play nice with Tensor.__getitem__
+        I1 = complex(g[0, 0])*I+complex(g[1, 0])*X+complex(g[2, 0])*Z+complex(g[3, 0])*Y 
+        X1 = complex(g[0, 1])*I+complex(g[1, 1])*X+complex(g[2, 1])*Z+complex(g[3, 1])*Y 
+        Z1 = complex(g[0, 2])*I+complex(g[1, 2])*X+complex(g[2, 2])*Z+complex(g[3, 2])*Y 
+        Y1 = complex(g[0, 3])*I+complex(g[1, 3])*X+complex(g[2, 3])*Z+complex(g[3, 3])*Y 
+        op = op.subs({"I":I1, "X":X1, "Z":Z1, "Y":Y1})
+        return op
+
+    def orbit_sum(G, op):
+        p1 = op.get_zero()
+        for g in G:
+            p1 = p1 + act(g, op)
+            #print(p1)
+        return p1
+
+    G4 = argv.get("G4", "QT") # the "external" group
+    if G4 is not None:
+        G4 = eval(G4)
+        print("|G4|=", len(G4))
+        op = orbit_sum(G4, op)
+    #print(op)
+    if op==op.get_zero():
+        return
+
+    if op is None:
+    
+        ops = []
+        pair = [I, X, Z, Y]
+        remain = [items for items in cross((pair,)*degree)]
+        print("remain:", len(remain))
+        while remain:
+            items = iter(remain).__next__()
+            remain.remove(items)
+            assert len(items)==degree
+            p = reduce(matmul, items)
+            p1 = orbit_sum(G, p)
+            if p1==0:
+                continue
+            ops.append(p1)
+            #print(".", end=" ", flush=True)
+        #print()
+    
+        print("found ops:", len(ops))
+        if not ops:
+            return
+        ops = linear_independent(ops, algebra=pauli)
+        print("dimension:", len(ops))
+    else:
+        ops = [op]
+
+    # ------------------------------------------
+
+    if not argv.find_transversal:
+        return
+
+    def show_spec(P):
+        items = P.eigs()
+        for val, vec in items:
+            print(fstr(val), end=" ")
+        print()
+
+    G = eval(argv.get("G2", "Cliff")) # the "internal" group
+
+    def find_transversal(op):
+        # slow..... boo
+    
+        degree = op.grade
+        P = op
+    
+        print("promote")
+        _G = promote(pauli, G)
+        GT = []
+        count = 0
+        for g in _G:
+            print(".", end=" ", flush=True)
+            op = reduce(matmul, [g]*degree)
+            if op*P == P*op:
+                count += 1
+                print("+", end=" ", flush=True)
+        print("commutes with", count, "transversal gates")
+
+    def find_transversal_dense(op):
+        I = Qu((2, 2), 'ud', [[1, 0], [0, 1]])
+        X = Qu((2, 2), 'ud', [[0, 1], [1, 0]])
+        Z = Qu((2, 2), 'ud', [[1, 0], [0, -1]])
+
+        # which Y to use?
+        #Y = Qu((2, 2), 'ud', [[0, 1.j], [-1.j, 0]]) 
+        Y = X*Z
         
-    basis = [I, X, Z, Y]
-    v = decompose(basis, I)
-    assert numpy.allclose(v, [1, 0, 0, 0])
+        P = op.evaluate({"I":I, "X":X, "Z":Z, "Y":Y})
+        #print(P.shape)
+        #P /= len(G)
+    
+        degree = op.grade
+    
+        if argv.show:
+            print(op)
 
-    v = decompose(basis, I+X)
-    assert numpy.allclose(v, [1, 1, 0, 0])
+        GT = []
+        count = 0
+        for g in G:
+            op = reduce(matmul, [g]*degree)
+            #GT.append(op)
+            if op*P == P*op:
+                count += 1
+                print(".", end=" ", flush=True)
+        print("commutes with", count, "transversal gates")
+        if argv.show_spec:
+            print("spec:")
+            show_spec(P)
 
-    #pauli = build_algebra("IXZY",
-    #    "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+    print("transversal gates...")
+    for op in ops:
+        find_transversal_dense(op)
 
-    for op in G:
-        v = decompose(basis, op)
-        g = Tensor({}, 1, pauli)
-        for i in range(pauli.dim):
-            g = g + complex(v[i])*pauli.basis[i] # ARGH!
-        yield g
+
+
+def test_internal():
+
+    """
+    """
+
+    pauli = build_algebra("IXZY",
+        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    I = pauli.I
+    X = pauli.X
+    Z = pauli.Z
+    Y = pauli.Y
+
+    degree = argv.get("degree", 2)
+    #op = build_code(pauli)
+    P = random_code(pauli, degree)
+
+    print(P)
+    
+    G = eval(argv.get("G2", "Tetra")) # the "internal" group
+    n = len(G)
+
+    # group identity
+    identity = None
+    for i in range(n):
+        for j in range(i+1, n):
+            g = G[i]*G[j]
+            k = G.index(g)
+            if k==i:
+                assert identity is None or identity==j
+                identity = j
+
+    # group _inverse
+    inv = [None]*len(G)
+    for i, g in enumerate(G):
+        for j, h in enumerate(G):
+            gh = g*h
+            k = G.index(gh)
+            if k==identity:
+                assert inv[i] is None or inv[i]==j
+                inv[i] = j
+
+    # express each g as a sum of pauli's
+    G = [g for g in promote(pauli, G)]
+
+    # transverse operators
+    print("transverse operators")
+    TG = [reduce(matmul, [g]*degree) for g in G]
+
+    print("averaging over group")
+    Q = P.get_zero()
+    for i in range(n):
+        Q = Q + TG[inv[i]] * P * TG[i]
+        write(".")
+    print()
+
+    print(Q)
+    print(Q*Q)
+
+#    for g in G:
+#        g = reduce(matmul, [g]*degree)
+#        print(g.shape)
+
+    if 0:
+        I = Qu((2, 2), 'ud', [[1, 0], [0, 1]])
+        X = Qu((2, 2), 'ud', [[0, 1], [1, 0]])
+        Z = Qu((2, 2), 'ud', [[1, 0], [0, -1]])
+
+        # which Y to use?
+        #Y = Qu((2, 2), 'ud', [[0, 1.j], [-1.j, 0]]) 
+        Y = X*Z
+        
+        P = op.evaluate({"I":I, "X":X, "Z":Z, "Y":Y})
+        #print(P.shape)
+        #P /= len(G)
+    
+        degree = op.grade
+    
+        if argv.show:
+            print(op)
+
+        GT = []
+        count = 0
+        for g in G:
+            op = reduce(matmul, [g]*degree)
 
 
 def main():
