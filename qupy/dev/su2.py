@@ -38,6 +38,63 @@ def cyclotomic(n):
     return numpy.exp(2*numpy.pi*1.j/n)
 
 
+
+class Group(object):
+    def __init__(self, gen, names=None, **kw):
+        if names is None:
+            names = "ABCDEFGHIJKLMNPQRSTUVWXYZ"[:len(gen)]
+        assert len(gen)==len(names)
+        G, words = mulclose_names(gen, names, **kw)
+        self.G = G
+        self.words = words
+        self.identity = None
+        self.inv = None
+
+    def build(self):
+        if self.identity is not None:
+            return
+        G = self.G
+        n = len(G)
+    
+        # group identity
+        identity = None
+        for i in range(n):
+            for j in range(i+1, n):
+                g = G[i]*G[j]
+                k = G.index(g)
+                if k==i:
+                    assert identity is None or identity==j
+                    identity = j
+                    break
+    
+        # group _inverse
+        inv = [None]*len(G)
+        for i, g in enumerate(G):
+            if inv[i] is not None:
+                continue
+            for j, h in enumerate(G):
+                gh = g*h
+                k = G.index(gh)
+                if k==identity:
+                    assert inv[i] is None or inv[i]==j
+                    inv[i] = j
+                    inv[j] = i
+                    break
+
+        self.identity = identity
+        self.inv = inv
+
+    def index(self, g):
+        return self.G.index(g)
+
+    def __getitem__(self, idx):
+        return self.G[idx]
+
+    def __len__(self):
+        return len(self.G)
+
+
+
 def build():
 
     global Octa, Tetra, Icosa, Sym2, Sym3, Pauli, RealPauli, RealCliff, Cliff
@@ -50,7 +107,7 @@ def build():
     ]
     gen = [Qu((2, 2), 'ud', v) for v in gen]
 
-    Sym2 = mulclose(gen)
+    Sym2 = Group(gen, "a")
     assert len(Sym2)==2
 
 
@@ -63,7 +120,7 @@ def build():
     ]
     gen = [Qu((2, 2), 'ud', v) for v in gen]
 
-    Sym3, words = mulclose_names(gen, "ab")
+    Sym3 = Group(gen, "ab")
     assert len(Sym3)==6
 
     # ----------------------------------
@@ -75,7 +132,7 @@ def build():
     ]
     gen = [Qu((2, 2), 'ud', v) for v in gen]
 
-    RealPauli, words = mulclose_names(gen, 'XZ')
+    RealPauli = Group(gen, 'XZ')
     assert len(RealPauli)==8
 
     # ----------------------------------
@@ -88,7 +145,7 @@ def build():
     ]
     gen = [Qu((2, 2), 'ud', v) for v in gen]
 
-    RealCliff, words = mulclose_names(gen, "XZH") # 
+    RealCliff = Group(gen, "ZH") # 
     assert len(RealCliff)==16 # D_16
 
     # ----------------------------------
@@ -107,7 +164,7 @@ def build():
     assert Z == S*S
     assert X == H*Z*H
 
-    Cliff, words = mulclose_names(gen, "XZSH") # Is this the correct name?
+    Cliff = Group(gen, "XZSH") # Is this the correct name?
     assert len(Cliff)==192
 
     # ----------------------------------
@@ -120,7 +177,7 @@ def build():
     ]
     gen = [Qu((2, 2), 'ud', v) for v in gen]
 
-    Pauli, words = mulclose_names(gen, "XZY")
+    Pauli = Group(gen, "XZY")
     assert len(Pauli)==16
 
     # ----------------------------------
@@ -138,9 +195,9 @@ def build():
     gen = [Qu((2, 2), 'ud', v) for v in gen]
     octa_gen = gen
 
-    Octa, words = mulclose_names(gen, "AB")
+    Octa = Group(gen, "AB")
     assert len(Octa)==48
-    #print("Octa:", words.values())
+    #print("Octa:", Octa.words.values())
 
     # Octa is a subgroup of Cliff:
     for g in octa_gen:
@@ -158,11 +215,11 @@ def build():
 
     gen = [Qu((2, 2), 'ud', v) for v in gen]
 
-    Tetra, words = mulclose_names(gen, "CD")
+    Tetra = Group(gen, "CD")
     assert len(Tetra)==48 # whoops it must be another Octa ... 
     
-    Tetra = [g for g in Tetra if g in Octa]  # hack this
-    Tetra, words = mulclose_names(Tetra, [words[g] for g in Tetra])
+    gen = [g for g in Tetra if g in Octa]  # hack this
+    Tetra = Group(gen, [Tetra.words[g] for g in gen])
     #print("Tetra:", words.values())
     assert len(Tetra)==24 # _works!
 
@@ -181,7 +238,7 @@ def build():
     
     gen = [Qu((2, 2), 'ud', v) for v in gen]
 
-    Icosa, words = mulclose_names(gen, "EFG")
+    Icosa = Group(gen, "EFG")
     #print("Icosa:", words.values())
     assert len(Icosa)==120
 
@@ -397,6 +454,7 @@ class Tensor(object):
         self.grade = grade
         self.algebra = algebra
         self.keys = list(self.coefs.keys()) # cache this
+        self.items = list(self.coefs.items()) # cache this
 
     def get_zero(self):
         return Tensor({}, self.grade, self.algebra)
@@ -529,13 +587,20 @@ class Tensor(object):
         dim = algebra.dim
         n = self.grade
         coefs = {}
-        for idx, val in self.coefs.items():
-          for jdx, wal in other.coefs.items():
+        for idx, val in self.items:
+          if abs(val)<EPSILON:
+              continue
+          for jdx, wal in other.items:
             r = val*wal
             if abs(r)<EPSILON:
                 continue
-            tens_ops = [algebra.lookup[idx[i], jdx[i]] for i in range(n)]
-            _tensor_reduce(tens_ops, complex(r), coefs)
+            key = ()
+            for i in range(n):
+                op = algebra.lookup[idx[i], jdx[i]]
+                k = op.keys[0]
+                key = key + k
+                r *= op.coefs[k]
+            coefs[key] = coefs.get(key, 0.) + r
 
         A = Tensor(coefs, self.grade, algebra)
         return A
@@ -550,7 +615,7 @@ class Tensor(object):
         return A
         
 
-def _tensor_reduce(ops, r, coefs): # HOTSPOT
+def _tensor_reduce(ops, r, coefs):
     val = 1.
     key = ()
     for op in ops:
@@ -853,19 +918,19 @@ def build_external():
     #
 
     gen = [i, j, k]
-    Q8 = mulclose(gen)
+    Q8 = Group(gen)
     assert len(Q8)==8
 
     # ----------------------------------
     #
 
-    QT = mulclose([i, j, 0.5*(e+i-j+k)])
+    QT = Group([i, j, 0.5*(e+i-j+k)])
     assert len(QT)==24
 
     # ----------------------------------
     #
 
-    QO = mulclose([
+    QO = Group([
         (e+i)/sqrt(2), j, (e+i-j+k)/2.])
     assert len(QO)==48
 
@@ -873,7 +938,7 @@ def build_external():
     #
 
     z = (1+sqrt(5))/2.
-    QI = mulclose([
+    QI = Group([
         j, (e+i+j+k)/2., (z*e + (1./z)*i + j)/2.], maxsize=200)
     assert len(QI)==120
 
@@ -899,7 +964,7 @@ def build_external():
         [0, 0, 1, 0]])
 
     gen = [Qu((4, 4), 'ud', g) for g in [s1, s2, s3]]
-    Sym44 = mulclose(gen)
+    Sym44 = Group(gen)
     
     # ----------------------------------
     #
@@ -911,7 +976,7 @@ def build_external():
 
     gen = [Qu((4, 4), 'ud', v) for v in gen]
 
-    Sym54 = mulclose(gen)
+    Sym54 = Group(gen)
     assert len(Sym54)==24*5
 
     # ----------------------------------
@@ -925,7 +990,7 @@ def build_external():
 
     H = Qu((4, 4), 'ud', H)
 
-    H4 = mulclose([H])
+    H4 = Group([H])
     assert len(H4) == 2
 
 
@@ -1376,38 +1441,19 @@ def test_internal():
     
     G = eval(argv.get("G2", "Tetra")) # the "internal" group
     n = len(G)
-
-    # group identity
-    identity = None
-    for i in range(n):
-        for j in range(i+1, n):
-            g = G[i]*G[j]
-            k = G.index(g)
-            if k==i:
-                assert identity is None or identity==j
-                identity = j
-
-    # group _inverse
-    inv = [None]*len(G)
-    for i, g in enumerate(G):
-        for j, h in enumerate(G):
-            gh = g*h
-            k = G.index(gh)
-            if k==identity:
-                assert inv[i] is None or inv[i]==j
-                inv[i] = j
+    G.build()
 
     # express each g as a sum of pauli's
-    G = [g for g in promote(pauli, G)]
+    GP = [g for g in promote(pauli, G)]
 
     # transverse operators
     print("transverse operators")
-    TG = [reduce(matmul, [g]*degree) for g in G]
+    TG = [reduce(matmul, [g]*degree) for g in GP]
 
     print("averaging over group")
     Q = P.get_zero()
     for i in range(n):
-        Q = Q + TG[inv[i]] * P * TG[i]
+        Q = Q + TG[G.inv[i]] * P * TG[i]
         write(".")
     print()
 
@@ -1416,7 +1462,7 @@ def test_internal():
 
     if argv.check:
         for i in range(n):
-            Q1 = TG[inv[i]] * Q * TG[i]
+            Q1 = TG[G.inv[i]] * Q * TG[i]
             assert Q1 == Q
 
 
@@ -1439,34 +1485,15 @@ def test_internal_series():
 
     G = eval(argv.get("G2", "Tetra")) # the "internal" group
     n = len(G)
-
-    # group identity
-    identity = None
-    for i in range(n):
-        for j in range(i+1, n):
-            g = G[i]*G[j]
-            k = G.index(g)
-            if k==i:
-                assert identity is None or identity==j
-                identity = j
-
-    # group _inverse
-    inv = [None]*len(G)
-    for i, g in enumerate(G):
-        for j, h in enumerate(G):
-            gh = g*h
-            k = G.index(gh)
-            if k==identity:
-                assert inv[i] is None or inv[i]==j
-                inv[i] = j
+    G.build()
 
     # express each g as a sum of pauli's
-    G = [g for g in promote(pauli, G)]
+    PG = [g for g in promote(pauli, G)]
 
     # transverse operators
     print("transverse operators")
     degree = argv.get("degree", 2)
-    TG = [reduce(matmul, [g]*degree) for g in G]
+    TG = [reduce(matmul, [g]*degree) for g in PG]
 
     found = []
     for op in cross(([I, X, Z, Y],)*degree):
@@ -1474,7 +1501,7 @@ def test_internal_series():
 
         Q = P.get_zero()
         for i in range(n):
-            Q = Q + TG[inv[i]] * P * TG[i]
+            Q = Q + TG[G.inv[i]] * P * TG[i]
 
         if Q==Q.get_zero():
             continue
