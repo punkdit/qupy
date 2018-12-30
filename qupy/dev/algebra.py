@@ -70,6 +70,8 @@ class Algebra(object):
         op = Tensor({}, grade, self)
         return op
 
+    def construct(self, cs):
+        return Tensor(cs, algebra=self)
 
 
 def build_algebra(names, rel):

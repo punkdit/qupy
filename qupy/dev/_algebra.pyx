@@ -1,3 +1,4 @@
+# cython: profile=False
 
 from cpython.object cimport Py_EQ, Py_NE
 
@@ -30,15 +31,25 @@ cdef class Algebra:
             basis.append(op)
         self.basis = basis
 
+#        lookup = {}
+#        for i in range(dim):
+#          for j in range(dim):
+#            op = Tensor(self)
+#            for k in range(dim):
+#                val = coefs.get((i, j, k), ZERO)
+#                if abs(val)>EPSILON:
+#                    op[(k,)] = val
+#            lookup[i, j] = op
+#        self.lookup = lookup
+
         lookup = {}
         for i in range(dim):
           for j in range(dim):
-            op = Tensor(self)
             for k in range(dim):
-                val = coefs.get((i, j, k), ZERO)
-                if abs(val)>EPSILON:
-                    op[(k,)] = val
-            lookup[i, j] = op
+                val = coefs.get((i, j, k))
+                if val is not None:
+                    assert lookup.get((i, j)) is None
+                    lookup[i, j] = (k, val)
         self.lookup = lookup
 
     def parse(self, desc):
@@ -55,6 +66,12 @@ cdef class Algebra:
 
     def get_zero(self, grade):
         op = Tensor(self)
+        return op
+
+    def construct(self, cs):
+        op = Tensor(self)
+        for (k, v) in cs.items():
+            op[k] = v
         return op
 
 
@@ -158,7 +175,7 @@ cdef class Tensor:
         self._values = None
         self._items = None
 
-    cdef object get_keys(Tensor self):
+    cpdef object get_keys(Tensor self):
         cdef Tensor child
         cdef int i
         if self._keys is not None:
@@ -302,8 +319,10 @@ cdef class Tensor:
         items = self.get_items()
         jtems = other.get_items()
 
-        n = self.grade
+        cdef int n = self.grade
+        cdef int i
 
+        key = [None]*n
         for (idx, val) in items:
           if abs(val)<EPSILON:
               continue
@@ -311,14 +330,18 @@ cdef class Tensor:
             if abs(wal)<EPSILON:
                 continue
             r = val*wal
-            #key = ()
-            key = []
+
+#            for i in range(n):
+#                op1 = self.algebra.lookup[idx[i], jdx[i]]
+#                k1, v1 = op1.get_items()[0]
+#                key[i] = k1[0]
+#                r *= v1
+
             for i in range(n):
-                op1 = self.algebra.lookup[idx[i], jdx[i]]
-                k1, v1 = op1.get_items()[0]
-                #key = key + k1
-                key.append(k1[0])
+                (k1, v1) = self.algebra.lookup[idx[i], jdx[i]]
+                key[i] = k1
                 r *= v1
+
             op.iadditem(key, r)
 
         return op
@@ -372,9 +395,6 @@ def build_algebra(names, rel):
         assert coefs.get((i, j, k)) is None
         coefs[i, j, k] = val 
 
-    #A = numpy.zeros((dim, dim, dim), dtype=scalar.dtype)
-    #for key, value in coefs.items():
-    #    A[key] = value
     algebra = Algebra(dim, names, coefs)
     return algebra
 

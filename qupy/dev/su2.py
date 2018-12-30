@@ -406,13 +406,14 @@ def row_reduce(A, truncate=False, inplace=False, check=False, verbose=False):
     return A
 
 
-def linear_independent(ops, **kw):
+def linear_independent(ops, construct=None):
     "ops: list of Tensor's or list of Poly's"
     assert len(ops) 
     keys = set()
     for op in ops:
         keys.update(op.get_keys())
-        cls = op.__class__ # Poly or Tensor
+        if construct is None:
+            construct = op.__class__ # Poly or Tensor
     keys = list(keys)
     keys.sort()
     #print("keys:", keys)
@@ -438,7 +439,7 @@ def linear_independent(ops, **kw):
             if abs(B[i, j])>EPSILON:
                 cs[key] = B[i, j]
         assert len(cs)
-        op = cls(cs, **kw)
+        op = construct(cs)
         _ops.append(op)
     return _ops
 
@@ -1192,6 +1193,23 @@ def test_internal():
             assert Q1 == Q
 
 
+def test_molien():
+
+    r"""
+    """
+
+    G = eval(argv.get("G2", "Tetra")) # the "internal" group
+    n = len(G)
+    #G.build()
+
+    for g in G:
+        r = g.trace()
+        print(fstr(r), end=" ")
+    print()
+
+
+
+
 def test_internal_series():
 
     r"""
@@ -1238,7 +1256,7 @@ def test_internal_series():
     print("found ops:", len(found))
     if not found:
         return
-    found = linear_independent(found, algebra=pauli)
+    found = linear_independent(found, pauli.construct)
     print("dimension:", len(found))
 
 
