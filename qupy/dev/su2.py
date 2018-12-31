@@ -758,14 +758,26 @@ class StabilizerCode(object):
           for h in ops:
             assert g*h == h*g , "%s %s"%(g, h)
         self.ops = list(ops)
+        self._P = None
 
     def get_projector(self):
+        " Build projector onto codespace "
+        if self._P is not None:
+            return self._P
         G = mulclose(self.ops, verbose=False)
         #print("get_projector:", len(G))
-        # build projector onto codespace
         #P = (1./len(G))*reduce(add, G)
         P = reduce(add, G)
+        self._P = P
         return P
+
+    def __eq__(self, other):
+        return self.get_projector() == other.get_projector()
+
+    def __ne__(self, other):
+        return self.get_projector() != other.get_projector()
+
+
 
 
 
@@ -999,6 +1011,44 @@ def random_code(pauli, degree=4):
 #    print(P)
 
     return P
+
+
+def test_gen_codes():
+    pauli = build_algebra("IXZY",
+        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    I = pauli.I
+    X = pauli.X
+    Z = pauli.Z
+    Y = pauli.Y
+
+    n = argv.get("n", 4)
+    m = argv.get("m", 2)
+    items = [I, X, Z, Y]
+
+    found = set()
+    ops = []
+    zero = pauli.get_zero(n)
+    for gen in cross((items,)*n*m):
+        rows = []
+        for i in range(m):
+            row = gen[n*i : n*(i+1)]
+            assert len(row)==n
+            row = reduce(matmul, row)
+            rows.append(row)
+        G = mulclose(rows)
+        if len(G)!=2**m:
+            continue
+        op = reduce(add, G)
+        if op == zero:
+            continue
+        s = str(op)
+        if s not in found:
+            found.add(s)
+            ops.append(op)
+            #print(s)
+
+    print(len(ops))
 
 
 def test_code2():
