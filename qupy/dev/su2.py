@@ -1024,19 +1024,27 @@ def test_gen_codes():
 
     n = argv.get("n", 4)
     m = argv.get("m", 2)
-    items = [I, X, Z, Y]
+    items = [I, X, Z, 1.j*Y]
+
+    gens = list(cross((items,)*n))
+    gens = [reduce(matmul, op) for op in gens]
+    g = gens[0]
+    assert g*g==g # identity
+    gens.pop(0)
+    N = len(gens)
+    print("gens:", len(gens))
 
     found = set()
     ops = []
     zero = pauli.get_zero(n)
-    for gen in cross((items,)*n*m):
-        rows = []
-        for i in range(m):
-            row = gen[n*i : n*(i+1)]
-            assert len(row)==n
-            row = reduce(matmul, row)
-            rows.append(row)
-        G = mulclose(rows)
+
+    if m==0:
+        pass
+
+    if m==1:
+      for i in range(N):
+        ii = gens[i]
+        G = mulclose([ii])
         if len(G)!=2**m:
             continue
         op = reduce(add, G)
@@ -1044,9 +1052,55 @@ def test_gen_codes():
             continue
         s = str(op)
         if s not in found:
+            #print(s)
             found.add(s)
             ops.append(op)
-            #print(s)
+
+    elif m==2:
+      for i in range(N):
+        ii = gens[i]
+        for j in range(i+1, N):
+          jj = gens[j]
+          if ii*jj != jj*ii:
+              continue
+          rows = [ii, jj]
+          G = mulclose(rows)
+          if len(G)!=2**m:
+              continue
+          op = reduce(add, G)
+          if op == zero:
+              continue
+          s = str(op)
+          if s not in found:
+              found.add(s)
+              ops.append(op)
+
+    elif m==3:
+
+     for i in range(N):
+      print("i =", i)
+      ii = gens[i]
+      for j in range(i+1, N):
+        jj = gens[j]
+        if ii*jj != jj*ii:
+            continue
+        for k in range(j+1, N):
+            kk = gens[k]
+            if ii*kk != kk*ii:
+                continue
+            if jj*kk != kk*jj:
+                continue
+            rows = [ii, jj, kk]
+            G = mulclose(rows)
+            if len(G)!=2**m:
+                continue
+            op = reduce(add, G)
+            if op == zero:
+                continue
+            s = str(op)
+            if s not in found:
+                found.add(s)
+                ops.append(op)
 
     print(len(ops))
 
