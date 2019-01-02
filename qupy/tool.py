@@ -46,3 +46,22 @@ def cross(itemss):
             for tail in cross(itemss[1:]):
                 yield (head,)+tail
 
+
+def cross_upper(items, n):
+
+    if n<=0:
+        yield ()
+    elif n==1:
+        for item in items:
+            yield (item,)
+    elif n==2:
+        N = len(items)
+        for i in range(N):
+          for j in range(i+1, N):
+            yield (items[i], items[j])
+    else:
+        for i, item in enumerate(items):
+            for tail in cross_upper(items[i+1:], n-1):
+                yield (items[i],)+tail
+
+
