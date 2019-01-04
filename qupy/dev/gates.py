@@ -109,7 +109,7 @@ def test():
     code = StabilizerCode("XXXXIII XXIIXXI XIXIXIX ZZZZIII ZZIIZZI ZIZIZIZ")
     P = code.get_projector()
 
-    for s in 'XZSHT':
+    for s in 'XZSH':
         s = s*code.n
         A = parse(s)
         assert A*P == P*A
