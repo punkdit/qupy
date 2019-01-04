@@ -1306,10 +1306,24 @@ def test_molien():
     n = len(G)
     #G.build()
 
+    degree = argv.get("degree", 10)
+    series = [0.]*(degree+1)
+
     for g in G:
         r = g.trace()
-        print(fstr(r), end=" ")
-    print()
+        #assert abs(r-round(r.real)) < EPSILON, r
+        #r = int(round(r.real))
+        #assert abs(r-r.real) < EPSILON, r
+        #r = r.real
+
+        for i in range(degree+1):
+            # p = 1/(1-r*t)
+            val = r**i
+            series[i] += val
+    #assert abs(sum(s%n for s in series))<EPSILON
+    series = [s/n for s in series]
+    #print(series)
+    print(' '.join([fstr(s) for s in series]))
 
 
 
@@ -1335,6 +1349,8 @@ def test_internal_series():
     n = len(G)
     G.build()
 
+    print("|G2| =", len(G))
+
     # express each g as a sum of pauli's
     PG = [g for g in promote(pauli, G)]
 
@@ -1356,6 +1372,134 @@ def test_internal_series():
         print(P)
         print(Q)
         found.append(Q)
+
+    print("found ops:", len(found))
+    if not found:
+        return
+    found = linear_independent(found, pauli.construct)
+    print("dimension:", len(found))
+
+
+def allperms_FAIL(n):
+    assert n>0
+    if n==1:
+        yield (0,)
+    elif n==2:
+        yield (0, 1)
+        yield (1, 0)
+    elif n==3:
+        yield (0, 1, 2)
+        yield (1, 0, 2)
+        yield (0, 2, 1)
+        yield (1, 2, 0)
+        yield (2, 0, 1)
+        yield (2, 1, 0)
+    else:
+        for i in range(n):
+            for rest in allperms(items[:i] + items[i+1:]):
+                yield (items[i],) + rest
+
+
+def allperms(items):
+    items = tuple(items)
+    if len(items)<=1:
+        yield items
+        return
+    n = len(items)
+    for i in range(n):
+        for rest in allperms(items[:i] + items[i+1:]):
+            yield (items[i],) + rest
+
+
+def to_dense(op):
+    I = Qu((2, 2), 'ud', [[1, 0], [0, 1]])
+    X = Qu((2, 2), 'ud', [[0, 1], [1, 0]])
+    Z = Qu((2, 2), 'ud', [[1, 0], [0, -1]])
+
+    # which Y to use?
+    #Y = Qu((2, 2), 'ud', [[0, 1.j], [-1.j, 0]]) 
+    Y = X*Z
+
+    op = op.subs({"I":I, "X":X, "Z":Z, "Y":Y})
+    return op
+
+        
+def test_internal_series_fast():
+
+    r"""
+        The internal group acts as P \mapsto g^{-1} P g.
+        Average over this action to build invariant operators.
+        Take as input a codespace projector.
+        The average is not always a projector.
+        Make it faster by using the action of the symmetric group
+        on the tensor factors.
+    """
+
+    def show_spec(P):
+        items = P.eigs()
+        for val, vec in items:
+            print(fstr(val), end=" ")
+        print()
+
+    pauli = build_algebra("IXZY",
+        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    I = pauli.I
+    X = pauli.X
+    Z = pauli.Z
+    Y = pauli.Y
+
+    G = eval(argv.get("G2", "Tetra")) # the "internal" group
+    n = len(G)
+    G.build()
+
+    print("|G2| =", len(G))
+
+    # express each g as a sum of pauli's
+    PG = [g for g in promote(pauli, G)]
+
+    # transverse operators
+    print("transverse operators")
+    degree = argv.get("degree", 2)
+    TG = [reduce(matmul, [g]*degree) for g in PG]
+
+    found = []
+    opis = set(cross(([0, 1, 2, 3],)*degree))
+    print("opis:", len(opis))
+
+    perms = list(allperms(list(range(degree))))
+
+    while opis:
+        opi = iter(opis).__next__()
+
+        op = [[I, X, Z, Y][i] for i in opi]
+        P = reduce(matmul, op)
+
+        Q = P.get_zero()
+        for i in range(n):
+            Q = Q + TG[G.inv[i]] * P * TG[i]
+
+        if Q==Q.get_zero():
+            for perm in perms:
+                opj = tuple(opi[perm[i]] for i in range(degree))
+                if opj in opis:
+                    opis.remove(opj)
+            continue
+
+        
+        for perm in perms:
+            opj = tuple(opi[perm[i]] for i in range(degree))
+            if opj not in opis:
+                continue
+            _P = P.permute(perm)
+            _Q = Q.permute(perm)
+            print("%s: %s" %(_P, _Q))
+            found.append(_Q)
+            opis.remove(opj)
+
+        if argv.show_spec:
+            A = to_dense(Q)
+            show_spec(A)
 
     print("found ops:", len(found))
     if not found:

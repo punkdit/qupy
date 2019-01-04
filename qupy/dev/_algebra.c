@@ -1020,6 +1020,7 @@ static char __pyx_k_rmul[] = "rmul";
 static char __pyx_k_send[] = "send";
 static char __pyx_k_sort[] = "sort";
 static char __pyx_k_test[] = "__test__";
+static char __pyx_k_zero[] = "zero";
 static char __pyx_k_close[] = "close";
 static char __pyx_k_coefs[] = "coefs";
 static char __pyx_k_grade[] = "grade";
@@ -1034,6 +1035,7 @@ static char __pyx_k_value[] = "value";
 static char __pyx_k_append[] = "append";
 static char __pyx_k_import[] = "__import__";
 static char __pyx_k_matmul[] = "__matmul__";
+static char __pyx_k_rename[] = "rename";
 static char __pyx_k_algebra[] = "algebra";
 static char __pyx_k_genexpr[] = "genexpr";
 static char __pyx_k_imatmul[] = "__imatmul__";
@@ -1105,6 +1107,7 @@ static PyObject *__pyx_n_s_qupy_dev__algebra;
 static PyObject *__pyx_n_s_qupy_tool;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_rel;
+static PyObject *__pyx_n_s_rename;
 static PyObject *__pyx_n_s_replace;
 static PyObject *__pyx_n_s_rhs;
 static PyObject *__pyx_n_s_rmatmul;
@@ -1119,6 +1122,7 @@ static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_throw;
 static PyObject *__pyx_n_s_val;
 static PyObject *__pyx_n_s_value;
+static PyObject *__pyx_n_s_zero;
 static int __pyx_pf_4qupy_3dev_8_algebra_7Algebra___init__(struct __pyx_obj_4qupy_3dev_8_algebra_Algebra *__pyx_v_self, int __pyx_v_dim, PyObject *__pyx_v_names, PyObject *__pyx_v_coefs); /* proto */
 static PyObject *__pyx_pf_4qupy_3dev_8_algebra_7Algebra_5parse_genexpr(PyObject *__pyx_self); /* proto */
 static PyObject *__pyx_pf_4qupy_3dev_8_algebra_7Algebra_2parse(struct __pyx_obj_4qupy_3dev_8_algebra_Algebra *__pyx_v_self, PyObject *__pyx_v_desc); /* proto */
@@ -1159,14 +1163,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_28eq(struct __pyx_obj_4qu
 static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_30ne(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, PyObject *__pyx_v_other); /* proto */
 static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_32__richcmp__(PyObject *__pyx_v_self, PyObject *__pyx_v_other, int __pyx_v_idx); /* proto */
 static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__add__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_other); /* proto */
-static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, PyObject *__pyx_v_r); /* proto */
-static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36permute(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, PyObject *__pyx_v_perm); /* proto */
+static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38__sub__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40rmul(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, PyObject *__pyx_v_r); /* proto */
+static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__neg__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self); /* proto */
 #if PY_VERSION_HEX >= 0x03050000
-static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_other); /* proto */
+static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__matmul__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_other); /* proto */
 #endif
-static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx_v__self, PyObject *__pyx_v__other); /* proto */
-static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, PyObject *__pyx_v_rename); /* proto */
+static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__mul__(PyObject *__pyx_v__self, PyObject *__pyx_v__other); /* proto */
+static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48subs(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, PyObject *__pyx_v_rename, CYTHON_UNUSED PyObject *__pyx_v_zero); /* proto */
 static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_7algebra___get__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self); /* proto */
 static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor_7algebra_2__set__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor_7algebra_4__del__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self); /* proto */
@@ -7217,7 +7222,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__add__(struct __pyx_ob
  *             op.iadditem(k, v)
  *         return op             # <<<<<<<<<<<<<<
  * 
- *     def __sub__(Tensor self, Tensor other):
+ *     def permute(Tensor self, perm):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_op));
@@ -7253,23 +7258,299 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__add__(struct __pyx_ob
 /* "qupy/dev/_algebra.pyx":279
  *         return op
  * 
+ *     def permute(Tensor self, perm):             # <<<<<<<<<<<<<<
+ *         cdef Tensor op
+ *         cdef int i
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_37permute(PyObject *__pyx_v_self, PyObject *__pyx_v_perm); /*proto*/
+static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_37permute(PyObject *__pyx_v_self, PyObject *__pyx_v_perm) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("permute (wrapper)", 0);
+  __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_36permute(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self), ((PyObject *)__pyx_v_perm));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36permute(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, PyObject *__pyx_v_perm) {
+  struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_op = 0;
+  int __pyx_v_i;
+  PyObject *__pyx_v_k = NULL;
+  PyObject *__pyx_v_v = NULL;
+  PyObject *__pyx_v__k = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  Py_ssize_t __pyx_t_3;
+  PyObject *(*__pyx_t_4)(PyObject *);
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  PyObject *(*__pyx_t_8)(PyObject *);
+  Py_ssize_t __pyx_t_9;
+  int __pyx_t_10;
+  int __pyx_t_11;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("permute", 0);
+
+  /* "qupy/dev/_algebra.pyx":282
+ *         cdef Tensor op
+ *         cdef int i
+ *         op = Tensor(self.algebra)             # <<<<<<<<<<<<<<
+ *         for (k, v) in self.get_items():
+ *             _k = []
+ */
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_INCREF(((PyObject *)__pyx_v_self->algebra));
+  __Pyx_GIVEREF(((PyObject *)__pyx_v_self->algebra));
+  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self->algebra));
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_op = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_2);
+  __pyx_t_2 = 0;
+
+  /* "qupy/dev/_algebra.pyx":283
+ *         cdef int i
+ *         op = Tensor(self.algebra)
+ *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
+ *             _k = []
+ *             for i in range(len(k)):
+ */
+  __pyx_t_2 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
+    __pyx_t_1 = __pyx_t_2; __Pyx_INCREF(__pyx_t_1); __pyx_t_3 = 0;
+    __pyx_t_4 = NULL;
+  } else {
+    __pyx_t_3 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_4 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  for (;;) {
+    if (likely(!__pyx_t_4)) {
+      if (likely(PyList_CheckExact(__pyx_t_1))) {
+        if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_1)) break;
+        #if CYTHON_COMPILING_IN_CPYTHON
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #else
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_2);
+        #endif
+      } else {
+        if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+        #if CYTHON_COMPILING_IN_CPYTHON
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #else
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_2);
+        #endif
+      }
+    } else {
+      __pyx_t_2 = __pyx_t_4(__pyx_t_1);
+      if (unlikely(!__pyx_t_2)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_2);
+    }
+    if ((likely(PyTuple_CheckExact(__pyx_t_2))) || (PyList_CheckExact(__pyx_t_2))) {
+      PyObject* sequence = __pyx_t_2;
+      #if CYTHON_COMPILING_IN_CPYTHON
+      Py_ssize_t size = Py_SIZE(sequence);
+      #else
+      Py_ssize_t size = PySequence_Size(sequence);
+      #endif
+      if (unlikely(size != 2)) {
+        if (size > 2) __Pyx_RaiseTooManyValuesError(2);
+        else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
+      #if CYTHON_COMPILING_IN_CPYTHON
+      if (likely(PyTuple_CheckExact(sequence))) {
+        __pyx_t_5 = PyTuple_GET_ITEM(sequence, 0); 
+        __pyx_t_6 = PyTuple_GET_ITEM(sequence, 1); 
+      } else {
+        __pyx_t_5 = PyList_GET_ITEM(sequence, 0); 
+        __pyx_t_6 = PyList_GET_ITEM(sequence, 1); 
+      }
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_6);
+      #else
+      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_5);
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_6);
+      #endif
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    } else {
+      Py_ssize_t index = -1;
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_7);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
+      index = 0; __pyx_t_5 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_5)) goto __pyx_L5_unpacking_failed;
+      __Pyx_GOTREF(__pyx_t_5);
+      index = 1; __pyx_t_6 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L5_unpacking_failed;
+      __Pyx_GOTREF(__pyx_t_6);
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = NULL;
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      goto __pyx_L6_unpacking_done;
+      __pyx_L5_unpacking_failed:;
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = NULL;
+      if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_L6_unpacking_done:;
+    }
+    __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_5);
+    __pyx_t_5 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_6);
+    __pyx_t_6 = 0;
+
+    /* "qupy/dev/_algebra.pyx":284
+ *         op = Tensor(self.algebra)
+ *         for (k, v) in self.get_items():
+ *             _k = []             # <<<<<<<<<<<<<<
+ *             for i in range(len(k)):
+ *                 _k.append(k[perm[i]])
+ */
+    __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_XDECREF_SET(__pyx_v__k, __pyx_t_2);
+    __pyx_t_2 = 0;
+
+    /* "qupy/dev/_algebra.pyx":285
+ *         for (k, v) in self.get_items():
+ *             _k = []
+ *             for i in range(len(k)):             # <<<<<<<<<<<<<<
+ *                 _k.append(k[perm[i]])
+ *             _k = tuple(_k)
+ */
+    __pyx_t_9 = PyObject_Length(__pyx_v_k); if (unlikely(__pyx_t_9 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
+      __pyx_v_i = __pyx_t_10;
+
+      /* "qupy/dev/_algebra.pyx":286
+ *             _k = []
+ *             for i in range(len(k)):
+ *                 _k.append(k[perm[i]])             # <<<<<<<<<<<<<<
+ *             _k = tuple(_k)
+ *             op[_k] = v
+ */
+      __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_perm, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_2 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_6 = PyObject_GetItem(__pyx_v_k, __pyx_t_2); if (unlikely(__pyx_t_6 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_11 = __Pyx_PyObject_Append(__pyx_v__k, __pyx_t_6); if (unlikely(__pyx_t_11 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    }
+
+    /* "qupy/dev/_algebra.pyx":287
+ *             for i in range(len(k)):
+ *                 _k.append(k[perm[i]])
+ *             _k = tuple(_k)             # <<<<<<<<<<<<<<
+ *             op[_k] = v
+ *         return op
+ */
+    __pyx_t_6 = PySequence_Tuple(__pyx_v__k); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 287; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF_SET(__pyx_v__k, __pyx_t_6);
+    __pyx_t_6 = 0;
+
+    /* "qupy/dev/_algebra.pyx":288
+ *                 _k.append(k[perm[i]])
+ *             _k = tuple(_k)
+ *             op[_k] = v             # <<<<<<<<<<<<<<
+ *         return op
+ * 
+ */
+    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v__k, __pyx_v_v) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+    /* "qupy/dev/_algebra.pyx":283
+ *         cdef int i
+ *         op = Tensor(self.algebra)
+ *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
+ *             _k = []
+ *             for i in range(len(k)):
+ */
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "qupy/dev/_algebra.pyx":289
+ *             _k = tuple(_k)
+ *             op[_k] = v
+ *         return op             # <<<<<<<<<<<<<<
+ * 
+ *     def __sub__(Tensor self, Tensor other):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(((PyObject *)__pyx_v_op));
+  __pyx_r = ((PyObject *)__pyx_v_op);
+  goto __pyx_L0;
+
+  /* "qupy/dev/_algebra.pyx":279
+ *         return op
+ * 
+ *     def permute(Tensor self, perm):             # <<<<<<<<<<<<<<
+ *         cdef Tensor op
+ *         cdef int i
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_AddTraceback("qupy.dev._algebra.Tensor.permute", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF((PyObject *)__pyx_v_op);
+  __Pyx_XDECREF(__pyx_v_k);
+  __Pyx_XDECREF(__pyx_v_v);
+  __Pyx_XDECREF(__pyx_v__k);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "qupy/dev/_algebra.pyx":291
+ *         return op
+ * 
  *     def __sub__(Tensor self, Tensor other):             # <<<<<<<<<<<<<<
  *         #assert self.grade == other.grade
  *         cdef Tensor op = self.copy()
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_37__sub__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_37__sub__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_39__sub__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_39__sub__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__sub__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self), ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_38__sub__(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self), ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other));
 
   /* function exit code */
   goto __pyx_L0;
@@ -7280,7 +7561,7 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_37__sub__(PyObject *__pyx
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_other) {
+static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38__sub__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_other) {
   struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_op = 0;
   PyObject *__pyx_v_k = NULL;
   PyObject *__pyx_v_v = NULL;
@@ -7301,14 +7582,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__sub__", 0);
 
-  /* "qupy/dev/_algebra.pyx":281
+  /* "qupy/dev/_algebra.pyx":293
  *     def __sub__(Tensor self, Tensor other):
  *         #assert self.grade == other.grade
  *         cdef Tensor op = self.copy()             # <<<<<<<<<<<<<<
  *         for (k, v) in other.get_items():
  *             op.iadditem(k, -v)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 293; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -7321,33 +7602,33 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 293; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 293; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 293; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_op = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":282
+  /* "qupy/dev/_algebra.pyx":294
  *         #assert self.grade == other.grade
  *         cdef Tensor op = self.copy()
  *         for (k, v) in other.get_items():             # <<<<<<<<<<<<<<
  *             op.iadditem(k, -v)
  *         return op
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other->__pyx_vtab)->get_items(__pyx_v_other); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other->__pyx_vtab)->get_items(__pyx_v_other); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -7355,17 +7636,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -7375,7 +7656,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
@@ -7391,7 +7672,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       #if CYTHON_COMPILING_IN_CPYTHON
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -7404,15 +7685,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
       __Pyx_INCREF(__pyx_t_3);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       #endif
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
@@ -7420,7 +7701,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
       __Pyx_GOTREF(__pyx_t_3);
       index = 1; __pyx_t_6 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_t_8 = NULL;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       goto __pyx_L6_unpacking_done;
@@ -7428,7 +7709,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_3);
@@ -7436,16 +7717,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
     __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":283
+    /* "qupy/dev/_algebra.pyx":295
  *         cdef Tensor op = self.copy()
  *         for (k, v) in other.get_items():
  *             op.iadditem(k, -v)             # <<<<<<<<<<<<<<
  *         return op
  * 
  */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_op), __pyx_n_s_iadditem); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_op), __pyx_n_s_iadditem); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_3 = PyNumber_Negative(__pyx_v_v); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = PyNumber_Negative(__pyx_v_v); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_7 = NULL;
     __pyx_t_9 = 0;
@@ -7459,7 +7740,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
         __pyx_t_9 = 1;
       }
     }
-    __pyx_t_10 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_10 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_10);
     if (__pyx_t_7) {
       __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_7); __pyx_t_7 = NULL;
@@ -7470,13 +7751,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_10, 1+__pyx_t_9, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_10, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_10, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":282
+    /* "qupy/dev/_algebra.pyx":294
  *         #assert self.grade == other.grade
  *         cdef Tensor op = self.copy()
  *         for (k, v) in other.get_items():             # <<<<<<<<<<<<<<
@@ -7486,7 +7767,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":284
+  /* "qupy/dev/_algebra.pyx":296
  *         for (k, v) in other.get_items():
  *             op.iadditem(k, -v)
  *         return op             # <<<<<<<<<<<<<<
@@ -7498,7 +7779,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
   __pyx_r = ((PyObject *)__pyx_v_op);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":279
+  /* "qupy/dev/_algebra.pyx":291
  *         return op
  * 
  *     def __sub__(Tensor self, Tensor other):             # <<<<<<<<<<<<<<
@@ -7525,7 +7806,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":286
+/* "qupy/dev/_algebra.pyx":298
  *         return op
  * 
  *     def rmul(Tensor self, r):             # <<<<<<<<<<<<<<
@@ -7534,19 +7815,19 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__sub__(struct __pyx_ob
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_39rmul(PyObject *__pyx_v_self, PyObject *__pyx_v_r); /*proto*/
-static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_39rmul(PyObject *__pyx_v_self, PyObject *__pyx_v_r) {
+static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_41rmul(PyObject *__pyx_v_self, PyObject *__pyx_v_r); /*proto*/
+static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_41rmul(PyObject *__pyx_v_self, PyObject *__pyx_v_r) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("rmul (wrapper)", 0);
-  __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self), ((PyObject *)__pyx_v_r));
+  __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_40rmul(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self), ((PyObject *)__pyx_v_r));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, PyObject *__pyx_v_r) {
+static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40rmul(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, PyObject *__pyx_v_r) {
   struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_op = 0;
   PyObject *__pyx_v_k = NULL;
   PyObject *__pyx_v_v = NULL;
@@ -7565,40 +7846,40 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(struct __pyx_obj_4
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("rmul", 0);
 
-  /* "qupy/dev/_algebra.pyx":287
+  /* "qupy/dev/_algebra.pyx":299
  * 
  *     def rmul(Tensor self, r):
  *         cdef Tensor op = Tensor(self.algebra)             # <<<<<<<<<<<<<<
  *         for (k, v) in self.get_items():
  *             op[k] = complex(r)*v
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 287; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self->algebra));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self->algebra));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self->algebra));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 287; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_op = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":288
+  /* "qupy/dev/_algebra.pyx":300
  *     def rmul(Tensor self, r):
  *         cdef Tensor op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
  *             op[k] = complex(r)*v
  *         return op
  */
-  __pyx_t_2 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
     __pyx_t_1 = __pyx_t_2; __Pyx_INCREF(__pyx_t_1); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   for (;;) {
@@ -7606,17 +7887,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(struct __pyx_obj_4
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       }
@@ -7626,7 +7907,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(struct __pyx_obj_4
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
@@ -7642,7 +7923,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(struct __pyx_obj_4
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       #if CYTHON_COMPILING_IN_CPYTHON
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -7655,15 +7936,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(struct __pyx_obj_4
       __Pyx_INCREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       #endif
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
@@ -7671,7 +7952,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(struct __pyx_obj_4
       __Pyx_GOTREF(__pyx_t_5);
       index = 1; __pyx_t_6 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_t_8 = NULL;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       goto __pyx_L6_unpacking_done;
@@ -7679,7 +7960,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(struct __pyx_obj_4
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_5);
@@ -7687,28 +7968,28 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(struct __pyx_obj_4
     __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":289
+    /* "qupy/dev/_algebra.pyx":301
  *         cdef Tensor op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():
  *             op[k] = complex(r)*v             # <<<<<<<<<<<<<<
  *         return op
  * 
  */
-    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_v_r);
     __Pyx_GIVEREF(__pyx_v_r);
     PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_r);
-    __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)(&PyComplex_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)(&PyComplex_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyNumber_Multiply(__pyx_t_6, __pyx_v_v); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = PyNumber_Multiply(__pyx_t_6, __pyx_v_v); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v_k, __pyx_t_2) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v_k, __pyx_t_2) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "qupy/dev/_algebra.pyx":288
+    /* "qupy/dev/_algebra.pyx":300
  *     def rmul(Tensor self, r):
  *         cdef Tensor op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
@@ -7718,7 +7999,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(struct __pyx_obj_4
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":290
+  /* "qupy/dev/_algebra.pyx":302
  *         for (k, v) in self.get_items():
  *             op[k] = complex(r)*v
  *         return op             # <<<<<<<<<<<<<<
@@ -7730,7 +8011,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(struct __pyx_obj_4
   __pyx_r = ((PyObject *)__pyx_v_op);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":286
+  /* "qupy/dev/_algebra.pyx":298
  *         return op
  * 
  *     def rmul(Tensor self, r):             # <<<<<<<<<<<<<<
@@ -7756,7 +8037,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(struct __pyx_obj_4
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":292
+/* "qupy/dev/_algebra.pyx":304
  *         return op
  * 
  *     def __neg__(Tensor self):             # <<<<<<<<<<<<<<
@@ -7765,19 +8046,19 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38rmul(struct __pyx_obj_4
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_41__neg__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_41__neg__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_43__neg__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_43__neg__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__neg__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self));
+  __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__neg__(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self) {
+static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__neg__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self) {
   struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_op = 0;
   PyObject *__pyx_v_k = NULL;
   PyObject *__pyx_v_v = NULL;
@@ -7796,40 +8077,40 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__neg__", 0);
 
-  /* "qupy/dev/_algebra.pyx":293
+  /* "qupy/dev/_algebra.pyx":305
  * 
  *     def __neg__(Tensor self):
  *         cdef Tensor op = Tensor(self.algebra)             # <<<<<<<<<<<<<<
  *         for (k, v) in self.get_items():
  *             op[k] = -v
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 293; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self->algebra));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self->algebra));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self->algebra));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 293; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_op = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":294
+  /* "qupy/dev/_algebra.pyx":306
  *     def __neg__(Tensor self):
  *         cdef Tensor op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
  *             op[k] = -v
  *         return op
  */
-  __pyx_t_2 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
     __pyx_t_1 = __pyx_t_2; __Pyx_INCREF(__pyx_t_1); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   for (;;) {
@@ -7837,17 +8118,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(struct __pyx_ob
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       }
@@ -7857,7 +8138,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(struct __pyx_ob
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
@@ -7873,7 +8154,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(struct __pyx_ob
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       #if CYTHON_COMPILING_IN_CPYTHON
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -7886,15 +8167,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(struct __pyx_ob
       __Pyx_INCREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       #endif
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
@@ -7902,7 +8183,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(struct __pyx_ob
       __Pyx_GOTREF(__pyx_t_5);
       index = 1; __pyx_t_6 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_t_8 = NULL;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       goto __pyx_L6_unpacking_done;
@@ -7910,7 +8191,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(struct __pyx_ob
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_5);
@@ -7918,19 +8199,19 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(struct __pyx_ob
     __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":295
+    /* "qupy/dev/_algebra.pyx":307
  *         cdef Tensor op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():
  *             op[k] = -v             # <<<<<<<<<<<<<<
  *         return op
  * 
  */
-    __pyx_t_2 = PyNumber_Negative(__pyx_v_v); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = PyNumber_Negative(__pyx_v_v); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v_k, __pyx_t_2) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v_k, __pyx_t_2) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "qupy/dev/_algebra.pyx":294
+    /* "qupy/dev/_algebra.pyx":306
  *     def __neg__(Tensor self):
  *         cdef Tensor op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
@@ -7940,7 +8221,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(struct __pyx_ob
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":296
+  /* "qupy/dev/_algebra.pyx":308
  *         for (k, v) in self.get_items():
  *             op[k] = -v
  *         return op             # <<<<<<<<<<<<<<
@@ -7952,7 +8233,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(struct __pyx_ob
   __pyx_r = ((PyObject *)__pyx_v_op);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":292
+  /* "qupy/dev/_algebra.pyx":304
  *         return op
  * 
  *     def __neg__(Tensor self):             # <<<<<<<<<<<<<<
@@ -7978,7 +8259,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":298
+/* "qupy/dev/_algebra.pyx":310
  *         return op
  * 
  *     def __matmul__(Tensor self, Tensor other):             # <<<<<<<<<<<<<<
@@ -7988,17 +8269,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__neg__(struct __pyx_ob
 
 /* Python wrapper */
 #if PY_VERSION_HEX >= 0x03050000
-static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_43__matmul__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
-static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_43__matmul__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
+static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_45__matmul__(PyObject *__pyx_v_self, PyObject *__pyx_v_other); /*proto*/
+static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_45__matmul__(PyObject *__pyx_v_self, PyObject *__pyx_v_other) {
   CYTHON_UNUSED int __pyx_lineno = 0;
   CYTHON_UNUSED const char *__pyx_filename = NULL;
   CYTHON_UNUSED int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__matmul__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 298; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 298; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self), ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "self", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 310; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "other", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 310; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__matmul__(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self), ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other));
 
   /* function exit code */
   goto __pyx_L0;
@@ -8011,7 +8292,7 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_43__matmul__(PyObject *__
 #endif /*!(#if PY_VERSION_HEX >= 0x03050000)*/
 
 #if PY_VERSION_HEX >= 0x03050000
-static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_other) {
+static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__matmul__(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_other) {
   struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_op = 0;
   PyObject *__pyx_v_items = NULL;
   PyObject *__pyx_v_jtems = NULL;
@@ -8039,7 +8320,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__matmul__", 0);
 
-  /* "qupy/dev/_algebra.pyx":299
+  /* "qupy/dev/_algebra.pyx":311
  * 
  *     def __matmul__(Tensor self, Tensor other):
  *         assert self.algebra is other.algebra             # <<<<<<<<<<<<<<
@@ -8051,54 +8332,54 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
     __pyx_t_1 = (__pyx_v_self->algebra == __pyx_v_other->algebra);
     if (unlikely(!(__pyx_t_1 != 0))) {
       PyErr_SetNone(PyExc_AssertionError);
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 311; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
   #endif
 
-  /* "qupy/dev/_algebra.pyx":300
+  /* "qupy/dev/_algebra.pyx":312
  *     def __matmul__(Tensor self, Tensor other):
  *         assert self.algebra is other.algebra
  *         cdef Tensor op = Tensor(self.algebra)             # <<<<<<<<<<<<<<
  *         items = self.get_items()
  *         jtems = other.get_items()
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(((PyObject *)__pyx_v_self->algebra));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self->algebra));
   PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)__pyx_v_self->algebra));
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_op = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":301
+  /* "qupy/dev/_algebra.pyx":313
  *         assert self.algebra is other.algebra
  *         cdef Tensor op = Tensor(self.algebra)
  *         items = self.get_items()             # <<<<<<<<<<<<<<
  *         jtems = other.get_items()
  *         for (k1, v1) in items:
  */
-  __pyx_t_3 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 313; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_items = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":302
+  /* "qupy/dev/_algebra.pyx":314
  *         cdef Tensor op = Tensor(self.algebra)
  *         items = self.get_items()
  *         jtems = other.get_items()             # <<<<<<<<<<<<<<
  *         for (k1, v1) in items:
  *           for (k2, v2) in jtems:
  */
-  __pyx_t_3 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other->__pyx_vtab)->get_items(__pyx_v_other); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other->__pyx_vtab)->get_items(__pyx_v_other); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 314; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_jtems = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":303
+  /* "qupy/dev/_algebra.pyx":315
  *         items = self.get_items()
  *         jtems = other.get_items()
  *         for (k1, v1) in items:             # <<<<<<<<<<<<<<
@@ -8109,26 +8390,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
     __pyx_t_3 = __pyx_v_items; __Pyx_INCREF(__pyx_t_3); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_items); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_items); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   for (;;) {
     if (likely(!__pyx_t_5)) {
       if (likely(PyList_CheckExact(__pyx_t_3))) {
         if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_3)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       } else {
         if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       }
@@ -8138,7 +8419,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
@@ -8154,7 +8435,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       #if CYTHON_COMPILING_IN_CPYTHON
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -8167,15 +8448,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
       __Pyx_INCREF(__pyx_t_6);
       __Pyx_INCREF(__pyx_t_7);
       #else
-      __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
       #endif
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_8 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -8183,7 +8464,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
       __Pyx_GOTREF(__pyx_t_6);
       index = 1; __pyx_t_7 = __pyx_t_9(__pyx_t_8); if (unlikely(!__pyx_t_7)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_7);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_t_9 = NULL;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       goto __pyx_L6_unpacking_done;
@@ -8191,7 +8472,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __pyx_t_9 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_k1, __pyx_t_6);
@@ -8199,7 +8480,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
     __Pyx_XDECREF_SET(__pyx_v_v1, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":304
+    /* "qupy/dev/_algebra.pyx":316
  *         jtems = other.get_items()
  *         for (k1, v1) in items:
  *           for (k2, v2) in jtems:             # <<<<<<<<<<<<<<
@@ -8210,26 +8491,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
       __pyx_t_2 = __pyx_v_jtems; __Pyx_INCREF(__pyx_t_2); __pyx_t_10 = 0;
       __pyx_t_11 = NULL;
     } else {
-      __pyx_t_10 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_jtems); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_10 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_jtems); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_11 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_11 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     for (;;) {
       if (likely(!__pyx_t_11)) {
         if (likely(PyList_CheckExact(__pyx_t_2))) {
           if (__pyx_t_10 >= PyList_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_7 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_10); __Pyx_INCREF(__pyx_t_7); __pyx_t_10++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_7 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_10); __Pyx_INCREF(__pyx_t_7); __pyx_t_10++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_7);
           #endif
         } else {
           if (__pyx_t_10 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_10); __Pyx_INCREF(__pyx_t_7); __pyx_t_10++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_10); __Pyx_INCREF(__pyx_t_7); __pyx_t_10++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_7);
           #endif
         }
@@ -8239,7 +8520,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           break;
         }
@@ -8255,7 +8536,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
         if (unlikely(size != 2)) {
           if (size > 2) __Pyx_RaiseTooManyValuesError(2);
           else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         #if CYTHON_COMPILING_IN_CPYTHON
         if (likely(PyTuple_CheckExact(sequence))) {
@@ -8268,15 +8549,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
         __Pyx_INCREF(__pyx_t_6);
         __Pyx_INCREF(__pyx_t_8);
         #else
-        __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_8 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_8 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_8);
         #endif
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       } else {
         Py_ssize_t index = -1;
-        __pyx_t_12 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_12 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_12);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __pyx_t_9 = Py_TYPE(__pyx_t_12)->tp_iternext;
@@ -8284,7 +8565,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
         __Pyx_GOTREF(__pyx_t_6);
         index = 1; __pyx_t_8 = __pyx_t_9(__pyx_t_12); if (unlikely(!__pyx_t_8)) goto __pyx_L9_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_8);
-        if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_12), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_12), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __pyx_t_9 = NULL;
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
         goto __pyx_L10_unpacking_done;
@@ -8292,7 +8573,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
         __pyx_t_9 = NULL;
         if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __pyx_L10_unpacking_done:;
       }
       __Pyx_XDECREF_SET(__pyx_v_k2, __pyx_t_6);
@@ -8300,19 +8581,19 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
       __Pyx_XDECREF_SET(__pyx_v_v2, __pyx_t_8);
       __pyx_t_8 = 0;
 
-      /* "qupy/dev/_algebra.pyx":305
+      /* "qupy/dev/_algebra.pyx":317
  *         for (k1, v1) in items:
  *           for (k2, v2) in jtems:
  *             k = k1+k2             # <<<<<<<<<<<<<<
  *             assert op[k] == ZERO
  *             op[k] = v1*v2
  */
-      __pyx_t_7 = PyNumber_Add(__pyx_v_k1, __pyx_v_k2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = PyNumber_Add(__pyx_v_k1, __pyx_v_k2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 317; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "qupy/dev/_algebra.pyx":306
+      /* "qupy/dev/_algebra.pyx":318
  *           for (k2, v2) in jtems:
  *             k = k1+k2
  *             assert op[k] == ZERO             # <<<<<<<<<<<<<<
@@ -8321,33 +8602,33 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
  */
       #ifndef CYTHON_WITHOUT_ASSERTIONS
       if (unlikely(!Py_OptimizeFlag)) {
-        __pyx_t_7 = PyObject_GetItem(((PyObject *)__pyx_v_op), __pyx_v_k); if (unlikely(__pyx_t_7 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_7 = PyObject_GetItem(((PyObject *)__pyx_v_op), __pyx_v_k); if (unlikely(__pyx_t_7 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 318; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_8 = __Pyx_PyFloat_EqObjC(__pyx_t_7, __pyx_float_0_0, 0.0, 0); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_8 = __Pyx_PyFloat_EqObjC(__pyx_t_7, __pyx_float_0_0, 0.0, 0); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 318; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 318; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         if (unlikely(!__pyx_t_1)) {
           PyErr_SetNone(PyExc_AssertionError);
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 306; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 318; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
       }
       #endif
 
-      /* "qupy/dev/_algebra.pyx":307
+      /* "qupy/dev/_algebra.pyx":319
  *             k = k1+k2
  *             assert op[k] == ZERO
  *             op[k] = v1*v2             # <<<<<<<<<<<<<<
  *         return op
  * 
  */
-      __pyx_t_8 = PyNumber_Multiply(__pyx_v_v1, __pyx_v_v2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = PyNumber_Multiply(__pyx_v_v1, __pyx_v_v2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 319; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_8);
-      if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v_k, __pyx_t_8) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v_k, __pyx_t_8) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 319; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "qupy/dev/_algebra.pyx":304
+      /* "qupy/dev/_algebra.pyx":316
  *         jtems = other.get_items()
  *         for (k1, v1) in items:
  *           for (k2, v2) in jtems:             # <<<<<<<<<<<<<<
@@ -8357,7 +8638,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "qupy/dev/_algebra.pyx":303
+    /* "qupy/dev/_algebra.pyx":315
  *         items = self.get_items()
  *         jtems = other.get_items()
  *         for (k1, v1) in items:             # <<<<<<<<<<<<<<
@@ -8367,7 +8648,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":308
+  /* "qupy/dev/_algebra.pyx":320
  *             assert op[k] == ZERO
  *             op[k] = v1*v2
  *         return op             # <<<<<<<<<<<<<<
@@ -8379,7 +8660,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
   __pyx_r = ((PyObject *)__pyx_v_op);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":298
+  /* "qupy/dev/_algebra.pyx":310
  *         return op
  * 
  *     def __matmul__(Tensor self, Tensor other):             # <<<<<<<<<<<<<<
@@ -8412,7 +8693,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
 }
 #endif /*!(#if PY_VERSION_HEX >= 0x03050000)*/
 
-/* "qupy/dev/_algebra.pyx":310
+/* "qupy/dev/_algebra.pyx":322
  *         return op
  * 
  *     def __mul__(_self, _other):             # <<<<<<<<<<<<<<
@@ -8421,19 +8702,19 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42__matmul__(struct __pyx
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_45__mul__(PyObject *__pyx_v__self, PyObject *__pyx_v__other); /*proto*/
-static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_45__mul__(PyObject *__pyx_v__self, PyObject *__pyx_v__other) {
+static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_47__mul__(PyObject *__pyx_v__self, PyObject *__pyx_v__other); /*proto*/
+static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_47__mul__(PyObject *__pyx_v__self, PyObject *__pyx_v__other) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__mul__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(((PyObject *)__pyx_v__self), ((PyObject *)__pyx_v__other));
+  __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__mul__(((PyObject *)__pyx_v__self), ((PyObject *)__pyx_v__other));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx_v__self, PyObject *__pyx_v__other) {
+static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__mul__(PyObject *__pyx_v__self, PyObject *__pyx_v__other) {
   struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self = 0;
   struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_other = 0;
   struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_op = 0;
@@ -8472,7 +8753,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__mul__", 0);
 
-  /* "qupy/dev/_algebra.pyx":311
+  /* "qupy/dev/_algebra.pyx":323
  * 
  *     def __mul__(_self, _other):
  *         if not isinstance(_self, Tensor):             # <<<<<<<<<<<<<<
@@ -8483,7 +8764,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
   __pyx_t_2 = ((!(__pyx_t_1 != 0)) != 0);
   if (__pyx_t_2) {
 
-    /* "qupy/dev/_algebra.pyx":312
+    /* "qupy/dev/_algebra.pyx":324
  *     def __mul__(_self, _other):
  *         if not isinstance(_self, Tensor):
  *             return _other.rmul(_self)             # <<<<<<<<<<<<<<
@@ -8491,7 +8772,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
  *         cdef Tensor other = _other
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v__other, __pyx_n_s_rmul); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v__other, __pyx_n_s_rmul); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 324; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_4))) {
@@ -8504,16 +8785,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
       }
     }
     if (!__pyx_t_5) {
-      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v__self); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v__self); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 324; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
     } else {
-      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 324; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __pyx_t_5 = NULL;
       __Pyx_INCREF(__pyx_v__self);
       __Pyx_GIVEREF(__pyx_v__self);
       PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_v__self);
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 324; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
@@ -8522,7 +8803,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "qupy/dev/_algebra.pyx":311
+    /* "qupy/dev/_algebra.pyx":323
  * 
  *     def __mul__(_self, _other):
  *         if not isinstance(_self, Tensor):             # <<<<<<<<<<<<<<
@@ -8531,33 +8812,33 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":313
+  /* "qupy/dev/_algebra.pyx":325
  *         if not isinstance(_self, Tensor):
  *             return _other.rmul(_self)
  *         cdef Tensor self = _self             # <<<<<<<<<<<<<<
  *         cdef Tensor other = _other
  *         assert self.algebra is other.algebra
  */
-  if (!(likely(((__pyx_v__self) == Py_None) || likely(__Pyx_TypeTest(__pyx_v__self, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 313; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_v__self) == Py_None) || likely(__Pyx_TypeTest(__pyx_v__self, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 325; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_3 = __pyx_v__self;
   __Pyx_INCREF(__pyx_t_3);
   __pyx_v_self = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":314
+  /* "qupy/dev/_algebra.pyx":326
  *             return _other.rmul(_self)
  *         cdef Tensor self = _self
  *         cdef Tensor other = _other             # <<<<<<<<<<<<<<
  *         assert self.algebra is other.algebra
  *         cdef Tensor op1
  */
-  if (!(likely(((__pyx_v__other) == Py_None) || likely(__Pyx_TypeTest(__pyx_v__other, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 314; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_v__other) == Py_None) || likely(__Pyx_TypeTest(__pyx_v__other, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_3 = __pyx_v__other;
   __Pyx_INCREF(__pyx_t_3);
   __pyx_v_other = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":315
+  /* "qupy/dev/_algebra.pyx":327
  *         cdef Tensor self = _self
  *         cdef Tensor other = _other
  *         assert self.algebra is other.algebra             # <<<<<<<<<<<<<<
@@ -8569,74 +8850,74 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
     __pyx_t_2 = (__pyx_v_self->algebra == __pyx_v_other->algebra);
     if (unlikely(!(__pyx_t_2 != 0))) {
       PyErr_SetNone(PyExc_AssertionError);
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
   #endif
 
-  /* "qupy/dev/_algebra.pyx":317
+  /* "qupy/dev/_algebra.pyx":329
  *         assert self.algebra is other.algebra
  *         cdef Tensor op1
  *         cdef Tensor op = Tensor(self.algebra)             # <<<<<<<<<<<<<<
  * 
  *         items = self.get_items()
  */
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 317; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(((PyObject *)__pyx_v_self->algebra));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self->algebra));
   PyTuple_SET_ITEM(__pyx_t_3, 0, ((PyObject *)__pyx_v_self->algebra));
-  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), __pyx_t_3, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 317; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), __pyx_t_3, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_op = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":319
+  /* "qupy/dev/_algebra.pyx":331
  *         cdef Tensor op = Tensor(self.algebra)
  * 
  *         items = self.get_items()             # <<<<<<<<<<<<<<
  *         jtems = other.get_items()
  * 
  */
-  __pyx_t_4 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 319; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_v_items = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":320
+  /* "qupy/dev/_algebra.pyx":332
  * 
  *         items = self.get_items()
  *         jtems = other.get_items()             # <<<<<<<<<<<<<<
  * 
  *         cdef int n = self.grade
  */
-  __pyx_t_4 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other->__pyx_vtab)->get_items(__pyx_v_other); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 320; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other->__pyx_vtab)->get_items(__pyx_v_other); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 332; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_v_jtems = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":322
+  /* "qupy/dev/_algebra.pyx":334
  *         jtems = other.get_items()
  * 
  *         cdef int n = self.grade             # <<<<<<<<<<<<<<
  *         cdef int i
  * 
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_grade); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 322; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_grade); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 334; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 322; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 334; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_n = __pyx_t_7;
 
-  /* "qupy/dev/_algebra.pyx":325
+  /* "qupy/dev/_algebra.pyx":337
  *         cdef int i
  * 
  *         key = [None]*n             # <<<<<<<<<<<<<<
  *         for (idx, val) in items:
  *           if abs(val)<EPSILON:
  */
-  __pyx_t_4 = PyList_New(1 * ((__pyx_v_n<0) ? 0:__pyx_v_n)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 325; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyList_New(1 * ((__pyx_v_n<0) ? 0:__pyx_v_n)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 337; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   { Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < __pyx_v_n; __pyx_temp++) {
@@ -8648,7 +8929,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
   __pyx_v_key = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":326
+  /* "qupy/dev/_algebra.pyx":338
  * 
  *         key = [None]*n
  *         for (idx, val) in items:             # <<<<<<<<<<<<<<
@@ -8659,26 +8940,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
     __pyx_t_4 = __pyx_v_items; __Pyx_INCREF(__pyx_t_4); __pyx_t_8 = 0;
     __pyx_t_9 = NULL;
   } else {
-    __pyx_t_8 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_items); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_8 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_items); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_9 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_9 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   for (;;) {
     if (likely(!__pyx_t_9)) {
       if (likely(PyList_CheckExact(__pyx_t_4))) {
         if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_3); __pyx_t_8++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_3); __pyx_t_8++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       } else {
         if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_3); __pyx_t_8++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_3); __pyx_t_8++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       }
@@ -8688,7 +8969,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
@@ -8704,7 +8985,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       #if CYTHON_COMPILING_IN_CPYTHON
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -8717,15 +8998,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
       __Pyx_INCREF(__pyx_t_6);
       __Pyx_INCREF(__pyx_t_5);
       #else
-      __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_5 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       #endif
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_10 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_10 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_11 = Py_TYPE(__pyx_t_10)->tp_iternext;
@@ -8733,7 +9014,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
       __Pyx_GOTREF(__pyx_t_6);
       index = 1; __pyx_t_5 = __pyx_t_11(__pyx_t_10); if (unlikely(!__pyx_t_5)) goto __pyx_L6_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_5);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_10), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_10), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_t_11 = NULL;
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       goto __pyx_L7_unpacking_done;
@@ -8741,7 +9022,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __pyx_t_11 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 326; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_L7_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_idx, __pyx_t_6);
@@ -8749,22 +9030,22 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
     __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "qupy/dev/_algebra.pyx":327
+    /* "qupy/dev/_algebra.pyx":339
  *         key = [None]*n
  *         for (idx, val) in items:
  *           if abs(val)<EPSILON:             # <<<<<<<<<<<<<<
  *               continue
  *           for (jdx, wal) in jtems:
  */
-    __pyx_t_3 = PyNumber_Absolute(__pyx_v_val); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = PyNumber_Absolute(__pyx_v_val); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 339; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_3, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyObject_RichCompare(__pyx_t_3, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 339; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 327; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 339; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (__pyx_t_2) {
 
-      /* "qupy/dev/_algebra.pyx":328
+      /* "qupy/dev/_algebra.pyx":340
  *         for (idx, val) in items:
  *           if abs(val)<EPSILON:
  *               continue             # <<<<<<<<<<<<<<
@@ -8773,7 +9054,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
  */
       goto __pyx_L4_continue;
 
-      /* "qupy/dev/_algebra.pyx":327
+      /* "qupy/dev/_algebra.pyx":339
  *         key = [None]*n
  *         for (idx, val) in items:
  *           if abs(val)<EPSILON:             # <<<<<<<<<<<<<<
@@ -8782,7 +9063,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
  */
     }
 
-    /* "qupy/dev/_algebra.pyx":329
+    /* "qupy/dev/_algebra.pyx":341
  *           if abs(val)<EPSILON:
  *               continue
  *           for (jdx, wal) in jtems:             # <<<<<<<<<<<<<<
@@ -8793,26 +9074,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
       __pyx_t_5 = __pyx_v_jtems; __Pyx_INCREF(__pyx_t_5); __pyx_t_12 = 0;
       __pyx_t_13 = NULL;
     } else {
-      __pyx_t_12 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_jtems); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_12 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_jtems); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_13 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_13 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     for (;;) {
       if (likely(!__pyx_t_13)) {
         if (likely(PyList_CheckExact(__pyx_t_5))) {
           if (__pyx_t_12 >= PyList_GET_SIZE(__pyx_t_5)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_12); __Pyx_INCREF(__pyx_t_3); __pyx_t_12++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_12); __Pyx_INCREF(__pyx_t_3); __pyx_t_12++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_5, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_5, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_3);
           #endif
         } else {
           if (__pyx_t_12 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_12); __Pyx_INCREF(__pyx_t_3); __pyx_t_12++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_12); __Pyx_INCREF(__pyx_t_3); __pyx_t_12++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_5, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_5, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_3);
           #endif
         }
@@ -8822,7 +9103,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           break;
         }
@@ -8838,7 +9119,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
         if (unlikely(size != 2)) {
           if (size > 2) __Pyx_RaiseTooManyValuesError(2);
           else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         #if CYTHON_COMPILING_IN_CPYTHON
         if (likely(PyTuple_CheckExact(sequence))) {
@@ -8851,15 +9132,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
         __Pyx_INCREF(__pyx_t_6);
         __Pyx_INCREF(__pyx_t_10);
         #else
-        __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_10);
         #endif
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       } else {
         Py_ssize_t index = -1;
-        __pyx_t_14 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_14 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_14);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_t_11 = Py_TYPE(__pyx_t_14)->tp_iternext;
@@ -8867,7 +9148,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
         __Pyx_GOTREF(__pyx_t_6);
         index = 1; __pyx_t_10 = __pyx_t_11(__pyx_t_14); if (unlikely(!__pyx_t_10)) goto __pyx_L11_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_10);
-        if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_14), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_14), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __pyx_t_11 = NULL;
         __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
         goto __pyx_L12_unpacking_done;
@@ -8875,7 +9156,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
         __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
         __pyx_t_11 = NULL;
         if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 329; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __pyx_L12_unpacking_done:;
       }
       __Pyx_XDECREF_SET(__pyx_v_jdx, __pyx_t_6);
@@ -8883,22 +9164,22 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
       __Pyx_XDECREF_SET(__pyx_v_wal, __pyx_t_10);
       __pyx_t_10 = 0;
 
-      /* "qupy/dev/_algebra.pyx":330
+      /* "qupy/dev/_algebra.pyx":342
  *               continue
  *           for (jdx, wal) in jtems:
  *             if abs(wal)<EPSILON:             # <<<<<<<<<<<<<<
  *                 continue
  *             r = val*wal
  */
-      __pyx_t_3 = PyNumber_Absolute(__pyx_v_wal); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 330; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = PyNumber_Absolute(__pyx_v_wal); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 342; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_10 = PyObject_RichCompare(__pyx_t_3, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 330; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_10 = PyObject_RichCompare(__pyx_t_3, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 342; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 330; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 342; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       if (__pyx_t_2) {
 
-        /* "qupy/dev/_algebra.pyx":331
+        /* "qupy/dev/_algebra.pyx":343
  *           for (jdx, wal) in jtems:
  *             if abs(wal)<EPSILON:
  *                 continue             # <<<<<<<<<<<<<<
@@ -8907,7 +9188,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
  */
         goto __pyx_L9_continue;
 
-        /* "qupy/dev/_algebra.pyx":330
+        /* "qupy/dev/_algebra.pyx":342
  *               continue
  *           for (jdx, wal) in jtems:
  *             if abs(wal)<EPSILON:             # <<<<<<<<<<<<<<
@@ -8916,19 +9197,19 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
  */
       }
 
-      /* "qupy/dev/_algebra.pyx":332
+      /* "qupy/dev/_algebra.pyx":344
  *             if abs(wal)<EPSILON:
  *                 continue
  *             r = val*wal             # <<<<<<<<<<<<<<
  * 
  * #            for i in range(n):
  */
-      __pyx_t_10 = PyNumber_Multiply(__pyx_v_val, __pyx_v_wal); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 332; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_10 = PyNumber_Multiply(__pyx_v_val, __pyx_v_wal); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 344; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_XDECREF_SET(__pyx_v_r, __pyx_t_10);
       __pyx_t_10 = 0;
 
-      /* "qupy/dev/_algebra.pyx":340
+      /* "qupy/dev/_algebra.pyx":352
  * #                r *= v1
  * 
  *             for i in range(n):             # <<<<<<<<<<<<<<
@@ -8939,18 +9220,18 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
       for (__pyx_t_15 = 0; __pyx_t_15 < __pyx_t_7; __pyx_t_15+=1) {
         __pyx_v_i = __pyx_t_15;
 
-        /* "qupy/dev/_algebra.pyx":341
+        /* "qupy/dev/_algebra.pyx":353
  * 
  *             for i in range(n):
  *                 (k1, v1) = self.algebra.lookup[idx[i], jdx[i]]             # <<<<<<<<<<<<<<
  *                 key[i] = k1
  *                 r *= v1
  */
-        __pyx_t_10 = __Pyx_GetItemInt(__pyx_v_idx, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_10 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_10 = __Pyx_GetItemInt(__pyx_v_idx, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_10 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 353; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_10);
-        __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_jdx, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_jdx, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 353; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 353; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_GIVEREF(__pyx_t_10);
         PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_10);
@@ -8958,7 +9239,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
         PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_3);
         __pyx_t_10 = 0;
         __pyx_t_3 = 0;
-        __pyx_t_3 = PyObject_GetItem(__pyx_v_self->algebra->lookup, __pyx_t_6); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_3 = PyObject_GetItem(__pyx_v_self->algebra->lookup, __pyx_t_6); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 353; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         if ((likely(PyTuple_CheckExact(__pyx_t_3))) || (PyList_CheckExact(__pyx_t_3))) {
@@ -8971,7 +9252,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
           if (unlikely(size != 2)) {
             if (size > 2) __Pyx_RaiseTooManyValuesError(2);
             else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 353; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           #if CYTHON_COMPILING_IN_CPYTHON
           if (likely(PyTuple_CheckExact(sequence))) {
@@ -8984,15 +9265,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
           __Pyx_INCREF(__pyx_t_6);
           __Pyx_INCREF(__pyx_t_10);
           #else
-          __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 353; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 353; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_10);
           #endif
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         } else {
           Py_ssize_t index = -1;
-          __pyx_t_14 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_14 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 353; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_14);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __pyx_t_11 = Py_TYPE(__pyx_t_14)->tp_iternext;
@@ -9000,7 +9281,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
           __Pyx_GOTREF(__pyx_t_6);
           index = 1; __pyx_t_10 = __pyx_t_11(__pyx_t_14); if (unlikely(!__pyx_t_10)) goto __pyx_L16_unpacking_failed;
           __Pyx_GOTREF(__pyx_t_10);
-          if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_14), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_14), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 353; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __pyx_t_11 = NULL;
           __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
           goto __pyx_L17_unpacking_done;
@@ -9008,7 +9289,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
           __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
           __pyx_t_11 = NULL;
           if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 341; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 353; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __pyx_L17_unpacking_done:;
         }
         __Pyx_XDECREF_SET(__pyx_v_k1, __pyx_t_6);
@@ -9016,36 +9297,36 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
         __Pyx_XDECREF_SET(__pyx_v_v1, __pyx_t_10);
         __pyx_t_10 = 0;
 
-        /* "qupy/dev/_algebra.pyx":342
+        /* "qupy/dev/_algebra.pyx":354
  *             for i in range(n):
  *                 (k1, v1) = self.algebra.lookup[idx[i], jdx[i]]
  *                 key[i] = k1             # <<<<<<<<<<<<<<
  *                 r *= v1
  * 
  */
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_key, __pyx_v_i, __pyx_v_k1, int, 1, __Pyx_PyInt_From_int, 1, 1, 1) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 342; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_key, __pyx_v_i, __pyx_v_k1, int, 1, __Pyx_PyInt_From_int, 1, 1, 1) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 354; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-        /* "qupy/dev/_algebra.pyx":343
+        /* "qupy/dev/_algebra.pyx":355
  *                 (k1, v1) = self.algebra.lookup[idx[i], jdx[i]]
  *                 key[i] = k1
  *                 r *= v1             # <<<<<<<<<<<<<<
  * 
  *             op.iadditem(key, r)
  */
-        __pyx_t_3 = PyNumber_InPlaceMultiply(__pyx_v_r, __pyx_v_v1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 343; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_3 = PyNumber_InPlaceMultiply(__pyx_v_r, __pyx_v_v1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 355; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_3);
         __pyx_t_3 = 0;
       }
 
-      /* "qupy/dev/_algebra.pyx":345
+      /* "qupy/dev/_algebra.pyx":357
  *                 r *= v1
  * 
  *             op.iadditem(key, r)             # <<<<<<<<<<<<<<
  * 
  *         return op
  */
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_op), __pyx_n_s_iadditem); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 345; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_op), __pyx_n_s_iadditem); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 357; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __pyx_t_6 = NULL;
       __pyx_t_16 = 0;
@@ -9059,7 +9340,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
           __pyx_t_16 = 1;
         }
       }
-      __pyx_t_14 = PyTuple_New(2+__pyx_t_16); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 345; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_14 = PyTuple_New(2+__pyx_t_16); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 357; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_14);
       if (__pyx_t_6) {
         __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -9070,13 +9351,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
       __Pyx_INCREF(__pyx_v_r);
       __Pyx_GIVEREF(__pyx_v_r);
       PyTuple_SET_ITEM(__pyx_t_14, 1+__pyx_t_16, __pyx_v_r);
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_14, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 345; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_14, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 357; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "qupy/dev/_algebra.pyx":329
+      /* "qupy/dev/_algebra.pyx":341
  *           if abs(val)<EPSILON:
  *               continue
  *           for (jdx, wal) in jtems:             # <<<<<<<<<<<<<<
@@ -9087,7 +9368,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "qupy/dev/_algebra.pyx":326
+    /* "qupy/dev/_algebra.pyx":338
  * 
  *         key = [None]*n
  *         for (idx, val) in items:             # <<<<<<<<<<<<<<
@@ -9098,19 +9379,19 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":347
+  /* "qupy/dev/_algebra.pyx":359
  *             op.iadditem(key, r)
  * 
  *         return op             # <<<<<<<<<<<<<<
  * 
- *     def subs(self, rename):
+ *     def subs(self, rename, zero=None):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_op));
   __pyx_r = ((PyObject *)__pyx_v_op);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":310
+  /* "qupy/dev/_algebra.pyx":322
  *         return op
  * 
  *     def __mul__(_self, _other):             # <<<<<<<<<<<<<<
@@ -9147,28 +9428,79 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__mul__(PyObject *__pyx
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":349
+/* "qupy/dev/_algebra.pyx":361
  *         return op
  * 
- *     def subs(self, rename):             # <<<<<<<<<<<<<<
- *         the_op = Tensor(self.algebra) # zero
- *         algebra = self.algebra
+ *     def subs(self, rename, zero=None):             # <<<<<<<<<<<<<<
+ * #        if zero is None:
+ * #            the_op = Tensor(self.algebra) # zero
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_47subs(PyObject *__pyx_v_self, PyObject *__pyx_v_rename); /*proto*/
-static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_47subs(PyObject *__pyx_v_self, PyObject *__pyx_v_rename) {
+static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_49subs(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_49subs(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_rename = 0;
+  CYTHON_UNUSED PyObject *__pyx_v_zero = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("subs (wrapper)", 0);
-  __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self), ((PyObject *)__pyx_v_rename));
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_rename,&__pyx_n_s_zero,0};
+    PyObject* values[2] = {0,0};
+    values[1] = ((PyObject *)Py_None);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rename)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_zero);
+          if (value) { values[1] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "subs") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 361; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_rename = values[0];
+    __pyx_v_zero = values[1];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("subs", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 361; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("qupy.dev._algebra.Tensor.subs", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_48subs(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self), __pyx_v_rename, __pyx_v_zero);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, PyObject *__pyx_v_rename) {
+static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48subs(struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *__pyx_v_self, PyObject *__pyx_v_rename, CYTHON_UNUSED PyObject *__pyx_v_zero) {
   PyObject *__pyx_v_the_op = NULL;
   struct __pyx_obj_4qupy_3dev_8_algebra_Algebra *__pyx_v_algebra = NULL;
   PyObject *__pyx_v_k = NULL;
@@ -9197,87 +9529,79 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("subs", 0);
 
-  /* "qupy/dev/_algebra.pyx":350
- * 
- *     def subs(self, rename):
- *         the_op = Tensor(self.algebra) # zero             # <<<<<<<<<<<<<<
+  /* "qupy/dev/_algebra.pyx":366
+ * #        else:
+ * #            the_op = zero
+ *         the_op = None             # <<<<<<<<<<<<<<
  *         algebra = self.algebra
  *         for (k, v) in self.get_items():
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 350; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(((PyObject *)__pyx_v_self->algebra));
-  __Pyx_GIVEREF(((PyObject *)__pyx_v_self->algebra));
-  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self->algebra));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 350; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_the_op = __pyx_t_2;
-  __pyx_t_2 = 0;
+  __Pyx_INCREF(Py_None);
+  __pyx_v_the_op = Py_None;
 
-  /* "qupy/dev/_algebra.pyx":351
- *     def subs(self, rename):
- *         the_op = Tensor(self.algebra) # zero
+  /* "qupy/dev/_algebra.pyx":367
+ * #            the_op = zero
+ *         the_op = None
  *         algebra = self.algebra             # <<<<<<<<<<<<<<
  *         for (k, v) in self.get_items():
  *             final = None
  */
-  __pyx_t_2 = ((PyObject *)__pyx_v_self->algebra);
-  __Pyx_INCREF(__pyx_t_2);
-  __pyx_v_algebra = ((struct __pyx_obj_4qupy_3dev_8_algebra_Algebra *)__pyx_t_2);
-  __pyx_t_2 = 0;
+  __pyx_t_1 = ((PyObject *)__pyx_v_self->algebra);
+  __Pyx_INCREF(__pyx_t_1);
+  __pyx_v_algebra = ((struct __pyx_obj_4qupy_3dev_8_algebra_Algebra *)__pyx_t_1);
+  __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":352
- *         the_op = Tensor(self.algebra) # zero
+  /* "qupy/dev/_algebra.pyx":368
+ *         the_op = None
  *         algebra = self.algebra
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
  *             final = None
  *             for ki in k:
  */
-  __pyx_t_2 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
-    __pyx_t_1 = __pyx_t_2; __Pyx_INCREF(__pyx_t_1); __pyx_t_3 = 0;
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
+    __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
     if (likely(!__pyx_t_4)) {
-      if (likely(PyList_CheckExact(__pyx_t_1))) {
-        if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_1)) break;
+      if (likely(PyList_CheckExact(__pyx_t_2))) {
+        if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_2);
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
-        if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+        if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_2);
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
     } else {
-      __pyx_t_2 = __pyx_t_4(__pyx_t_1);
-      if (unlikely(!__pyx_t_2)) {
+      __pyx_t_1 = __pyx_t_4(__pyx_t_2);
+      if (unlikely(!__pyx_t_1)) {
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
-      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_GOTREF(__pyx_t_1);
     }
-    if ((likely(PyTuple_CheckExact(__pyx_t_2))) || (PyList_CheckExact(__pyx_t_2))) {
-      PyObject* sequence = __pyx_t_2;
+    if ((likely(PyTuple_CheckExact(__pyx_t_1))) || (PyList_CheckExact(__pyx_t_1))) {
+      PyObject* sequence = __pyx_t_1;
       #if CYTHON_COMPILING_IN_CPYTHON
       Py_ssize_t size = Py_SIZE(sequence);
       #else
@@ -9286,7 +9610,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       #if CYTHON_COMPILING_IN_CPYTHON
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -9299,23 +9623,23 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
       __Pyx_INCREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       #endif
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
       index = 0; __pyx_t_5 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_5)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_5);
       index = 1; __pyx_t_6 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_t_8 = NULL;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       goto __pyx_L6_unpacking_done;
@@ -9323,7 +9647,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_5);
@@ -9331,7 +9655,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
     __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":353
+    /* "qupy/dev/_algebra.pyx":369
  *         algebra = self.algebra
  *         for (k, v) in self.get_items():
  *             final = None             # <<<<<<<<<<<<<<
@@ -9341,7 +9665,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
     __Pyx_INCREF(Py_None);
     __Pyx_XDECREF_SET(__pyx_v_final, Py_None);
 
-    /* "qupy/dev/_algebra.pyx":354
+    /* "qupy/dev/_algebra.pyx":370
  *         for (k, v) in self.get_items():
  *             final = None
  *             for ki in k:             # <<<<<<<<<<<<<<
@@ -9349,39 +9673,39 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
  *                 op = rename.get(c)
  */
     if (likely(PyList_CheckExact(__pyx_v_k)) || PyTuple_CheckExact(__pyx_v_k)) {
-      __pyx_t_2 = __pyx_v_k; __Pyx_INCREF(__pyx_t_2); __pyx_t_9 = 0;
+      __pyx_t_1 = __pyx_v_k; __Pyx_INCREF(__pyx_t_1); __pyx_t_9 = 0;
       __pyx_t_10 = NULL;
     } else {
-      __pyx_t_9 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_k); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 354; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_10 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 354; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_9 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_k); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_10 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     for (;;) {
       if (likely(!__pyx_t_10)) {
-        if (likely(PyList_CheckExact(__pyx_t_2))) {
-          if (__pyx_t_9 >= PyList_GET_SIZE(__pyx_t_2)) break;
+        if (likely(PyList_CheckExact(__pyx_t_1))) {
+          if (__pyx_t_9 >= PyList_GET_SIZE(__pyx_t_1)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_6 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_9); __Pyx_INCREF(__pyx_t_6); __pyx_t_9++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 354; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_6 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_9); __Pyx_INCREF(__pyx_t_6); __pyx_t_9++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_6 = PySequence_ITEM(__pyx_t_2, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 354; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_6 = PySequence_ITEM(__pyx_t_1, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_6);
           #endif
         } else {
-          if (__pyx_t_9 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+          if (__pyx_t_9 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_9); __Pyx_INCREF(__pyx_t_6); __pyx_t_9++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 354; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_9); __Pyx_INCREF(__pyx_t_6); __pyx_t_9++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_6 = PySequence_ITEM(__pyx_t_2, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 354; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_6 = PySequence_ITEM(__pyx_t_1, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_6);
           #endif
         }
       } else {
-        __pyx_t_6 = __pyx_t_10(__pyx_t_2);
+        __pyx_t_6 = __pyx_t_10(__pyx_t_1);
         if (unlikely(!__pyx_t_6)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 354; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           break;
         }
@@ -9390,26 +9714,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
       __Pyx_XDECREF_SET(__pyx_v_ki, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "qupy/dev/_algebra.pyx":355
+      /* "qupy/dev/_algebra.pyx":371
  *             final = None
  *             for ki in k:
  *                 c = algebra.names[ki]             # <<<<<<<<<<<<<<
  *                 op = rename.get(c)
  *                 if op is None:
  */
-      __pyx_t_6 = PyObject_GetItem(__pyx_v_algebra->names, __pyx_v_ki); if (unlikely(__pyx_t_6 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 355; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+      __pyx_t_6 = PyObject_GetItem(__pyx_v_algebra->names, __pyx_v_ki); if (unlikely(__pyx_t_6 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 371; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_XDECREF_SET(__pyx_v_c, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "qupy/dev/_algebra.pyx":356
+      /* "qupy/dev/_algebra.pyx":372
  *             for ki in k:
  *                 c = algebra.names[ki]
  *                 op = rename.get(c)             # <<<<<<<<<<<<<<
  *                 if op is None:
  *                     op = Tensor(self.algebra)
  */
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_rename, __pyx_n_s_get); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 356; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_rename, __pyx_n_s_get); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 372; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_7 = NULL;
       if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_5))) {
@@ -9422,16 +9746,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
         }
       }
       if (!__pyx_t_7) {
-        __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_c); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 356; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_c); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 372; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_6);
       } else {
-        __pyx_t_11 = PyTuple_New(1+1); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 356; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_11 = PyTuple_New(1+1); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 372; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_11);
         __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_7); __pyx_t_7 = NULL;
         __Pyx_INCREF(__pyx_v_c);
         __Pyx_GIVEREF(__pyx_v_c);
         PyTuple_SET_ITEM(__pyx_t_11, 0+1, __pyx_v_c);
-        __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_11, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 356; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_11, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 372; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
       }
@@ -9439,7 +9763,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
       __Pyx_XDECREF_SET(__pyx_v_op, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "qupy/dev/_algebra.pyx":357
+      /* "qupy/dev/_algebra.pyx":373
  *                 c = algebra.names[ki]
  *                 op = rename.get(c)
  *                 if op is None:             # <<<<<<<<<<<<<<
@@ -9450,40 +9774,40 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
       __pyx_t_13 = (__pyx_t_12 != 0);
       if (__pyx_t_13) {
 
-        /* "qupy/dev/_algebra.pyx":358
+        /* "qupy/dev/_algebra.pyx":374
  *                 op = rename.get(c)
  *                 if op is None:
  *                     op = Tensor(self.algebra)             # <<<<<<<<<<<<<<
  *                     op[(ki,)] = ONE
  *                 if final is None:
  */
-        __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 358; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 374; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_INCREF(((PyObject *)__pyx_v_self->algebra));
         __Pyx_GIVEREF(((PyObject *)__pyx_v_self->algebra));
         PyTuple_SET_ITEM(__pyx_t_6, 0, ((PyObject *)__pyx_v_self->algebra));
-        __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 358; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 374; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF_SET(__pyx_v_op, __pyx_t_5);
         __pyx_t_5 = 0;
 
-        /* "qupy/dev/_algebra.pyx":359
+        /* "qupy/dev/_algebra.pyx":375
  *                 if op is None:
  *                     op = Tensor(self.algebra)
  *                     op[(ki,)] = ONE             # <<<<<<<<<<<<<<
  *                 if final is None:
  *                     final = op
  */
-        __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 359; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 375; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_INCREF(__pyx_v_ki);
         __Pyx_GIVEREF(__pyx_v_ki);
         PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_v_ki);
-        if (unlikely(PyObject_SetItem(__pyx_v_op, __pyx_t_5, __pyx_float_1_0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 359; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        if (unlikely(PyObject_SetItem(__pyx_v_op, __pyx_t_5, __pyx_float_1_0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 375; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-        /* "qupy/dev/_algebra.pyx":357
+        /* "qupy/dev/_algebra.pyx":373
  *                 c = algebra.names[ki]
  *                 op = rename.get(c)
  *                 if op is None:             # <<<<<<<<<<<<<<
@@ -9492,7 +9816,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
  */
       }
 
-      /* "qupy/dev/_algebra.pyx":360
+      /* "qupy/dev/_algebra.pyx":376
  *                     op = Tensor(self.algebra)
  *                     op[(ki,)] = ONE
  *                 if final is None:             # <<<<<<<<<<<<<<
@@ -9503,7 +9827,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
       __pyx_t_12 = (__pyx_t_13 != 0);
       if (__pyx_t_12) {
 
-        /* "qupy/dev/_algebra.pyx":361
+        /* "qupy/dev/_algebra.pyx":377
  *                     op[(ki,)] = ONE
  *                 if final is None:
  *                     final = op             # <<<<<<<<<<<<<<
@@ -9513,7 +9837,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
         __Pyx_INCREF(__pyx_v_op);
         __Pyx_DECREF_SET(__pyx_v_final, __pyx_v_op);
 
-        /* "qupy/dev/_algebra.pyx":360
+        /* "qupy/dev/_algebra.pyx":376
  *                     op = Tensor(self.algebra)
  *                     op[(ki,)] = ONE
  *                 if final is None:             # <<<<<<<<<<<<<<
@@ -9523,22 +9847,22 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
         goto __pyx_L10;
       }
 
-      /* "qupy/dev/_algebra.pyx":363
+      /* "qupy/dev/_algebra.pyx":379
  *                     final = op
  *                 else:
  *                     final = final @ op # tensor             # <<<<<<<<<<<<<<
- *             the_op = the_op + complex(v)*final # ARRGGGHHH !!
- *         return the_op
+ *             if the_op is None:
+ *                 the_op = complex(v)*final # ARRGGGHHH !!
  */
       /*else*/ {
-        __pyx_t_5 = __Pyx_PyNumber_MatrixMultiply(__pyx_v_final, __pyx_v_op); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 363; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = __Pyx_PyNumber_MatrixMultiply(__pyx_v_final, __pyx_v_op); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 379; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF_SET(__pyx_v_final, __pyx_t_5);
         __pyx_t_5 = 0;
       }
       __pyx_L10:;
 
-      /* "qupy/dev/_algebra.pyx":354
+      /* "qupy/dev/_algebra.pyx":370
  *         for (k, v) in self.get_items():
  *             final = None
  *             for ki in k:             # <<<<<<<<<<<<<<
@@ -9546,45 +9870,90 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
  *                 op = rename.get(c)
  */
     }
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":364
+    /* "qupy/dev/_algebra.pyx":380
  *                 else:
  *                     final = final @ op # tensor
- *             the_op = the_op + complex(v)*final # ARRGGGHHH !!             # <<<<<<<<<<<<<<
+ *             if the_op is None:             # <<<<<<<<<<<<<<
+ *                 the_op = complex(v)*final # ARRGGGHHH !!
+ *             else:
+ */
+    __pyx_t_12 = (__pyx_v_the_op == Py_None);
+    __pyx_t_13 = (__pyx_t_12 != 0);
+    if (__pyx_t_13) {
+
+      /* "qupy/dev/_algebra.pyx":381
+ *                     final = final @ op # tensor
+ *             if the_op is None:
+ *                 the_op = complex(v)*final # ARRGGGHHH !!             # <<<<<<<<<<<<<<
+ *             else:
+ *                 the_op = the_op + complex(v)*final # ARRGGGHHH !!
+ */
+      __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 381; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_INCREF(__pyx_v_v);
+      __Pyx_GIVEREF(__pyx_v_v);
+      PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_v);
+      __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)(&PyComplex_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 381; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_1 = PyNumber_Multiply(__pyx_t_5, __pyx_v_final); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 381; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_DECREF_SET(__pyx_v_the_op, __pyx_t_1);
+      __pyx_t_1 = 0;
+
+      /* "qupy/dev/_algebra.pyx":380
+ *                 else:
+ *                     final = final @ op # tensor
+ *             if the_op is None:             # <<<<<<<<<<<<<<
+ *                 the_op = complex(v)*final # ARRGGGHHH !!
+ *             else:
+ */
+      goto __pyx_L11;
+    }
+
+    /* "qupy/dev/_algebra.pyx":383
+ *                 the_op = complex(v)*final # ARRGGGHHH !!
+ *             else:
+ *                 the_op = the_op + complex(v)*final # ARRGGGHHH !!             # <<<<<<<<<<<<<<
  *         return the_op
  * 
  */
-    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 364; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_INCREF(__pyx_v_v);
-    __Pyx_GIVEREF(__pyx_v_v);
-    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_v);
-    __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)(&PyComplex_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 364; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyNumber_Multiply(__pyx_t_5, __pyx_v_final); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 364; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyNumber_Add(__pyx_v_the_op, __pyx_t_2); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 364; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF_SET(__pyx_v_the_op, __pyx_t_5);
-    __pyx_t_5 = 0;
+    /*else*/ {
+      __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_INCREF(__pyx_v_v);
+      __Pyx_GIVEREF(__pyx_v_v);
+      PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_v);
+      __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)(&PyComplex_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_1 = PyNumber_Multiply(__pyx_t_5, __pyx_v_final); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __pyx_t_5 = PyNumber_Add(__pyx_v_the_op, __pyx_t_1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_DECREF_SET(__pyx_v_the_op, __pyx_t_5);
+      __pyx_t_5 = 0;
+    }
+    __pyx_L11:;
 
-    /* "qupy/dev/_algebra.pyx":352
- *         the_op = Tensor(self.algebra) # zero
+    /* "qupy/dev/_algebra.pyx":368
+ *         the_op = None
  *         algebra = self.algebra
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
  *             final = None
  *             for ki in k:
  */
   }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":365
- *                     final = final @ op # tensor
- *             the_op = the_op + complex(v)*final # ARRGGGHHH !!
+  /* "qupy/dev/_algebra.pyx":384
+ *             else:
+ *                 the_op = the_op + complex(v)*final # ARRGGGHHH !!
  *         return the_op             # <<<<<<<<<<<<<<
  * 
  * 
@@ -9594,12 +9963,12 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46subs(struct __pyx_obj_4
   __pyx_r = __pyx_v_the_op;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":349
+  /* "qupy/dev/_algebra.pyx":361
  *         return op
  * 
- *     def subs(self, rename):             # <<<<<<<<<<<<<<
- *         the_op = Tensor(self.algebra) # zero
- *         algebra = self.algebra
+ *     def subs(self, rename, zero=None):             # <<<<<<<<<<<<<<
+ * #        if zero is None:
+ * #            the_op = Tensor(self.algebra) # zero
  */
 
   /* function exit code */
@@ -9924,7 +10293,7 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor_5value_4__del__(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":370
+/* "qupy/dev/_algebra.pyx":389
  * 
  * 
  * def build_algebra(names, rel):             # <<<<<<<<<<<<<<
@@ -9964,11 +10333,11 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_1build_algebra(PyObject *__pyx_se
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rel)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("build_algebra", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("build_algebra", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 389; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "build_algebra") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "build_algebra") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 389; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -9981,7 +10350,7 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_1build_algebra(PyObject *__pyx_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("build_algebra", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("build_algebra", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 389; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("qupy.dev._algebra.build_algebra", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -10027,19 +10396,19 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   __Pyx_RefNannySetupContext("build_algebra", 0);
   __Pyx_INCREF(__pyx_v_names);
 
-  /* "qupy/dev/_algebra.pyx":371
+  /* "qupy/dev/_algebra.pyx":390
  * 
  * def build_algebra(names, rel):
  *     names = list(names)             # <<<<<<<<<<<<<<
  *     assert names[0] == "I" # identity
  *     dim = len(names)
  */
-  __pyx_t_1 = PySequence_List(__pyx_v_names); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 371; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PySequence_List(__pyx_v_names); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 390; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF_SET(__pyx_v_names, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":372
+  /* "qupy/dev/_algebra.pyx":391
  * def build_algebra(names, rel):
  *     names = list(names)
  *     assert names[0] == "I" # identity             # <<<<<<<<<<<<<<
@@ -10048,58 +10417,58 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_names, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 372; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_names, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 391; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_n_s_I, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 372; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_n_s_I, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 391; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (unlikely(!__pyx_t_2)) {
       PyErr_SetNone(PyExc_AssertionError);
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 372; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 391; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
   #endif
 
-  /* "qupy/dev/_algebra.pyx":373
+  /* "qupy/dev/_algebra.pyx":392
  *     names = list(names)
  *     assert names[0] == "I" # identity
  *     dim = len(names)             # <<<<<<<<<<<<<<
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE
  */
-  __pyx_t_3 = PyObject_Length(__pyx_v_names); if (unlikely(__pyx_t_3 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 373; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyObject_Length(__pyx_v_names); if (unlikely(__pyx_t_3 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 392; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_dim = __pyx_t_3;
 
-  /* "qupy/dev/_algebra.pyx":374
+  /* "qupy/dev/_algebra.pyx":393
  *     assert names[0] == "I" # identity
  *     dim = len(names)
  *     coefs = {} # structure coefs             # <<<<<<<<<<<<<<
  *     coefs[0, 0, 0] = ONE
  *     for i in range(1, dim):
  */
-  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 374; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 393; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_coefs = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":375
+  /* "qupy/dev/_algebra.pyx":394
  *     dim = len(names)
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE             # <<<<<<<<<<<<<<
  *     for i in range(1, dim):
  *         coefs[0, i, i] = ONE
  */
-  if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_tuple__7, __pyx_float_1_0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 375; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_tuple__7, __pyx_float_1_0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 394; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "qupy/dev/_algebra.pyx":376
+  /* "qupy/dev/_algebra.pyx":395
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE
  *     for i in range(1, dim):             # <<<<<<<<<<<<<<
  *         coefs[0, i, i] = ONE
  *         coefs[i, 0, i] = ONE
  */
-  __pyx_t_1 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 376; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 376; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_int_1);
   __Pyx_GIVEREF(__pyx_int_1);
@@ -10107,16 +10476,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 376; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_4 = __pyx_t_1; __Pyx_INCREF(__pyx_t_4); __pyx_t_3 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 376; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 376; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -10124,17 +10493,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       if (likely(PyList_CheckExact(__pyx_t_4))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 376; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 376; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 376; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 376; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -10144,7 +10513,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 376; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
@@ -10153,14 +10522,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":377
+    /* "qupy/dev/_algebra.pyx":396
  *     coefs[0, 0, 0] = ONE
  *     for i in range(1, dim):
  *         coefs[0, i, i] = ONE             # <<<<<<<<<<<<<<
  *         coefs[i, 0, i] = ONE
  * 
  */
-    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 377; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 396; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_GIVEREF(__pyx_int_0);
@@ -10171,17 +10540,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_INCREF(__pyx_v_i);
     __Pyx_GIVEREF(__pyx_v_i);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_v_i);
-    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_1, __pyx_float_1_0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 377; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_1, __pyx_float_1_0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 396; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":378
+    /* "qupy/dev/_algebra.pyx":397
  *     for i in range(1, dim):
  *         coefs[0, i, i] = ONE
  *         coefs[i, 0, i] = ONE             # <<<<<<<<<<<<<<
  * 
  *     eqs = rel.split()
  */
-    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 378; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 397; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_i);
     __Pyx_GIVEREF(__pyx_v_i);
@@ -10192,10 +10561,10 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_INCREF(__pyx_v_i);
     __Pyx_GIVEREF(__pyx_v_i);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_v_i);
-    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_1, __pyx_float_1_0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 378; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_1, __pyx_float_1_0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 397; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":376
+    /* "qupy/dev/_algebra.pyx":395
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE
  *     for i in range(1, dim):             # <<<<<<<<<<<<<<
@@ -10205,14 +10574,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":380
+  /* "qupy/dev/_algebra.pyx":399
  *         coefs[i, 0, i] = ONE
  * 
  *     eqs = rel.split()             # <<<<<<<<<<<<<<
  *     for eq in eqs:
  *         lhs, rhs = eq.split("=")
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_rel, __pyx_n_s_split); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 380; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_rel, __pyx_n_s_split); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 399; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_6 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_1))) {
@@ -10225,17 +10594,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     }
   }
   if (__pyx_t_6) {
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_6); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 380; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_6); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 399; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   } else {
-    __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 380; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 399; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_eqs = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":381
+  /* "qupy/dev/_algebra.pyx":400
  * 
  *     eqs = rel.split()
  *     for eq in eqs:             # <<<<<<<<<<<<<<
@@ -10246,26 +10615,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __pyx_t_4 = __pyx_v_eqs; __Pyx_INCREF(__pyx_t_4); __pyx_t_3 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_eqs); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 381; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_eqs); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 400; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 381; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 400; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   for (;;) {
     if (likely(!__pyx_t_5)) {
       if (likely(PyList_CheckExact(__pyx_t_4))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 381; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 400; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 381; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 400; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 381; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 400; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 381; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 400; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -10275,7 +10644,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 381; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 400; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
@@ -10284,16 +10653,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_eq, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":382
+    /* "qupy/dev/_algebra.pyx":401
  *     eqs = rel.split()
  *     for eq in eqs:
  *         lhs, rhs = eq.split("=")             # <<<<<<<<<<<<<<
  *         A, B = lhs.split("*")
  *         i = names.index(A)
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_eq, __pyx_n_s_split); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_eq, __pyx_n_s_split); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 401; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 401; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if ((likely(PyTuple_CheckExact(__pyx_t_6))) || (PyList_CheckExact(__pyx_t_6))) {
@@ -10306,7 +10675,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 401; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       #if CYTHON_COMPILING_IN_CPYTHON
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -10319,15 +10688,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_t_1);
       __Pyx_INCREF(__pyx_t_7);
       #else
-      __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 401; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 401; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
       #endif
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_8 = PyObject_GetIter(__pyx_t_6); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = PyObject_GetIter(__pyx_t_6); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 401; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -10335,7 +10704,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_GOTREF(__pyx_t_1);
       index = 1; __pyx_t_7 = __pyx_t_9(__pyx_t_8); if (unlikely(!__pyx_t_7)) goto __pyx_L7_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_7);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 401; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_t_9 = NULL;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       goto __pyx_L8_unpacking_done;
@@ -10343,7 +10712,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __pyx_t_9 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 401; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_L8_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_lhs, __pyx_t_1);
@@ -10351,16 +10720,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_rhs, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":383
+    /* "qupy/dev/_algebra.pyx":402
  *     for eq in eqs:
  *         lhs, rhs = eq.split("=")
  *         A, B = lhs.split("*")             # <<<<<<<<<<<<<<
  *         i = names.index(A)
  *         j = names.index(B)
  */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_lhs, __pyx_n_s_split); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_lhs, __pyx_n_s_split); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 402; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 402; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if ((likely(PyTuple_CheckExact(__pyx_t_7))) || (PyList_CheckExact(__pyx_t_7))) {
@@ -10373,7 +10742,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 402; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       #if CYTHON_COMPILING_IN_CPYTHON
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -10386,15 +10755,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_t_6);
       __Pyx_INCREF(__pyx_t_1);
       #else
-      __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 402; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_1 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 402; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       #endif
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_8 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 402; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -10402,7 +10771,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_GOTREF(__pyx_t_6);
       index = 1; __pyx_t_1 = __pyx_t_9(__pyx_t_8); if (unlikely(!__pyx_t_1)) goto __pyx_L9_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_1);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 402; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_t_9 = NULL;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       goto __pyx_L10_unpacking_done;
@@ -10410,7 +10779,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __pyx_t_9 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 402; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_L10_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_A, __pyx_t_6);
@@ -10418,14 +10787,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_B, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":384
+    /* "qupy/dev/_algebra.pyx":403
  *         lhs, rhs = eq.split("=")
  *         A, B = lhs.split("*")
  *         i = names.index(A)             # <<<<<<<<<<<<<<
  *         j = names.index(B)
  *         rhs, C = rhs[:-1], rhs[-1]
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 384; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 403; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_6 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_1))) {
@@ -10438,16 +10807,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       }
     }
     if (!__pyx_t_6) {
-      __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_A); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 384; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_A); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 403; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
     } else {
-      __pyx_t_8 = PyTuple_New(1+1); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 384; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = PyTuple_New(1+1); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 403; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
       __Pyx_INCREF(__pyx_v_A);
       __Pyx_GIVEREF(__pyx_v_A);
       PyTuple_SET_ITEM(__pyx_t_8, 0+1, __pyx_v_A);
-      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_8, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 384; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_8, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 403; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     }
@@ -10455,14 +10824,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":385
+    /* "qupy/dev/_algebra.pyx":404
  *         A, B = lhs.split("*")
  *         i = names.index(A)
  *         j = names.index(B)             # <<<<<<<<<<<<<<
  *         rhs, C = rhs[:-1], rhs[-1]
  *         k = names.index(C)
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 385; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 404; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_8 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_1))) {
@@ -10475,16 +10844,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       }
     }
     if (!__pyx_t_8) {
-      __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_B); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 385; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_B); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 404; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
     } else {
-      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 385; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 404; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_8); __pyx_t_8 = NULL;
       __Pyx_INCREF(__pyx_v_B);
       __Pyx_GIVEREF(__pyx_v_B);
       PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_v_B);
-      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_6, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 385; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_6, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 404; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
@@ -10492,30 +10861,30 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_j, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":386
+    /* "qupy/dev/_algebra.pyx":405
  *         i = names.index(A)
  *         j = names.index(B)
  *         rhs, C = rhs[:-1], rhs[-1]             # <<<<<<<<<<<<<<
  *         k = names.index(C)
  *         val = None
  */
-    __pyx_t_7 = __Pyx_PyObject_GetSlice(__pyx_v_rhs, 0, -1L, NULL, NULL, &__pyx_slice__11, 0, 1, 1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = __Pyx_PyObject_GetSlice(__pyx_v_rhs, 0, -1L, NULL, NULL, &__pyx_slice__11, 0, 1, 1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 405; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_rhs, -1L, long, 1, __Pyx_PyInt_From_long, 0, 1, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_rhs, -1L, long, 1, __Pyx_PyInt_From_long, 0, 1, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 405; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF_SET(__pyx_v_rhs, __pyx_t_7);
     __pyx_t_7 = 0;
     __Pyx_XDECREF_SET(__pyx_v_C, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":387
+    /* "qupy/dev/_algebra.pyx":406
  *         j = names.index(B)
  *         rhs, C = rhs[:-1], rhs[-1]
  *         k = names.index(C)             # <<<<<<<<<<<<<<
  *         val = None
  *         if not rhs:
  */
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 387; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 406; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_6 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_7))) {
@@ -10528,16 +10897,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       }
     }
     if (!__pyx_t_6) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_C); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 387; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_C); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 406; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
     } else {
-      __pyx_t_8 = PyTuple_New(1+1); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 387; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = PyTuple_New(1+1); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 406; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
       __Pyx_INCREF(__pyx_v_C);
       __Pyx_GIVEREF(__pyx_v_C);
       PyTuple_SET_ITEM(__pyx_t_8, 0+1, __pyx_v_C);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 387; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 406; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     }
@@ -10545,7 +10914,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":388
+    /* "qupy/dev/_algebra.pyx":407
  *         rhs, C = rhs[:-1], rhs[-1]
  *         k = names.index(C)
  *         val = None             # <<<<<<<<<<<<<<
@@ -10555,18 +10924,18 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_INCREF(Py_None);
     __Pyx_XDECREF_SET(__pyx_v_val, Py_None);
 
-    /* "qupy/dev/_algebra.pyx":389
+    /* "qupy/dev/_algebra.pyx":408
  *         k = names.index(C)
  *         val = None
  *         if not rhs:             # <<<<<<<<<<<<<<
  *             val = ONE
  *         elif rhs == "-":
  */
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_rhs); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 389; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_rhs); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 408; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_10 = ((!__pyx_t_2) != 0);
     if (__pyx_t_10) {
 
-      /* "qupy/dev/_algebra.pyx":390
+      /* "qupy/dev/_algebra.pyx":409
  *         val = None
  *         if not rhs:
  *             val = ONE             # <<<<<<<<<<<<<<
@@ -10576,7 +10945,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_float_1_0);
       __Pyx_DECREF_SET(__pyx_v_val, __pyx_float_1_0);
 
-      /* "qupy/dev/_algebra.pyx":389
+      /* "qupy/dev/_algebra.pyx":408
  *         k = names.index(C)
  *         val = None
  *         if not rhs:             # <<<<<<<<<<<<<<
@@ -10586,17 +10955,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       goto __pyx_L11;
     }
 
-    /* "qupy/dev/_algebra.pyx":391
+    /* "qupy/dev/_algebra.pyx":410
  *         if not rhs:
  *             val = ONE
  *         elif rhs == "-":             # <<<<<<<<<<<<<<
  *             val = -ONE
  *         else:
  */
-    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s__2, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 391; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s__2, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 410; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     if (__pyx_t_10) {
 
-      /* "qupy/dev/_algebra.pyx":392
+      /* "qupy/dev/_algebra.pyx":411
  *             val = ONE
  *         elif rhs == "-":
  *             val = -ONE             # <<<<<<<<<<<<<<
@@ -10606,7 +10975,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_float_neg_1_0);
       __Pyx_DECREF_SET(__pyx_v_val, __pyx_float_neg_1_0);
 
-      /* "qupy/dev/_algebra.pyx":391
+      /* "qupy/dev/_algebra.pyx":410
  *         if not rhs:
  *             val = ONE
  *         elif rhs == "-":             # <<<<<<<<<<<<<<
@@ -10616,7 +10985,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       goto __pyx_L11;
     }
 
-    /* "qupy/dev/_algebra.pyx":394
+    /* "qupy/dev/_algebra.pyx":413
  *             val = -ONE
  *         else:
  *             assert 0, repr(eq)             # <<<<<<<<<<<<<<
@@ -10627,18 +10996,18 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       #ifndef CYTHON_WITHOUT_ASSERTIONS
       if (unlikely(!Py_OptimizeFlag)) {
         if (unlikely(!0)) {
-          __pyx_t_1 = PyObject_Repr(__pyx_v_eq); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 394; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_1 = PyObject_Repr(__pyx_v_eq); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 413; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_1);
           PyErr_SetObject(PyExc_AssertionError, __pyx_t_1);
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 394; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 413; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
       }
       #endif
     }
     __pyx_L11:;
 
-    /* "qupy/dev/_algebra.pyx":395
+    /* "qupy/dev/_algebra.pyx":414
  *         else:
  *             assert 0, repr(eq)
  *         assert coefs.get((i, j, k)) is None             # <<<<<<<<<<<<<<
@@ -10647,7 +11016,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
  */
     #ifndef CYTHON_WITHOUT_ASSERTIONS
     if (unlikely(!Py_OptimizeFlag)) {
-      __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 414; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_INCREF(__pyx_v_i);
       __Pyx_GIVEREF(__pyx_v_i);
@@ -10658,26 +11027,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_v_k);
       __Pyx_GIVEREF(__pyx_v_k);
       PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_v_k);
-      __pyx_t_7 = __Pyx_PyDict_GetItemDefault(__pyx_v_coefs, __pyx_t_1, Py_None); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = __Pyx_PyDict_GetItemDefault(__pyx_v_coefs, __pyx_t_1, Py_None); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 414; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_10 = (__pyx_t_7 == Py_None);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       if (unlikely(!(__pyx_t_10 != 0))) {
         PyErr_SetNone(PyExc_AssertionError);
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 414; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
     }
     #endif
 
-    /* "qupy/dev/_algebra.pyx":396
+    /* "qupy/dev/_algebra.pyx":415
  *             assert 0, repr(eq)
  *         assert coefs.get((i, j, k)) is None
  *         coefs[i, j, k] = val             # <<<<<<<<<<<<<<
  * 
  *     algebra = Algebra(dim, names, coefs)
  */
-    __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 396; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 415; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_INCREF(__pyx_v_i);
     __Pyx_GIVEREF(__pyx_v_i);
@@ -10688,10 +11057,10 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_INCREF(__pyx_v_k);
     __Pyx_GIVEREF(__pyx_v_k);
     PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_k);
-    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_7, __pyx_v_val) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 396; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_7, __pyx_v_val) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 415; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":381
+    /* "qupy/dev/_algebra.pyx":400
  * 
  *     eqs = rel.split()
  *     for eq in eqs:             # <<<<<<<<<<<<<<
@@ -10701,16 +11070,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":398
+  /* "qupy/dev/_algebra.pyx":417
  *         coefs[i, j, k] = val
  * 
  *     algebra = Algebra(dim, names, coefs)             # <<<<<<<<<<<<<<
  *     return algebra
  * 
  */
-  __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 398; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 417; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 398; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 417; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_4);
@@ -10721,13 +11090,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   __Pyx_GIVEREF(__pyx_v_coefs);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_coefs);
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Algebra), __pyx_t_7, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 398; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Algebra), __pyx_t_7, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 417; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_v_algebra = ((struct __pyx_obj_4qupy_3dev_8_algebra_Algebra *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":399
+  /* "qupy/dev/_algebra.pyx":418
  * 
  *     algebra = Algebra(dim, names, coefs)
  *     return algebra             # <<<<<<<<<<<<<<
@@ -10739,7 +11108,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   __pyx_r = ((PyObject *)__pyx_v_algebra);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":370
+  /* "qupy/dev/_algebra.pyx":389
  * 
  * 
  * def build_algebra(names, rel):             # <<<<<<<<<<<<<<
@@ -10931,8 +11300,9 @@ static PyMethodDef __pyx_methods_4qupy_3dev_8_algebra_Tensor[] = {
   {"norm", (PyCFunction)__pyx_pw_4qupy_3dev_8_algebra_6Tensor_27norm, METH_NOARGS, 0},
   {"eq", (PyCFunction)__pyx_pw_4qupy_3dev_8_algebra_6Tensor_29eq, METH_O, 0},
   {"ne", (PyCFunction)__pyx_pw_4qupy_3dev_8_algebra_6Tensor_31ne, METH_O, 0},
-  {"rmul", (PyCFunction)__pyx_pw_4qupy_3dev_8_algebra_6Tensor_39rmul, METH_O, 0},
-  {"subs", (PyCFunction)__pyx_pw_4qupy_3dev_8_algebra_6Tensor_47subs, METH_O, 0},
+  {"permute", (PyCFunction)__pyx_pw_4qupy_3dev_8_algebra_6Tensor_37permute, METH_O, 0},
+  {"rmul", (PyCFunction)__pyx_pw_4qupy_3dev_8_algebra_6Tensor_41rmul, METH_O, 0},
+  {"subs", (PyCFunction)__pyx_pw_4qupy_3dev_8_algebra_6Tensor_49subs, METH_VARARGS|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
 };
 
@@ -10945,15 +11315,15 @@ static struct PyGetSetDef __pyx_getsets_4qupy_3dev_8_algebra_Tensor[] = {
 
 static PyNumberMethods __pyx_tp_as_number_Tensor = {
   __pyx_pw_4qupy_3dev_8_algebra_6Tensor_35__add__, /*nb_add*/
-  __pyx_pw_4qupy_3dev_8_algebra_6Tensor_37__sub__, /*nb_subtract*/
-  __pyx_pw_4qupy_3dev_8_algebra_6Tensor_45__mul__, /*nb_multiply*/
+  __pyx_pw_4qupy_3dev_8_algebra_6Tensor_39__sub__, /*nb_subtract*/
+  __pyx_pw_4qupy_3dev_8_algebra_6Tensor_47__mul__, /*nb_multiply*/
   #if PY_MAJOR_VERSION < 3 || CYTHON_COMPILING_IN_PYPY
   0, /*nb_divide*/
   #endif
   0, /*nb_remainder*/
   0, /*nb_divmod*/
   0, /*nb_power*/
-  __pyx_pw_4qupy_3dev_8_algebra_6Tensor_41__neg__, /*nb_negative*/
+  __pyx_pw_4qupy_3dev_8_algebra_6Tensor_43__neg__, /*nb_negative*/
   0, /*nb_positive*/
   0, /*nb_absolute*/
   0, /*nb_nonzero*/
@@ -10998,7 +11368,7 @@ static PyNumberMethods __pyx_tp_as_number_Tensor = {
   0, /*nb_inplace_true_divide*/
   0, /*nb_index*/
   #if PY_VERSION_HEX >= 0x03050000
-  __pyx_pw_4qupy_3dev_8_algebra_6Tensor_43__matmul__, /*nb_matrix_multiply*/
+  __pyx_pw_4qupy_3dev_8_algebra_6Tensor_45__matmul__, /*nb_matrix_multiply*/
   #endif
   #if PY_VERSION_HEX >= 0x03050000
   0, /*nb_inplace_matrix_multiply*/
@@ -12056,6 +12426,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_qupy_tool, __pyx_k_qupy_tool, sizeof(__pyx_k_qupy_tool), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_rel, __pyx_k_rel, sizeof(__pyx_k_rel), 0, 0, 1, 1},
+  {&__pyx_n_s_rename, __pyx_k_rename, sizeof(__pyx_k_rename), 0, 0, 1, 1},
   {&__pyx_n_s_replace, __pyx_k_replace, sizeof(__pyx_k_replace), 0, 0, 1, 1},
   {&__pyx_n_s_rhs, __pyx_k_rhs, sizeof(__pyx_k_rhs), 0, 0, 1, 1},
   {&__pyx_n_s_rmatmul, __pyx_k_rmatmul, sizeof(__pyx_k_rmatmul), 0, 0, 1, 1},
@@ -12070,6 +12441,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_throw, __pyx_k_throw, sizeof(__pyx_k_throw), 0, 0, 1, 1},
   {&__pyx_n_s_val, __pyx_k_val, sizeof(__pyx_k_val), 0, 0, 1, 1},
   {&__pyx_n_s_value, __pyx_k_value, sizeof(__pyx_k_value), 0, 0, 1, 1},
+  {&__pyx_n_s_zero, __pyx_k_zero, sizeof(__pyx_k_zero), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
@@ -12097,61 +12469,61 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
-  /* "qupy/dev/_algebra.pyx":375
+  /* "qupy/dev/_algebra.pyx":394
  *     dim = len(names)
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE             # <<<<<<<<<<<<<<
  *     for i in range(1, dim):
  *         coefs[0, i, i] = ONE
  */
-  __pyx_tuple__7 = PyTuple_Pack(3, __pyx_int_0, __pyx_int_0, __pyx_int_0); if (unlikely(!__pyx_tuple__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 375; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__7 = PyTuple_Pack(3, __pyx_int_0, __pyx_int_0, __pyx_int_0); if (unlikely(!__pyx_tuple__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 394; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
 
-  /* "qupy/dev/_algebra.pyx":382
+  /* "qupy/dev/_algebra.pyx":401
  *     eqs = rel.split()
  *     for eq in eqs:
  *         lhs, rhs = eq.split("=")             # <<<<<<<<<<<<<<
  *         A, B = lhs.split("*")
  *         i = names.index(A)
  */
-  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_s__8); if (unlikely(!__pyx_tuple__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_s__8); if (unlikely(!__pyx_tuple__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 401; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
 
-  /* "qupy/dev/_algebra.pyx":383
+  /* "qupy/dev/_algebra.pyx":402
  *     for eq in eqs:
  *         lhs, rhs = eq.split("=")
  *         A, B = lhs.split("*")             # <<<<<<<<<<<<<<
  *         i = names.index(A)
  *         j = names.index(B)
  */
-  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_s__3); if (unlikely(!__pyx_tuple__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_s__3); if (unlikely(!__pyx_tuple__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 402; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__10);
   __Pyx_GIVEREF(__pyx_tuple__10);
 
-  /* "qupy/dev/_algebra.pyx":386
+  /* "qupy/dev/_algebra.pyx":405
  *         i = names.index(A)
  *         j = names.index(B)
  *         rhs, C = rhs[:-1], rhs[-1]             # <<<<<<<<<<<<<<
  *         k = names.index(C)
  *         val = None
  */
-  __pyx_slice__11 = PySlice_New(Py_None, __pyx_int_neg_1, Py_None); if (unlikely(!__pyx_slice__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_slice__11 = PySlice_New(Py_None, __pyx_int_neg_1, Py_None); if (unlikely(!__pyx_slice__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 405; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_slice__11);
   __Pyx_GIVEREF(__pyx_slice__11);
 
-  /* "qupy/dev/_algebra.pyx":370
+  /* "qupy/dev/_algebra.pyx":389
  * 
  * 
  * def build_algebra(names, rel):             # <<<<<<<<<<<<<<
  *     names = list(names)
  *     assert names[0] == "I" # identity
  */
-  __pyx_tuple__12 = PyTuple_Pack(16, __pyx_n_s_names, __pyx_n_s_rel, __pyx_n_s_dim, __pyx_n_s_coefs, __pyx_n_s_i, __pyx_n_s_eqs, __pyx_n_s_eq, __pyx_n_s_lhs, __pyx_n_s_rhs, __pyx_n_s_A, __pyx_n_s_B, __pyx_n_s_j, __pyx_n_s_C, __pyx_n_s_k, __pyx_n_s_val, __pyx_n_s_algebra); if (unlikely(!__pyx_tuple__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__12 = PyTuple_Pack(16, __pyx_n_s_names, __pyx_n_s_rel, __pyx_n_s_dim, __pyx_n_s_coefs, __pyx_n_s_i, __pyx_n_s_eqs, __pyx_n_s_eq, __pyx_n_s_lhs, __pyx_n_s_rhs, __pyx_n_s_A, __pyx_n_s_B, __pyx_n_s_j, __pyx_n_s_C, __pyx_n_s_k, __pyx_n_s_val, __pyx_n_s_algebra); if (unlikely(!__pyx_tuple__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 389; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
-  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(2, 0, 16, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_simon_home_github_qupy_qup, __pyx_n_s_build_algebra, 370, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(2, 0, 16, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_simon_home_github_qupy_qup, __pyx_n_s_build_algebra, 389, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 389; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -12356,16 +12728,16 @@ PyMODINIT_FUNC PyInit__algebra(void)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_4qupy_3dev_8_algebra_Tensor);
 
-  /* "qupy/dev/_algebra.pyx":370
+  /* "qupy/dev/_algebra.pyx":389
  * 
  * 
  * def build_algebra(names, rel):             # <<<<<<<<<<<<<<
  *     names = list(names)
  *     assert names[0] == "I" # identity
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4qupy_3dev_8_algebra_1build_algebra, NULL, __pyx_n_s_qupy_dev__algebra); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4qupy_3dev_8_algebra_1build_algebra, NULL, __pyx_n_s_qupy_dev__algebra); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 389; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_build_algebra, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_build_algebra, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 389; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "qupy/dev/_algebra.pyx":1

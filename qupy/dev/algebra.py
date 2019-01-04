@@ -129,6 +129,14 @@ class Tensor(object):
         self.keys = list(self.coefs.keys()) # cache this
         self.items = list(self.coefs.items()) # cache this
 
+    def permute(self, perm):
+        coefs = {}
+        idxs = list(range(self.grade))
+        for (k, v) in self.items:
+            k = tuple(k[perm[i]] for i in idxs)
+            coefs[k] = v
+        return Tensor(coefs, self.grade, self.algebra)
+
     def get_zero(self):
         return Tensor({}, self.grade, self.algebra)
 

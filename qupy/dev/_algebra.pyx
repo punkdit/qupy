@@ -276,6 +276,18 @@ cdef class Tensor:
             op.iadditem(k, v)
         return op
 
+    def permute(Tensor self, perm):
+        cdef Tensor op
+        cdef int i
+        op = Tensor(self.algebra)
+        for (k, v) in self.get_items():
+            _k = []
+            for i in range(len(k)):
+                _k.append(k[perm[i]])
+            _k = tuple(_k)
+            op[_k] = v
+        return op
+
     def __sub__(Tensor self, Tensor other):
         #assert self.grade == other.grade
         cdef Tensor op = self.copy()
@@ -346,8 +358,12 @@ cdef class Tensor:
 
         return op
 
-    def subs(self, rename):
-        the_op = Tensor(self.algebra) # zero
+    def subs(self, rename, zero=None):
+#        if zero is None:
+#            the_op = Tensor(self.algebra) # zero
+#        else:
+#            the_op = zero
+        the_op = None
         algebra = self.algebra
         for (k, v) in self.get_items():
             final = None
@@ -361,7 +377,10 @@ cdef class Tensor:
                     final = op
                 else:
                     final = final @ op # tensor
-            the_op = the_op + complex(v)*final # ARRGGGHHH !!
+            if the_op is None:
+                the_op = complex(v)*final # ARRGGGHHH !!
+            else:
+                the_op = the_op + complex(v)*final # ARRGGGHHH !!
         return the_op
 
 

@@ -54,6 +54,8 @@ def test_pauli():
 
     assert (XI + IX).subs({"X": I-Y}) == ((I-Y)@I + I@(I-Y))
 
+    assert (X@I@Z).permute((1, 0, 2)) == I@X@Z
+
 
 if __name__ == "__main__":
 
