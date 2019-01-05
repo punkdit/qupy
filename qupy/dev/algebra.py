@@ -261,7 +261,7 @@ class Tensor(object):
         # slow but it works...
         assert self.algebra is not None
         assert self.algebra is other.algebra
-        assert self.grade == other.grade
+        assert self.grade == other.grade, (self, other)
         zero = scalar.zero
         algebra = self.algebra
         struct = algebra.struct

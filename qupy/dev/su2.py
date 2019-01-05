@@ -1469,7 +1469,14 @@ def test_internal_series_fast():
 
     perms = list(allperms(list(range(degree))))
 
+    if degree>0:
+        debug = write
+    else:
+        def debug(*args):
+            pass
+
     while opis:
+        debug("/")
         opi = iter(opis).__next__()
 
         op = [[I, X, Z, Y][i] for i in opi]
@@ -1478,6 +1485,8 @@ def test_internal_series_fast():
         Q = P.get_zero()
         for i in range(n):
             Q = Q + TG[G.inv[i]] * P * TG[i]
+            debug(".")
+        debug("\n")
 
         if Q==Q.get_zero():
             for perm in perms:
@@ -1507,6 +1516,55 @@ def test_internal_series_fast():
     found = linear_independent(found, pauli.construct)
     print("dimension:", len(found))
 
+
+def parse_op(algebra, s):
+    terms = []
+    idx = 1
+    s0 = s
+    while idx < len(s):
+        if s[idx]=="+" or s[idx]=="-":
+            term = s[:idx]
+            terms.append(term)
+            s = s[idx:]
+            idx = 0
+        idx += 1
+    terms.append(s)
+    assert ''.join(terms) == s0
+    ops = []
+    for term in terms:
+        if "*" in term:
+            term = term.split("*")[1]
+        op = algebra.parse(term)
+        ops.append(op)
+    return ops
+
+
+def find_commutative_invariants():
+
+    pauli = build_algebra("IXZY",
+        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    name = argv.next()
+    print("loading", name)
+    f = open(name)
+    for line in f:
+        #print(line)
+        line = line.strip()
+        flds = line.split(" ")
+        assert len(flds)==2
+        op = flds[1]
+        ops = parse_op(pauli, op)
+        N = len(ops)
+        abelian = True
+        #for op in ops:
+        #    print(op, repr(op))
+        for i in range(N):
+          for j in range(i+1, N):
+            a, b = ops[i], ops[j]
+            if a*b != b*a:
+                abelian = False
+        if abelian:
+            print(op)
 
 
 def main():
