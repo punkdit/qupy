@@ -144,6 +144,9 @@ class Tensor(object):
         #return list(self.coefs.keys())
         return self.keys
 
+    def nnz(self, EPSILON=1e-8):
+        return len([item for item in self.items if abs(item[1])>EPSILON])
+
     def __getitem__(self, key):
         return self.coefs.get(key, self.zero)
 

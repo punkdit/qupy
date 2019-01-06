@@ -1458,6 +1458,15 @@ def test_internal_series_fast():
     # express each g as a sum of pauli's
     PG = [g for g in promote(pauli, G)]
 
+    if 0:
+        for g in [X, Z, Y]:
+            print("%s: "%g, end=" ")
+            for i in range(n):
+                R = PG[G.inv[i]] * g * PG[i]
+                print(R, end=" ")
+            print()
+        return
+
     # transverse operators
     print("transverse operators")
     degree = argv.get("degree", 2)
@@ -1469,22 +1478,30 @@ def test_internal_series_fast():
 
     perms = list(allperms(list(range(degree))))
 
-    if degree>0:
+    if degree>4:
         debug = write
     else:
         def debug(*args):
             pass
 
     while opis:
-        debug("/")
+        debug("[%d]"%len(opis))
         opi = iter(opis).__next__()
 
         op = [[I, X, Z, Y][i] for i in opi]
         P = reduce(matmul, op)
+        debug("[%s]"%P)
 
         Q = P.get_zero()
         for i in range(n):
-            Q = Q + TG[G.inv[i]] * P * TG[i]
+            R = TG[G.inv[i]] * P * TG[i]
+            nnz = R.nnz()
+            assert nnz>=1
+#            if nnz==1:
+#                debug("|")
+#                print([str(k) for k in R.get_keys()], end="")
+            Q = Q + R
+            #print("\t", R)
             debug(".")
         debug("\n")
 

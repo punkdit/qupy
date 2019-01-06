@@ -1,11 +1,15 @@
 # cython: profile=False
 
+cdef extern from "complex.h":
+    pass
+
 from cpython.object cimport Py_EQ, Py_NE
 
 DEF ONE = 1.0
 DEF ZERO = 0.0
 DEF EPSILON = 1e-8
 
+cdef double EPSILON = 1e-8
 
 cdef class Tensor
 
@@ -80,13 +84,23 @@ cdef class Tensor:
 
     cdef public Algebra algebra
     cdef public object children
-    cdef public object value
+#    cdef object value
+    cdef double complex value
     cdef object _keys, _values, _items
 
     def __init__(Tensor self, Algebra algebra):
         self.algebra = algebra
         self.children = [None]*algebra.dim
         self.value = 0.0
+# FAIL
+#        self._keys = []
+#        self._values = []
+#        self._items = []
+        self._keys = None
+        self._values = None
+        self._items = None
+
+    cdef flush(Tensor self):
         self._keys = None
         self._values = None
         self._items = None
@@ -151,16 +165,19 @@ cdef class Tensor:
                 child.children[i] = _child
             child = _child
         child.value += value
+        child.flush()
 
         # flush cache
-        self._keys = None
-        self._values = None
-        self._items = None
+#        self._keys = None
+#        self._values = None
+#        self._items = None
+        self.flush()
 
     def __setitem__(Tensor self, key, object value):
         # set value at key
         cdef int i
         cdef Tensor child, _child
+#        print(id(self), "__setitem__")
         child = self
         for i in key:
             _child = child.children[i]
@@ -169,19 +186,32 @@ cdef class Tensor:
                 child.children[i] = _child
             child = _child
         child.value = value
+        child.flush()
 
         # flush cache
-        self._keys = None
-        self._values = None
-        self._items = None
+#        self._keys = None
+#        self._values = None
+#        self._items = None
+#        print(id(self), "__setitem__: flush")
+        self.flush()
+
+    def nnz(Tensor self, double EPSILON=EPSILON):
+        count = 0
+        for value in self.get_values():
+            if abs(value) > EPSILON:
+                count += 1
+        return count
 
     cpdef object get_keys(Tensor self):
         cdef Tensor child
         cdef int i
         if self._keys is not None:
+            #print(id(self), "get_keys: cache hit")
             return self._keys
         keys = []
-        if self.value != ZERO:
+#        if self.value != ZERO:
+#            keys.append(())
+        if abs(self.value) > EPSILON:
             keys.append(())
         for i from 0<=i<self.algebra.dim:
             child = self.children[i]
@@ -190,6 +220,7 @@ cdef class Tensor:
             for key in child.get_keys():
                 keys.append((i,)+key)
         self._keys = keys
+        #print(id(self), "get_keys: cache miss")
         return keys
 
     cdef object get_values(Tensor self):
@@ -198,7 +229,8 @@ cdef class Tensor:
         if self._values is not None:
             return self._values
         values = []
-        if self.value != ZERO:
+#        if self.value != ZERO:
+        if abs(self.value) > EPSILON:
             values.append(self.value)
         for i from 0<=i<self.algebra.dim:
             child = self.children[i]
@@ -215,7 +247,8 @@ cdef class Tensor:
         if self._items is not None:
             return self._items
         items = []
-        if self.value != ZERO:
+#        if self.value != ZERO:
+        if abs(self.value) > EPSILON:
             items.append(((), self.value))
         for i from 0<=i<self.algebra.dim:
             child = self.children[i]
@@ -333,6 +366,7 @@ cdef class Tensor:
 
         cdef int n = self.grade
         cdef int i
+        #cdef double complex val, wal, r # slower
 
         key = [None]*n
         for (idx, val) in items:
@@ -358,11 +392,7 @@ cdef class Tensor:
 
         return op
 
-    def subs(self, rename, zero=None):
-#        if zero is None:
-#            the_op = Tensor(self.algebra) # zero
-#        else:
-#            the_op = zero
+    def subs(self, rename):
         the_op = None
         algebra = self.algebra
         for (k, v) in self.get_items():

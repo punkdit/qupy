@@ -16,7 +16,13 @@ def fstr(x):
             rx = round(x, digits)
             if abs(x-rx)<EPSILON:
                 x = rx
-        
+    elif abs(x.real)<EPSILON:
+        x = x.imag
+        for digits in range(4):
+            rx = round(x, digits)
+            if abs(x-rx)<EPSILON:
+                x = rx
+        return "%sj"%x
     return str(x)
 
 

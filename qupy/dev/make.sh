@@ -8,3 +8,6 @@ gcc -DNDEBUG -g -O3 -Wall -Wstrict-prototypes -fPIC -I/usr/include/python3.5 \
 gcc -shared _algebra.o -o _algebra.so
 
 
+./test_algebra.py
+
+

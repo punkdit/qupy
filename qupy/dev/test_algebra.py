@@ -16,11 +16,13 @@ def test_pauli():
     Z = pauli.Z
 
     op = Tensor(pauli)
+    assert op.get_keys() == []
     op[(0,)] = 1.
     assert op[(0,)] == 1.
     assert op[(1,)] == 0.
+    assert op.get_keys() == [(0,)]
 
-    assert str(op) == "I"
+    assert str(op) == "I", repr(str(op))
     op = I*X
     assert str(op) == "X"
 
@@ -56,9 +58,16 @@ def test_pauli():
 
     assert (X@I@Z).permute((1, 0, 2)) == I@X@Z
 
+    assert XI.nnz(EPSILON) == 1
+    assert (XI + IX).nnz(EPSILON) == 2
+
+
+
 
 if __name__ == "__main__":
 
     test_pauli()
+
+    print("OK")
 
 
