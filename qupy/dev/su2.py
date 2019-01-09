@@ -1474,6 +1474,14 @@ def test_internal_series_fast():
 
     found = []
     opis = set(cross(([0, 1, 2, 3],)*degree))
+    weight = argv.weight
+
+    if argv.full:
+        weight = degree
+
+    if weight is not None:
+        opis = [opi for opi in opis if degree-opi.count(0)==weight]
+
     print("opis:", len(opis))
 
     perms = list(allperms(list(range(degree))))
@@ -1492,12 +1500,22 @@ def test_internal_series_fast():
         P = reduce(matmul, op)
         debug("[%s]"%P)
 
+        # any one of these guys will generate the same Q operator
+        singletons = set([opi])
+
+        # find Q as a sum over the action of the group on P
         Q = P.get_zero()
         for i in range(n):
             R = TG[G.inv[i]] * P * TG[i]
             nnz = R.nnz()
             assert nnz>=1
-#            if nnz==1:
+            if nnz==1:
+                keys = R.get_keys()
+                key = keys[0]
+                singletons.add(key)
+                #if key!=opi and key in opis:
+                #    opis.remove(key)
+                #    debug("x")
 #                debug("|")
 #                print([str(k) for k in R.get_keys()], end="")
             Q = Q + R
@@ -1506,10 +1524,14 @@ def test_internal_series_fast():
         debug("\n")
 
         if Q==Q.get_zero():
+            #debug("==0 ")
             for perm in perms:
-                opj = tuple(opi[perm[i]] for i in range(degree))
-                if opj in opis:
-                    opis.remove(opj)
+                for opi in singletons:
+                    opj = tuple(opi[perm[i]] for i in range(degree))
+                    if opj in opis:
+                        opis.remove(opj)
+                        #debug("x")
+            #debug("\n")
             continue
 
         
