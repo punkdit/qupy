@@ -155,6 +155,7 @@ class Poly(object):
         for key, value in list(other.cs.items()):
             cs[key] = cs.get(key, scalar.zero) + value
         return Poly(cs, self.rank)
+    __radd__ = __add__
 
     def __sub__(self, other):
         if is_scalar(other):
@@ -164,6 +165,10 @@ class Poly(object):
         for key, value in list(other.cs.items()):
             cs[key] = cs.get(key, scalar.zero) - value
         return Poly(cs, self.rank)
+
+    def __rsub__(self, other):
+        # other - self
+        return -self + other
 
     def __neg__(self):
         cs = {}

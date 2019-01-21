@@ -49,6 +49,7 @@ class Group(object):
         G, words = mulclose_names(gen, names, **kw)
         self.G = G
         self.words = words
+        self.gen = gen
         self.identity = None
         self.inv = None
 
@@ -244,8 +245,6 @@ def build():
     #print("Icosa:", words.values())
     assert len(Icosa)==120
 
-
-build()
 
 
 #class Ring(object):
@@ -1306,7 +1305,7 @@ def test_molien():
     n = len(G)
     #G.build()
 
-    degree = argv.get("degree", 10)
+    degree = argv.get("degree", 20)
     series = [0.]*(degree+1)
 
     for g in G:
@@ -1611,6 +1610,8 @@ def main():
 
 
 if __name__ == "__main__":
+
+    build()
 
     _seed = argv.seed
     if _seed is not None:

@@ -175,7 +175,7 @@ class Qu(AbstractQu):
         dns = [i for i, ud in enumerate(self.valence) if ud=='d']
         return [self.shape[i] for i in ups] == [self.shape[i] for i in dns]
 
-    def eigs(H, verbose=False):
+    def eigs(H, verbose=False, hermitian=False):
         if not H.is_square() or not H.rank:
             raise ValueError(H.shape)
 
@@ -184,7 +184,10 @@ class Qu(AbstractQu):
 
         if verbose:
             print("eig...", end=' ', flush=True)
-        eigvals, eigvecs = numpy.linalg.eigh(H1.v)
+        if hermitian:
+            eigvals, eigvecs = numpy.linalg.eigh(H1.v)
+        else:
+            eigvals, eigvecs = numpy.linalg.eig(H1.v)
         N = len(eigvals)
         if verbose:
             print("done")
