@@ -96,6 +96,39 @@ def sample_counts(Hz, logop=None, trials=10000):
     return counts
 
 
+def sample_spin(Hz, logop=None, k=0, trials=10000):
+    m, n = Hz.shape
+    counts = numpy.array([0., 0])
+    if logop is None:
+        logop = numpy.zeros((n,), dtype=int)
+    ri = numpy.random.randint
+    for i in range(trials):
+        u = ri(0, 2, size=(m,))
+        v = dot2(u, Hz)
+        v += logop
+        v %= 2
+        counts[v[k]] += 1
+    counts /= trials
+    return counts
+
+
+def sample_spin_2(Hz, logop=None, k0=0, k1=1, trials=10000):
+    m, n = Hz.shape
+    counts = numpy.array([0., 0.])
+    if logop is None:
+        logop = numpy.zeros((n,), dtype=int)
+    ri = numpy.random.randint
+    for i in range(trials):
+        u = ri(0, 2, size=(m,))
+        v = dot2(u, Hz)
+        v += logop
+        v %= 2
+        counts[(v[k0]+v[k1])%2] += 1
+    counts /= trials
+    return counts
+
+
+
 
 def sample_counts_2(Hz, trials=100):
     m, n = Hz.shape
@@ -185,6 +218,16 @@ def main():
         logop = get_rand_sparse(1, n, weight)
         logop.shape = (n,)
 
+    if argv.spin:
+        counts = sample_spin(Hz)
+        print(counts)
+        return
+
+    if argv.spin_2:
+        counts = sample_spin_2(Hz)
+        print(counts)
+        return
+
     genus = argv.get("genus", 1)
 
     if genus==1:
@@ -208,7 +251,13 @@ def main():
         return
 
     if argv.show:
-        print(repr(counts))
+        print(list(counts))
+    if argv.showpoly:
+        cs = list(int(round(x)) for x in counts)
+        n = len(cs)
+        s = ' + '.join("%d*x**%d*y**%d"%(v, i, n-i-1) 
+            for i, v in enumerate(cs) if v)
+        print(s)
 
     avg = get_avg(counts)
     print("get_avg:", avg)
@@ -244,6 +293,30 @@ def main():
         pyplot.show()
 
 
+def test_poly():
+    from qupy.dev.comm import Poly
+    x = Poly({(1,0):1})
+    y = Poly({(0,1):1})
+
+    # l=3 toric code
+    s = "y**18 + 9*x**4 * y**14 + 24*x**6 * y**12 + \
+        99*x**8 * y**10 + 72*x**10 * y**8 + 51*x**12 * y**6"
+
+    # l=4 toric code
+    s = "1*x**0*y**32 + 16*x**4*y**28 + 32*x**6*y**26 + \
+        212*x**8*y**24 + 864*x**10*y**22 + 3344*x**12*y**20 + \
+        6784*x**14*y**18 + 10262*x**16*y**16 + 6784*x**18*y**14 + \
+        3344*x**20*y**12 + 864*x**22*y**10 + 212*x**24*y**8 + \
+        32*x**26*y**6 + 16*x**28*y**4 + 1*x**32*y**0"
+
+    p = eval(s, {"x":x, "y":y})
+    print(p)
+
+    p = eval(s, {"x":x+y, "y":x-y})
+    p = p/32768.
+    print(p)
+    
+
 
 if __name__ == "__main__":
 
@@ -252,6 +325,8 @@ if __name__ == "__main__":
         seed(_seed)
         numpy.random.seed(_seed)
 
-    main()
+    fn = argv.next() or "main"
+    fn = eval(fn)
+    fn()
 
 

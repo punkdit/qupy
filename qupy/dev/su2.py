@@ -207,24 +207,22 @@ def build():
         assert g in Cliff
 
     # ----------------------------------
-    # binary tetrahedral group ... hacked
+    # binary tetrahedral group 
 
     i = cyclotomic(4)
 
     gen = [
         [[(-1+i)/2, (-1+i)/2], [(1+i)/2, (-1-i)/2]],
-        [[0,i], [-i,0]]
+        [[-1/2-1/2*i, -1/2-1/2*i], [1/2-1/2*i, -1/2+1/2*i]]
     ]
 
     gen = [Qu((2, 2), 'ud', v) for v in gen]
 
     Tetra = Group(gen, "CD")
-    assert len(Tetra)==48 # whoops it must be another Octa ... 
-    
-    gen = [g for g in Tetra if g in Octa]  # hack this
-    Tetra = Group(gen, [Tetra.words[g] for g in gen])
-    #print("Tetra:", words.values())
-    assert len(Tetra)==24 # _works!
+    assert len(Tetra)==24
+
+    for g in Tetra:
+        assert g in Octa
 
     # ----------------------------------
     # binary icosahedral group
