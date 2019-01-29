@@ -24,6 +24,7 @@ from qupy.util import mulclose, mulclose_names, show_spec
 from qupy.tool import fstr, astr, cross, write
 from qupy.argv import argv
 from qupy.dev.comm import Poly
+from qupy.dev import groups
 
 if argv.fast:
     print("importing _algebra")
@@ -186,62 +187,41 @@ def build():
     # ----------------------------------
     # binary octahedral group
 
-    x = cyclotomic(8)
+    idx = argv.get("idx", 0)
 
-    a = x-x**3 # sqrt(2)
-    i = x**2
-
-    gen = [
-        [[(-1+i)/2,(-1+i)/2], [(1+i)/2,(-1-i)/2]], 
-        [[(1+i)/a,0], [0,(1-i)/a]]
-    ]
-    gen = [Qu((2, 2), 'ud', v) for v in gen]
+    gen, G = groups.build_octa(idx)
     octa_gen = gen
 
     Octa = Group(gen, "AB")
     assert len(Octa)==48
     #print("Octa:", Octa.words.values())
 
-    # Octa is a subgroup of Cliff:
-    for g in octa_gen:
-        assert g in Cliff
-
     # ----------------------------------
     # binary tetrahedral group 
 
-    i = cyclotomic(4)
-
-    gen = [
-        [[(-1+i)/2, (-1+i)/2], [(1+i)/2, (-1-i)/2]],
-        [[-1/2-1/2*i, -1/2-1/2*i], [1/2-1/2*i, -1/2+1/2*i]]
-    ]
-
-    gen = [Qu((2, 2), 'ud', v) for v in gen]
+    gen, G = groups.build_tetra(idx)
 
     Tetra = Group(gen, "CD")
     assert len(Tetra)==24
 
-    for g in Tetra:
-        assert g in Octa
-
     # ----------------------------------
     # binary icosahedral group
 
-    v = cyclotomic(10)
-    z5 = v**2
-    i = z5**5
-    a = 2*z5**3 + 2*z5**2 + 1 #sqrt(5)
-    gen = [
-        [[z5**3,0], [ 0,z5**2]], 
-        [[0,1], [ -1,0]], 
-        [[(z5**4-z5)/a, (z5**2-z5**3)/a], [ (z5**2-z5**3)/a, -(z5**4-z5)/a]]
-    ]
-    
-    gen = [Qu((2, 2), 'ud', v) for v in gen]
+    gen, G = groups.build_icosa(idx)
 
-    Icosa = Group(gen, "EFG")
+    Icosa = Group(gen, "EF")
     #print("Icosa:", words.values())
     assert len(Icosa)==120
+
+    # ----------------------------------
+
+    if 0:
+        for g in Tetra:
+            assert g in Octa
+    
+        # Octa is a subgroup of Cliff:
+        for g in octa_gen:
+            assert g in Cliff
 
 
 
@@ -717,7 +697,7 @@ def decompose(basis, op):
     return v
 
 
-def promote(pauli, G):
+def promote_pauli(pauli, G):
     I = Qu((2, 2), 'ud', [[1, 0], [0, 1]])
     X = Qu((2, 2), 'ud', [[0, 1], [1, 0]])
     Z = Qu((2, 2), 'ud', [[1, 0], [0, -1]])
@@ -739,6 +719,48 @@ def promote(pauli, G):
         g = pauli.get_zero(1)
         for i in range(pauli.dim):
             g = g + complex(v[i])*pauli.basis[i] # ARGH!
+        yield g
+
+
+def show_algebra():
+    A = Qu((2, 2), 'ud', [[1, 0], [0, 0]])
+    B = Qu((2, 2), 'ud', [[0, 1], [0, 0]])
+    C = Qu((2, 2), 'ud', [[0, 0], [1, 0]])
+    D = Qu((2, 2), 'ud', [[0, 0], [0, 1]])
+    names = "ABCD"
+    ops = [A, B, C, D]
+    for i in range(4):
+        for j in range(4):
+            op = ops[i] * ops[j]
+            if op.norm() < EPSILON:
+                continue
+            k = ops.index(op)
+            print(names[i], names[j], names[k])
+
+#show()
+
+def promote_algebra(algebra, G):
+    A = Qu((2, 2), 'ud', [[1, 0], [0, 0]])
+    B = Qu((2, 2), 'ud', [[0, 1], [0, 0]])
+    C = Qu((2, 2), 'ud', [[0, 0], [1, 0]])
+    D = Qu((2, 2), 'ud', [[0, 0], [0, 1]])
+        
+    basis = [A, B, C, D]
+    v = decompose(basis, A)
+    assert numpy.allclose(v, [1, 0, 0, 0])
+
+    v = decompose(basis, A+B)
+    assert numpy.allclose(v, [1, 1, 0, 0])
+
+    #pauli = build_algebra("IXZY",
+    #    "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    for op in G:
+        v = decompose(basis, op)
+        #g = Tensor({}, 1, algebra)
+        g = algebra.get_zero(1)
+        for i in range(algebra.dim):
+            g = g + complex(v[i])*algebra.basis[i] # ARGH!
         yield g
 
 
@@ -850,6 +872,7 @@ def test_code():
     Z = pauli.Z
 
     op = build_code(pauli)
+    #print(op)
 
     if op is not None:
         ops = [op]
@@ -919,8 +942,8 @@ def test_code():
         degree = op.grade
         P = op
     
-        print("promote")
-        _G = promote(pauli, G)
+        print("promote_pauli")
+        _G = promote_pauli(pauli, G)
         GT = []
         count = 0
         for g in _G:
@@ -1195,8 +1218,8 @@ def test_code2():
         degree = op.grade
         P = op
     
-        print("promote")
-        _G = promote(pauli, G)
+        print("promote_pauli")
+        _G = promote_pauli(pauli, G)
         GT = []
         count = 0
         for g in _G:
@@ -1272,7 +1295,7 @@ def test_internal():
     G.build()
 
     # express each g as a sum of pauli's
-    GP = [g for g in promote(pauli, G)]
+    GP = [g for g in promote_pauli(pauli, G)]
 
     # transverse operators
     print("transverse operators")
@@ -1349,7 +1372,7 @@ def test_internal_series():
     print("|G2| =", len(G))
 
     # express each g as a sum of pauli's
-    PG = [g for g in promote(pauli, G)]
+    PG = [g for g in promote_pauli(pauli, G)]
 
     # transverse operators
     print("transverse operators")
@@ -1438,13 +1461,32 @@ def test_internal_series_fast():
             print(fstr(val), end=" ")
         print()
 
-    pauli = build_algebra("IXZY",
-        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+    use_pauli = argv.get("use_pauli", True)
 
-    I = pauli.I
-    X = pauli.X
-    Z = pauli.Z
-    Y = pauli.Y
+    if use_pauli:
+        names = "IXZY"
+        algebra = build_algebra(names,
+            "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+        promote = promote_pauli
+
+    else:
+        # the Algebra of 2x2 E_{ij} indicator matrices
+        dim = 4
+        names = "ABCD"
+        A, B, C, D = range(dim)
+        coefs = {}
+        coefs[A, A, A] = 1.
+        coefs[A, B, B] = 1.
+        coefs[B, C, A] = 1.
+        coefs[B, D, B] = 1.
+        coefs[C, A, C] = 1.
+        coefs[C, B, D] = 1.
+        coefs[D, C, C] = 1.
+        coefs[D, D, D] = 1.
+        algebra = Algebra(dim, names, coefs)
+        promote = promote_algebra
+
+    basis = [getattr(algebra, name) for name in names]
 
     G = eval(argv.get("G2", "Tetra")) # the "internal" group
     n = len(G)
@@ -1453,7 +1495,7 @@ def test_internal_series_fast():
     print("|G2| =", len(G))
 
     # express each g as a sum of pauli's
-    PG = [g for g in promote(pauli, G)]
+    PG = [g for g in promote(algebra, G)]
 
     if 0:
         for g in [X, Z, Y]:
@@ -1464,13 +1506,23 @@ def test_internal_series_fast():
             print()
         return
 
+    def is_abelian(op):
+        abelian = True
+        terms = op.get_terms()
+        for i, a in enumerate(terms):
+            for b in terms[i+1:]:
+                if a*b != b*a:
+                    abelian = False
+                    break
+        return abelian
+
     # transverse operators
     print("transverse operators")
     degree = argv.get("degree", 2)
     TG = [reduce(matmul, [g]*degree) for g in PG]
 
     found = []
-    opis = set(cross(([0, 1, 2, 3],)*degree))
+    opis = set(cross((list(range(len(basis))),)*degree))
     weight = argv.weight
 
     if argv.full:
@@ -1493,7 +1545,7 @@ def test_internal_series_fast():
         debug("[%d]"%len(opis))
         opi = iter(opis).__next__()
 
-        op = [[I, X, Z, Y][i] for i in opi]
+        op = [basis[i] for i in opi]
         P = reduce(matmul, op)
         debug("[%s]"%P)
 
@@ -1505,6 +1557,8 @@ def test_internal_series_fast():
         for i in range(n):
             R = TG[G.inv[i]] * P * TG[i]
             nnz = R.nnz()
+            if nnz == 0:
+                continue
             assert nnz>=1
             if nnz==1:
                 keys = R.get_keys()
@@ -1531,7 +1585,6 @@ def test_internal_series_fast():
             #debug("\n")
             continue
 
-        
         for perm in perms:
             opj = tuple(opi[perm[i]] for i in range(degree))
             if opj not in opis:
@@ -1546,11 +1599,27 @@ def test_internal_series_fast():
             A = to_dense(Q)
             show_spec(A)
 
+        if is_abelian(Q):
+            print(" ========= ABELIAN ============ ")
+        else:
+            print()
+        
     print("found ops:", len(found))
     if not found:
         return
-    found = linear_independent(found, pauli.construct)
+    found = linear_independent(found, algebra.construct)
     print("dimension:", len(found))
+    if argv.show_li:
+        for op in found:
+            print(op, "abelian" if is_abelian(op) else "")
+
+    for A in found:
+      for B in found:
+        C = A*B
+        print("%s * %s = %s" %(A, B, C))
+        for i in range(n):
+            D = TG[G.inv[i]] * C * TG[i]
+            assert(D == C)
 
 
 def parse_op(algebra, s):

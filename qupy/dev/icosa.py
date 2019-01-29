@@ -1,117 +1,39 @@
 #!/usr/bin/env python3
 
-from random import randint, choice
-from functools import reduce
-from operator import matmul
+"""
+build commutative subgroup of tensor power of
+binary platonic groups.
+These should not contain -I, so they can
+serve as a stabilizer group.
+"""
 
-from scipy.spatial import KDTree, cKDTree
+from random import randint, choice, seed
+from functools import reduce
+from operator import matmul, mul, add
+
+#from scipy.spatial import KDTree, cKDTree
 import numpy
 
 from qupy.dense import Qu
-from qupy.util import mulclose, show_spec
-from qupy.tool import cross
+from qupy.util import mulclose
+from qupy.tool import cross, write
 from qupy.argv import argv
 #from qupy.dev.su2 import Icosa
+from qupy.dev import groups
+
 
 EPSILON=1e-8
 
 
-
-def cyclotomic(n):
-    return numpy.exp(2*numpy.pi*1.j/n)
-
-
-def build_tetra():
-    " binary _tetrahedral group "
-
-    i = cyclotomic(4)
-
-    gen = [
-        [[(-1+i)/2, (-1+i)/2], [(1+i)/2, (-1-i)/2]],
-        [[-1/2-1/2*i, -1/2-1/2*i], [1/2-1/2*i, -1/2+1/2*i]]
-    ]    
-
-    gen = [Qu((2, 2), 'ud', v) for v in gen] 
-
-    Tetra = mulclose(gen)
-    assert len(Tetra)==24
-
-    return Tetra
-
-
-def build_octa():
-    " binary _octahedral group "
-
-    x = cyclotomic(8)
-
-    a = x-x**3 # sqrt(2)
-    i = x**2 
-
-    gen = [
-        [[(-1+i)/2,(-1+i)/2], [(1+i)/2,(-1-i)/2]], 
-        [[(1+i)/a,0], [0,(1-i)/a]]
-    ]    
-    gen = [Qu((2, 2), 'ud', v) for v in gen] 
-    octa_gen = gen
-
-    Octa = mulclose(gen)
-    assert len(Octa)==48
-    #print("Octa:", Octa.words.values())
-
-    return Octa
-
-
-def build_icosa():
-    " binary _icosahedral group "
-
-    v = cyclotomic(10)
-    z5 = v**2 
-    a = 2*z5**3 + 2*z5**2 + 1 #sqrt(5)
-    gen = [
-        [[z5**3, 0], [0, z5**2]], 
-        [[(z5**4-z5)/a, (z5**2-z5**3)/a], 
-        [(z5**2-z5**3)/a, -(z5**4-z5)/a]]
-    ]    
-    
-    gen = [Qu((2, 2), 'ud', v) for v in gen] 
-
-    X = Qu((2, 2), 'ud', [[0., 1], [1., 0.]])
-    Z = Qu((2, 2), 'ud', [[1., 0], [0., -1.]])
-
-    G = mulclose(gen)
-
-    assert len(G)==120
-
-    assert X*Z in G
-    assert X not in G
-    assert Z not in G
-
-    return G
-
-
-def build_pauli():
-
-    X = Qu((2, 2), 'ud', [[0., 1], [1., 0.]])
-    Z = Qu((2, 2), 'ud', [[1., 0], [0., -1.]])
-    gen = [X, Z]
-
-    G = mulclose(gen)
-
-    assert len(G)==8
-
-    return G
-
-
 class Group(object):
-    def __init__(self, items):
-        n = len(items)
+    def __init__(self, dense):
+        n = len(dense)
         mul = {}
-        for i, g in enumerate(items):
-          for j, h in enumerate(items):
+        for i, g in enumerate(dense):
+          for j, h in enumerate(dense):
             gh = g*h
-            k = items.index(gh)
+            k = dense.index(gh)
             mul[i, j] = k
-        #print(mul)
     
         ident = None
         for i in range(n):
@@ -121,11 +43,9 @@ class Group(object):
             else:
                 assert ident is None
                 ident = i
-        #print("ident:", ident)
     
         negi = None
         for i in range(n):
-            #central = True
             for j in range(n):
                 if mul[i, j] != mul[j, i]:
                     break
@@ -136,7 +56,6 @@ class Group(object):
                 else:
                     assert negi is None
                     negi = i
-        #print("negi:", negi)
     
         canonical = {ident:ident, negi:ident}
         for i in range(n):
@@ -156,20 +75,35 @@ class Group(object):
         self.negi = negi
         self.canonical = canonical
 
-        items = []
+        self.dense = dense
+
+        ops = []
+        non_central = []
         for i in range(n):
             idx = canonical[i]
             phase = +1 if idx==i else -1
             op = Tensor(self, [idx], phase)
-            items.append(op)
-        self.items = items
+            ops.append(op)
+            if idx != ident:
+                non_central.append(op)
+        self.ops = ops
+        self.non_central = non_central
 
-    def get_ident(self, n):
+    def get_ident(self, n=1):
         return Tensor(self, [self.ident]*n, +1)
 
     def __getitem__(self, idx):
-        return self.items[idx]
+        return self.ops[idx]
 
+    def __len__(self):
+        return len(self.ops)
+
+    def get_dense(self, op):
+        dense = self.dense
+        ops = [dense[i] for i in op.idxs]
+        assert len(ops)<=10, len(ops)
+        op = op.phase * reduce(matmul, ops)
+        return op
 
 
 class Tensor(object):
@@ -220,190 +154,218 @@ class Tensor(object):
     def __hash__(self):
         return hash((self.phase, self.idxs))
 
-    def __str__(self):
+    def __repr__(self):
         return "Tensor(%s, %s)"%(self.idxs, self.phase)
 
+    def __str__(self):
+        ops = []
+        for idx in self.idxs:
+            if idx==self.G.ident:
+                ops.append("__")
+            else:
+                ops.append(str(idx).rjust(2))
+        s = "[%s]"%(",".join(ops))
+        if self.phase != 1:
+            s = "-"+s
+        return s
+
+
+def show_spec(P):
+    print("spec:", end=" ")
+    for val, vec in P.eigs():
+        if abs(val) > EPSILON:
+            if abs(val.imag) < EPSILON:
+                val = val.real
+            if abs(val - round(val)) < EPSILON:
+                val = int(round(val))
+            print(val, end=" ")
+    print()
+
+def find_errors(G, P, degree):
+    I = G.get_ident(1)
+    nI = -I
+    for i in range(degree):
+        for g in G:
+            if g==I or g==nI:
+                continue
+            ops = [I] * degree
+            ops[i] = g
+            op = reduce(matmul, ops)
+            if op.phase == -1:
+                continue
+            #if op in S:
+            #    write('.')
+            U = G.get_dense(op)
+            if U*P == P*U and P*U != P:
+                #write('*')
+                print(op)
+    print()
 
 
 def main():
 
     name = argv.get("G", "icosa")
-
-    if name == "icosa":
-        G = build_icosa()
-    elif name == "tetra":
-        G = build_tetra()
-    elif name == "octa":
-        G = build_octa()
-    elif name == "pauli":
-        G = build_pauli()
-    else:
-        return
-
-    I = Qu((2, 2), 'ud', [[1., 0], [0., 1.]])
-
-    def get_order(g, I):
-        order = 1
-        h = g
-        while h != I:
-            h = g*h
-            order += 1
-        return order
-
-    #for g in G:
-    #    print(get_order(g), end=" ")
-    #print()
-
-
-    def get_intops(G, I, verbose=False):
-        #ops = []
-        for g in G:
-            vals = [v for v,_ in g.eigs()]
-            for v in vals:
-                if abs(v.imag)>EPSILON or abs(abs(v.real)-1) > EPSILON:
-                    break
-            else:
-                #ops.append(g)
-                if verbose:
-                    print([int(round(v.real)) for v in vals])
-                    #print(vals)
-                    #print([abs(v.imag)<EPSILON for v in vals])
-                if g*g != I:
-                    print(g.v)
-                    print((g*g).v)
-                    show_spec(g)
-                    assert 0
-                yield g
-        #return ops
-
-    #def get_reflects(G, I):
-    #    ops = [g for g in G if g*g==I]
-    #    return ops
+    G = groups.build(name)
 
     def get_reflects(G, I):
-        for g in G:
-            if g*g==I:
-                yield g
-
-    def count(items):
-        i = 0
-        for _ in items:
-            i += 1
-        return i
-
-
-    if argv.get_reflects:
-        ops = get_intops(G, I)
-        print(count(ops))
-        #return
-    
-        I2 = I@I
-    
-        G2 = [g@h for g in G for h in G]
-        #print("G2:", len(G2))
-        #ops = get_intops(G2, I2)
-        #print(count(ops))
-    
-        ops = get_reflects(G2, I2)
-        print(count(ops))
-        #print(len(mulclose(ops)))
-    
-        #G3 = [g@h for g in G2 for h in G]
-        ops = get_reflects((g@h for g in G2 for h in G), I2@I)
-        print(count(ops))
-        #print(len(mulclose(ops)))
-    
-        ops = get_reflects((g@h for g in G2 for h in G2), I2@I2)
-        print(count(ops))
-
-    if argv.find_uniq:
-        G2 = []
-        for g in G:
-          for h in G:
-            gh = g@h
-            v = gh.v
-            v = v.flatten()
-            G2.append(v)
-        tree = KDTree(G2, leafsize=10)
-        N = len(G2)
-        remain = set(range(N))
-        print(N)
-        uniq = []
-        while remain:
-            idx = iter(remain).__next__()
-            remain.remove(idx)
-            uniq.append(idx)
-            v = G2[idx]
-            k = 3
-            dists, idxs = tree.query(v, k, EPSILON)
-            assert idxs[0] == idx
-            for i in range(1, k):
-                if dists[i] < EPSILON:
-                    remain.remove(idxs[i])
-        print(len(uniq))
-    
-    if 0:
-        g = G[0]
-        g0 = G[1]@G[2]@G[3]
-        G2 = []
+        reflects = []
         count = 0
-        for g in G:
-          for h in G:
-            gh = g@h
-            for k in G:
-                ghk = gh@k
-                #v = ghk.v.flatten()
-                #G2.append(v)
-                if ghk == g0:
-                    print(".", end=" ", flush=True)
-                    count += 1
-        print("count:", count)
+        for ops in cross((G,)*degree):
+            op = reduce(matmul, ops)
+            if op*op == I:
+                count += 1
+                reflects.append(op)
+        reflects.remove(I)
+        reflects.remove(nI)
+        return reflects
 
+    def rand_reflect(G, I, degree, weight=None):
+        if weight is None:
+            weight = degree
+        while 1:
+            #ops = [choice(G) for i in range(degree)]
+            idxs = list(range(degree))
+            ops = [G.get_ident() for i in idxs]
+            for j in range(weight):
+                idx = choice(idxs)
+                idxs.remove(idx)
+                ops[idx] = choice(G.non_central)
+            op = reduce(matmul, ops)
+            if op*op == I and op != I and op.phase == 1:
+                return op
+
+    def mk_stab(reflects):
+        # build commutative subgroup from these
+        size = 0
+        for trials in range(100):
+            remain = list(reflects)
+            gen = []
+            S = []
+            while remain:
+                idx = randint(0, len(remain)-1)
+                a = remain.pop(idx)
+                for b in gen:
+                    if a*b != b*a:
+                        break
+                else:
+                    if a not in S:
+                        S1 = mulclose(gen + [a])
+                        if nI not in S1:
+                            S = S1
+                            gen.append(a)
+            
+            if len(S) > size:
+                #print("|S| =", len(S))
+                size = len(S)
+    
+        for op in S:
+            assert op*op == I
+        return gen, S
+
+    print("|G| =", len(G))
+    print("building...", end="", flush=True)
     G = Group(G)
+    print("done")
 
     degree = argv.get("degree", 2)
+    weight = argv.get("weight", degree)
+
+
+    def build_spin_chain(G):
+        I = G.get_ident()
+        In = G.get_ident(degree)
+        nt_ops = [op for op in G if op!=I and op.phase==1]
+        while 1:
+            while 1:
+                A = [I]*degree
+                B = [I]*degree
+        
+                for i in range(weight):
+                    a = choice(nt_ops)
+                    A[i] = a
+                    B[(i+1)%degree] = a
+                A = reduce(matmul, A)
+                B = reduce(matmul, B)
+                if A*B == B*A:
+                    break
+        
+            gen = [A, B]
+            for i in range(2, degree):
+                idxs = [A.idxs[(-i+j)%degree] for j in range(degree)]
+                op = Tensor(G, idxs, A.phase)
+                gen.append(op)
+            print("gen:")
+            for op in gen:
+                print("  ", op)
+        
+            S = mulclose(gen)
+            print("|S| =", len(S))
+    
+            #ops = [G.get_dense(op) for op in S]
+            #P = reduce(add, ops)
+            P = G.get_dense(S[0])
+            for op in S[1:]:
+                P = P + G.get_dense(op)
+            r = P.norm()
+            if abs(r) > EPSILON:
+                break
+            write(".")
+    
+        show_spec(P)
+        find_errors(G, P, degree)
+        return
 
     I = G.get_ident(degree)
     nI = -I
+
+    n_reflects = argv.get("reflects", 4)
+
     reflects = []
-    count = 0
-    for ops in cross((G,)*degree):
-        op = reduce(matmul, ops)
-        if op*op == I:
-            count += 1
-            reflects.append(op)
-    print("count:", count)
-
-    reflects.remove(I)
-    reflects.remove(nI)
-
-    size = 0
-    #while 1:
-    for trials in range(1000):
-        remain = list(reflects)
-        gen = []
-        S = []
-        while remain:
-            idx = randint(0, len(remain)-1)
-            a = remain.pop(idx)
-            for b in gen:
-                if a*b != b*a:
-                    break
-            else:
-                if a not in S:
-                    S1 = mulclose(gen + [a])
-                    if nI not in S1:
-                        S = S1
-                        gen.append(a)
-        
-        if len(S) > size:
-            print("|S| =", len(S))
-            size = len(S)
+    while 1:
+        reflects += [rand_reflect(G, I, degree, weight) for i in range(n_reflects)]
     
+        if 0:
+            #print("reflects:")
+            idxs = set()
+            for op in reflects:
+                for idx in op.idxs:
+                    idxs.add(idx)
+            idxs = list(idxs)
+            idxs.sort()
+            ops = [G[idx] for idx in idxs]
+            H = mulclose(ops)
+            print("reflects:", idxs)
+            print("|H|:", len(H))
+    
+        gen, S = mk_stab(reflects)
+        write("%s,"%len(S))
+        if len(S) >= 2**degree:
+            break
+    print()
+    print("gen:")
+    for op in gen:
+        print("  ", op)
+    
+    gen.pop(0)
+    S = mulclose(gen)
+
+    # build projector onto codespace
+    ops = [G.get_dense(op) for op in S]
+    P = reduce(add, ops)
+    show_spec(P)
+        
+
+    find_errors(G, P, degree)
+
 
 
 
 if __name__ == "__main__":
+
+    _seed = argv.seed
+    if _seed is not None:
+        seed(_seed)
+        numpy.random.seed(_seed)
 
     main()
 

@@ -54,6 +54,10 @@ cdef class Algebra:
                 if val is not None:
                     assert lookup.get((i, j)) is None
                     lookup[i, j] = (k, val)
+        for i in range(dim):
+          for j in range(dim):
+            if lookup.get((i, j)) is None:
+                lookup[i, j] = (0, 0.)
         self.lookup = lookup
 
     def parse(self, desc):
@@ -125,6 +129,18 @@ cdef class Tensor:
         ss = '+'.join(ss) or "0"
         ss = ss.replace("+-", "-")
         return ss
+
+    def get_terms(Tensor self):
+        algebra = self.algebra
+        keys = self.get_keys()
+        keys.sort()
+        terms = []
+        for k in keys:
+            v = self[k]
+            term = ''.join(algebra.names[ki] for ki in k)
+            term = algebra.parse(term)
+            terms.append(term)
+        return terms
 
     def __repr__(Tensor self):
         return self.__str__()
