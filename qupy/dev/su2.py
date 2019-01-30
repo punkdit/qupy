@@ -36,6 +36,13 @@ else:
 EPSILON=1e-8
 
 
+def sumn(items):
+    items = list(items)
+    op = items[0]
+    for opi in items[1:]:
+        op = op + opi
+    return op
+
 
 def cyclotomic(n):
     return numpy.exp(2*numpy.pi*1.j/n)
@@ -1624,7 +1631,7 @@ def test_internal_series_fast():
         if abs(val.imag)<EPSILON:
             val = val.real
             if abs(val-round(val))<EPSILON:
-                val = int(val)
+                val = int(round(val))
         return val
     Et = []
     N = len(basis)
@@ -1635,6 +1642,8 @@ def test_internal_series_fast():
     Einv = numpy.linalg.pinv(E, EPSILON)
     #print(E)
     #print(Einv)
+    #print(numpy.dot(Einv, E))
+
     struct = numpy.zeros((N, N, N))
 
     for i, A in enumerate(basis):
@@ -1649,6 +1658,18 @@ def test_internal_series_fast():
             for k in range(n):
                 D = TG[G.inv[k]] * C * TG[k]
                 assert D == C 
+
+#    print("basis:")
+#    for i, b in enumerate(basis):
+#        print("   ", i, ":", b)
+#    i, j = 1, 1
+#    A = basis[i]
+#    B = basis[j]
+#    C = A*B
+#    print(A, "*", B, "==", C)
+#    v = [fixup(C[key]) for key in all_keys]
+#    print(v)
+#    print(sumn(complex(struct[i, j, k])*e for k,e in enumerate(basis)))
 
     # solve for idempotents in the algebra of invariants
     # see: https://gist.github.com/nicoguaro/3c964ae8d8f11822b6c22768dc9b3716
@@ -1673,10 +1694,9 @@ def test_internal_series_fast():
         lines.append(line)
     lines.append("    return [%s]" % (', '.join(v for v in outbls)))
     stmt = '\n'.join(lines)
-    print(stmt)
+    #print(stmt)
     exec(stmt, locals(), globals())
     assert func
-    print()
 
     lines = ["def jacobian(X):"]
     lines.append("    %s = X"%(', '.join(v for v in inbls)))
@@ -1706,53 +1726,54 @@ def test_internal_series_fast():
             comps.append(total)
         lines.append("    %s = [%s]"%(outbls[k], ', '.join(comps)))
     lines.append("    return [%s]" % (', '.join(outbls)))
-#    stmt = '\n'.join(lines)
     stmt = '\n'.join(lines)
 
-    print(stmt)
+    #print(stmt)
     exec(stmt, locals(), globals())
     assert jacobian
 
-    from scipy.optimize import fsolve
+    from scipy import optimize
 
-    def close_in(points, point, tol=1e-6):
-        nvals = len(points)
-        dists = [numpy.allclose(point, points[cont], atol=tol)
-                 for cont in range(nvals)]
-        return True in dists
-    
-    npts = 1
+    #def check_jac(func, jacobian, x0):
+    #    assert N==len(x0)
+    #    for i in range(N):
+
+    trials = argv.get("trials", 1)
     tol = 1e-10
-    numpy.random.seed(seed=3)
-    initial_guesses = numpy.random.uniform(-1, 1, (npts, N))
     sols = []
-    for x0 in initial_guesses:
-        sol, info, ler, msg = fsolve(
-            #func, x0, fprime=jacobian, full_output=True, xtol=tol, maxfev=10000000)
-            func, x0, fprime=None, full_output=True, xtol=tol)
-        print(ler, msg)
-        #if not close_in(sols, sol, tol):
-        sols.append(sol)
-    
-    #print(numpy.round(numpy.asarray(sols), 3))
+    for i in range(trials):
+        x0 = numpy.random.uniform(-1, 1, (N,))
 
-    for sol in sols:
-        #print("jacobian:", jacobian(sol))
+        method = "lm"
+        #sol = optimize.root(func, x0, (), method, jacobian, tol) # broken...
+        sol = optimize.root(func, x0, (), method, None, tol)
+        assert sol.success, sol.message
+        #print(sol.message)
+        # nfev, njev, success
+
+        #print("func:", func(sol.x))
+        #print("jacobian:", jacobian(sol.x))
         
-        op = None
-        for i, a_i in enumerate(sol):
+        P = None
+        for i, a_i in enumerate(sol.x):
             if abs(a_i)<10*EPSILON:
                 continue
             opi = a_i * basis[i]
-            if op is None:
-                op = opi
+            if P is None:
+                P = opi
             else:
-                op = op + opi
-        if op is None:
+                P = P + opi
+        if P is None:
             continue
-        #print(op)
-        #print(op*op)
-        print([fixup(op[key]) for key in all_keys])
+#        print()
+#        print(P)
+#        print()
+#        print(P*P)
+        print("error:", (P*P - P).norm())
+        #print([fixup(P[key]) for key in all_keys])
+
+        P = to_dense(P)
+        show_spec(P)
 
 
 def parse_op(algebra, s):
