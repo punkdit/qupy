@@ -1607,19 +1607,152 @@ def test_internal_series_fast():
     print("found ops:", len(found))
     if not found:
         return
-    found = linear_independent(found, algebra.construct)
-    print("dimension:", len(found))
-    if argv.show_li:
-        for op in found:
+    basis = linear_independent(found, algebra.construct)
+    print("dimension:", len(basis))
+    if argv.show_basis:
+        for op in basis:
             print(op, "abelian" if is_abelian(op) else "")
 
-    for A in found:
-      for B in found:
+    all_keys = []
+    for A in basis:
+        all_keys += A.get_keys()
+    all_keys = list(set(all_keys))
+    all_keys.sort()
+    print(len(all_keys))
+
+    def fixup(val):
+        if abs(val.imag)<EPSILON:
+            val = val.real
+            if abs(val-round(val))<EPSILON:
+                val = int(val)
+        return val
+    Et = []
+    N = len(basis)
+    for e in basis:
+        Et.append([fixup(e[key]) for key in all_keys])
+    Et = numpy.array(Et, dtype=float)
+    E = Et.transpose()
+    Einv = numpy.linalg.pinv(E, EPSILON)
+    #print(E)
+    #print(Einv)
+    struct = numpy.zeros((N, N, N))
+
+    for i, A in enumerate(basis):
+      for j, B in enumerate(basis):
         C = A*B
-        print("%s * %s = %s" %(A, B, C))
-        for i in range(n):
-            D = TG[G.inv[i]] * C * TG[i]
-            assert(D == C)
+        #print("(%s) * (%s) = %s" %(A, B, C))
+        v = [fixup(C[key]) for key in all_keys]
+        cij = numpy.dot(Einv, v)
+        #print(cij)
+        struct[i, j] = cij
+        if argv.test_closed:
+            for k in range(n):
+                D = TG[G.inv[k]] * C * TG[k]
+                assert D == C 
+
+    # solve for idempotents in the algebra of invariants
+    # see: https://gist.github.com/nicoguaro/3c964ae8d8f11822b6c22768dc9b3716
+
+    inbls = ["a_%d"%i for i in range(N)]
+    outbls = ["b_%d"%i for i in range(N)]
+    lines = ["def func(X):"]
+    lines.append("    %s = X"%(', '.join(v for v in inbls)))
+    for k in range(N):
+        terms = []
+        for i in range(N):
+          for j in range(i, N):
+            if i==j:
+                val = struct[i, j, k]
+            else:
+                val = struct[i, j, k] + struct[j, i, k]
+            if abs(val)>EPSILON:
+                terms.append("%s*%s*%s" % (val, inbls[i], inbls[j]))
+        terms.append("-%s"%inbls[k])
+        line = "    %s = %s" % (outbls[k], ' + '.join(terms))
+        line = line.replace("+ -", "- ")
+        lines.append(line)
+    lines.append("    return [%s]" % (', '.join(v for v in outbls)))
+    stmt = '\n'.join(lines)
+    print(stmt)
+    exec(stmt, locals(), globals())
+    assert func
+    print()
+
+    lines = ["def jacobian(X):"]
+    lines.append("    %s = X"%(', '.join(v for v in inbls)))
+    for k in range(N):
+        comps = []
+        for l in range(N): # diff with respect to a_l
+            terms = []
+            val = struct[k, k, k]
+            for i in range(N):
+              for j in range(i, N):
+                if i==j:
+                    val = struct[i, j, k]
+                else:
+                    val = struct[i, j, k] + struct[j, i, k]
+                if abs(val)<EPSILON:
+                    continue
+                if i==j==l: # a_l * a_l
+                    terms.append("%s*%s" % (val, inbls[l]))
+                elif i==l:  # a_l * a_j
+                    terms.append("%s*%s" % (val, inbls[j]))
+                elif j==l:  # a_i * a_l
+                    terms.append("%s*%s" % (val, inbls[i]))
+            total = '+'.join(terms)
+            if l==k:
+                total += "-1.0"
+            total = total.replace("+-", "-")
+            comps.append(total)
+        lines.append("    %s = [%s]"%(outbls[k], ', '.join(comps)))
+    lines.append("    return [%s]" % (', '.join(outbls)))
+#    stmt = '\n'.join(lines)
+    stmt = '\n'.join(lines)
+
+    print(stmt)
+    exec(stmt, locals(), globals())
+    assert jacobian
+
+    from scipy.optimize import fsolve
+
+    def close_in(points, point, tol=1e-6):
+        nvals = len(points)
+        dists = [numpy.allclose(point, points[cont], atol=tol)
+                 for cont in range(nvals)]
+        return True in dists
+    
+    npts = 1
+    tol = 1e-10
+    numpy.random.seed(seed=3)
+    initial_guesses = numpy.random.uniform(-1, 1, (npts, N))
+    sols = []
+    for x0 in initial_guesses:
+        sol, info, ler, msg = fsolve(
+            #func, x0, fprime=jacobian, full_output=True, xtol=tol, maxfev=10000000)
+            func, x0, fprime=None, full_output=True, xtol=tol)
+        print(ler, msg)
+        #if not close_in(sols, sol, tol):
+        sols.append(sol)
+    
+    #print(numpy.round(numpy.asarray(sols), 3))
+
+    for sol in sols:
+        #print("jacobian:", jacobian(sol))
+        
+        op = None
+        for i, a_i in enumerate(sol):
+            if abs(a_i)<10*EPSILON:
+                continue
+            opi = a_i * basis[i]
+            if op is None:
+                op = opi
+            else:
+                op = op + opi
+        if op is None:
+            continue
+        #print(op)
+        #print(op*op)
+        print([fixup(op[key]) for key in all_keys])
 
 
 def parse_op(algebra, s):
@@ -1682,6 +1815,7 @@ if __name__ == "__main__":
 
     _seed = argv.seed
     if _seed is not None:
+        numpy.random.seed(_seed)
         seed(_seed)
 
     name = argv.next() or "main"
