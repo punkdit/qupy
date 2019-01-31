@@ -322,7 +322,8 @@ def swap_col(A, j, k):
     A[:, k] = col
 
 
-def row_reduce(A, truncate=False, inplace=False, check=False, verbose=False):
+def row_reduce(A, truncate=False, inplace=False, check=False, 
+    verbose=False, epsilon=EPSILON):
     """ Remove zero rows if truncate==True
     """
 
@@ -350,11 +351,11 @@ def row_reduce(A, truncate=False, inplace=False, check=False, verbose=False):
 
         assert i<=j
         if i and check:
-            assert (numpy.abs(A[i:,:j])>EPSILON).sum() == 0
+            assert (numpy.abs(A[i:,:j])>epsilon).sum() == 0
 
         # first find a nonzero entry in this col
         for i1 in range(i, m):
-            if abs(A[i1, j])>EPSILON:
+            if abs(A[i1, j])>epsilon:
                 break
         else:
             j += 1 # move to the next col
@@ -365,14 +366,14 @@ def row_reduce(A, truncate=False, inplace=False, check=False, verbose=False):
                 print("swap", i, i1)
             swap_row(A, i, i1)
 
-        assert abs(A[i, j]) > EPSILON
+        assert abs(A[i, j]) > epsilon
         for i1 in range(i+1, m):
-            if abs(A[i1, j])>EPSILON:
+            if abs(A[i1, j])>epsilon:
                 if verbose:
                     print("add row %s to %s" % (i, i1))
                 r = -A[i1, j] / A[i, j]
                 A[i1, :] += r*A[i, :]
-                assert abs(A[i1, j]) < EPSILON
+                assert abs(A[i1, j]) < epsilon
 
         i += 1
         j += 1
@@ -380,7 +381,7 @@ def row_reduce(A, truncate=False, inplace=False, check=False, verbose=False):
     if truncate:
         m = A.shape[0]-1
         #print("sum:", m, A[m, :], A[m, :].sum())
-        while m>=0 and (numpy.abs(A[m, :])>EPSILON).sum()==0:
+        while m>=0 and (numpy.abs(A[m, :])>epsilon).sum()==0:
             m -= 1
         A = A[:m+1, :]
 
@@ -390,7 +391,7 @@ def row_reduce(A, truncate=False, inplace=False, check=False, verbose=False):
     return A
 
 
-def linear_independent(ops, construct=None):
+def linear_independent(ops, construct=None, epsilon=EPSILON):
     "ops: list of Tensor's or list of Poly's"
     assert len(ops) 
     keys = set()
@@ -411,7 +412,7 @@ def linear_independent(ops, construct=None):
 
     #print("A:")
     #print(A)
-    B = row_reduce(A, truncate=True)
+    B = row_reduce(A, truncate=True, epsilon=epsilon)
     #print("B:")
     #print(B)
 
@@ -420,7 +421,7 @@ def linear_independent(ops, construct=None):
     for i in range(m):
         cs = {}
         for j, key in enumerate(keys):
-            if abs(B[i, j])>EPSILON:
+            if abs(B[i, j])>epsilon:
                 cs[key] = B[i, j]
         assert len(cs)
         op = construct(cs)
@@ -1740,9 +1741,12 @@ def test_internal_series_fast():
 
     trials = argv.get("trials", 1)
     tol = 1e-10
-    sols = []
+    Ps = []
     for i in range(trials):
         x0 = numpy.random.uniform(-1, 1, (N,))
+#    for i in range(N):
+#        x0 = numpy.zeros((N,))
+#        x0[i] = 1.
 
         method = "lm"
         #sol = optimize.root(func, x0, (), method, jacobian, tol) # broken...
@@ -1765,15 +1769,23 @@ def test_internal_series_fast():
                 P = P + opi
         if P is None:
             continue
-#        print()
-#        print(P)
-#        print()
-#        print(P*P)
-        print("error:", (P*P - P).norm())
+        err = (P*P - P).norm()
+        if abs(err) > EPSILON:
+            print("error:", err)
         #print([fixup(P[key]) for key in all_keys])
 
-        P = to_dense(P)
-        show_spec(P)
+        Ps.append(P)
+        #P = to_dense(P)
+        #show_spec(P)
+
+    P_basis = linear_independent(Ps, algebra.construct, epsilon=100*EPSILON)
+    print("dimension:", len(P_basis))
+
+    if 0:
+        for P in Ps:
+            for Q in Ps:
+                print(int(P*Q==Q*P), end=" ")
+            print()
 
 
 def parse_op(algebra, s):
