@@ -1,5 +1,12 @@
 # cython: profile=False
 
+"""
+Associative algebra & tensor powerers thereof.
+This algebra is restricted: any product of two basis
+elements can only be a scalar multiple of another
+basis element.
+"""
+
 cdef extern from "complex.h":
     pass
 

@@ -636,6 +636,8 @@ class Qu(AbstractQu):
 
     @classmethod
     def identity(cls, space):
+        if type(space) is int:
+            return Gate.identity(space)
         flatop = MonoidalFlatten(space)
         space = flatop.target_space
         A = Gate.identity(space)

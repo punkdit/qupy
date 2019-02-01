@@ -25,6 +25,9 @@ from qupy.tool import fstr, astr, cross, write
 from qupy.argv import argv
 from qupy.dev.comm import Poly
 from qupy.dev import groups
+from qupy.dev.linalg import row_reduce
+from qupy.dev.assoc import AssocAlg
+
 
 if argv.fast:
     print("importing _algebra")
@@ -211,6 +214,14 @@ def build():
     Tetra = Group(gen, "CD")
     assert len(Tetra)==24
 
+    global TetraXZ
+    gen = gen + [X, Z]
+    TetraXZ = Group(gen, "CDXZ")
+    assert len(TetraXZ) == 48
+
+    #for g in TetraXZ:
+    #    assert g in Octa # nope...
+
     # ----------------------------------
     # binary icosahedral group
 
@@ -309,86 +320,6 @@ def test_c():
         dims.append(len(_ops))
     print(",".join(str(dim) for dim in dims))
 
-
-def swap_row(A, j, k):
-    row = A[j, :].copy()
-    A[j, :] = A[k, :]
-    A[k, :] = row
-
-
-def swap_col(A, j, k):
-    col = A[:, j].copy()
-    A[:, j] = A[:, k]
-    A[:, k] = col
-
-
-def row_reduce(A, truncate=False, inplace=False, check=False, 
-    verbose=False, epsilon=EPSILON):
-    """ Remove zero rows if truncate==True
-    """
-
-    assert len(A.shape)==2, A.shape
-    m, n = A.shape
-    if not inplace:
-        A = A.copy()
-
-    if m*n==0:
-        if truncate and m:
-            A = A[:0, :]
-        return A
-
-    if verbose:
-        print("row_reduce")
-        #print("%d rows, %d cols" % (m, n))
-
-    i = 0
-    j = 0
-    while i < m and j < n:
-        if verbose:
-            print("i, j = %d, %d" % (i, j))
-            print("A:")
-            print(shortstrx(A))
-
-        assert i<=j
-        if i and check:
-            assert (numpy.abs(A[i:,:j])>epsilon).sum() == 0
-
-        # first find a nonzero entry in this col
-        for i1 in range(i, m):
-            if abs(A[i1, j])>epsilon:
-                break
-        else:
-            j += 1 # move to the next col
-            continue # <----------- continue ------------
-
-        if i != i1:
-            if verbose:
-                print("swap", i, i1)
-            swap_row(A, i, i1)
-
-        assert abs(A[i, j]) > epsilon
-        for i1 in range(i+1, m):
-            if abs(A[i1, j])>epsilon:
-                if verbose:
-                    print("add row %s to %s" % (i, i1))
-                r = -A[i1, j] / A[i, j]
-                A[i1, :] += r*A[i, :]
-                assert abs(A[i1, j]) < epsilon
-
-        i += 1
-        j += 1
-
-    if truncate:
-        m = A.shape[0]-1
-        #print("sum:", m, A[m, :], A[m, :].sum())
-        while m>=0 and (numpy.abs(A[m, :])>epsilon).sum()==0:
-            m -= 1
-        A = A[:m+1, :]
-
-    if verbose:
-        print()
-
-    return A
 
 
 def linear_independent(ops, construct=None, epsilon=EPSILON):
@@ -1621,12 +1552,13 @@ def test_internal_series_fast():
         for op in basis:
             print(op, "abelian" if is_abelian(op) else "")
 
+    write("building algebra of invariants...")
+
     all_keys = []
     for A in basis:
         all_keys += A.get_keys()
     all_keys = list(set(all_keys))
     all_keys.sort()
-    print(len(all_keys))
 
     def fixup(val):
         if abs(val.imag)<EPSILON:
@@ -1660,132 +1592,32 @@ def test_internal_series_fast():
                 D = TG[G.inv[k]] * C * TG[k]
                 assert D == C 
 
-#    print("basis:")
-#    for i, b in enumerate(basis):
-#        print("   ", i, ":", b)
-#    i, j = 1, 1
-#    A = basis[i]
-#    B = basis[j]
-#    C = A*B
-#    print(A, "*", B, "==", C)
-#    v = [fixup(C[key]) for key in all_keys]
-#    print(v)
-#    print(sumn(complex(struct[i, j, k])*e for k,e in enumerate(basis)))
+    assoc = AssocAlg(struct)
+    #I = assoc.unit
+    #print(assoc.construct(I, basis))
 
-    # solve for idempotents in the algebra of invariants
-    # see: https://gist.github.com/nicoguaro/3c964ae8d8f11822b6c22768dc9b3716
+    write("\n")
 
-    inbls = ["a_%d"%i for i in range(N)]
-    outbls = ["b_%d"%i for i in range(N)]
-    lines = ["def func(X):"]
-    lines.append("    %s = X"%(', '.join(v for v in inbls)))
-    for k in range(N):
-        terms = []
-        for i in range(N):
-          for j in range(i, N):
-            if i==j:
-                val = struct[i, j, k]
-            else:
-                val = struct[i, j, k] + struct[j, i, k]
-            if abs(val)>EPSILON:
-                terms.append("%s*%s*%s" % (val, inbls[i], inbls[j]))
-        terms.append("-%s"%inbls[k])
-        line = "    %s = %s" % (outbls[k], ' + '.join(terms))
-        line = line.replace("+ -", "- ")
-        lines.append(line)
-    lines.append("    return [%s]" % (', '.join(v for v in outbls)))
-    stmt = '\n'.join(lines)
-    #print(stmt)
-    exec(stmt, locals(), globals())
-    assert func
+    X = assoc.find_center()
+    print("center:", len(X))
 
-    lines = ["def jacobian(X):"]
-    lines.append("    %s = X"%(', '.join(v for v in inbls)))
-    for k in range(N):
-        comps = []
-        for l in range(N): # diff with respect to a_l
-            terms = []
-            val = struct[k, k, k]
-            for i in range(N):
-              for j in range(i, N):
-                if i==j:
-                    val = struct[i, j, k]
-                else:
-                    val = struct[i, j, k] + struct[j, i, k]
-                if abs(val)<EPSILON:
-                    continue
-                if i==j==l: # a_l * a_l
-                    terms.append("%s*%s" % (val, inbls[l]))
-                elif i==l:  # a_l * a_j
-                    terms.append("%s*%s" % (val, inbls[j]))
-                elif j==l:  # a_i * a_l
-                    terms.append("%s*%s" % (val, inbls[i]))
-            total = '+'.join(terms)
-            if l==k:
-                total += "-1.0"
-            total = total.replace("+-", "-")
-            comps.append(total)
-        lines.append("    %s = [%s]"%(outbls[k], ', '.join(comps)))
-    lines.append("    return [%s]" % (', '.join(outbls)))
-    stmt = '\n'.join(lines)
+    for x in X:
+        x = assoc.construct(x, basis)
+        #print(x)
+        for y in basis:
+            assert x*y == y*x
 
-    #print(stmt)
-    exec(stmt, locals(), globals())
-    assert jacobian
-
-    from scipy import optimize
-
-    #def check_jac(func, jacobian, x0):
-    #    assert N==len(x0)
-    #    for i in range(N):
-
-    trials = argv.get("trials", 1)
-    tol = 1e-10
+    trials = argv.get("trials", 0)
     Ps = []
-    for i in range(trials):
-        x0 = numpy.random.uniform(-1, 1, (N,))
-#    for i in range(N):
-#        x0 = numpy.zeros((N,))
-#        x0[i] = 1.
-
-        method = "lm"
-        #sol = optimize.root(func, x0, (), method, jacobian, tol) # broken...
-        sol = optimize.root(func, x0, (), method, None, tol)
-        assert sol.success, sol.message
-        #print(sol.message)
-        # nfev, njev, success
-
-        #print("func:", func(sol.x))
-        #print("jacobian:", jacobian(sol.x))
-        
-        P = None
-        for i, a_i in enumerate(sol.x):
-            if abs(a_i)<10*EPSILON:
-                continue
-            opi = a_i * basis[i]
-            if P is None:
-                P = opi
-            else:
-                P = P + opi
-        if P is None:
-            continue
+    for x in assoc.find_idempotents(trials):
+        P = assoc.construct(x, basis)
         err = (P*P - P).norm()
         if abs(err) > EPSILON:
             print("error:", err)
-        #print([fixup(P[key]) for key in all_keys])
-
         Ps.append(P)
         #P = to_dense(P)
         #show_spec(P)
 
-    P_basis = linear_independent(Ps, algebra.construct, epsilon=100*EPSILON)
-    print("dimension:", len(P_basis))
-
-    if 0:
-        for P in Ps:
-            for Q in Ps:
-                print(int(P*Q==Q*P), end=" ")
-            print()
 
 
 def parse_op(algebra, s):
