@@ -18,7 +18,34 @@ class AssocAlg(object):
         assert struct.shape == (N, N, N)
         self.struct = struct
         self.N = N
+        basis = []
+        for i in range(N):
+            v = [0.]*N
+            v[i] = 1.
+            basis.append(v)
+        self.basis = numpy.array(basis)
         self.unit = self.find_unit()
+
+    def __len__(self):
+        return self.N
+
+    def __getitem__(self, idx):
+        N = self.N
+        v = numpy.zeros((N,), dtype=float)
+        v[idx] = 1.
+        return v
+
+    def __str__(self):
+        return "AssocAlg(dim=%d)"%(self.N,)
+
+    def mul(self, u, v):
+        assert len(u) == self.N
+        assert len(v) == self.N
+        c = self.struct
+        vc = numpy.dot(v, c)
+        w = numpy.dot(u, vc)
+        assert w.shape == (self.N,)
+        return w
 
     def find_unit(self):
         N, struct = self.N, self.struct
@@ -31,10 +58,18 @@ class AssocAlg(object):
         A = numpy.array(rows)
         b = numpy.array(rhs)
         Ainv = numpy.linalg.pinv(A)
-        x = numpy.dot(Ainv, b)
-        #print(x)
-        assert numpy.linalg.norm(x) > EPSILON, str(x)
-        return x
+        I = numpy.dot(Ainv, b)
+        #print(I)
+        assert numpy.linalg.norm(I) > EPSILON, str(I)
+        return I
+
+    def check(self):
+        I = self.unit
+        for u in self.basis:
+            v = self.mul(u, I)
+            assert numpy.allclose(v, u)
+            v = self.mul(I, u)
+            assert numpy.allclose(v, u)
 
     def find_center(self):
         "find basis for the center Z(A)."
@@ -45,6 +80,70 @@ class AssocAlg(object):
         A = A.transpose()
         B = linalg.kernel(A)
         return B.transpose()
+
+    def principal_ideal(self, x):
+        N, c = self.N, self.struct
+        assert len(x) == N
+        basis = []
+        for y in self.basis:
+            xy = self.mul(x, y)
+            basis.append(xy)
+        basis = linalg.row_reduce(basis, truncate=True)
+        A = self.subalgebra(basis)
+        return A
+
+    def mod(self, basis):
+        "mod out by ideal spanned by basis"
+        #print("mod", self.N, len(basis))
+        E = numpy.array(basis)
+        assert E.shape[1] == self.N
+        Et = E.transpose()
+        Etinv = numpy.linalg.pinv(Et, EPSILON)
+        P = numpy.dot(Et, Etinv)
+        assert numpy.allclose(P, numpy.dot(P, P))
+        I = numpy.identity(self.N)
+        P = I-P
+        assert numpy.allclose(P, numpy.dot(P, P))
+        #print(P)
+        basis = []
+        for e in self.basis:
+            e = numpy.dot(P, e)
+            basis.append(e)
+        basis = linalg.row_reduce(basis)
+        N = len(basis)
+        #print("N =", len(basis))
+        #print(basis)
+        E = basis.transpose()
+        Einv = numpy.linalg.pinv(E, EPSILON)
+        struct = numpy.zeros((N, N, N))
+        for i, u in enumerate(basis):
+          for j, v in enumerate(basis):
+            w = self.mul(u, v)
+            w = numpy.dot(P, w)
+            cij = numpy.dot(Einv, w)
+            struct[i, j] = cij
+        #print(struct)
+        A = AssocAlg(struct)
+        return A
+
+    def subalgebra(self, basis):
+        basis = numpy.array(basis)
+        assert basis.shape[1] == self.N
+        E = basis.transpose()
+        Einv = numpy.linalg.pinv(E, EPSILON)
+        #print(E)
+        #print(Einv)
+        #print(numpy.dot(Einv, E))
+    
+        N = len(basis)
+        struct = numpy.zeros((N, N, N))
+        for i, u in enumerate(basis):
+          for j, v in enumerate(basis):
+            w = self.mul(u, v)
+            cij = numpy.dot(Einv, w)
+            struct[i, j] = cij
+        A = AssocAlg(struct)
+        return A
 
     def construct(self, x, basis):
         assert len(basis)
@@ -64,7 +163,7 @@ class AssocAlg(object):
         N, struct = self.N, self.struct
 
 
-    def find_idempotents(self, trials=1):
+    def find_idempotents(self, trials=None, verbose=False):
         # solve for idempotents in the algebra of invariants
         # see: https://gist.github.com/nicoguaro/3c964ae8d8f11822b6c22768dc9b3716
 
@@ -93,9 +192,11 @@ class AssocAlg(object):
             lines.append(line)
         lines.append("    return [%s]" % (', '.join(v for v in outbls)))
         stmt = '\n'.join(lines)
-        #print(stmt)
-        exec(stmt, locals(), globals())
-        assert func
+        if verbose:
+            print(stmt)
+        ns = {}
+        exec(stmt, ns, ns)
+        func = ns["func"]
     
         lines = ["def jacobian(X):"]
         lines.append("    %s = X"%(', '.join(v for v in inbls)))
@@ -128,8 +229,9 @@ class AssocAlg(object):
         stmt = '\n'.join(lines)
     
         #print(stmt)
-        exec(stmt, locals(), globals())
-        assert jacobian
+        ns = {}
+        exec(stmt, ns, ns)
+        jacobian = ns["jacobian"]
     
         #def check_jac(func, jacobian, x0):
         #    assert N==len(x0)
@@ -137,12 +239,15 @@ class AssocAlg(object):
     
         tol = 1e-10
         xs = []
-        for i in range(trials):
-            x0 = numpy.random.uniform(-1, 1, (N,))
-    #    for i in range(N):
-    #        x0 = numpy.zeros((N,))
-    #        x0[i] = 1.
+
+        i = 0
+        while 1:
+            x0 = numpy.random.uniform(-0.1, 0.1, (N,))
+            #print(x0)
+            #print(func(x0))
     
+            # FAIL: this only finds *real* solutions...
+
             method = "lm"
             #sol = optimize.root(func, x0, (), method, jacobian, tol) # broken...
             sol = optimize.root(func, x0, (), method, None, tol)
@@ -153,8 +258,15 @@ class AssocAlg(object):
             #print("func:", func(sol.x))
             #print("jacobian:", jacobian(sol.x))
         
-            xs.append(sol.x)
-        return xs
+            if (sum(abs(xx) for xx in sol.x) > EPSILON and 
+                not numpy.allclose(sol.x, self.unit)):
+                yield sol.x
+
+            i += 1
+
+            if trials and i>=trials:
+                break
+
 
 
 

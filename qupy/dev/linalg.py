@@ -16,10 +16,12 @@ def swap_col(A, j, k):
     A[:, k] = col
 
 
-def row_reduce(A, truncate=False, inplace=False, check=False, 
+def row_reduce(A, truncate=True, inplace=False, check=False, 
     verbose=False, epsilon=EPSILON):
     """ Remove zero rows if truncate==True
     """
+
+    A = numpy.array(A)
 
     assert len(A.shape)==2, A.shape
     m, n = A.shape
@@ -92,4 +94,6 @@ def kernel(A, tol=EPSILON):
     nnz = (s >= tol).sum()
     ns = vh[nnz:].conj().T
     return ns
+
+
 

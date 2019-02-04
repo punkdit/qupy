@@ -1339,25 +1339,6 @@ def test_internal_series():
     print("dimension:", len(found))
 
 
-def allperms_FAIL(n):
-    assert n>0
-    if n==1:
-        yield (0,)
-    elif n==2:
-        yield (0, 1)
-        yield (1, 0)
-    elif n==3:
-        yield (0, 1, 2)
-        yield (1, 0, 2)
-        yield (0, 2, 1)
-        yield (1, 2, 0)
-        yield (2, 0, 1)
-        yield (2, 1, 0)
-    else:
-        for i in range(n):
-            for rest in allperms(items[:i] + items[i+1:]):
-                yield (items[i],) + rest
-
 
 def allperms(items):
     items = tuple(items)
@@ -1592,25 +1573,88 @@ def test_internal_series_fast():
                 D = TG[G.inv[k]] * C * TG[k]
                 assert D == C 
 
-    assoc = AssocAlg(struct)
-    #I = assoc.unit
-    #print(assoc.construct(I, basis))
+    A = AssocAlg(struct)
+    #I = A.unit
+    #print(A.construct(I, basis))
 
     write("\n")
 
-    X = assoc.find_center()
-    print("center:", len(X))
+    ZA_basis = A.find_center()
+    print("center:", len(ZA_basis))
 
-    for x in X:
-        x = assoc.construct(x, basis)
+    for x in ZA_basis:
+        print(x)
+        x = A.construct(x, basis)
         #print(x)
         for y in basis:
             assert x*y == y*x
 
+    code = None
+    if degree==5:
+        code = StabilizerCode(algebra, "XZZXI IXZZX XIXZZ ZXIXZ")
+        code = code.get_projector()
+    elif degree==4:
+        code = StabilizerCode(algebra, "ZZII IZZI IIZZ XXXX")
+        code = code.get_projector()
+    elif degree==3:
+        code = StabilizerCode(algebra, "ZZI IZZ XXX")
+        code = code.get_projector()
+    
+    ZA = A.subalgebra(ZA_basis)
+    #print("unit:", ZA.unit)
+    print("projectors:")
+    central_idem = []
+    for x in ZA.find_idempotents(1000):
+
+        x = [fixup(xx) for xx in x]
+
+        x1 = ZA.construct(x, ZA_basis) # x1 is in A
+        P = A.construct(x1, basis) # P is in pauli
+        if P in central_idem:
+            continue
+
+        central_idem.append(P)
+        print(P)
+        err = (P*P - P).norm()
+        if abs(err) > EPSILON:
+            print("error:", err)
+
+        #if code is not None:
+        #    print(P*code == code)
+
+        if str(P) == "I"*degree:
+            assert 0
+            continue
+
+        block = []
+        for e in A:
+            f = A.mul(x1, e)
+            #print(e, "-->", f)
+            block.append(f)
+        block = numpy.array(block)
+        #print(block)
+        block = row_reduce(block, truncate=True)
+        #print(block)
+        print("rank:", len(block))
+
+        #sub = A.subalgebra(block)
+        #if sub.N == 2:
+        #    for x in sub.find_idempotents(100, verbose=True):
+        #        print("FOUND:", x)
+
+        #mod = A.mod(block)
+        #for x in mod.find_idempotents(100):
+
+        #if len(central_idem) == len(ZA_basis):
+        #    break
+
+
+    return
+
     trials = argv.get("trials", 0)
     Ps = []
-    for x in assoc.find_idempotents(trials):
-        P = assoc.construct(x, basis)
+    for x in A.find_idempotents(trials):
+        P = A.construct(x, basis)
         err = (P*P - P).norm()
         if abs(err) > EPSILON:
             print("error:", err)
