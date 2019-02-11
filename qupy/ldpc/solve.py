@@ -11,6 +11,7 @@ from numpy import dot, concatenate
 
 int_scalar = numpy.int64
 
+from qupy.smap import SMap
 
 def array2(items):
     return numpy.array(items, dtype=int_scalar)
@@ -200,7 +201,6 @@ def swap_col(A, j, k):
 
 
 def shortstrx(*As, **kw):
-    from .smap import SMap
     smap = SMap()
 
     zero = kw.get('zero', '.')

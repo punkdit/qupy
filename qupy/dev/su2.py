@@ -1573,18 +1573,70 @@ def test_internal_series_fast():
                 D = TG[G.inv[k]] * C * TG[k]
                 assert D == C 
 
-    A = AssocAlg(struct)
-    #I = A.unit
+    A = AssocAlg(struct, basis)
+    I = A.construct(A.unit)
     #print(A.construct(I, basis))
+    assert str(I) == 'I'*len(str(I)), str(I)
 
     write("\n")
+
+    for _ in range(10):
+
+        Z = A
+        chain = [A]
+
+        for trial in range(20):
+            x = Z.find_reflectors(10).__next__()
+            if Z is A:
+                R = A.construct(x)
+                assert R*R == I
+    
+            xs = Z.find_centralizer(x)
+            #print(xs)
+            if len(xs) == len(chain[-1]):
+                break
+    
+            Z = Z.subalgebra(xs)
+            print(Z)
+            chain.append(Z)
+        if Z.is_commutative():
+            break
+
+    n = len(chain)
+    print("chain:", n)
+    P = I
+    zero = 0.*I
+    for R in Z.find_reflectors(degree):
+        for A1 in reversed(chain):
+            R = A1.construct(R)
+        Q = 0.5*(R + I)
+        P1 = P*Q
+        if P1==zero:
+            break
+        P = P1
+
+    print("spec:", end=" ")
+    show_spec(to_dense(P))
+
+    for idx in range(degree):
+        for error in "XZ":
+            op = ["I"] * degree
+            op[idx] = error
+            op = algebra.parse(op)
+            print(op, op*P == P*op)
+
+    return
+
+    #
+    # --------- find central idempotents -----------
+    #
 
     ZA_basis = A.find_center()
     print("center:", len(ZA_basis))
 
     for x in ZA_basis:
         print(x)
-        x = A.construct(x, basis)
+        x = A.construct(x)
         #print(x)
         for y in basis:
             assert x*y == y*x
@@ -1608,8 +1660,8 @@ def test_internal_series_fast():
 
         x = [fixup(xx) for xx in x]
 
-        x1 = ZA.construct(x, ZA_basis) # x1 is in A
-        P = A.construct(x1, basis) # P is in pauli
+        x1 = ZA.construct(x) # x1 is in A
+        P = A.construct(x1) # P is in pauli
         if P in central_idem:
             continue
 
@@ -1654,7 +1706,7 @@ def test_internal_series_fast():
     trials = argv.get("trials", 0)
     Ps = []
     for x in A.find_idempotents(trials):
-        P = A.construct(x, basis)
+        P = A.construct(x)
         err = (P*P - P).norm()
         if abs(err) > EPSILON:
             print("error:", err)

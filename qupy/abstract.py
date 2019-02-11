@@ -11,14 +11,10 @@ from operator import mul
 #scalar = numpy.complex128
 #zero = scalar(0.)
 
+import numpy
 
 def genidx(shape):
-    if len(shape)==0:
-        yield ()
-    else:
-        for idx in range(shape[0]):
-            for _idx in genidx(shape[1:]):
-                yield (idx,)+_idx
+    return numpy.ndindex(*shape)
 
 
 class Space(object):

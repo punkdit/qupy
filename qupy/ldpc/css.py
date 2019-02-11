@@ -1976,10 +1976,10 @@ def main():
         toric = Toric2D(l)
         Hx, Hz = toric.Hx, toric.Hz
         strop = toric.strop
-        print("Hx:")
-        print(shortstr(Hx))
-        print("Lx:")
-        print(shortstr(toric.Lx))
+        #print("Hx:")
+        #print(shortstr(Hx))
+        #print("Lx:")
+        #print(shortstr(toric.Lx))
 
     elif argv.code == 'surface':
 
@@ -2078,6 +2078,31 @@ def main():
         C = argv.get("C", 100)
         code = ensemble.build(n, mx, mz, rw, maxw, C,
             check=check, verbose=verbose)
+
+    elif argv.code == 'hamming':
+        n = 8
+        Hz = parse("""
+        11111111
+        ...1111.
+        .11..11.
+        1.1.1.1.
+        ..1.11.1
+        """)
+        _Hz = parse("""
+        ...1111
+        .11..11
+        1.1.1.1
+        """)
+        #Hz = zeros2((0, n))
+        A = CSSCode(Hz=Hz)
+        vs = solve.find_kernel(Hz)
+        K = array2(vs)
+        B = CSSCode(Hz=K)
+        codes = A.product(B)
+        for c in codes:
+            c.build()
+            print(c)
+        return
 
     if argv.truncate:
         idx = argv.truncate

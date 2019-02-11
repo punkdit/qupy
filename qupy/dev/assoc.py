@@ -13,7 +13,7 @@ EPSILON = 1e-8
 class AssocAlg(object):
     "_associative algebra over (python) complex _numbers"
 
-    def __init__(self, struct):
+    def __init__(self, struct, sub=None):
         N = struct.shape[0]
         assert struct.shape == (N, N, N)
         self.struct = struct
@@ -25,6 +25,7 @@ class AssocAlg(object):
             basis.append(v)
         self.basis = numpy.array(basis)
         self.unit = self.find_unit()
+        self.sub = sub # basis in some bigger algebra
 
     def __len__(self):
         return self.N
@@ -64,12 +65,64 @@ class AssocAlg(object):
         return I
 
     def check(self):
+        # check unit
         I = self.unit
         for u in self.basis:
             v = self.mul(u, I)
             assert numpy.allclose(v, u)
             v = self.mul(I, u)
             assert numpy.allclose(v, u)
+        N, struct = self.N, self.struct
+        # check assoc ... todo
+
+    def is_commutative(self):
+        c = self.struct
+        return numpy.allclose(c, c.transpose(1, 0, 2))
+        #mul = self.mul
+        #for u in self.basis:
+        #  for v in self.basis:
+        #    if not numpy.allclose(mul(u, v), mul(v, u)):
+        #        assert not numpy.allclose(c, c.transpose(1, 0, 2))
+        #        return False
+        #assert numpy.allclose(c, c.transpose(1, 0, 2))
+        #return True
+
+    def construct(self, x, basis=None):
+        "construct x as a vector in a bigger algebra"
+        if basis is None:
+            basis = self.sub
+        assert basis is not None
+        assert len(basis)
+        assert len(x) == len(basis) == self.N
+        v = 0. * basis[0]
+        for i, a_i in enumerate(x):
+            if abs(a_i)<EPSILON:
+                continue
+            opi = a_i * basis[i]
+            if v is None:
+                v = opi
+            else:
+                v = v + opi
+        return v
+
+    def subalgebra(self, basis):
+        basis = numpy.array(basis)
+        assert basis.shape[1] == self.N
+        E = basis.transpose()
+        Einv = numpy.linalg.pinv(E, EPSILON)
+        #print(E)
+        #print(Einv)
+        #print(numpy.dot(Einv, E))
+    
+        N = len(basis)
+        struct = numpy.zeros((N, N, N))
+        for i, u in enumerate(basis):
+          for j, v in enumerate(basis):
+            w = self.mul(u, v)
+            cij = numpy.dot(Einv, w)
+            struct[i, j] = cij
+        A = AssocAlg(struct, sub=basis)
+        return A
 
     def find_center(self):
         "find basis for the center Z(A)."
@@ -80,6 +133,22 @@ class AssocAlg(object):
         A = A.transpose()
         B = linalg.kernel(A)
         return B.transpose()
+
+    def find_centralizer(self, x):
+        N, struct = self.N, self.struct
+        rows = []
+        for k in range(N):
+            cij = struct[:, :, k]
+            xicij = numpy.dot(x, cij)
+            xjcij = numpy.dot(x, cij.transpose())
+            rows.append(xjcij - xicij)
+        A = numpy.array(rows)
+        assert sum(abs(ui) for ui in numpy.dot(A, x)) < EPSILON
+        assert sum(abs(ui) for ui in numpy.dot(A, self.unit)) < EPSILON
+        a = linalg.kernel(A)
+        assert a.shape[0] == N
+        a = a.transpose()
+        return a
 
     def principal_ideal(self, x):
         N, c = self.N, self.struct
@@ -125,43 +194,6 @@ class AssocAlg(object):
         #print(struct)
         A = AssocAlg(struct)
         return A
-
-    def subalgebra(self, basis):
-        basis = numpy.array(basis)
-        assert basis.shape[1] == self.N
-        E = basis.transpose()
-        Einv = numpy.linalg.pinv(E, EPSILON)
-        #print(E)
-        #print(Einv)
-        #print(numpy.dot(Einv, E))
-    
-        N = len(basis)
-        struct = numpy.zeros((N, N, N))
-        for i, u in enumerate(basis):
-          for j, v in enumerate(basis):
-            w = self.mul(u, v)
-            cij = numpy.dot(Einv, w)
-            struct[i, j] = cij
-        A = AssocAlg(struct)
-        return A
-
-    def construct(self, x, basis):
-        assert len(basis)
-        assert len(x) == len(basis) == self.N
-        v = 0. * basis[0]
-        for i, a_i in enumerate(x):
-            if abs(a_i)<EPSILON:
-                continue
-            opi = a_i * basis[i]
-            if v is None:
-                v = opi
-            else:
-                v = v + opi
-        return v
-
-    def check_assoc(self):
-        N, struct = self.N, self.struct
-
 
     def find_idempotents(self, trials=None, verbose=False):
         # solve for idempotents in the algebra of invariants
@@ -260,6 +292,70 @@ class AssocAlg(object):
         
             if (sum(abs(xx) for xx in sol.x) > EPSILON and 
                 not numpy.allclose(sol.x, self.unit)):
+                yield sol.x
+
+            i += 1
+
+            if trials and i>=trials:
+                break
+
+    def find_reflectors(self, trials=None, verbose=False):
+        if trials==0:
+            return []
+
+        N, struct = self.N, self.struct
+        unit = self.unit
+
+        inbls = ["a_%d"%i for i in range(N)]
+        outbls = ["b_%d"%i for i in range(N)]
+        lines = ["def func(X):"]
+        lines.append("    %s = X"%(', '.join(v for v in inbls)))
+        for k in range(N):
+            terms = []
+            for i in range(N):
+              for j in range(i, N):
+                if i==j:
+                    val = struct[i, j, k]
+                else:
+                    val = struct[i, j, k] + struct[j, i, k]
+                if abs(val)>EPSILON:
+                    terms.append("%s*%s*%s" % (val, inbls[i], inbls[j]))
+            terms.append("-%s"%unit[k])
+            line = "    %s = %s" % (outbls[k], ' + '.join(terms))
+            line = line.replace("+ -", "- ")
+            line = line.replace("- -", "+ ")
+            lines.append(line)
+        lines.append("    return [%s]" % (', '.join(v for v in outbls)))
+        stmt = '\n'.join(lines)
+        if verbose:
+            print(stmt)
+        ns = {}
+        exec(stmt, ns, ns)
+        func = ns["func"]
+    
+        tol = 1e-10
+        xs = []
+
+        i = 0
+        while 1:
+            x0 = numpy.random.uniform(-0.1, 0.1, (N,))
+            #print(x0)
+            #print(func(x0))
+    
+            # FAIL: this only finds *real* solutions...
+
+            method = "lm"
+            #sol = optimize.root(func, x0, (), method, jacobian, tol) # broken...
+            sol = optimize.root(func, x0, (), method, None, tol)
+            assert sol.success, sol.message
+            #print(sol.message)
+            # nfev, njev, success
+    
+            #print("func:", func(sol.x))
+            #print("jacobian:", jacobian(sol.x))
+        
+            if (not numpy.allclose(sol.x, unit) and 
+                not numpy.allclose(sol.x, -unit)):
                 yield sol.x
 
             i += 1
