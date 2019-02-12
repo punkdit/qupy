@@ -4,6 +4,7 @@ import sys
 import math
 from random import choice, randint, seed, shuffle
 from operator import mul
+from functools import reduce
 
 import numpy
 from numpy import dot
@@ -14,7 +15,7 @@ from qupy.dense import is_close
 from qupy.ldpc.tool import write
 from qupy.ldpc.solve import dot2, zeros2, shortstr, shortstrx, span
 #from qupy.ldpc.ensemble import Ensemble, loglikely
-from functools import reduce
+from qupy.argv import argv
 
 epsilon = 1e-10
 r2 = math.sqrt(2)
@@ -765,6 +766,7 @@ class DummyNetwork(object):
         self.shapes = list(shapes)
         self.linkss = list(linkss)
         self.n = len(self.shapes)
+        self.cost = 0
         assert self.check()
 
     def check(self):
@@ -778,6 +780,12 @@ class DummyNetwork(object):
             shape = [shapes[idx][linkss[idx].index(link)] for idx in idxs]
             assert len(set(shape))==1, shape
         return True
+
+    def update_cost(self):
+        cost = 0
+        for shape, links in self:
+            cost = max(cost, reduce(mul, shape, 1))
+        self.cost = max(cost, self.cost)
 
     def __str__(self):
         return "DummyNetwork(%s)"%(
@@ -827,6 +835,7 @@ class DummyNetwork(object):
                 print(flatstr(shape))
             assert len(shape)==len(links)
             assert self.check()
+        self.update_cost()
 
     def cleanup(self, verbose=False):
         shapes = self.shapes
@@ -844,6 +853,7 @@ class DummyNetwork(object):
             links = linkss[i]
             assert len(set(links))==len(links)
         assert self.check()
+        self.update_cost()
 
     def cleanup_freelegs(self, link, verbose=False):
         shapes = self.shapes
@@ -873,6 +883,7 @@ class DummyNetwork(object):
                 print("\t", shape, links)
 
             assert self.check()
+        self.update_cost()
 
     def contract_1(self, link, verbose=False):
         shapes = self.shapes
@@ -919,6 +930,7 @@ class DummyNetwork(object):
             self.cleanup(verbose)
 
         assert self.check()
+        self.update_cost()
 
     def contract_2(self, link, cleanup=True, verbose=False):
         shapes = self.shapes
@@ -966,6 +978,7 @@ class DummyNetwork(object):
                 self.cleanup(verbose) # XXX too slow XXX
 
         assert self.check()
+        self.update_cost()
 
     def contract_scalars(self, verbose=False):
         for shape in self.shapes:
@@ -975,11 +988,14 @@ class DummyNetwork(object):
         self.n = 1
         if verbose:
             self.dump()
+        self.update_cost()
 
-    def contract_all(self, verbose=False):
+    def contract_all(self, verbose=False, rand=False):
         if verbose:
             self.dump()
         links = self.get_links()
+        if rand:
+            shuffle(links)
         for link in links:
             #break
             if verbose:
@@ -987,6 +1003,8 @@ class DummyNetwork(object):
             self.contract_1(link, verbose=verbose)
         self.cleanup(verbose)
         links = self.get_links()
+        if rand:
+            shuffle(links)
         for link in links:
             if verbose:
                 self.dump()
@@ -1929,9 +1947,14 @@ class ExactDecoder(object):
 
             net.append(A, links)
 
-        if 1:
-            dummy = net.get_dummy()
-            dummy.contract_all()
+        if argv.dummy:
+            cost = None
+            for _ in range(100):
+                dummy = net.get_dummy()
+                dummy.contract_all(rand=True)
+                cost = dummy.cost if cost is None else min(cost, dummy.cost)
+            print("(cost: %s)"%(cost), end="")
+            return 0.5
 
         net.contract_all(verbose)
         #net.contract_all_slow(verbose)
