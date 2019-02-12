@@ -1020,7 +1020,6 @@ class DummyNetwork(object):
 
 
 
-
 class TensorNetwork(object):
     def __init__(self, As=[], linkss=[]):
         self.As = list(As)
@@ -1678,6 +1677,30 @@ class TensorNetwork(object):
             for link in links:
                 self.paint(link, count+1)
 
+    def contract_oe(self):
+        import opt_einsum as oe
+        args = []
+        str_args = []
+        for A, links in self:
+            args.append(A)
+            args.append(links)
+            links = ''.join(oe.get_symbol(i) for i in links)
+            str_args.append(links)
+        str_args = ','.join(str_args)
+
+        path, path_info = oe.contract_path(str_args, *self.As)
+        #print(path_info)
+        sz = path_info.largest_intermediate
+        print("(size: %d)" % sz, end="")
+
+        if sz > 4194304:
+            assert 0
+
+        v = oe.contract(*args)
+        #print("contract_oe", v.shape)
+        assert v.shape == ()
+        return v[()]
+
 
 
 def build_test():
@@ -1955,6 +1978,10 @@ class ExactDecoder(object):
                 cost = dummy.cost if cost is None else min(cost, dummy.cost)
             print("(cost: %s)"%(cost), end="")
             return 0.5
+
+        if argv.oe:
+            value = net.contract_oe()
+            return value
 
         net.contract_all(verbose)
         #net.contract_all_slow(verbose)
