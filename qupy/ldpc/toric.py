@@ -3,7 +3,7 @@
 import numpy
 
 from qupy.smap import SMap
-from qupy.ldpc.solve import zeros2, shortstr, solve, dot2
+from qupy.ldpc.solve import zeros2, shortstr, solve, dot2, array2
 
 
 class Toric3D(object):
@@ -209,6 +209,10 @@ class Toric2D(object):
         self.zmap = zmap
         self.l = l
 
+        #for row in self.Hx:
+        #    print("op:")
+        #    print(self.strop(row))
+
     def get_code(self, **kw):
         from qupy.ldpc.css import CSSCode
         Lx, Lz, Hx, Tz, Hz, Tx = (
@@ -255,6 +259,90 @@ class Toric2D(object):
                     c = '|-'[k]
             m[row, col] = c
         return str(m).replace('0', '.')
+
+
+class Toric2DHie(Toric2D):
+    "RG version of Toric2D"
+    def __init__(self, l, allgen=False):
+
+        ll = 1
+        power = 0
+        while ll < l:
+            ll *= 2
+            power += 1
+        assert ll==l, "need a power of 2 lattice size"
+    
+        keys = []
+        keymap = {}
+        for i in range(l):
+          for j in range(l):
+            for k in (0, 1):
+                m = len(keys)
+                keys.append((i, j, k))
+                for di in (-l, 0, l):
+                  for dj in (-l, 0, l):
+                    keymap[i+di, j+dj, k] = m
+        n = len(keys)
+        assert n == 2*(l**2)
+        self.keys = keys
+
+        #lookup = dict((i, keys[i]) for i in range(n))
+    
+        offsets = [(0, 0), (1, 0), (0, 1)]
+        rows = []
+        for delta in range(1, power+1):
+            stab = []
+            for i in range(2**(delta-1)):
+                stab.append((i, 0, 0))
+                stab.append((i, 2**(delta-1), 0))
+                stab.append((0, i, 1))
+                stab.append((2**(delta-1), i, 1))
+            if delta==1:
+                assert set(stab) == set([(0, 0, 0), (0, 0, 1), (1, 0, 1), (0, 1, 0)])
+
+            for ii in range(0, l, 2**delta):
+             for jj in range(0, l, 2**delta):
+              for (di, dj) in offsets:
+                  row = [0]*n
+                  for (i, j, k) in stab:
+                        key = (i + di*(2**(delta-1)) + ii, j + dj*(2**(delta-1)) + jj, k)
+                        row[keymap[key]] = 1
+                  rows.append(row)
+
+        m = l**2-1
+        self.Hx = Hx = array2(rows)
+
+        #for i in range(m):
+        #    print("x op:")
+        #    print(self.strop(self.Hx[i]))
+
+        assert len(Hx) == m, len(Hx)
+
+        # ------------------- Hz ------------------------
+
+        Hz = zeros2(m, n)
+        #print(Hx)
+        for i in range(m):
+            for j in range(n):
+                val = Hx[i, j]
+                row, col, k = keys[j]
+                #if val:
+                #    print(row, col, k, "->", end=" ")
+                if k==1:
+                    k = 0
+                    col += 1
+                elif k==0:
+                    k = 1
+                    row += 1
+                #print(row, col, k)
+                assert Hz[i, keymap[row, col, k]] == 0
+                Hz[i, keymap[row, col, k]] = Hx[i, j]
+        #print(Hz)
+        self.Hz = Hz
+
+        #for i in range(m):
+        #    print("z op:")
+        #    print(self.strop(self.Hz[i]))
 
 
 class Surface(object):

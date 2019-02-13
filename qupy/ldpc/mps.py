@@ -1067,7 +1067,7 @@ class TensorNetwork(object):
         for _links in self.linkss:
             links += _links
         links = list(set(links))
-        links.sort()
+        links.sort(key = str)
         return links
 
     def freelinks(self):
@@ -1108,7 +1108,8 @@ class TensorNetwork(object):
         print("TensorNetwork:")
         for i in range(self.n):
             print('\t%d'%i, As[i].shape, linkss[i])
-            #print '\t', flatstr(As[i]), linkss[i]
+            #print('\t', flatstr(As[i]), linkss[i])
+            print(As[i])
 
     def __len__(self):
         return self.n
@@ -1532,6 +1533,8 @@ class TensorNetwork(object):
             self.dump()
         links = self.get_links()
         for link in links:
+            #if link in skip:
+            #    continue
             #break
             if verbose:
                 self.dump()
@@ -1539,6 +1542,8 @@ class TensorNetwork(object):
         self.cleanup(verbose)
         links = self.get_links()
         for link in links:
+            #if link in skip:
+            #    continue
             if verbose:
                 self.dump()
             self.contract_2(link, verbose=verbose)
@@ -1677,6 +1682,21 @@ class TensorNetwork(object):
             for link in links:
                 self.paint(link, count+1)
 
+    def get(self, idxs):
+        As = self.As
+        linkss = self.linkss
+        r = 1.
+        n = len(As)
+        for i in range(n):
+            A = As[i]
+            links = linkss[i]
+            idx = tuple(idxs[link] for link in links)
+            v = A[idx]
+            if v==0.:
+                return 0.
+            r *= v
+        return r
+
     def contract_oe(self):
         import opt_einsum as oe
         args = []
@@ -1691,7 +1711,7 @@ class TensorNetwork(object):
         path, path_info = oe.contract_path(str_args, *self.As)
         #print(path_info)
         sz = path_info.largest_intermediate
-        print("(size: %d)" % sz, end="")
+        #print("(size: %d)" % sz, end="")
 
         if sz > 4194304:
             assert 0
@@ -1935,6 +1955,8 @@ def test_gauge():
 
 
 class ExactDecoder(object):
+    "Tensor network decoder. Computes exact probabilities."
+    "See OEDecoder for a faster version (smarter contractions.)"
     def __init__(self, code):
         self.code = code
         assert code.k <= 24, "too big...?"
@@ -1969,19 +1991,6 @@ class ExactDecoder(object):
                     A[idx] = p # qubit is on
 
             net.append(A, links)
-
-        if argv.dummy:
-            cost = None
-            for _ in range(100):
-                dummy = net.get_dummy()
-                dummy.contract_all(rand=True)
-                cost = dummy.cost if cost is None else min(cost, dummy.cost)
-            print("(cost: %s)"%(cost), end="")
-            return 0.5
-
-        if argv.oe:
-            value = net.contract_oe()
-            return value
 
         net.contract_all(verbose)
         #net.contract_all_slow(verbose)
@@ -2020,8 +2029,10 @@ class ExactDecoder(object):
 
         T = code.get_T(err_op)
 
-        if T.sum()==0:
-            return T
+        #if T.sum()==0:
+        #    return T
+
+        dist = []
 
         #print
         best = None
@@ -2034,8 +2045,150 @@ class ExactDecoder(object):
             if r>best_r:
                 best_r = r
                 best = op
+            dist.append(r)
 
+        print(dist)
         return best
+
+
+class OEDecoder(ExactDecoder):
+    "Faster version of ExactDecoder "
+    def __init__(self, code):
+        self.code = code
+        assert code.k <= 24, "too big...?"
+        self.logops = list(span(code.Lx))
+        self.n = code.n
+        self.build()
+
+    def build(self):
+        import opt_einsum as oe
+        code = self.code
+        #Hz = code.Hz
+        #Tx = code.Tx
+        Hx = code.Hx
+        #Lx = code.Lx
+        n = code.n
+        mx = code.mx
+
+        net = []
+        As = []
+        linkss = []
+
+        # one tensor for each qubit
+        for i in range(n):
+            h = Hx[:, i]
+            w = h.sum()
+            assert w<20, "ouch"
+            shape = (2,)*w
+            A = numpy.zeros(shape, dtype=scalar)
+            As.append(A)
+            links = list(numpy.where(h)[0])
+            linkss.append(links)
+            net.append((A, links))
+        #print(linkss)
+
+        self.net = net
+        self.linkss = linkss
+        self.As = As
+        self.check()
+
+        kw = {"optimize" : "auto"}
+
+        str_args = []
+        shapes = []
+        for A, links in net:
+            links = ''.join(oe.get_symbol(i) for i in links)
+            str_args.append(links)
+            shapes.append(A.shape)
+        str_args = ','.join(str_args)
+        #print(str_args)
+        path, path_info = oe.contract_path(str_args, *As, **kw)
+        #print(path_info)
+        sz = path_info.largest_intermediate
+        print("OEDecoder: size=%d" % sz)
+
+        if sz > 4194304:
+            assert 0, "too big... maybe"
+
+        self.do_contract = oe.contract_expression(str_args, *shapes, **kw)
+
+    def get_links(self):
+        links = []
+        for _links in self.linkss:
+            links += _links
+        links = list(set(links))
+        links.sort()
+        return links
+
+    def has_link(self, link): # TOO SLOW
+        linkss = self.linkss
+        idxs = [i for i in range(self.n) if link in linkss[i]]
+        return idxs
+
+    def check(self):
+        As = self.As
+        linkss = self.linkss
+        assert len(As)==len(linkss)
+        for A, links in self.net:
+            assert len(A.shape)==len(links), ((A.shape), (links))
+        for link in self.get_links():
+            idxs = self.has_link(link)
+            shape = [As[idx].shape[linkss[idx].index(link)] for idx in idxs]
+            assert len(set(shape))==1, shape
+        return True
+
+    do_contract = None
+    def contract_oe(self):
+        if self.do_contract is None:
+            import opt_einsum as oe
+            args = []
+            for A, links in self.net:
+                args.append(A)
+                args.append(links)
+                links = ''.join(oe.get_symbol(i) for i in links)
+    
+            v = oe.contract(*args)
+            #print("contract_oe", v.shape)
+
+        else:
+            v = self.do_contract(*self.As)
+
+        assert v.shape == ()
+        return v[()]
+
+    def get_p(self, p, op, verbose=False):
+        code = self.code
+        #Hz = code.Hz
+        #Tx = code.Tx
+        Hx = code.Hx
+        #Lx = code.Lx
+        n = code.n
+        mx = code.mx
+
+        net = []
+
+        # one tensor for each qubit
+        for i in range(n):
+            h = Hx[:, i]
+            w = h.sum()
+            assert w<20, "ouch"
+            shape = (2,)*w
+            #A = numpy.zeros(shape, dtype=scalar)
+            #links = numpy.where(h)[0]
+            A, links = self.net[i]
+            opi = op[i]
+
+            for idx in genidx(shape):
+                if sum(idx)%2 == opi:
+                    A[idx] = 1.-p # qubit is off
+                else:
+                    A[idx] = p # qubit is on
+
+            #net.append((A, links))
+
+        value = self.contract_oe()
+        return value
+
 
 
 class MPSDecoder(ExactDecoder):
@@ -2227,6 +2380,178 @@ class MPSDecoder(ExactDecoder):
             print(net.value, net1.value)
 
         return net.value
+
+
+class LogopDecoder(object):
+    "An exact decoder that builds a tensor network
+        that represents the distribution over the logical operators."
+
+    def __init__(self, code):
+        self.code = code
+        assert code.k <= 24, "too big...?"
+
+    def get_dist(self, p, op, verbose=False):
+        code = self.code
+        Hz = code.Hz
+        Tx = code.Tx
+        Hx = code.Hx
+        Lx = code.Lx
+        n = code.n
+        k = code.k
+        mx = code.mx
+
+        HLx = numpy.concatenate((Hx, Lx))
+
+        #print()
+        #print(HLx)
+
+        #print "build"
+        net = []
+
+        # one tensor for each qubit
+        for i in range(n):
+            h = HLx[:, i]
+            w = h.sum()
+            assert w<20, "ouch"
+            shape = (2,)*w
+            A = numpy.zeros(shape, dtype=scalar)
+            links = [(j, i) for j in numpy.where(h)[0]]
+
+            opi = op[i]
+
+            for idx in genidx(shape):
+                if sum(idx)%2 == opi:
+                    A[idx] = 1.-p # qubit is off
+                else:
+                    A[idx] = p # qubit is on
+
+            net.append((A, links))
+
+        # one tensor for each stabilizer
+        for j in range(mx):
+            h = HLx[j, :]
+            w = h.sum()
+            assert w<20, "ouch"
+            shape = (2,)*w
+            A = numpy.zeros(shape, dtype=scalar)
+            links = [(j, i) for i in numpy.where(h)[0]]
+
+            A[(0,)*w] = 1.
+            A[(1,)*w] = 1.
+
+            net.append((A, links))
+
+        # one tensor for each logop
+        free = []
+        for j in range(mx, mx+k):
+            h = HLx[j, :]
+            w = h.sum()+1 # add one free leg
+            assert w<20, "ouch"
+            shape = (2,)*w
+            A = numpy.zeros(shape, dtype=scalar)
+            links = [(j, i) for i in numpy.where(h)[0]]
+            link = "l%d"%(j-mx)
+            links.append(link)
+            free.append(link)
+            
+            #print("logop", links[-1])
+
+            A[(0,)*w] = 1.
+            A[(1,)*w] = 1.
+
+            net.append((A, links))
+
+        all_links = []
+        for A, links in net:
+            assert len(links)==len(A.shape)
+            all_links += links
+        #for link in all_links:
+        #    print(all_links.count(link), end=" ")
+        #print()
+        all_links = list(set(all_links))
+        all_links.sort(key = str)
+        lookup = dict((link, idx) for (idx, link) in enumerate(all_links))
+
+        As = [A for (A, links) in net]
+        linkss = [links for (A, links) in net]
+
+        if 0:
+            tn = TensorNetwork(As, linkss)
+            #tn.dump()
+            total = 0.
+            idxs = {}
+            for vec in genidx((2,)*len(all_links)):
+                for i, link in enumerate(all_links):
+                    idxs[link] = vec[i]
+                val = tn.get(idxs)
+                #if val > 0.:
+                #    assert idxs['l0'] == 0
+                #    assert idxs['l1'] == 0
+                #    print("val:", val)
+                if idxs['l0'] == 1 and idxs['l1'] == 0:
+                    total += val
+            print("total:", total)
+    
+            #tn = tn.clone()
+            #tn.todot("net.dot")
+            #tn.contract_all(skip=free)
+            #print(tn.As)
+            assert 0
+
+        #print("links:", len(all_links))
+
+        import opt_einsum as oe
+        args = []
+        str_args = []
+        for A, links in net:
+            args.append(A)
+            links = ''.join(oe.get_symbol(lookup[i]) for i in links)
+            #print(A.shape, links)
+            args.append(links)
+            str_args.append(links)
+            assert len(links) == len(A.shape)
+
+        free = ''.join(oe.get_symbol(lookup[i]) for i in free)
+        args.append(free)
+        str_args = ','.join(str_args) + '->' + free
+
+        #v = oe.contract(*args)
+        #print(str_args)
+        path, path_info = oe.contract_path(str_args, *As)
+        #print(path_info)
+        sz = path_info.largest_intermediate
+        print("OEDecoder: size=%d" % sz)
+
+        if sz>4194304:
+            assert 0, "ugh, too big"
+
+        v = oe.contract(str_args, *As)
+        #print("contract_oe", v.shape)
+
+        return v
+
+    def decode(self, p, err_op, argv=None, verbose=False, **kw):
+        code = self.code
+        Hz = code.Hz
+        Tx = code.Tx
+        Hx = code.Hx
+        Lx = code.Lx
+        n = code.n
+        mx = code.mx
+
+        T = code.get_T(err_op)
+
+        #if T.sum()==0:
+        #    return T
+
+        dist = self.get_dist(p, T, verbose=verbose)
+
+        # XXX find max in dist 
+
+        print("...NOT FINISHED...")
+
+        return T
+
 
 
 

@@ -210,7 +210,7 @@ class CSSCode(object):
             Hz = zeros2(len(vs), n)
             for i, v in enumerate(vs):
                 Hz[i] = dot2(v.transpose(), Gz) 
-        Hz = solve.linear_independant(Hz)
+        Hz = solve.linear_independent(Hz)
     
         if Hx is None:
             A = dot2(Gz, Gx.transpose())
@@ -219,7 +219,7 @@ class CSSCode(object):
             Hx = zeros2(len(vs), n)
             for i, v in enumerate(vs):
                 Hx[i] = dot2(v.transpose(), Gx)
-        Hx = solve.linear_independant(Hx)
+        Hx = solve.linear_independent(Hx)
 
         if check:
             check_commute(Hz, Hx)
@@ -227,12 +227,12 @@ class CSSCode(object):
             check_commute(Hx, Gz)
 
         Gxr = numpy.concatenate((Hx, Gx))
-        Gxr = solve.linear_independant(Gxr)
+        Gxr = solve.linear_independent(Gxr)
         assert eq2(Gxr[:len(Hx)], Hx)
         Gxr = Gxr[len(Hx):]
     
         Gzr = numpy.concatenate((Hz, Gz))
-        Gzr = solve.linear_independant(Gzr)
+        Gzr = solve.linear_independent(Gzr)
         assert eq2(Gzr[:len(Hz)], Hz)
         Gzr = Gzr[len(Hz):]
 
@@ -1833,6 +1833,43 @@ def x_split(C0, build=True, **kw):
     return C1
 
 
+def make_gallager(r, n, l, m):
+    assert r%l == 0
+    assert n%m == 0
+    assert r*m == n*l
+    H = zeros2(r, n)
+    H1 = zeros2(r//l, n)
+    H11 = identity2(r//l)
+    #print(H1)
+    #print(H11)
+    for i in range(m):
+        H1[:, (n//m)*i:(n//m)*(i+1)] = H11
+    #print(shortstrx(H1))
+    H2 = H1
+    idxs = list(range(n))
+    for i in range(l):
+        H[(r//l)*i:(r//l)*(i+1), :] = H2
+        shuffle(idxs)
+        H2 = H2[:, idxs]
+    H = solve.linear_independent(H)
+    print(H)
+    return H
+
+
+def hypergraph_product(H1, H2):
+    r1, n1 = H1.shape
+    r2, n2 = H2.shape
+    E1 = identity2(r1)
+    E2 = identity2(r2)
+    M1 = identity2(n1)
+    M2 = identity2(n2)
+    Hx = numpy.kron(E2, H1), numpy.kron(H2, E1)
+    Hx = numpy.concatenate(Hx, axis=1)
+    Hz = numpy.kron(H2.transpose(), M1), numpy.kron(M2, H1.transpose())
+    Hz = numpy.concatenate(Hz, axis=1)
+    return Hx, Hz
+
+
 def main():
 
     m = argv.get('m', 6) # constraints (rows)
@@ -1981,6 +2018,14 @@ def main():
         #print("Lx:")
         #print(shortstr(toric.Lx))
 
+    elif argv.code == 'torichie':
+
+        from qupy.ldpc.toric import Toric2DHie
+        l = argv.get('l', 8)
+
+        toric = Toric2DHie(l)
+        Hx, Hz = toric.Hx, toric.Hz
+
     elif argv.code == 'surface':
 
         from qupy.ldpc.toric import Surface
@@ -2025,7 +2070,7 @@ def main():
         H = ldpc_code.H
         print("H:")
         print(shortstr(H))
-        H = solve.linear_independant(H)
+        H = solve.linear_independent(H)
         Hx = Hz = H
 
         code = CSSCode(Hx=Hx, Hz=Hz)
@@ -2040,8 +2085,8 @@ def main():
         Hx, Hz = ldpc_code.Hx, ldpc_code.Hz
         #print "Hx:"
         #print shortstr(Hx)
-        Hx = solve.linear_independant(Hx)
-        Hz = solve.linear_independant(Hz)
+        Hx = solve.linear_independent(Hx)
+        Hz = solve.linear_independent(Hz)
         #Hx = Hz = H
 
         code = CSSCode(Hx=Hx, Hz=Hz)
@@ -2078,6 +2123,16 @@ def main():
         C = argv.get("C", 100)
         code = ensemble.build(n, mx, mz, rw, maxw, C,
             check=check, verbose=verbose)
+
+    elif argv.code == "gallager":
+        r = argv.get("r", 6) # rows
+        n = argv.get("n", 8) # cols
+        l = argv.get("l", 3) # column weight
+        m = argv.get("m", 4) # row weight
+        H1 = make_gallager(r, n, l, m)
+        H2 = H1.transpose()
+        Hx, Hz = hypergraph_product(H1, H2)
+        code = CSSCode(Hx=Hx, Hz=Hz)
 
     elif argv.code == 'hamming':
         n = 8
@@ -2190,7 +2245,7 @@ def main():
     if argv.tanner:
         Hx = code.Hx
         graph = Tanner(Hx)
-        #graph.add_dependant()
+        #graph.add_dependent()
 
         depth = 3
 
@@ -2499,7 +2554,7 @@ def main():
         newHx = numpy.concatenate((code.Hx, newHx))
         #print shortstr(newHx)
         #print
-        Hx = solve.linear_independant(newHx)
+        Hx = solve.linear_independent(newHx)
         #print shortstr(Hx)
         #print
         code = CSSCode(Hx=Hx, Hz=code.Hz)
@@ -2621,6 +2676,14 @@ def get_decoder(argv, decode, code):
     elif decode=='exact':
         from qupy.ldpc.mps import ExactDecoder
         decoder = ExactDecoder(code)
+
+    elif decode=='oe':
+        from qupy.ldpc.mps import OEDecoder
+        decoder = OEDecoder(code)
+
+    elif decode=='logop':
+        from qupy.ldpc.mps import LogopDecoder
+        decoder = LogopDecoder(code)
 
     elif decode=='mps':
         from qupy.ldpc.mps import MPSDecoder
