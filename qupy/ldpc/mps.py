@@ -3,6 +3,7 @@
 import sys
 import math
 from random import choice, randint, seed, shuffle
+from time import time
 from operator import mul
 from functools import reduce
 
@@ -13,7 +14,7 @@ import numpy.linalg
 from qupy.abstract import genidx
 from qupy.dense import is_close
 from qupy.ldpc.tool import write
-from qupy.ldpc.solve import dot2, zeros2, shortstr, shortstrx, span
+from qupy.ldpc.solve import dot2, zeros2, shortstr, shortstrx, span, array2
 #from qupy.ldpc.ensemble import Ensemble, loglikely
 from qupy.argv import argv
 
@@ -2047,7 +2048,7 @@ class ExactDecoder(object):
                 best = op
             dist.append(r)
 
-        print(dist)
+        #print(dist)
         return best
 
 
@@ -2156,25 +2157,22 @@ class OEDecoder(ExactDecoder):
         assert v.shape == ()
         return v[()]
 
+    t0 = 0.
+    t1 = 0.
     def get_p(self, p, op, verbose=False):
         code = self.code
-        #Hz = code.Hz
-        #Tx = code.Tx
         Hx = code.Hx
-        #Lx = code.Lx
         n = code.n
         mx = code.mx
 
-        net = []
-
+        t0 = time()
+        
         # one tensor for each qubit
         for i in range(n):
             h = Hx[:, i]
             w = h.sum()
             assert w<20, "ouch"
             shape = (2,)*w
-            #A = numpy.zeros(shape, dtype=scalar)
-            #links = numpy.where(h)[0]
             A, links = self.net[i]
             opi = op[i]
 
@@ -2184,10 +2182,21 @@ class OEDecoder(ExactDecoder):
                 else:
                     A[idx] = p # qubit is on
 
-            #net.append((A, links))
+        t1 = time()
 
         value = self.contract_oe()
+
+        t2 = time()
+
+        self.t0 += t1-t0
+        self.t1 += t2-t1
+
+        #write(".")
         return value
+
+    def fini(self):
+        print("OEDecoder.t0 =", self.t0)
+        print("OEDecoder.t1 =", self.t1)
 
 
 
@@ -2382,7 +2391,7 @@ class MPSDecoder(ExactDecoder):
         return net.value
 
 
-class LogopDecoder(object):
+class BigLogopDecoder(object):
     """
         An exact decoder that builds a tensor network
         that represents the distribution over the logical operators.
@@ -2429,6 +2438,8 @@ class LogopDecoder(object):
 
             net.append((A, links))
 
+        contract = []
+
         # one tensor for each stabilizer
         for j in range(mx):
             h = HLx[j, :]
@@ -2442,6 +2453,7 @@ class LogopDecoder(object):
             A[(1,)*w] = 1.
 
             net.append((A, links))
+            contract += links
 
         # one tensor for each logop
         free = []
@@ -2462,6 +2474,9 @@ class LogopDecoder(object):
             A[(1,)*w] = 1.
 
             net.append((A, links))
+            contract += links
+
+        contract = list(set(contract))
 
         all_links = []
         for A, links in net:
@@ -2553,6 +2568,175 @@ class LogopDecoder(object):
         print("...NOT FINISHED...")
 
         return T
+
+
+
+class LogopDecoder(object):
+    """
+        An exact decoder that builds a tensor network
+        that represents the distribution over the logical operators.
+        This one uses less tensors than BigLogopDecoder.
+    """
+
+    def __init__(self, code):
+        self.code = code
+        assert code.k <= 24, "too big...?"
+
+    def get_dist(self, p, op, verbose=False):
+        code = self.code
+        Hz = code.Hz
+        Tx = code.Tx
+        Hx = code.Hx
+        Lx = code.Lx
+        n = code.n
+        k = code.k
+        mx = code.mx
+
+        HLx = numpy.concatenate((Hx, Lx))
+
+        #print()
+        #print(HLx)
+
+        #print "build"
+        net = []
+        #free = list(range(mx, mx+k))
+        free = []
+
+        # one tensor for each qubit
+        for i in range(n):
+            h = HLx[:, i] # all the incident check operators
+            w = h.sum()
+            assert w<20, "ouch"
+            shape = (2,)*w
+            A = numpy.zeros(shape, dtype=scalar)
+            links = [j for j in numpy.where(h)[0]]
+
+            opi = op[i]
+
+            for idx in genidx(shape):
+                if sum(idx)%2 == opi:
+                    A[idx] = 1.-p # qubit is off
+                else:
+                    A[idx] = p # qubit is on
+
+            net.append((A, links))
+
+        for j in range(mx, mx+k):
+            A = numpy.zeros((2,2), dtype=scalar)
+            A[0, 0] = 1.
+            A[1, 1] = 1.
+            idx = j+k
+            free.append(idx)
+            net.append((A, [j, idx]))
+
+        all_links = []
+        for A, links in net:
+            assert len(links)==len(A.shape)
+            all_links += links
+        #for link in all_links:
+        #    print(all_links.count(link), end=" ")
+        #print()
+        all_links = list(set(all_links))
+        all_links.sort(key = str)
+        lookup = dict((link, idx) for (idx, link) in enumerate(all_links))
+
+        As = [A for (A, links) in net]
+        linkss = [links for (A, links) in net]
+
+        if 0:
+            tn = TensorNetwork(As, linkss)
+            #tn.dump()
+            total = 0.
+            idxs = {}
+            for vec in genidx((2,)*len(all_links)):
+                for i, link in enumerate(all_links):
+                    idxs[link] = vec[i]
+                val = tn.get(idxs)
+                #if val > 0.:
+                #    assert idxs['l0'] == 0
+                #    assert idxs['l1'] == 0
+                #    print("val:", val)
+                if idxs['l0'] == 1 and idxs['l1'] == 0:
+                    total += val
+            print("total:", total)
+    
+            #tn = tn.clone()
+            #tn.todot("net.dot")
+            #tn.contract_all(skip=free)
+            #print(tn.As)
+            assert 0
+
+        #print("links:", len(all_links))
+
+        import opt_einsum as oe
+        args = []
+        str_args = []
+        for A, links in net:
+            args.append(A)
+            links = ''.join(oe.get_symbol(lookup[i]) for i in links)
+            #print(A.shape, links)
+            args.append(links)
+            str_args.append(links)
+            assert len(links) == len(A.shape)
+
+        free = ''.join(oe.get_symbol(lookup[i]) for i in free)
+        args.append(free)
+        str_args = ','.join(str_args) + '->' + free
+
+        #v = oe.contract(*args)
+        #print(str_args)
+        path, path_info = oe.contract_path(str_args, *As)
+        #print(path_info)
+        sz = path_info.largest_intermediate
+        print("(size=%d)" % (sz,), end='', flush=True)
+
+#        if sz>33554432:
+        if sz>268435456:
+            assert 0, "ugh, too big"
+
+        v = oe.contract(str_args, *As)
+        #print("contract_oe", v.shape)
+
+        return v
+
+    def decode(self, p, err_op, argv=None, verbose=False, **kw):
+        code = self.code
+        Hz = code.Hz
+        Tx = code.Tx
+        Hx = code.Hx
+        Lx = code.Lx
+        n = code.n
+        mx = code.mx
+
+        T = code.get_T(err_op)
+
+        #if T.sum()==0:
+        #    return T
+
+        dist = self.get_dist(p, T, verbose=verbose)
+
+        #print(dist.shape)
+        #print(dist)
+
+        best_idx = None
+        best_v = 0.
+        for idx in genidx(dist.shape):
+            val = dist[idx]
+            if val > best_v:
+                best_idx = idx
+                best_v = val
+
+        #print("best:", best_idx)
+
+        best_idx = array2(best_idx)
+        op = dot2(best_idx, Lx)
+        op = (T+op) % 2
+
+        # XXX find max in dist 
+
+        #print("...NOT FINISHED...")
+
+        return op
 
 
 

@@ -1833,7 +1833,7 @@ def x_split(C0, build=True, **kw):
     return C1
 
 
-def make_gallager(r, n, l, m):
+def make_gallager(r, n, l, m, distance=0):
     assert r%l == 0
     assert n%m == 0
     assert r*m == n*l
@@ -1845,15 +1845,25 @@ def make_gallager(r, n, l, m):
     for i in range(m):
         H1[:, (n//m)*i:(n//m)*(i+1)] = H11
     #print(shortstrx(H1))
-    H2 = H1
-    idxs = list(range(n))
-    for i in range(l):
-        H[(r//l)*i:(r//l)*(i+1), :] = H2
-        shuffle(idxs)
-        H2 = H2[:, idxs]
-    H = solve.linear_independent(H)
-    print(H)
-    return H
+
+    while 1:
+        H2 = H1.copy()
+        idxs = list(range(n))
+        for i in range(l):
+            H[(r//l)*i:(r//l)*(i+1), :] = H2
+            shuffle(idxs)
+            H2 = H2[:, idxs]
+        Hli = solve.linear_independent(H)
+        assert n <= 24, "ummm, too big?"
+        dist = n
+        for v in solve.find_kernel(Hli):
+            if 0 < v.sum() < dist:
+                dist = v.sum()
+        if dist >= distance:
+            break
+    print(Hli)
+    print("dist:", dist)
+    return Hli
 
 
 def hypergraph_product(H1, H2):
@@ -2129,7 +2139,8 @@ def main():
         n = argv.get("n", 8) # cols
         l = argv.get("l", 3) # column weight
         m = argv.get("m", 4) # row weight
-        H1 = make_gallager(r, n, l, m)
+        distance = argv.get("distance", 4)
+        H1 = make_gallager(r, n, l, m, distance)
         H2 = H1.transpose()
         Hx, Hz = hypergraph_product(H1, H2)
         code = CSSCode(Hx=Hx, Hz=Hz)
@@ -2578,6 +2589,70 @@ class MultiDecoder(object):
         return op
 
 
+def choose(items, n):
+    m = len(items)
+    if n==0:
+        yield []
+    elif n==1:
+        for item in items:
+            yield [item,]
+    elif n==2:
+        for i in range(m):
+          for j in range(i+1, m):
+            yield [items[i], items[j]]
+    elif n==3:
+        for i in range(m):
+         for j in range(i+1, m):
+          for k in range(j+1, m):
+            yield [items[i], items[j], items[k]]
+    else:
+        for i in range(m):
+            for _items in choose(items[i+1:], n-1):
+                yield [items[i],]+_items
+
+
+
+class LookupDecoder(object):
+    """
+        Keep a lookup table of syndromes for all possible errors
+        up to a given weight. Use this to decode.
+    """
+    def __init__(self, code, weight=4):
+        lookup = {}
+        n = code.n
+        Hz = code.Hz
+        err = zeros2(n)
+        write("LookupDecoder: building...")
+        for w in range(0, weight+1):
+          for idxs in choose(list(range(n)), w):
+            err[:] = 0
+            err[idxs] = 1
+            syn = dot2(Hz, err)
+            key = syn.tostring()
+            other = lookup.get(key)
+            if other is None:
+                lookup[key] = idxs
+        write("\n")
+        print("lookup size:", len(lookup))
+        self.lookup = lookup
+        self.code = code
+
+    def decode(self, p, err, **kw):
+        code = self.code
+        Hz = code.Hz
+        syn = dot2(Hz, err)
+        #if err.sum() <=
+        a = syn.tostring()
+        idxs = self.lookup.get(a)
+        if idxs is None:
+            #write("?")
+            return None
+        op = zeros2(code.n)
+        op[idxs] = 1
+        return op
+
+
+
 def get_decoder(argv, decode, code):
 
     d = 2
@@ -2692,6 +2767,9 @@ def get_decoder(argv, decode, code):
     elif decode=='mpsensemble':
         from qupy.ldpc.mps import MPSEnsembleDecoder
         decoder = MPSEnsembleDecoder(code)
+
+    elif decode=='lookup':
+        decoder = LookupDecoder(code)
 
     return decoder
 
