@@ -2383,8 +2383,10 @@ class MPSDecoder(ExactDecoder):
 
 
 class LogopDecoder(object):
-    "An exact decoder that builds a tensor network
-        that represents the distribution over the logical operators."
+    """
+        An exact decoder that builds a tensor network
+        that represents the distribution over the logical operators.
+    """
 
     def __init__(self, code):
         self.code = code
