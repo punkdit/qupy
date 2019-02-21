@@ -2063,6 +2063,10 @@ class OEDecoder(ExactDecoder):
 
     def build(self):
         import opt_einsum as oe
+
+        #from opt_einsum.backends.dispatch import _has_einsum
+        #_has_einsum['numpy'] = False
+
         code = self.code
         #Hz = code.Hz
         #Tx = code.Tx
@@ -2079,7 +2083,7 @@ class OEDecoder(ExactDecoder):
         for i in range(n):
             h = Hx[:, i]
             w = h.sum()
-            assert w<20, "ouch"
+            assert w<20, "ouch: w=%d"%w
             shape = (2,)*w
             A = numpy.zeros(shape, dtype=scalar)
             As.append(A)
@@ -2093,7 +2097,7 @@ class OEDecoder(ExactDecoder):
         self.As = As
         self.check()
 
-        kw = {"optimize" : "auto"}
+        kw = {"optimize" : "random-greedy"}
 
         str_args = []
         shapes = []
@@ -2101,6 +2105,8 @@ class OEDecoder(ExactDecoder):
             links = ''.join(oe.get_symbol(i) for i in links)
             str_args.append(links)
             shapes.append(A.shape)
+        #print(shapes)
+        #print(linkss)
         str_args = ','.join(str_args)
         #print(str_args)
         path, path_info = oe.contract_path(str_args, *As, **kw)
@@ -2108,7 +2114,8 @@ class OEDecoder(ExactDecoder):
         sz = path_info.largest_intermediate
         print("OEDecoder: size=%d" % sz)
 
-        if sz > 4194304:
+#        if sz > 4194304:
+        if sz > 134217728:
             assert 0, "too big... maybe"
 
         self.do_contract = oe.contract_expression(str_args, *shapes, **kw)
@@ -2195,7 +2202,7 @@ class OEDecoder(ExactDecoder):
         return value
 
     def fini(self):
-        print("OEDecoder.t0 =", self.t0)
+        print("\nOEDecoder.t0 =", self.t0)
         print("OEDecoder.t1 =", self.t1)
 
 
@@ -2580,7 +2587,7 @@ class LogopDecoder(object):
 
     def __init__(self, code):
         self.code = code
-        assert code.k <= 24, "too big...?"
+        assert code.k <= 26, "too big...?"
 
     def get_dist(self, p, op, verbose=False):
         code = self.code
@@ -2606,7 +2613,7 @@ class LogopDecoder(object):
         for i in range(n):
             h = HLx[:, i] # all the incident check operators
             w = h.sum()
-            assert w<20, "ouch"
+            assert w<24, "ouch"
             shape = (2,)*w
             A = numpy.zeros(shape, dtype=scalar)
             links = [j for j in numpy.where(h)[0]]
@@ -2731,10 +2738,6 @@ class LogopDecoder(object):
         best_idx = array2(best_idx)
         op = dot2(best_idx, Lx)
         op = (T+op) % 2
-
-        # XXX find max in dist 
-
-        #print("...NOT FINISHED...")
 
         return op
 
