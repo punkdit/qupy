@@ -89,10 +89,13 @@ def row_reduce(A, truncate=True, inplace=False, check=False,
 
 def kernel(A, tol=EPSILON):
     assert len(A.shape)==2
+    A = row_reduce(A) # does not change the kernel
+    #print("kernel: A.shape=%s"%(A.shape,))
     u, s, vh = numpy.linalg.svd(A)
     #tol = max(atol, rtol * s[0])
     nnz = (s >= tol).sum()
     ns = vh[nnz:].conj().T
+    #print("kernel: ns.shape=%s"%(ns.shape,))
     return ns
 
 
