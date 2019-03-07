@@ -67,7 +67,7 @@ def get_group(n):
         yield op
 
 
-def all_codes(pauli, n):
+def all_codes_3(pauli, n):
     I = pauli.I
     X = pauli.X
     Y = pauli.Y
@@ -107,7 +107,7 @@ def uniq_codes(pauli, n):
 
     count = 0
     ops = {}
-    for gen in all_codes(pauli, n):
+    for gen in all_codes_3(pauli, n):
         G = mulclose(gen)
         if len(G) != 8:
             continue
@@ -157,22 +157,43 @@ def main():
     Sd = S.dag()
     ns = {"I":I, "X":X, "Z":Z, "Y":Y, "S":S}
 
+    Xt = reduce(matmul, [X]*n)
+    Zt = reduce(matmul, [Z]*n)
+    Yt = reduce(matmul, [Y]*n)
     St = reduce(matmul, [S]*n)
 
     if 0:
         for g in all_ops:
             desc = str(g)
             g = get_dense(g)
-            if g*St == St*g:
+            if g*St != St*g:
+                continue
+
                 print(desc)
         return
+
+    #code = StabilizerCode(pauli, "XZZXI IXZZX XIXZZ ZXIXZ") # S is not transversal
     
+    count = 0
     for P in uniq_codes(pauli, n):
 
         desc = str(P)
         P = get_dense(P)
-        if P*St == St*P:
-            print(desc)
+        if P*Xt != Xt*P:
+            continue
+        if P*Zt != Zt*P:
+            continue
+        if P*St != St*P:
+            continue
+        if P*Xt == P or P*Xt == -P:
+            continue
+        if P*Zt == P or P*Zt == -P:
+            continue
+        if P*Yt == P or P*Yt == -P:
+            continue
+        print(desc)
+        count += 1
+    print("count:", count)
 
     if 0:
         for ops in cross([["I", "S", "X", "Z", "Y"]]*n):
