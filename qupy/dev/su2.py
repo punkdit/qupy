@@ -111,7 +111,7 @@ class Group(object):
 
 def build():
 
-    global Octa, Tetra, Icosa, Sym2, Sym3, Pauli, RealPauli, RealCliff, Cliff, PauliT, PauliR
+    global Octa, Tetra, Icosa, Sym2, Sym3, Pauli, RealPauli, RealCliff, Cliff, PauliT, PauliR, PauliS
 
     # ----------------------------------
     #
@@ -161,6 +161,18 @@ def build():
 
     RealCliff = Group(gen, "ZH") # 
     assert len(RealCliff)==16 # D_16
+
+    # ----------------------------------
+    #
+
+    gen = [
+        [[0, 1], [1, 0]],  # X
+        [[1, 0], [0, cyclotomic(4)]], # S
+    ]
+    gen = [Qu((2, 2), 'ud', v) for v in gen]
+
+    PauliS = Group(gen, "XS")
+    assert len(PauliS)==32, len(PauliS)
 
     # ----------------------------------
     #
