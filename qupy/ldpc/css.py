@@ -28,6 +28,8 @@ from qupy.ldpc.solve import (
 
 from qupy.ldpc.decoder import Decoder, RandomDecoder
 #from qupy.ldpc.dynamic import Tanner
+from qupy.ldpc.decoder import MetroDecoder, StarMetroDecoder, TemperedDecoder
+
 from qupy.ldpc.chain import Chain, ChainMap
 
 from qupy.ldpc.bpdecode import RadfordBPDecoder
@@ -1901,12 +1903,30 @@ def make_gallager(r, n, l, m, distance=0):
         dist = classical_distance(Hli)
         if dist >= distance:
             break
-    print(Hli)
-    print("dist:", dist)
     return Hli
 
 
+def make_gallager_6(r, n, l, m, distance=0):
+    fail = True
+    while fail:
+
+        H = make_gallager(r, n, l, m, distance)
+
+        fail = False
+        for i in range(m):
+          for j in range(i+1, m):
+            v = tuple(H[i] + H[j])
+            if v.count(2) > 1:
+                fail = True
+                break
+          if fail:
+            break
+
+    return H
+
+
 def hypergraph_product(H1, H2):
+    #print(H1.shape, H2.shape)
     r1, n1 = H1.shape
     r2, n2 = H2.shape
     E1 = identity2(r1)
@@ -1917,6 +1937,7 @@ def hypergraph_product(H1, H2):
     Hx = numpy.concatenate(Hx, axis=1)
     Hz = numpy.kron(H2.transpose(), M1), numpy.kron(M2, H1.transpose())
     Hz = numpy.concatenate(Hz, axis=1)
+    #print(Hx.shape, Hz.shape)
     return Hx, Hz
 
 
@@ -2200,7 +2221,10 @@ def main():
         l = argv.get("l", 3) # column weight
         m = argv.get("m", 4) # row weight
         distance = argv.get("distance", 4)
-        H1 = make_gallager(r, n, l, m, distance)
+        H1 = make_gallager_6(r, n, l, m, distance)
+        print(shortstr(H1))
+        dist = classical_distance(H1)
+        print("dist:", dist)
         H2 = H1.transpose()
         Hx, Hz = hypergraph_product(H1, H2)
         code = CSSCode(Hx=Hx, Hz=Hz)
@@ -2619,7 +2643,7 @@ def main():
         else:
             print("distance <=", d)
 
-    if argv.distance:
+    if type(argv.distance)==str:
         return
 
     if argv.get('exec'):

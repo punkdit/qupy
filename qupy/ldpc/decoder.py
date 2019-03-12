@@ -12,6 +12,8 @@ from qupy.ldpc import solve
 from qupy.ldpc.solve import (
     pop2, zeros2, dot2, array2, eq2, rand2, binomial2,
     randexpo, shortstr, shortstrx)
+
+strop = solve.shortstr
             
 
 class Decoder(object):
@@ -109,7 +111,7 @@ class MetroDecoder(Decoder):
         from qupy.ldpc.metro import metropolis
 
         #print "decode:"
-        strop = self.strop
+        #strop = self.strop
         #print strop(err_op)
         T = self.get_T(err_op)
 
