@@ -1,13 +1,21 @@
 #!/usr/bin/env python3
 
+"""
+Weight enumerators of stabilizer codes.
+"""
+
+
 from math import exp, pi
 from random import randint, seed
+from functools import reduce
+from operator import add
 
 import numpy
 from matplotlib import pyplot
 
 from qupy.ldpc.solve import zeros2, dot2, rank, shortstr, enum2, parse
 from qupy.ldpc.toric import Toric2D, Toric3D
+from qupy.dev.comm import Poly
 
 from qupy.argv import argv
 
@@ -177,6 +185,49 @@ def get_dev(counts):
     return dev ** 0.5
 
 
+def wenum():
+
+    l = argv.get("l", 2)
+
+    code = Toric2D(l)
+    n = code.n
+    Hz = code.Hz
+    print(shortstr(Hz))
+    print()
+    Lz = code.Lz
+    print(shortstr(Lz))
+
+    Opz = numpy.concatenate((Hz, Lz))
+
+    x = Poly({(1, 0):1})
+    y = Poly({(0, 1):1})
+    zero = Poly({}, 2)
+
+    polys = {}
+    for v in numpy.ndindex((2,)*len(Opz)):
+        key = str(v)
+        polys[key] = zero
+
+    for v in numpy.ndindex((2,)*n):
+        w = sum(v)
+        key = str(tuple(dot2(Opz, v)))
+        g = x**w * y**(n-w)
+        polys[key] = polys[key] + g
+
+    for v in numpy.ndindex((2,)*len(Opz)):
+        key = str(v)
+        print(v, polys[key])
+
+    f = reduce(add, polys.values())
+    print(f)
+
+    p = 0.05
+    f = eval(str(f), {"x":(1.-p), "y":p})
+    print(f)
+
+    print((x+y)**n)
+
+
 def main():
 
     l = argv.get("l", 4)
@@ -294,7 +345,6 @@ def main():
 
 
 def test_poly():
-    from qupy.dev.comm import Poly
     x = Poly({(1,0):1})
     y = Poly({(0,1):1})
 

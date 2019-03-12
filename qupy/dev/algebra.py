@@ -94,10 +94,16 @@ def build_algebra(names, rel):
         k = names.index(C)
         if not rhs:
             val = scalar.one
+        elif rhs == "+":
+            val = scalar.one
         elif rhs == "-":
             val = -scalar.one
+        elif rhs == "i":
+            val = 1.j*scalar.one
+        elif rhs == "-i":
+            val = -1.j*scalar.one
         else:
-            assert 0, repr(eq)
+            assert 0, "Parse error: %s"%repr(eq)
         assert struct.get((i, j, k)) is None
         struct[i, j, k] = val
 

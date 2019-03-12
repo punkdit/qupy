@@ -111,7 +111,7 @@ class Group(object):
 
 def build():
 
-    global Octa, Tetra, Icosa, Sym2, Sym3, Pauli, RealPauli, RealCliff, Cliff
+    global Octa, Tetra, Icosa, Sym2, Sym3, Pauli, RealPauli, RealCliff, Cliff, PauliT, PauliR, PauliS
 
     # ----------------------------------
     #
@@ -161,6 +161,42 @@ def build():
 
     RealCliff = Group(gen, "ZH") # 
     assert len(RealCliff)==16 # D_16
+
+    # ----------------------------------
+    #
+
+    gen = [
+        [[0, 1], [1, 0]],  # X
+        [[1, 0], [0, cyclotomic(4)]], # S
+    ]
+    gen = [Qu((2, 2), 'ud', v) for v in gen]
+
+    PauliS = Group(gen, "XS")
+    assert len(PauliS)==32, len(PauliS)
+
+    # ----------------------------------
+    #
+
+    gen = [
+        [[0, 1], [1, 0]],  # X
+        [[1, 0], [0, cyclotomic(8)]], # T
+    ]
+    gen = [Qu((2, 2), 'ud', v) for v in gen]
+
+    PauliT = Group(gen, "XT")
+    assert len(PauliT)==128, len(PauliT)
+
+    # ----------------------------------
+    #
+
+    gen = [
+        [[0, 1], [1, 0]],  # X
+        [[1, 0], [0, cyclotomic(16)]], # R
+    ]
+    gen = [Qu((2, 2), 'ud', v) for v in gen]
+
+    PauliR = Group(gen, "XR")
+    assert len(PauliR)==512, len(PauliR)
 
     # ----------------------------------
     #
@@ -1580,52 +1616,53 @@ def test_internal_series_fast():
 
     write("\n")
 
-    for _ in range(10):
-
-        Z = A
-        chain = [A]
-
-        for trial in range(20):
-            x = Z.find_reflectors(10).__next__()
-            if Z is A:
-                R = A.construct(x)
-                assert R*R == I
+    if argv.find_reflectors:
+        for _ in range(10):
     
-            xs = Z.find_centralizer(x)
-            #print(xs)
-            if len(xs) == len(chain[-1]):
+            Z = A
+            chain = [A]
+    
+            for trial in range(20):
+                x = Z.find_reflectors(10).__next__()
+                if Z is A:
+                    R = A.construct(x)
+                    assert R*R == I
+        
+                xs = Z.find_centralizer(x)
+                #print(xs)
+                if len(xs) == len(chain[-1]):
+                    break
+        
+                Z = Z.subalgebra(xs)
+                print(Z)
+                chain.append(Z)
+            if Z.is_commutative():
                 break
     
-            Z = Z.subalgebra(xs)
-            print(Z)
-            chain.append(Z)
-        if Z.is_commutative():
-            break
-
-    n = len(chain)
-    print("chain:", n)
-    P = I
-    zero = 0.*I
-    for R in Z.find_reflectors(degree):
-        for A1 in reversed(chain):
-            R = A1.construct(R)
-        Q = 0.5*(R + I)
-        P1 = P*Q
-        if P1==zero:
-            break
-        P = P1
-
-    print("spec:", end=" ")
-    show_spec(to_dense(P))
-
-    for idx in range(degree):
-        for error in "XZ":
-            op = ["I"] * degree
-            op[idx] = error
-            op = algebra.parse(op)
-            print(op, op*P == P*op)
-
-    return
+        n = len(chain)
+        print("chain:", n)
+        P = I
+        zero = 0.*I
+        for R in Z.find_reflectors(degree):
+            for A1 in reversed(chain):
+                R = A1.construct(R)
+            Q = 0.5*(R + I)
+            P1 = P*Q
+            if P1==zero:
+                break
+            P = P1
+    
+        print("spec:", end=" ")
+        show_spec(to_dense(P))
+    
+        for idx in range(degree):
+            for error in "XZ":
+                op = ["I"] * degree
+                op[idx] = error
+                op = algebra.parse(op)
+                print(op, op*P == P*op)
+    
+        #return
 
     #
     # --------- find central idempotents -----------
@@ -1635,22 +1672,24 @@ def test_internal_series_fast():
     print("center:", len(ZA_basis))
 
     for x in ZA_basis:
-        print(x)
+        #print(x)
         x = A.construct(x)
         #print(x)
         for y in basis:
             assert x*y == y*x
 
     code = None
-    if degree==5:
-        code = StabilizerCode(algebra, "XZZXI IXZZX XIXZZ ZXIXZ")
-        code = code.get_projector()
-    elif degree==4:
-        code = StabilizerCode(algebra, "ZZII IZZI IIZZ XXXX")
-        code = code.get_projector()
-    elif degree==3:
-        code = StabilizerCode(algebra, "ZZI IZZ XXX")
-        code = code.get_projector()
+    if argv.code:
+        if degree==5:
+            code = StabilizerCode(algebra, "XZZXI IXZZX XIXZZ ZXIXZ")
+            code = code.get_projector()
+        elif degree==4:
+            code = StabilizerCode(algebra, "ZZZI XXIX YIYY")
+            #code = StabilizerCode(algebra, "ZZII IZZI IIZZ XXXX")
+            code = code.get_projector()
+        elif degree==3:
+            code = StabilizerCode(algebra, "ZZI IZZ XXX")
+            code = code.get_projector()
     
     ZA = A.subalgebra(ZA_basis)
     #print("unit:", ZA.unit)
@@ -1671,8 +1710,8 @@ def test_internal_series_fast():
         if abs(err) > EPSILON:
             print("error:", err)
 
-        #if code is not None:
-        #    print(P*code == code)
+        if code is not None:
+            print("P*code == code:", P*code == code)
 
         if str(P) == "I"*degree:
             assert 0
