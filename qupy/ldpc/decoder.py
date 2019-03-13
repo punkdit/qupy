@@ -133,8 +133,82 @@ class MetroDecoder(Decoder):
 #                if random()<0.5:
 #                    T1 += h
 #                    T1 %= 2
-            #q = -self.metropolis(p, T1, N)
+            #q = -self.metropolis(p, T1, M0)
             q = -metropolis(p, T1, M0, self.Hx)
+            #write("(%d)"%q)
+            #print "T %d:"%i
+            #print strop(T1)
+            if q > best_q:
+                best_l = l_op
+                best_q = q
+                best_i = i
+                best_T = T1
+            #print "_"*79
+        #write(":%d "%best_i)
+        #print "best_T"
+        #print strop(best_T)
+        T += best_l
+        T %= 2
+        #print "T"
+        #print strop(T)
+        return T
+
+
+class MetroLogopDecoder(Decoder):
+
+    def metropolis(self, p, T, N, Hx=None):
+
+        if Hx is None:
+            Hx = self.Hx
+        m, n = Hx.shape
+        count = 0
+        T0 = T
+        n0 = T.sum()
+        while count<N:
+
+            idx = randint(0, m-1)
+            stab = Hx[idx]
+            T1 = (stab + T0)%2
+            n1 = T1.sum()
+
+            r = (p/(1-p))**(n1-n0)
+            if r >= 1 or random() <= r:
+                T0[:] = T1 # <-- modify inplace
+                n0 = n1
+
+            count += 1
+
+        return n0
+
+    def decode(self, p, err_op, verbose=False, **kw):
+
+        from qupy.ldpc.metro import metropolis
+
+        #print "decode:"
+        #strop = self.strop
+        #print strop(err_op)
+        T = self.get_T(err_op)
+
+        all_Lx = list(solve.span(self.Lx))
+
+        M0 = kw.get('M0', 100000)
+        best_l = None
+        best_q = -self.n
+        best_i = None
+        best_T = None
+        #print
+        #print "T:"
+        #print strop(T)
+        for i, l_op in enumerate(all_Lx):
+            #print "l_op:"
+            #print strop(l_op)
+            T1 = (T+l_op)%2
+#            for h in self.Hx:
+#                if random()<0.5:
+#                    T1 += h
+#                    T1 %= 2
+            q = -self.metropolis(p, T1, M0)
+            #q = -metropolis(p, T1, M0, self.Hx)
             #write("(%d)"%q)
             #print "T %d:"%i
             #print strop(T1)
