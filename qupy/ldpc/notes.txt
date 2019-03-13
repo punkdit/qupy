@@ -1,0 +1,284 @@
+
+13/3/19
+=======
+
+019-03-13 17:45:48
+./css.py code=joschka12 decode=bp p=0.04 N=10000 noerr
+error rate = 0.12440000
+fail rate = 0.11480000
+nonuniq = 89
+distance <= 6
+
+2019-03-13 17:47:39
+./css.py code=joschka12 decode=bp p=0.05 N=10000 noerr
+error rate = 0.25890000
+fail rate = 0.24540000
+nonuniq = 164
+distance <= 6
+
+2019-03-13 17:48:21
+./css.py code=joschka12 decode=bp p=0.06 N=10000 noerr
+error rate = 0.40630000
+fail rate = 0.39000000
+nonuniq = 243
+distance <= 6
+
+
+
+
+2019-03-13 17:47:53
+./css.py code=joschka16 decode=bp p=0.04 N=10000 noerr
+error rate = 0.22110000
+fail rate = 0.20100000
+nonuniq = 167
+distance <= 6
+
+2019-03-13 17:49:06
+./css.py code=joschka16 decode=bp p=0.05 N=10000 noerr
+error rate = 0.39430000
+fail rate = 0.36670000
+nonuniq = 250
+distance <= 6
+
+2019-03-13 17:50:21
+./css.py code=joschka16 decode=bp p=0.06 N=10000 noerr
+error rate = 0.58160000
+fail rate = 0.55470000
+nonuniq = 310
+distance <= 6
+
+2019-03-13 18:12:52
+./css.py code=joschka16 decode=bp p=0.07 N=10000 noerr
+error rate = 0.75640000
+fail rate = 0.73390000
+nonuniq = 271
+distance <= 6
+
+2019-03-13 18:22:26
+./css.py code=joschka16 decode=bp p=0.08 N=10000 noerr
+error rate = 0.88930000
+fail rate = 0.87790000
+nonuniq = 157
+distance <= 6
+
+
+
+
+
+2019-03-13 17:49:26
+./css.py code=joschka20 decode=bp p=0.04 N=10000 noerr
+error rate = 0.15230000
+fail rate = 0.15080000
+nonuniq = 295
+distance <= 8
+
+2019-03-13 17:51:07
+./css.py code=joschka20 decode=bp p=0.05 N=10000 noerr
+error rate = 0.31310000
+fail rate = 0.30930000
+nonuniq = 557
+distance <= 8
+
+2019-03-13 17:53:18
+./css.py code=joschka20 decode=bp p=0.06 N=10000 noerr
+error rate = 0.52850000
+fail rate = 0.52470000
+nonuniq = 635
+distance <= 8
+
+2019-03-13 18:14:40
+./css.py code=joschka20 decode=bp p=0.07 N=10000 noerr
+error rate = 0.74220000
+fail rate = 0.73800000
+nonuniq = 517
+distance <= 8
+
+2019-03-13 18:24:27
+./css.py code=joschka20 decode=bp p=0.08 N=10000 noerr
+error rate = 0.89400000
+fail rate = 0.89150000
+nonuniq = 302
+distance <= 8
+
+
+
+
+2019-03-13 17:51:50
+./css.py code=joschka24 decode=bp p=0.04 N=10000 noerr
+error rate = 0.13190000
+fail rate = 0.13150000
+nonuniq = 486
+distance <= 10
+
+2019-03-13 17:56:48
+./css.py code=joschka24 decode=bp p=0.05 N=10000 noerr
+error rate = 0.28640000
+fail rate = 0.28470000
+nonuniq = 812
+distance <= 10
+
+2019-03-13 18:05:51
+./css.py code=joschka24 decode=bp p=0.06 N=10000 noerr
+error rate = 0.51470000
+fail rate = 0.51280000
+nonuniq = 1092
+distance <= 10
+
+2019-03-13 18:17:10
+./css.py code=joschka24 decode=bp p=0.07 N=10000 noerr
+error rate = 0.75030000
+fail rate = 0.74890000
+nonuniq = 771
+distance <= 10
+
+2019-03-13 18:27:06
+./css.py code=joschka24 decode=bp p=0.08 N=10000 noerr
+error rate = 0.91370000
+fail rate = 0.91310000
+nonuniq = 337
+distance <= 10
+
+
+
+
+2019-03-13 17:57:25
+./css.py code=joschka28 decode=bp p=0.04 N=10000 noerr
+error rate = 0.09240000
+fail rate = 0.09180000
+nonuniq = 768
+distance <= 10
+
+2019-03-13 18:05:47
+./css.py code=joschka28 decode=bp p=0.05 N=10000 noerr
+error rate = 0.24230000
+fail rate = 0.23890000
+nonuniq = 1396
+distance <= 10
+
+2019-03-13 18:11:10
+./css.py code=joschka28 decode=bp p=0.06 N=10000 noerr
+error rate = 0.47300000
+fail rate = 0.46900000
+nonuniq = 1632
+distance <= 10
+
+2019-03-13 18:17:37
+./css.py code=joschka28 decode=bp p=0.07 N=10000 noerr
+error rate = 0.73910000
+fail rate = 0.73630000
+nonuniq = 1152
+distance <= 10
+
+2019-03-13 18:27:11
+./css.py code=joschka28 decode=bp p=0.08 N=10000 noerr
+error rate = 0.92260000
+fail rate = 0.92070000
+nonuniq = 436
+distance <= 10
+
+
+
+2019-03-13 18:50:20
+./css.py code=joschka32 decode=bp p=0.04 N=10000 noerr
+error rate = 0.07840000
+fail rate = 0.07380000
+nonuniq = 993
+distance <= 10
+
+2019-03-13 18:54:18
+./css.py joschka32.ldpc decode=bp p=0.05 N=10000 noerr
+error rate = 0.23310000
+fail rate = 0.22370000
+nonuniq = 1773
+distance <= 10
+
+2019-03-13 18:59:54
+./css.py joschka32.ldpc decode=bp p=0.06 N=10000 noerr
+error rate = 0.46810000
+fail rate = 0.45630000
+nonuniq = 2091
+distance <= 10
+
+2019-03-13 19:08:16
+./css.py joschka32.ldpc decode=bp p=0.07 N=10000 noerr
+error rate = 0.74840000
+fail rate = 0.73820000
+nonuniq = 1385
+distance <= 10
+
+2019-03-13 19:23:28
+./css.py joschka32.ldpc decode=bp p=0.08 N=10000 noerr
+error rate = 0.93320000
+fail rate = 0.92950000
+nonuniq = 461
+distance <= 10
+
+
+
+
+2019-03-13 19:09:52
+./css.py joschka40.ldpc decode=bp p=0.04 N=10000 noerr
+error rate = 0.04500000
+fail rate = 0.04450000
+nonuniq = 1688
+distance <= 14
+
+2019-03-13 19:18:06
+./css.py joschka40.ldpc decode=bp p=0.05 N=10000 noerr
+error rate = 0.15230000
+fail rate = 0.15000000
+nonuniq = 3030
+distance <= 12
+
+2019-03-13 19:32:03
+./css.py joschka40.ldpc decode=bp p=0.06 N=10000 noerr
+error rate = 0.38620000
+fail rate = 0.38260000
+nonuniq = 3539
+distance <= 12
+
+2019-03-13 19:53:14
+./css.py joschka40.ldpc decode=bp p=0.07 N=10000 noerr
+error rate = 0.70600000
+fail rate = 0.70250000
+nonuniq = 2273
+distance <= 12
+
+2019-03-13 20:21:06
+./css.py joschka40.ldpc decode=bp p=0.08 N=10000 noerr
+error rate = 0.92880000
+fail rate = 0.92770000
+nonuniq = 620
+distance <= 17
+
+
+
+2019-03-13 19:44:31
+./css.py joschka44.ldpc decode=bp p=0.04 N=10000 noerr
+error rate = 0.03280000
+fail rate = 0.03270000
+nonuniq = 1996
+distance <= 23
+
+2019-03-13 20:09:48
+./css.py joschka44.ldpc decode=bp p=0.05 N=10000 noerr
+error rate = 0.13380000
+fail rate = 0.13360000
+nonuniq = 3585
+distance <= 21
+
+2019-03-13 20:28:46
+./css.py joschka44.ldpc decode=bp p=0.06 N=10000 noerr
+error rate = 0.36310000
+fail rate = 0.36260000
+nonuniq = 4131
+distance <= 14
+
+
+
+
+
+
+
+
+
