@@ -1898,13 +1898,31 @@ def make_gallagher(r, n, l, m, distance=0):
             shuffle(idxs)
             H2 = H2[:, idxs]
         Hli = solve.linear_independent(H)
-        assert n <= 24, "ummm, too big?"
+        k = Hli.shape[0] - Hli.shape[1]
+        assert k <= 24, "ummm, too big? k = %d" % k
         dist = classical_distance(Hli)
         if dist >= distance:
             break
     return Hli
 
 
+def find_girth(H):
+    m, n = H.shape
+    for i in range(m):
+      for j in range(i+1, m):
+        v = tuple(H[i] + H[j])
+        if v.count(2) > 1:
+            return 4
+    for i in range(m):
+      for j in range(i+1, m):
+       for k in range(j+1, m):
+        v = tuple(H[i] + H[j] + H[k])
+        if v.count(2) > 2:
+            return 6
+
+
+
+# FAIL
 def make_gallagher_6(r, n, l, m, distance=0):
     fail = True
     while fail:
@@ -2215,15 +2233,21 @@ def main():
             check=check, verbose=verbose)
 
     elif argv.code == "gallagher":
-        r = argv.get("r", 6) # rows
-        n = argv.get("n", 8) # cols
         l = argv.get("l", 3) # column weight
         m = argv.get("m", 4) # row weight
-        distance = argv.get("distance", 4)
-        H1 = make_gallagher_6(r, n, l, m, distance)
+        n = argv.get("n", 8) # cols
+        r = argv.get("r", n*l//m) # rows
+        d = argv.get("d", 4) # distance
+        H1 = make_gallagher(r, n, l, m, d)
         print(shortstr(H1))
-        dist = classical_distance(H1)
-        print("dist:", dist)
+        n = H1.shape[1]
+        k = n-H1.shape[0]
+        d = classical_distance(H1)
+        print("[%d, %d, %d]" % (n, k, d))
+        girth = find_girth(H1)
+        print("girth =", girth)
+        print("rank =", solve.rank(H1))
+        #print(repr(H1))
         H2 = H1.transpose()
         Hx, Hz = hypergraph_product(H1, H2)
         code = CSSCode(Hx=Hx, Hz=Hz)
