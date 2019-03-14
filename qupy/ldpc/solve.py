@@ -1887,7 +1887,6 @@ def test_kernel():
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
         0, 0, 1, 0, 0, 0, 0, 0, 0, 0]])
-    print(H.shape)
 
     basis = find_kernel(H)
     K = array2(basis)
@@ -1899,12 +1898,12 @@ def test_kernel():
         d = v.sum()
         if 0 < d < dist:
             dist = d
-    print("d =", dist)
+    assert dist == 8
+
 
 
 if __name__=="__main__":
 
-    test_kernel()
     test_solve()
     test_solve_rand()
     test_randsolve()
@@ -1918,6 +1917,7 @@ if __name__=="__main__":
     test_pushout()
     test_fromkernel()
     test_reductor()
+    test_kernel()
 
     print("OK")
 
