@@ -1871,7 +1871,11 @@ def x_split(C0, build=True, **kw):
 def classical_distance(H):
     n = H.shape[1]
     dist = n
-    for v in solve.find_kernel(H):
+    K = solve.find_kernel(H)
+    K = numpy.array(K)
+    Kt = K.transpose()
+    for u in numpy.ndindex((2,)*K.shape[0]):
+        v = dot2(Kt, u)
         if 0 < v.sum() < dist:
             dist = v.sum()
     return dist

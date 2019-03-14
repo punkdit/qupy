@@ -12,7 +12,8 @@ from qupy.ldpc import solve
 from qupy.ldpc.solve import shortstrx, shortstr, array2
 from qupy.ldpc import dynamic
 
-write = print
+def write(s):
+    print(s, end="", flush=True)
 
 dot = numpy.dot
 
@@ -246,7 +247,7 @@ class LocalGaussianCSSDecoder(CSSDecoder):
             cs = cs1
 
             if len(cs)==1:
-                sys.stdout.write('!');sys.stdout.flush()
+                write('!')
                 cs[0] = cs[0].grow(self.Hz, 10)
                 #return None
 
