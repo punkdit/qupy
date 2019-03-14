@@ -60,6 +60,7 @@ desc = {
     "joschka36" : "[[2025,81,12]]",
     "joschka40" : "[[2500,100,12]]",
     "joschka44" : "[[3025,121,14]]",
+    "joschka60" : "[[5625,225,16]]",
 }
 
 keys = list(rows.keys())
@@ -75,16 +76,22 @@ for key in keys:
 
     xs = [x for (x, y) in row]
     ys = [y for (x, y) in row]
-    pyplot.plot(xs, ys, "x-", label=desc[key])
-    #pyplot.semilogy(xs, ys, label=desc[key])
+    if argv.semilogy:
+        pyplot.semilogy(xs, ys, "x-", label=desc[key])
+    else:
+        pyplot.plot(xs, ys, "x-", label=desc[key])
 
 y0, y1 = pyplot.ylim()
 pyplot.ylim((y0, 1.))
 pyplot.xlabel("bitflip noise rate")
 pyplot.ylabel("decoder error rate")
 
-pyplot.legend(loc='upper left')
 #pyplot.save("Threshold.pdf")
+
+if argv.semilogy:
+    pyplot.legend(loc='lower right')
+else:
+    pyplot.legend(loc='upper left')
 
 pyplot.show()
 
