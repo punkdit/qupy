@@ -26,9 +26,9 @@ import random as py_random
 srandom(py_random.randint(0, RAND_MAX-1))
 
 
-cdef int nrand(int n):
-    cdef int j
-    j = <int> (n * (rand() / (RAND_MAX + 1.0)))
+cdef long nrand(long n):
+    cdef long j
+    j = <long> (n * (rand() / (RAND_MAX + 1.0)))
     return j
 
 
@@ -51,8 +51,8 @@ import numpy
 #    return data
 
 
-cdef int sum(int *data, int n):
-    cdef int i, count
+cdef long sum(long *data, long n):
+    cdef long i, count
     count = 0
     for i from 0<=i<n:
         if data[i]:
@@ -60,23 +60,23 @@ cdef int sum(int *data, int n):
     return count
 
 
-cdef void move(int *A, int *B, int n):
-    cdef int i
+cdef void move(long *A, long *B, long n):
+    cdef long i
     for i from 0<=i<n:
         A[i] = B[i]
 
 
-cdef void iadd2(int *A, int *B, int n):
-    cdef int i
+cdef void iadd2(long *A, long *B, long n):
+    cdef long i
     for i from 0<=i<n:
         A[i] = (A[i]+B[i])%2
 
 
-def metropolis(double p, cnp.ndarray T, int N, cnp.ndarray Hx):
+def metropolis(double p, cnp.ndarray T, long N, cnp.ndarray Hx):
 
-    cdef int m, n, count, n0, n1, idx, n_min
+    cdef long m, n, count, n0, n1, idx, n_min
     cdef double r
-    cdef int *T0_data, *T1_data, *Hx_data, *tmp
+    cdef long *T0_data, *T1_data, *Hx_data, *tmp
     cdef cnp.ndarray T1
 
     #m, n = Hx.shape
@@ -84,12 +84,12 @@ def metropolis(double p, cnp.ndarray T, int N, cnp.ndarray Hx):
     m = Hx.shape[0]
     n = Hx.shape[1]
     assert Hx.dtype == numpy.int64
-    Hx_data = <int *>Hx.data
+    Hx_data = <long *>Hx.data
     #print Hx.strides[0], Hx.strides[1]
 
-    T0_data = <int *>T.data
+    T0_data = <long *>T.data
     T1 = T.copy()
-    T1_data = <int *>T1.data
+    T1_data = <long *>T1.data
 
     # Calculate an exponential moving average...
     cdef double alpha, avg
@@ -122,7 +122,7 @@ def metropolis(double p, cnp.ndarray T, int N, cnp.ndarray Hx):
         #print avg, n0
         avg = alpha*n0 + (1.-alpha)*avg
 
-    move(<int *>T.data, T0_data, n)
+    move(<long *>T.data, T0_data, n)
 
     # These all seem very similar:
 

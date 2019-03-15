@@ -117,7 +117,8 @@ class MetroDecoder(Decoder):
 
         all_Lx = list(solve.span(self.Lx))
 
-        M0 = kw.get('M0', 100000)
+        M0 = kw.get('M0', 10000)
+        N0 = kw.get("N0", 100)
         best_l = None
         best_q = -self.n
         best_i = None
@@ -125,7 +126,8 @@ class MetroDecoder(Decoder):
         #print
         #print "T:"
         #print strop(T)
-        for i, l_op in enumerate(all_Lx):
+        for j in range(N0):
+          for i, l_op in enumerate(all_Lx):
             #print "l_op:"
             #print strop(l_op)
             T1 = (T+l_op)%2
