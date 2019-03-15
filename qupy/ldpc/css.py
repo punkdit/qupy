@@ -1947,18 +1947,77 @@ def make_gallagher_6(r, n, l, m, distance=0):
 
 
 def hypergraph_product(H1, H2):
-    #print(H1.shape, H2.shape)
-    r1, n1 = H1.shape
-    r2, n2 = H2.shape
-    E1 = identity2(r1)
-    E2 = identity2(r2)
+    #print("hypergraph_product:", H1.shape, H2.shape)
+    m1, n1 = H1.shape
+    m2, n2 = H2.shape
+    E1 = identity2(m1)
+    E2 = identity2(m2)
     M1 = identity2(n1)
     M2 = identity2(n2)
-    Hx = numpy.kron(E2, H1), numpy.kron(H2, E1)
-    Hx = numpy.concatenate(Hx, axis=1)
-    Hz = numpy.kron(H2.transpose(), M1), numpy.kron(M2, H1.transpose())
-    Hz = numpy.concatenate(Hz, axis=1)
+    Hx0 = numpy.kron(E2, H1), numpy.kron(H2, E1)
+    #print("Hx0:", Hx0[0].shape, Hx0[1].shape)
+    Hx = numpy.concatenate(Hx0, axis=1)
+    #print("Hx:", Hx.shape)
+    Hz0 = numpy.kron(H2.transpose(), M1), numpy.kron(M2, H1.transpose())
+    Hz = numpy.concatenate(Hz0, axis=1)
     #print(Hx.shape, Hz.shape)
+
+    L1 = solve.find_kernel(H1)
+    L1t = L1.transpose()
+    #print("H1:", H1.shape)
+
+    L2 = solve.find_kernel(H2)
+    L2t = L2.transpose()
+
+    if 0:
+        S1t = solve.pseudo_inverse(L1)
+        S1 = S1t.transpose()
+        print("L1:", L1.shape)
+        print("S1t:", S1t.shape)
+    
+        print("L1:")
+        print(shortstr(L1))
+        print("S1:")
+        print(shortstr(S1))
+    
+        print("dot2(L1, S1t))")
+        print(dot2(L1, S1t))
+
+    if len(L2) == 0 and len(L1) == 0:
+        assert 0, "hmm.."
+
+    elif len(L2) == 0:
+        Lzt = numpy.kron(E2, L1).transpose()
+        assert dot2(Hx0[0], Lzt).sum() == 0
+        #print("(E2*L1).transpose():", Lzt.shape)
+        Z = zeros2(Hx0[1].shape[1], Lzt.shape[1])
+        #print("Z:", Z.shape)
+        Lzt = numpy.concatenate((Lzt, Z))
+        #print("Lzt:", Lzt.shape)
+
+    elif len(L1) == 0:
+        Lzt = numpy.kron(L2, E1)
+        assert 0, "todo"
+
+    else:
+        A = numpy.kron(E2, L1)
+        B = numpy.kron(L2, E1)
+        A = numpy.concatenate((A, zeros2(B.shape[0], A.shape[1])))
+        assert 0, "todo"
+
+    Lz = Lzt.transpose()
+    assert dot2(Hx, Lzt).sum() == 0
+
+    print("H2.transpose()")
+    print(H2.transpose())
+    L2 = solve.find_kernel(H2.transpose())
+    L2t = L2.transpose()
+
+    print("L2:")
+    print(shortstr(L2))
+
+    #print(dot2(L1, L2.transpose()))
+
     return Hx, Hz
 
 

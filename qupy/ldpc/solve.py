@@ -535,7 +535,8 @@ def linear_independent(A, check=False, verbose=False):
 
 
 def find_kernel(A, inplace=False, check=False, verbose=False):
-    """return a list of vectors that span the nullspace of A
+    """return a list of vectors that span the nullspace of A.
+        This is the transpose of the matrix K, s.t. AK = 0.
     """
 
     if check:
@@ -619,7 +620,9 @@ def find_kernel(A, inplace=False, check=False, verbose=False):
             assert dot(A0, v).sum()%2 == 0, shortstr(v)
         basis.append(v)
 
-    return basis
+    K = numpy.array(basis)
+
+    return K
 
 
 class RowReduction(object):
@@ -727,7 +730,7 @@ def find_logops(Hx, Hz, check=False, verbose=False):
 
     logops = basis
 
-    if not logops:
+    if not len(logops):
         shape = 0, Hx.shape[1]
         Lz = zeros2(*shape)
         return Lz
