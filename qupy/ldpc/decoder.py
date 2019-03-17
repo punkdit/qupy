@@ -13,6 +13,8 @@ from qupy.ldpc.solve import (
     pop2, zeros2, dot2, array2, eq2, rand2, binomial2,
     randexpo, shortstr, shortstrx)
 
+from qupy.argv import argv
+
 strop = solve.shortstr
             
 
@@ -117,8 +119,8 @@ class MetroDecoder(Decoder):
 
         all_Lx = list(solve.span(self.Lx))
 
-        M0 = kw.get('M0', 10000)
-        N0 = kw.get("N0", 100)
+        M0 = argv.get('M0', 10000)
+        N0 = argv.get("N0", 1)
         best_l = None
         best_q = -self.n
         best_i = None

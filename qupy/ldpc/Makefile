@@ -14,6 +14,6 @@ metro.so: metro.c
 	gcc -g -shared -fPIC -o metro.so metro.c $(INCLUDE) 
 
 fast: metro.c
-	gcc -g -O3 -shared -o metro.so metro.c $(INCLUDE) 
+	gcc -g -O3 -shared -fPIC -o metro.so metro.c $(INCLUDE) 
 #	./css.py
 
