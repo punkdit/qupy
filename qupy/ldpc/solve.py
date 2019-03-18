@@ -9,7 +9,7 @@ import numpy
 import numpy.random as ra
 from numpy import dot, concatenate
 
-int_scalar = numpy.int64
+int_scalar = numpy.int32
 
 from qupy.smap import SMap
 
@@ -275,6 +275,7 @@ def row_reduce(H, truncate=True, inplace=False, check=False, debug=False):
     """
 
     assert len(H.shape)==2, H.shape
+    assert H.dtype == int_scalar, H.dtype
     m, n = H.shape
     if not inplace:
         H = H.copy()
@@ -620,7 +621,7 @@ def find_kernel(A, inplace=False, check=False, verbose=False):
             assert dot(A0, v).sum()%2 == 0, shortstr(v)
         basis.append(v)
 
-    K = numpy.array(basis)
+    K = numpy.array(basis, dtype=int_scalar)
 
     return K
 
@@ -647,6 +648,8 @@ class RowReduction(object):
         H1 = self.H1
         leading = self.leading
         v = v.copy()
+        assert H1.dtype == int_scalar, H1.dtype
+        assert v.dtype == int_scalar
         for i, j in enumerate(leading):
             if v[j]:
                 v += H1[i]

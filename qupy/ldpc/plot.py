@@ -28,7 +28,7 @@ for line in lines:
         rows[key] = row
         attrs = None
 
-    elif line.startswith("./css.py "):
+    elif line.startswith("./main.py "):
 
         attrs = {}
         for item in line.split():
@@ -44,6 +44,7 @@ for line in lines:
     elif " = " in line:
         lhs, rhs = line.split(" = ")
         rhs = float(rhs)
+        assert attrs is not None
         assert lhs not in attrs
         attrs[lhs] = rhs
 
@@ -66,6 +67,10 @@ desc = {
     "qc35"       : ("QC", "[[1954,64,14]]", "x--"),
     "qc45"       : ("QC", "[[3321,81,16]]", "x--"),
     "qc60"       : ("QC", "[[5904,144,20]]", "x--"),
+    "codes/bicycle_500_100" : ("Bi", "[[500,100,<=12]]", "x-"),
+    "codes/bicycle_1000_200" : ("Bi", "[[1000,200,?]]", "x-"),
+    "codes/bicycle_3780_630_12" : ("Bi", "[[3780,630,<=12]]", "x-"),
+    "codes/bicycle_2000_400" : ("Bi", "[[2000,400,?]]", "x-"),
 }
 
 keys = list(rows.keys())
