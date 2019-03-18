@@ -77,6 +77,7 @@ for key in keys:
         continue
 
     row = rows[key]
+    row.sort()
     print(row)
 
     xs = [x for (x, y) in row]

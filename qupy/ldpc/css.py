@@ -1907,6 +1907,7 @@ def make_gallagher(r, n, l, m, distance=0):
         dist = classical_distance(Hli)
         if dist >= distance:
             break
+        write(".")
     return Hli
 
 
@@ -1916,13 +1917,13 @@ def find_girth(H):
       for j in range(i+1, m):
         v = tuple(H[i] + H[j])
         if v.count(2) > 1:
-            return 4
+            return 4 # found a 4-cycle
     for i in range(m):
       for j in range(i+1, m):
        for k in range(j+1, m):
         v = tuple(H[i] + H[j] + H[k])
         if v.count(2) > 2:
-            return 6
+            return 6 # found a 6-cycle
 
 
 

@@ -491,6 +491,15 @@ distance <= 5904
 
 
 
+2019-03-18 14:49:23
+./css.py joschka44.ldpc check=False decode=bp p=0.075 N=10000 noerr
+error rate = 0.83910000
+fail rate = 0.83810000
+nonuniq = 1425
+distance <= 14
+
+
+
 
 
 
