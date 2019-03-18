@@ -37,12 +37,12 @@ nonuniq = 3
 distance <= 500
 
 
-2019-03-18 18:06:29
-./main.py codes/bicycle_1000_200.ldpc check=False decode=bp p=0.03 N=10000 noerr
-error rate = 0.00160000
-fail rate = 0.00160000
-nonuniq = 36
-distance <= 1000
+2019-03-18 18:36:58
+./main.py codes/bicycle_1000_200.ldpc check=False decode=bp p=0.03 N=100000 noerr
+error rate = 0.00244000
+fail rate = 0.00232000
+nonuniq = 229
+distance <= 12
 
 2019-03-18 18:08:51
 ./main.py codes/bicycle_1000_200.ldpc check=False decode=bp p=0.04 N=10000 noerr
@@ -102,5 +102,13 @@ error rate = 0.60000000
 fail rate = 0.59600000
 nonuniq = 13
 distance <= 12
+
+2019-03-18 18:43:17
+./main.py codes/bicycle_2000_400.ldpc p=0.07 N=1000 decode=bp noerr
+error rate = 0.98000000
+fail rate = 0.98000000
+nonuniq = 0
+distance <= 2000
+
 
 
