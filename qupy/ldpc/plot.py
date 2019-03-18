@@ -51,21 +51,21 @@ for line in lines:
 print(rows)
 
 desc = {
-    "joschka12" : "[[255,9,6]]",
-    "joschka16" : "[[400,16,6]]",
-    "joschka20" : "[[625,25,8]]",
-    "joschka24" : "[[900,36,10]]",
-    "joschka28" : "[[1225,49,10]]",
-    "joschka32" : "[[1600,64,10]]",
-    "joschka36" : "[[2025,81,12]]",
-    "joschka40" : "[[2500,100,12]]",
-    "joschka44" : "[[3025,121,14]]",
-    "joschka60" : "[[5625,225,16]]",
-    "joschka80" : "[[10000,400,18]]",
-    "joschka100" : "[[15625,625,20]]",
-    "qc35" : "[[1954,64,14]]",
-    "qc45" : "[[3321,81,16]]",
-    "qc60" : "[[5904,144,20]]",
+    #"joschka12" : ("MM", "[[255,9,6]]", "x-"),
+    "joschka16"  : ("MM", "[[400,16,6]]", "x-"),
+    #"joschka20" : ("MM", "[[625,25,8]]", "x-"),
+    "joschka24"  : ("MM", "[[900,36,10]]", "x-"),
+    #"joschka28" : ("MM", "[[1225,49,10]]", "x-"),
+    "joschka32"  : ("MM", "[[1600,64,10]]", "x-"),
+    "joschka36"  : ("MM", "[[2025,81,12]]", "x-"),
+    #"joschka40" : ("MM", "[[2500,100,12]]", "x-"),
+    "joschka44"  : ("MM", "[[3025,121,14]]", "x-"),
+    "joschka60"  : ("MM", "[[5625,225,16]]", "x-"),
+    "joschka80"  : ("MM", "[[10000,400,18]]", "x-"),
+    "joschka100" : ("MM", "[[15625,625,20]]", "x-"),
+    "qc35"       : ("QC", "[[1954,64,14]]", "x--"),
+    "qc45"       : ("QC", "[[3321,81,16]]", "x--"),
+    "qc60"       : ("QC", "[[5904,144,20]]", "x--"),
 }
 
 keys = list(rows.keys())
@@ -73,7 +73,7 @@ keys.sort()
 
 for key in keys:
 
-    if key == "joschka12":
+    if key not in desc:
         continue
 
     row = rows[key]
@@ -81,10 +81,12 @@ for key in keys:
 
     xs = [x for (x, y) in row]
     ys = [y for (x, y) in row]
+    fam, label, style = desc[key]
+    label = fam+label
     if argv.semilogy:
-        pyplot.semilogy(xs, ys, "x-", label=desc[key])
+        pyplot.semilogy(xs, ys, style, label=label)
     else:
-        pyplot.plot(xs, ys, "x-", label=desc[key])
+        pyplot.plot(xs, ys, style, label=label)
 
 y0, y1 = pyplot.ylim()
 pyplot.ylim((y0, 1.))
