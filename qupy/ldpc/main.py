@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
+from random import randint
+
 import numpy
 import numpy.random as ra
 from numpy.linalg import lstsq
 
 from qupy.ldpc.css import CSSCode
-from qupy.ldpc.solve import shortstr, zeros2, array2, dot2
+from qupy.ldpc.solve import shortstr, zeros2, array2, dot2, parse
 from qupy.tool import write
 from qupy.argv import argv
 
@@ -45,7 +47,8 @@ def main():
     Tz = None
     Hz = None
     Tx = None
-    build = argv.get('build', True)
+    build = argv.get('build', False)
+    logops_only = argv.get("logops_only", True)
 
     code = None
 
@@ -544,7 +547,7 @@ def main():
 
     if code is None:
         code = CSSCode(Lx, Lz, Hx, Tz, Hz, Tx,
-            build=build, check=check, verbose=verbose)
+            build=build, check=check, verbose=verbose, logops_only=logops_only)
 
     if argv.dual:
         print("dual code...")

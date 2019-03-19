@@ -12,7 +12,7 @@ from qupy.argv import argv
 
 
 
-def classical_distance(H):
+def classical_distance(H, max_dist=0):
     n = H.shape[1]
     dist = n
     K = solve.find_kernel(H)
@@ -22,6 +22,8 @@ def classical_distance(H):
         v = dot2(Kt, u)
         if 0 < v.sum() < dist:
             dist = v.sum()
+            #if dist<=max_dist:
+            #    break
     return dist
 
 
@@ -29,6 +31,7 @@ def make_gallagher(r, n, l, m, distance=0):
     assert r%l == 0
     assert n%m == 0
     assert r*m == n*l
+    print("make_gallagher", r, n, l, m, distance)
     H = zeros2(r, n)
     H1 = zeros2(r//l, n)
     H11 = identity2(r//l)
@@ -48,7 +51,10 @@ def make_gallagher(r, n, l, m, distance=0):
         Hli = solve.linear_independent(H)
         k = Hli.shape[0] - Hli.shape[1]
         assert k <= 24, "ummm, too big? k = %d" % k
-        dist = classical_distance(Hli)
+        if distance is None:
+            break
+        write("/")
+        dist = classical_distance(Hli, distance)
         if dist >= distance:
             break
         write(".")
@@ -176,9 +182,10 @@ def get_code(name, **kw):
         m = argv.get("m", 4) # row weight
         n = argv.get("n", 8) # cols
         r = argv.get("r", n*l//m) # rows
-        d = argv.get("d", 4) # distance
+        d = argv.get("d", 0) # distance
         H1 = make_gallagher(r, n, l, m, d)
-        print(shortstr(H1))
+        #print(shortstr(H1))
+        print("H1:", H1.shape)
 
     elif argv.code == 'hamming':
         H1 = parse("""

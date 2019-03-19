@@ -367,6 +367,13 @@ nonuniq = 1099
 distance <= 77
 
 
+2019-03-18 13:53:27
+./main.py joschka100.ldpc check=False decode=bp p=0.04 N=10000 noerr
+error rate = 0.00320000
+fail rate = 0.00320000
+nonuniq = 6830
+distance <= 15625
+
 
 
 
@@ -490,6 +497,22 @@ nonuniq = 2758
 distance <= 5904
 
 
+2019-03-19 16:45:59
+./main.py qc100_27.ldpc check=False decode=bp p=0.04 N=1000 noerr
+error rate = 0.01700000
+fail rate = 0.01700000
+nonuniq = 719
+distance <= 15329
+
+2019-03-19 17:08:10
+./main.py qc100_27.ldpc check=False decode=bp p=0.05 N=1000 noerr
+error rate = 0.11700000
+fail rate = 0.11700000
+nonuniq = 849
+distance <= 15329
+
+
+
 
 2019-03-18 14:49:23
 ./main.py joschka44.ldpc check=False decode=bp p=0.075 N=10000 noerr
@@ -513,6 +536,8 @@ nonuniq = 3963
 distance <= 23
 
 
+# ./main.py code=gallagher n=60 k=15 d=12 save=gal.ldpc
+# gallagher_5449_289_12.ldpc
 
 
 

@@ -75,11 +75,11 @@ distance <= 12
 
 
 
-2019-03-18 18:15:43
-./main.py codes/bicycle_2000_400.ldpc p=0.03 N=10000 decode=bp noerr
-error rate = 0.00220000
-fail rate = 0.00200000
-nonuniq = 16
+2019-03-18 18:50:52
+./main.py codes/bicycle_2000_400.ldpc p=0.03 N=100000 decode=bp noerr
+error rate = 0.00201000
+fail rate = 0.00177000
+nonuniq = 189
 distance <= 12
 
 2019-03-18 18:23:06
@@ -109,6 +109,107 @@ error rate = 0.98000000
 fail rate = 0.98000000
 nonuniq = 0
 distance <= 2000
+
+
+2019-03-18 21:07:39
+./main.py codes/bicycle_4000_800.ldpc check=False decode=bp p=0.03 N=100000 noerr
+error rate = 0.00467000
+fail rate = 0.00419000
+nonuniq = 482
+distance <= 12
+
+2019-03-18 23:08:04
+./main.py codes/bicycle_4000_800.ldpc check=False decode=bp p=0.04 N=10000 noerr
+error rate = 0.01260000
+fail rate = 0.00890000
+nonuniq = 215
+distance <= 12
+
+2019-03-18 23:21:33
+./main.py codes/bicycle_4000_800.ldpc check=False decode=bp p=0.05 N=10000 noerr
+error rate = 0.03750000
+fail rate = 0.02900000
+nonuniq = 598
+distance <= 12
+
+2019-03-18 23:39:39
+./main.py codes/bicycle_4000_800.ldpc check=False decode=bp p=0.06 N=10000 noerr
+error rate = 0.59500000
+fail rate = 0.58680000
+nonuniq = 363
+distance <= 12
+
+2019-03-19 01:28:55
+./main.py codes/bicycle_4000_800.ldpc check=False decode=bp p=0.07 N=1000 noerr
+error rate = 0.99500000
+fail rate = 0.99500000
+nonuniq = 0
+distance <= 4000
+
+#2019-03-19 01:46:05
+#./main.py codes/bicycle_4000_800.ldpc check=False decode=bp p=0.08 N=1000 noerr
+#error rate = 1.00000000
+#fail rate = 1.00000000
+#nonuniq = 0
+#distance <= 4000
+
+
+# time ./main.py code=bicycle n=8000 m=3200 k=12 j=6 save=bicycle_8000.ldpc
+
+# ./main.py code=bicycle n=3786 m=1420 k=12 j=6 build=True save=bicycle_3786_946_12.ldpc
+
+./main.py bicycle_3786_946_12.ldpc decode=bp p=0.03 N=10000 noerr
+error rate = 0.00350000
+fail rate = 0.00300000
+nonuniq = 64
+distance <= 12
+
+2019-03-19 19:13:23
+./main.py bicycle_3786_946_12.ldpc decode=bp p=0.04 N=10000 noerr
+error rate = 0.01160000
+fail rate = 0.00970000
+nonuniq = 163
+distance <= 12
+
+2019-03-19 19:42:26
+./main.py bicycle_3786_946_12.ldpc decode=bp p=0.05 N=1000 noerr
+error rate = 0.10300000
+fail rate = 0.09400000
+nonuniq = 21
+distance <= 12
+
+
+
+2019-03-19 18:51:27
+./main.py bicycle_3786_946_16.ldpc decode=bp p=0.03 N=10000 noerr
+error rate = 0.00250000
+fail rate = 0.00240000
+nonuniq = 9
+distance <= 16
+
+2019-03-19 19:13:17
+./main.py bicycle_3786_946_16.ldpc decode=bp p=0.04 N=10000 noerr
+error rate = 0.04700000
+fail rate = 0.04650000
+nonuniq = 51
+distance <= 16
+
+./main.py bicycle_3786_946_16.ldpc decode=bp p=0.05 N=1000 noerr
+error rate = 0.81900000
+fail rate = 0.81900000
+nonuniq = 2
+distance <= 3786
+
+
+2019-03-19 19:52:04
+./main.py bicycle_3786_946_20.ldpc decode=bp p=0.03 N=10000 noerr
+error rate = 0.00140000
+fail rate = 0.00140000
+nonuniq = 7
+distance <= 3786
+
+
+
 
 
 
