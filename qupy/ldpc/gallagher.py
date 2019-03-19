@@ -2009,6 +2009,8 @@ def get_code(name, **kw):
     else:
         return None
 
+    H1 = H1.astype(solve.int_scalar)
+
     n = H1.shape[1]
     k = n-H1.shape[0]
     d = None
@@ -2027,8 +2029,11 @@ def get_code(name, **kw):
     Lz = solve.linear_independent(Lz)
 
     check = argv.check
+    build = argv.build
 
-    if check:
+    if build:
+        code = CSSCode(Hx=Hx, Hz=Hz, check=True, build=True, logops_only=False)
+    elif check:
         code = CSSCode(Hx=Hx, Hz=Hz, check=False, build=check, logops_only=True)
     else:
         code = CSSCode(Hx=Hx, Hz=Hz, Lx=Lx, Lz=Lz, check=False, build=False)
