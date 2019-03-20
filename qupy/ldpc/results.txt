@@ -566,38 +566,6 @@ nonuniq = 3963
 distance <= 23
 
 
-################################################################################
-
-2019-03-20 16:27:23
-./main.py gallagher_832_64_6.ldpc p=0.04 decode=bp N=100 noerr
-error rate = 0.29000000
-fail rate = 0.26000000
-nonuniq = 5
-distance <= 6
-
-# ./main.py code=gallagher n=16 k=8 d=6 save=gallagher_356_36_6.ldpc
-# [16, 6, 6]
-# girth = 4
-
-
-
-# ./main.py code=gallagher n=60 k=15 d=12 save=gal.ldpc
-# gallagher_5449_289_12.ldpc
-
-2019-03-20 16:25:12
-./main.py gallagher_5449_289_12.ldpc p=0.05 decode=bp N=100 noerr
-error rate = 0.14000000
-fail rate = 0.14000000
-nonuniq = 60
-distance <= 5449
-
-2019-03-20 16:26:21
-./main.py gallagher_5449_289_12.ldpc p=0.04 decode=bp N=100 noerr
-error rate = 0.05000000
-fail rate = 0.04000000
-nonuniq = 44
-distance <= 14
-
 
 
 
