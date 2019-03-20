@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import math
+
 import numpy
 from matplotlib import pyplot
 
@@ -18,6 +20,15 @@ def squeeze2(N, p, frac=0.68): # one std dev = 0.68
     idx0 = int(0.5*(1-frac)*len(data))
     idx1 = int(0.5*(1+frac)*len(data))
     return p-data[idx0], data[idx1]-p
+
+
+def __squeeze2(N, p, frac=None):
+    assert 0.<=p<=1.
+    var = math.sqrt(p*(1.-p)/N)
+    print("squeeze2:", N, p, "=", var)
+    return max(0., p-var), min(1., p+var)
+
+
 
 
 
@@ -41,7 +52,7 @@ for line in lines:
         N = int(attrs["N"])
         p = float(attrs["p"])
         error = float(attrs["error rate"])
-        errorbar = squeeze2(N, p)
+        errorbar = squeeze2(N, error)
         #print("errorbar:", errorbar)
         val = (p, error, errorbar)
         row = rows.get(key, [])
@@ -78,18 +89,18 @@ for line in lines:
 print(rows)
 
 desc = {
-    #"joschka12" : ("MM", "[[255,9,6]]", "x-"),
-    "joschka16"  : ("MM", "[[400,16,6]]", "x-"),
-    #"joschka20" : ("MM", "[[625,25,8]]", "x-"),
-    "joschka24"  : ("MM", "[[900,36,10]]", "x-"),
-    #"joschka28" : ("MM", "[[1225,49,10]]", "x-"),
-    "joschka32"  : ("MM", "[[1600,64,10]]", "x-"),
-    "joschka36"  : ("MM", "[[2025,81,12]]", "x-"),
-    #"joschka40" : ("MM", "[[2500,100,12]]", "x-"),
-    "joschka44"  : ("MM", "[[3025,121,14]]", "x-"),
-    "joschka60"  : ("MM", "[[5625,225,16]]", "x-"),
-    "joschka80"  : ("MM", "[[10000,400,18]]", "x-"),
-    "joschka100" : ("MM", "[[15625,625,20]]", "x-"),
+#    #"joschka12" : ("MM", "[[255,9,6]]", "x-"),
+#    "joschka16"  : ("MM", "[[400,16,6]]", "x-"),
+#    #"joschka20" : ("MM", "[[625,25,8]]", "x-"),
+#    "joschka24"  : ("MM", "[[900,36,10]]", "x-"),
+#    #"joschka28" : ("MM", "[[1225,49,10]]", "x-"),
+#    "joschka32"  : ("MM", "[[1600,64,10]]", "x-"),
+#    "joschka36"  : ("MM", "[[2025,81,12]]", "x-"),
+#    #"joschka40" : ("MM", "[[2500,100,12]]", "x-"),
+#    "joschka44"  : ("MM", "[[3025,121,14]]", "x-"),
+#    "joschka60"  : ("MM", "[[5625,225,16]]", "x-"),
+#    "joschka80"  : ("MM", "[[10000,400,18]]", "x-"),
+#    "joschka100" : ("MM", "[[15625,625,20]]", "x-"),
     "qc35"       : ("QC", "[[1954,64,14]]", "x--"),
     "qc45"       : ("QC", "[[3321,81,16]]", "x--"),
     "qc60"       : ("QC", "[[5904,144,20]]", "x--"),
@@ -100,11 +111,11 @@ desc = {
 #    "bicycle_4000_800" : ("Bi", "[[4000,800,12]]", "x-"),
 #    "bicycle_8000_1600" : ("Bi", "[[8000,1600,12]]", "x-"),
     #"bicycle_3780_630_12" : ("Bi", "[[3780,630,12]]", "x-"),
-    "bicycle_3786_946_12" : ("Bi", "[[3786,946,12]]", "x-"),
-    "bicycle_3786_946_16" : ("Bi", "[[3786,946,16]]", "x-"),
-    "bicycle_3786_946_20" : ("Bi", "[[3786,946,20]]", "x-"),
-    "bicycle_3786_946_24" : ("Bi", "[[3786,946,24]]", "x-"),
-    "bicycle_3786_946_32" : ("Bi", "[[3786,946,32]]", "x-"),
+    "bicycle_3786_946_12" : ("Bi", "[[3786,946]] rw=12", "x-"),
+    "bicycle_3786_946_16" : ("Bi", "[[3786,946]] rw=16", "x-"),
+    "bicycle_3786_946_20" : ("Bi", "[[3786,946]] rw=20", "x-"),
+    "bicycle_3786_946_24" : ("Bi", "[[3786,946]] rw=24", "x-"),
+    "bicycle_3786_946_32" : ("Bi", "[[3786,946]] rw=32", "x-"),
 }
 
 

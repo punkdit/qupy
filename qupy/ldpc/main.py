@@ -740,6 +740,10 @@ def main():
     failcount = 0
     nonuniq = 0
 
+    if argv.weight1:
+        # run through all weight=1 errors
+        N = code.n
+
     for i in range(N):
 
         # We use Hz to look at X type errors (bitflip errors)

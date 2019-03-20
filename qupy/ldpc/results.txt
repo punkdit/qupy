@@ -374,6 +374,36 @@ fail rate = 0.00320000
 nonuniq = 6830
 distance <= 15625
 
+./main.py joschka100.ldpc check=False decode=bp p=0.05 N=10000 noerr
+error rate = 0.01350000
+fail rate = 0.01350000
+nonuniq = 9221
+distance <= 15625
+
+2019-03-19 22:16:20
+./main.py joschka100.ldpc check=False decode=bp p=0.06 N=1000 noerr
+error rate = 0.07500000
+fail rate = 0.07400000
+nonuniq = 924
+distance <= 84
+
+
+2019-03-19 22:53:41
+./main.py joschka100.ldpc check=False decode=bp p=0.07 N=1000 noerr
+error rate = 0.31600000
+fail rate = 0.31600000
+nonuniq = 684
+distance <= 15625
+
+
+2019-03-20 00:14:48
+./main.py joschka100.ldpc check=False decode=bp p=0.08 N=1000 noerr
+error rate = 0.85300000
+fail rate = 0.85300000
+nonuniq = 147
+distance <= 15625
+
+
 
 
 
@@ -536,8 +566,39 @@ nonuniq = 3963
 distance <= 23
 
 
+################################################################################
+
+2019-03-20 16:27:23
+./main.py gallagher_832_64_6.ldpc p=0.04 decode=bp N=100 noerr
+error rate = 0.29000000
+fail rate = 0.26000000
+nonuniq = 5
+distance <= 6
+
+# ./main.py code=gallagher n=16 k=8 d=6 save=gallagher_356_36_6.ldpc
+# [16, 6, 6]
+# girth = 4
+
+
+
 # ./main.py code=gallagher n=60 k=15 d=12 save=gal.ldpc
 # gallagher_5449_289_12.ldpc
+
+2019-03-20 16:25:12
+./main.py gallagher_5449_289_12.ldpc p=0.05 decode=bp N=100 noerr
+error rate = 0.14000000
+fail rate = 0.14000000
+nonuniq = 60
+distance <= 5449
+
+2019-03-20 16:26:21
+./main.py gallagher_5449_289_12.ldpc p=0.04 decode=bp N=100 noerr
+error rate = 0.05000000
+fail rate = 0.04000000
+nonuniq = 44
+distance <= 14
+
+
 
 
 
