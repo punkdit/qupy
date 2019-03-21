@@ -145,6 +145,14 @@ fail rate = 0.59340000
 nonuniq = 3963
 distance <= 23
 
+2019-03-21 12:48:52
+./main.py qc100_23.ldpc check=False decode=bp p=0.04 N=100 noerr
+error rate = 0.02000000
+fail rate = 0.02000000
+nonuniq = 61
+distance <= 15929
+
+
 
 
 
