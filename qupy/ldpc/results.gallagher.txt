@@ -1,0 +1,454 @@
+
+################################################################################
+
+2019-03-20 16:27:23
+./main.py gallagher_832_64_6.ldpc p=0.04 decode=bp N=100 noerr
+error rate = 0.29000000
+fail rate = 0.26000000
+nonuniq = 5
+distance <= 6
+
+# ./main.py code=gallagher n=16 k=8 d=6 save=gallagher_356_36_6.ldpc
+# [16, 6, 6]
+# girth = 4
+
+# ./main.py code=gallagher n=36 k=11 d=10 save=gallagher_1921_121_10.ldpc
+# [36, 11, 10]
+# girth = 4
+
+# ./main.py code=gallagher n=60 k=15 d=12 save=gallagher_5449_289_12.ldpc
+# [60, 17, 12]
+# girth = 4
+
+
+2019-03-20 17:51:44
+./main.py gallagher_356_36_6.ldpc decode=bp p=0.05 N=1000 noerr
+error rate = 0.58500000
+fail rate = 0.56600000
+nonuniq = 27
+distance <= 6
+
+2019-03-20 17:51:49
+./main.py gallagher_356_36_6.ldpc decode=bp p=0.04 N=1000 noerr
+error rate = 0.37800000
+fail rate = 0.35500000
+nonuniq = 13
+distance <= 6
+
+2019-03-20 17:51:53
+./main.py gallagher_356_36_6.ldpc decode=bp p=0.03 N=1000 noerr
+error rate = 0.19700000
+fail rate = 0.18600000
+nonuniq = 17
+distance <= 6
+
+2019-03-20 17:51:56
+./main.py gallagher_832_64_8.ldpc decode=bp p=0.05 N=1000 noerr
+error rate = 0.46900000
+fail rate = 0.45000000
+nonuniq = 103
+distance <= 8
+
+2019-03-20 17:52:09
+./main.py gallagher_832_64_8.ldpc decode=bp p=0.04 N=1000 noerr
+error rate = 0.23400000
+fail rate = 0.22500000
+nonuniq = 80
+distance <= 8
+
+2019-03-20 17:52:19
+./main.py gallagher_832_64_8.ldpc decode=bp p=0.03 N=1000 noerr
+error rate = 0.09600000
+fail rate = 0.09400000
+nonuniq = 37
+distance <= 8
+
+2019-03-20 17:52:27
+./main.py gallagher_1508_100_8.ldpc decode=bp p=0.05 N=1000 noerr
+error rate = 0.41900000
+fail rate = 0.39700000
+nonuniq = 186
+distance <= 8
+
+2019-03-20 17:53:03
+./main.py gallagher_1508_100_8.ldpc decode=bp p=0.04 N=1000 noerr
+error rate = 0.18800000
+fail rate = 0.17800000
+nonuniq = 136
+distance <= 8
+
+2019-03-20 17:53:26
+./main.py gallagher_1508_100_8.ldpc decode=bp p=0.03 N=1000 noerr
+error rate = 0.05400000
+fail rate = 0.05000000
+nonuniq = 67
+distance <= 8
+
+2019-03-20 17:53:43
+./main.py gallagher_2384_144_10.ldpc decode=bp p=0.05 N=1000 noerr
+error rate = 0.28900000
+fail rate = 0.28100000
+nonuniq = 271
+distance <= 10
+
+2019-03-20 17:54:52
+./main.py gallagher_2384_144_10.ldpc decode=bp p=0.04 N=1000 noerr
+error rate = 0.10800000
+fail rate = 0.10600000
+nonuniq = 242
+distance <= 10
+
+2019-03-20 17:55:36
+./main.py gallagher_2384_144_10.ldpc decode=bp p=0.03 N=1000 noerr
+error rate = 0.03200000
+fail rate = 0.03000000
+nonuniq = 95
+distance <= 10
+
+2019-03-20 17:56:06
+./main.py gallagher_3460_196_10.ldpc decode=bp p=0.05 N=1000 noerr
+error rate = 0.18800000
+fail rate = 0.18000000
+nonuniq = 452
+distance <= 10
+
+2019-03-20 17:58:10
+./main.py gallagher_3460_196_10.ldpc decode=bp p=0.04 N=1000 noerr
+error rate = 0.05400000
+fail rate = 0.05000000
+nonuniq = 280
+distance <= 10
+
+2019-03-20 17:59:29
+./main.py gallagher_3460_196_10.ldpc decode=bp p=0.03 N=1000 noerr
+error rate = 0.01800000
+fail rate = 0.01700000
+nonuniq = 126
+distance <= 10
+
+2019-03-20 18:00:36
+./main.py gallagher_5449_289_12.ldpc decode=bp p=0.05 N=1000 noerr
+error rate = 0.11200000
+fail rate = 0.10900000
+nonuniq = 633
+distance <= 18
+
+2019-03-20 18:04:42
+./main.py gallagher_5449_289_12.ldpc decode=bp p=0.04 N=1000 noerr
+error rate = 0.02700000
+fail rate = 0.02600000
+nonuniq = 473
+distance <= 25
+
+2019-03-20 18:07:27
+./main.py gallagher_5449_289_12.ldpc decode=bp p=0.03 N=1000 noerr
+error rate = 0.00400000
+fail rate = 0.00400000
+nonuniq = 198
+distance <= 5449
+
+
+#2019-03-20 18:06:23
+#./main.py gallagher_80_16_4.ldpc decode=bp p=0.07 N=100 noerr
+#error rate = 0.73000000
+#fail rate = 0.67000000
+#nonuniq = 0
+#distance <= 4
+#
+#2019-03-20 18:13:08
+#./main.py gallagher_80_16_4.ldpc decode=bp p=0.05 N=1000 noerr
+#error rate = 0.46800000
+#fail rate = 0.42600000
+#nonuniq = 4
+#distance <= 4
+#
+#2019-03-20 18:13:10
+#./main.py gallagher_80_16_4.ldpc decode=bp p=0.04 N=1000 noerr
+#error rate = 0.31700000
+#fail rate = 0.28000000
+#nonuniq = 4
+#distance <= 4
+#
+#2019-03-20 18:13:12
+#./main.py gallagher_80_16_4.ldpc decode=bp p=0.03 N=1000 noerr
+#error rate = 0.18000000
+#fail rate = 0.15400000
+#nonuniq = 0
+#distance <= 4
+#
+#
+#2019-03-20 18:04:43
+#./main.py gallagher_80_16_4.ldpc decode=bp p=0.06 N=100 noerr
+#error rate = 0.59000000
+#fail rate = 0.55000000
+#nonuniq = 0
+#distance <= 4
+
+#2019-03-20 18:08:00
+#./main.py gallagher_356_36_6.ldpc decode=bp p=0.06 N=100 noerr
+#error rate = 0.73000000
+#fail rate = 0.70000000
+#nonuniq = 4
+#distance <= 6
+
+#2019-03-20 18:08:01
+#./main.py gallagher_356_36_6.ldpc decode=bp p=0.07 N=100 noerr
+#error rate = 0.89000000
+#fail rate = 0.87000000
+#nonuniq = 2
+#distance <= 13
+
+#2019-03-20 18:04:43
+#./main.py gallagher_832_64_8.ldpc decode=bp p=0.06 N=100 noerr
+#error rate = 0.79000000
+#fail rate = 0.78000000
+#nonuniq = 6
+#distance <= 8
+
+#2019-03-20 18:04:45
+#./main.py gallagher_1508_100_8.ldpc decode=bp p=0.06 N=100 noerr
+#error rate = 0.69000000
+#fail rate = 0.64000000
+#nonuniq = 15
+#distance <= 8
+#
+#2019-03-20 18:04:51
+#./main.py gallagher_1921_121_10.ldpc decode=bp p=0.06 N=100 noerr
+#error rate = 0.69000000
+#fail rate = 0.67000000
+#nonuniq = 19
+#distance <= 10
+#
+#2019-03-20 18:05:00
+#./main.py gallagher_2384_144_10.ldpc decode=bp p=0.06 N=100 noerr
+#error rate = 0.60000000
+#fail rate = 0.60000000
+#nonuniq = 25
+#distance <= 2384
+#
+#2019-03-20 18:05:13
+#./main.py gallagher_3460_196_10.ldpc decode=bp p=0.06 N=100 noerr
+#error rate = 0.49000000
+#fail rate = 0.47000000
+#nonuniq = 40
+#distance <= 12
+#
+#2019-03-20 18:05:36
+#./main.py gallagher_5449_289_12.ldpc decode=bp p=0.06 N=100 noerr
+#error rate = 0.35000000
+#fail rate = 0.34000000
+#nonuniq = 56
+#distance <= 26
+
+#2019-03-20 18:06:23
+#./main.py gallagher_832_64_8.ldpc decode=bp p=0.07 N=100 noerr
+#error rate = 0.85000000
+#fail rate = 0.82000000
+#nonuniq = 5
+#distance <= 8
+#
+#2019-03-20 18:06:25
+#./main.py gallagher_1508_100_8.ldpc decode=bp p=0.07 N=100 noerr
+#error rate = 0.89000000
+#fail rate = 0.87000000
+#nonuniq = 9
+#distance <= 20
+#
+#2019-03-20 18:06:32
+#./main.py gallagher_1921_121_10.ldpc decode=bp p=0.07 N=100 noerr
+#error rate = 0.89000000
+#fail rate = 0.89000000
+#nonuniq = 5
+#distance <= 1921
+#
+#2019-03-20 18:06:43
+#./main.py gallagher_2384_144_10.ldpc decode=bp p=0.07 N=100 noerr
+#error rate = 0.90000000
+#fail rate = 0.90000000
+#nonuniq = 8
+#distance <= 2384
+#
+#2019-03-20 18:07:00
+#./main.py gallagher_3460_196_10.ldpc decode=bp p=0.07 N=100 noerr
+#error rate = 0.84000000
+#fail rate = 0.82000000
+#nonuniq = 15
+#distance <= 19
+#
+#2019-03-20 18:07:34
+#./main.py gallagher_5449_289_12.ldpc decode=bp p=0.07 N=100 noerr
+#error rate = 0.75000000
+#fail rate = 0.74000000
+#nonuniq = 25
+#distance <= 60
+
+
+2019-03-20 18:37:23
+./main.py gallagher_1921_121_10.ldpc decode=bp p=0.05 N=1000 noerr
+error rate = 0.34500000
+fail rate = 0.33500000
+nonuniq = 253
+distance <= 10
+
+2019-03-20 18:38:17
+./main.py gallagher_1921_121_10.ldpc decode=bp p=0.04 N=1000 noerr
+error rate = 0.13600000
+fail rate = 0.13200000
+nonuniq = 169
+distance <= 10
+
+2019-03-20 18:38:51
+./main.py gallagher_1921_121_10.ldpc decode=bp p=0.03 N=1000 noerr
+error rate = 0.03700000
+fail rate = 0.03700000
+nonuniq = 83
+distance <= 1921
+
+
+2019-03-20 18:16:11
+./main.py gallagher_356_36_6.ldpc decode=bp p=0.06 N=1000 noerr
+error rate = 0.76600000
+fail rate = 0.74500000
+nonuniq = 26
+distance <= 6
+
+2019-03-20 18:16:16
+./main.py gallagher_832_64_8.ldpc decode=bp p=0.06 N=1000 noerr
+error rate = 0.72500000
+fail rate = 0.71000000
+nonuniq = 80
+distance <= 8
+
+2019-03-20 18:16:33
+./main.py gallagher_1508_100_8.ldpc decode=bp p=0.06 N=1000 noerr
+error rate = 0.69100000
+fail rate = 0.67000000
+nonuniq = 121
+distance <= 8
+
+2019-03-20 18:17:23
+./main.py gallagher_1921_121_10.ldpc decode=bp p=0.06 N=1000 noerr
+error rate = 0.65200000
+fail rate = 0.64000000
+nonuniq = 184
+distance <= 10
+
+2019-03-20 18:18:43
+./main.py gallagher_2384_144_10.ldpc decode=bp p=0.06 N=1000 noerr
+error rate = 0.58200000
+fail rate = 0.57100000
+nonuniq = 255
+distance <= 10
+
+2019-03-20 18:20:35
+./main.py gallagher_3460_196_10.ldpc decode=bp p=0.06 N=1000 noerr
+error rate = 0.49200000
+fail rate = 0.47700000
+nonuniq = 386
+distance <= 10
+
+2019-03-20 18:24:10
+./main.py gallagher_5449_289_12.ldpc decode=bp p=0.06 N=1000 noerr
+error rate = 0.36600000
+fail rate = 0.35500000
+nonuniq = 561
+distance <= 12
+
+2019-03-20 18:31:38
+./main.py gallagher_356_36_6.ldpc decode=bp p=0.07 N=1000 noerr
+error rate = 0.89000000
+fail rate = 0.88100000
+nonuniq = 10
+distance <= 6
+
+2019-03-20 18:31:44
+./main.py gallagher_832_64_8.ldpc decode=bp p=0.07 N=1000 noerr
+error rate = 0.89300000
+fail rate = 0.88300000
+nonuniq = 31
+distance <= 8
+
+2019-03-20 18:32:03
+./main.py gallagher_1508_100_8.ldpc decode=bp p=0.07 N=1000 noerr
+error rate = 0.90900000
+fail rate = 0.89200000
+nonuniq = 51
+distance <= 8
+
+2019-03-20 18:33:04
+./main.py gallagher_1921_121_10.ldpc decode=bp p=0.07 N=1000 noerr
+error rate = 0.89400000
+fail rate = 0.88600000
+nonuniq = 69
+distance <= 14
+
+2019-03-20 18:34:47
+./main.py gallagher_2384_144_10.ldpc decode=bp p=0.07 N=1000 noerr
+error rate = 0.86800000
+fail rate = 0.86000000
+nonuniq = 104
+distance <= 10
+
+2019-03-20 18:37:17
+./main.py gallagher_3460_196_10.ldpc decode=bp p=0.07 N=1000 noerr
+error rate = 0.80700000
+fail rate = 0.79300000
+nonuniq = 174
+distance <= 17
+
+2019-03-20 18:42:29
+./main.py gallagher_5449_289_12.ldpc decode=bp p=0.07 N=1000 noerr
+error rate = 0.77100000
+fail rate = 0.76700000
+nonuniq = 224
+distance <= 21
+
+2019-03-20 18:55:08
+./main.py gallagher_356_36_6.ldpc decode=bp p=0.08 N=1000 noerr
+error rate = 0.95400000
+fail rate = 0.94200000
+nonuniq = 7
+distance <= 6
+
+2019-03-20 18:55:13
+./main.py gallagher_832_64_8.ldpc decode=bp p=0.08 N=1000 noerr
+error rate = 0.96600000
+fail rate = 0.96200000
+nonuniq = 15
+distance <= 10
+
+2019-03-20 18:55:33
+./main.py gallagher_1508_100_8.ldpc decode=bp p=0.08 N=1000 noerr
+error rate = 0.98000000
+fail rate = 0.97600000
+nonuniq = 14
+distance <= 22
+
+2019-03-20 18:56:39
+./main.py gallagher_1921_121_10.ldpc decode=bp p=0.08 N=1000 noerr
+error rate = 0.98300000
+fail rate = 0.98200000
+nonuniq = 14
+distance <= 23
+
+2019-03-20 18:58:31
+./main.py gallagher_2384_144_10.ldpc decode=bp p=0.08 N=1000 noerr
+error rate = 0.97700000
+fail rate = 0.97200000
+nonuniq = 20
+distance <= 19
+
+2019-03-20 19:01:18
+./main.py gallagher_3460_196_10.ldpc decode=bp p=0.08 N=1000 noerr
+error rate = 0.97800000
+fail rate = 0.97700000
+nonuniq = 21
+distance <= 26
+
+2019-03-20 19:07:18
+./main.py gallagher_5449_289_12.ldpc decode=bp p=0.08 N=1000 noerr
+error rate = 0.98100000
+fail rate = 0.97800000
+nonuniq = 19
+distance <= 42
+

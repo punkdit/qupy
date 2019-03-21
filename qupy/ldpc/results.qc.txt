@@ -1,0 +1,152 @@
+
+
+
+2019-03-15 18:24:51
+./main.py qc35.ldpc decode=bp p=0.04 N=10000 noerr
+error rate = 0.07780000
+fail rate = 0.07780000
+nonuniq = 939
+distance <= 1954
+
+
+2019-03-15 18:31:52
+./main.py qc35.ldpc decode=bp p=0.05 N=10000 noerr
+error rate = 0.23800000
+fail rate = 0.23800000
+nonuniq = 1657
+distance <= 1954
+
+
+2019-03-15 18:42:18
+./main.py qc35.ldpc decode=bp p=0.06 N=10000 noerr
+error rate = 0.48950000
+fail rate = 0.48950000
+nonuniq = 1883
+distance <= 1954
+
+
+2019-03-15 18:57:41
+./main.py qc35.ldpc decode=bp p=0.07 N=10000 noerr
+error rate = 0.78890000
+fail rate = 0.78880000
+nonuniq = 1166
+distance <= 14
+
+
+2019-03-15 19:18:44
+./main.py qc35.ldpc decode=bp p=0.08 N=10000 noerr
+error rate = 0.95570000
+fail rate = 0.95570000
+nonuniq = 287
+distance <= 1954
+
+
+2019-03-15 19:43:08
+./main.py qc45.ldpc decode=bp p=0.04 N=10000 noerr
+error rate = 0.00880000
+fail rate = 0.00880000
+nonuniq = 4087
+distance <= 3321
+
+
+2019-03-15 19:58:05
+./main.py qc45.ldpc decode=bp p=0.05 N=10000 noerr
+error rate = 0.04100000
+fail rate = 0.04080000
+nonuniq = 6398
+distance <= 24
+
+
+2019-03-15 20:15:18
+./main.py qc45.ldpc decode=bp p=0.06 N=10000 noerr
+error rate = 0.15920000
+fail rate = 0.15910000
+nonuniq = 7224
+distance <= 26
+
+
+2019-03-15 20:38:47
+./main.py qc45.ldpc decode=bp p=0.07 N=10000 noerr
+error rate = 0.41730000
+fail rate = 0.41650000
+nonuniq = 5595
+distance <= 21
+
+
+2019-03-15 21:14:35
+./main.py qc45.ldpc decode=bp p=0.08 N=10000 noerr
+error rate = 0.76990000
+fail rate = 0.76920000
+nonuniq = 2274
+distance <= 37
+
+
+2019-03-15 22:06:43
+./main.py qc60.ldpc decode=bp p=0.04 N=10000 noerr
+error rate = 0.00190000
+fail rate = 0.00190000
+nonuniq = 5006
+distance <= 5904
+
+
+2019-03-15 23:05:16
+./main.py qc60.ldpc decode=bp p=0.05 N=10000 noerr
+error rate = 0.01780000
+fail rate = 0.01780000
+nonuniq = 7521
+distance <= 5904
+
+
+2019-03-16 00:11:02
+./main.py qc60.ldpc decode=bp p=0.06 N=10000 noerr
+error rate = 0.09040000
+fail rate = 0.09030000
+nonuniq = 8454
+distance <= 20
+
+
+2019-03-16 01:35:38
+./main.py qc60.ldpc decode=bp p=0.07 N=10000 noerr
+error rate = 0.29640000
+fail rate = 0.29620000
+nonuniq = 6956
+distance <= 46
+
+
+2019-03-16 03:36:52
+./main.py qc60.ldpc decode=bp p=0.08 N=10000 noerr
+error rate = 0.72390000
+fail rate = 0.72390000
+nonuniq = 2758
+distance <= 5904
+
+
+2019-03-19 16:45:59
+./main.py qc100_27.ldpc check=False decode=bp p=0.04 N=1000 noerr
+error rate = 0.01700000
+fail rate = 0.01700000
+nonuniq = 719
+distance <= 15329
+
+2019-03-19 17:08:10
+./main.py qc100_27.ldpc check=False decode=bp p=0.05 N=1000 noerr
+error rate = 0.11700000
+fail rate = 0.11700000
+nonuniq = 849
+distance <= 15329
+
+
+
+
+2019-03-18 17:28:52
+./main.py qc45.ldpc check=False decode=bp p=0.075 N=10000 noerr
+error rate = 0.59490000
+fail rate = 0.59340000
+nonuniq = 3963
+distance <= 23
+
+
+
+
+
+
