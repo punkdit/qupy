@@ -744,6 +744,10 @@ def main():
         # run through all weight=1 errors
         N = code.n
 
+    if argv.weight2:
+        # run through all weight=1 errors
+        N = code.n**2
+
     for i in range(N):
 
         # We use Hz to look at X type errors (bitflip errors)
@@ -754,6 +758,12 @@ def main():
         elif argv.weight1:
             err_op = zeros2(code.n)
             err_op[i%code.n] = 1
+        elif argv.weight2:
+            err_op = zeros2(code.n)
+            ai = i%code.n
+            bi = (i//code.n)
+            err_op[ai] = 1
+            err_op[bi] = 1
 
         elif weight is not None:
             err_op = zeros2(code.n)
