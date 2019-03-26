@@ -12,6 +12,8 @@ import numpy.random as ra
 from qupy.ldpc import solve
 from qupy.ldpc.solve import shortstr
 from qupy.ldpc.tool import save_alist
+from qupy.argv import argv
+
 
 dot = numpy.dot
 
@@ -319,7 +321,7 @@ class RadfordBPDecoder(BaseDecoder):
 
         stem = self.stem
         if max_iter is None:
-            max_iter = self.n
+            max_iter = argv.get("maxiter", self.n)
 
         try:
             os.unlink('%s.out'%stem)
