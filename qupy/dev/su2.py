@@ -1294,8 +1294,7 @@ def test_internal():
 
 def test_molien():
 
-    r"""
-    """
+    # this is the wrong action, see test_molien4 below for the correct action.
 
     G = eval(argv.get("G2", "Tetra")) # the "internal" group
     n = len(G)
@@ -1305,7 +1304,7 @@ def test_molien():
     series = [0.]*(degree+1)
 
     for g in G:
-        r = g.trace()
+        r = g.trace() # <--- G acting by left multiplication
         #assert abs(r-round(r.real)) < EPSILON, r
         #r = int(round(r.real))
         #assert abs(r-r.real) < EPSILON, r
@@ -1320,6 +1319,65 @@ def test_molien():
     #print(series)
     print(' '.join([fstr(s) for s in series]))
 
+
+def test_molien4():
+
+    r"""
+    """
+
+    names = "IXZY"
+    algebra = build_algebra(names,
+        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+    promote = promote_pauli
+
+    basis = [getattr(algebra, name) for name in names]
+
+    G = eval(argv.get("G2", "Tetra")) # the "internal" group
+    N = len(G)
+    G.build()
+
+    print("|G2| =", len(G))
+
+    I = algebra.parse("I")
+    PG = list(promote(algebra, G))
+    assert I in PG
+    inv = {}
+    for idx, A in enumerate(PG):
+        for jdx, B in enumerate(PG):
+            if A*B == I:
+                assert B*A == I
+                inv[idx] = jdx
+                inv[jdx] = idx
+                break
+
+    #g = PG[0]
+    #print(type(g)) # <class 'qupy.dev._algebra.Tensor'>
+    #print(g.get_keys()) # [(0,), (1,), (2,), (3,)]
+    basis = algebra.basis
+    n = len(basis)
+
+    degree = argv.get("degree", 10)
+    series = [0.]*(degree+1)
+
+    for i, g in enumerate(PG):
+        ginv = PG[inv[i]]
+        R = numpy.zeros((n, n), dtype=numpy.complex128)
+        for idx, h in enumerate(basis):
+            gh = g*h*ginv # <----------- G acts by conjugation
+            for jdx in range(n):
+                R[idx, jdx] = gh[(jdx,)]
+        #print(R)
+        r = numpy.trace(R)
+        for i in range(degree+1):
+            # p = 1/(1-r*t)
+            val = r**i
+            series[i] += val
+        #print(fstr(r), end=" ")
+    #print()
+
+    series = [s/N for s in series]
+    #print(series)
+    print(' '.join([fstr(s) for s in series]))
 
 
 
@@ -1612,7 +1670,7 @@ def test_internal_series_fast():
     A = AssocAlg(struct, basis)
     I = A.construct(A.unit)
     #print(A.construct(I, basis))
-    assert str(I) == 'I'*len(str(I)), str(I)
+    assert str(I) == 'I'*len(str(I)), str(I) # run without "full" arg ?
 
     write("\n")
 

@@ -418,6 +418,51 @@ nonuniq = 2180
 distance <= 30
 
 
+2019-03-26 14:01:39
+./main.py joschka60.ldpc check=False decode=bp p=0.085 N=1000 noerr
+error rate = 0.98800000
+fail rate = 0.98800000
+nonuniq = 12
+distance <= 5625
+
+2019-03-26 14:23:07
+./main.py joschka80.ldpc check=False decode=bp p=0.085 N=1000 noerr
+error rate = 0.98700000
+fail rate = 0.98700000
+nonuniq = 13
+distance <= 10000
+
+2019-03-26 15:38:11
+./main.py joschka100.ldpc check=False decode=bp p=0.085 N=1000 noerr
+error rate = 0.98700000
+fail rate = 0.98700000
+nonuniq = 13
+distance <= 15625
+
+
+2019-03-27 17:32:21
+./main.py joschka60.ldpc check=False decode=bp p=0.0825 N=1000 noerr
+error rate = 0.96300000
+fail rate = 0.96300000
+nonuniq = 36
+distance <= 5625
+
+2019-03-27 17:49:12
+./main.py joschka80.ldpc check=False decode=bp p=0.0825 N=1000 noerr
+error rate = 0.94900000
+fail rate = 0.94900000
+nonuniq = 51
+distance <= 10000
+
+2019-03-27 18:44:39
+./main.py joschka100.ldpc check=False decode=bp p=0.0825 N=1000 noerr
+error rate = 0.94000000
+fail rate = 0.94000000
+nonuniq = 60
+distance <= 15625
+
+
+
 
 # ----------------------------------------------------------------------------
 
@@ -484,11 +529,18 @@ distance <= 10000
 
 
 
-2019-03-25 10:30:00
-./main.py joschka100.ldpc check=False decode=bp p=0.03 N=10000 noerr
-error rate = 0.00060000
-fail rate = 0.00060000
-nonuniq = 3209
+#2019-03-25 10:30:00
+#./main.py joschka100.ldpc check=False decode=bp p=0.03 N=10000 noerr
+#error rate = 0.00060000
+#fail rate = 0.00060000
+#nonuniq = 3209
+#distance <= 15625
+
+2019-03-26 02:37:39
+./main.py joschka100.ldpc check=False decode=bp p=0.03 N=100000 noerr
+error rate = 0.00088000
+fail rate = 0.00088000
+nonuniq = 32279
 distance <= 15625
 
 
@@ -503,20 +555,36 @@ nonuniq = 1
 distance <= 6
 
 
-2019-03-25 08:43:42
-./main.py joschka24.ldpc check=False decode=bp p=0.02 N=1000 noerr
-error rate = 0.00700000
-fail rate = 0.00700000
-nonuniq = 3
+#2019-03-25 08:43:42
+#./main.py joschka24.ldpc check=False decode=bp p=0.02 N=1000 noerr
+#error rate = 0.00700000
+#fail rate = 0.00700000
+#nonuniq = 3
+#distance <= 900
+
+2019-03-28 12:05:27
+./main.py joschka24.ldpc check=False decode=bp p=0.02 N=10000 noerr
+error rate = 0.00880000
+fail rate = 0.00880000
+nonuniq = 42
 distance <= 900
 
 
-2019-03-25 08:43:49
-./main.py joschka32.ldpc check=False decode=bp p=0.02 N=1000 noerr
-error rate = 0.00100000
-fail rate = 0.00100000
-nonuniq = 11
-distance <= 1600
+
+#2019-03-25 08:43:49
+#./main.py joschka32.ldpc check=False decode=bp p=0.02 N=1000 noerr
+#error rate = 0.00100000
+#fail rate = 0.00100000
+#nonuniq = 11
+#distance <= 1600
+
+2019-03-27 12:40:02
+./main.py joschka32.ldpc check=False decode=bp p=0.02 N=10000 noerr
+error rate = 0.00290000
+fail rate = 0.00270000
+nonuniq = 76
+distance <= 10
+
 
 
 2019-03-25 08:44:03
@@ -571,6 +639,13 @@ fail rate = 0.00008000
 nonuniq = 4775
 distance <= 10000
 
+2019-03-25 23:14:04
+./main.py joschka100.ldpc check=False decode=bp p=0.02 N=100000 noerr
+error rate = 0.00025000
+fail rate = 0.00025000
+nonuniq = 7547
+distance <= 15625
+
 
 
 
@@ -616,12 +691,19 @@ distance <= 10
 #nonuniq = 9
 #distance <= 1600
 
-2019-03-25 15:05:59
-./main.py joschka32.ldpc check=False decode=bp p=0.01 N=100000 noerr
-error rate = 0.00008000
-fail rate = 0.00008000
-nonuniq = 48
-distance <= 1600
+#2019-03-25 15:05:59
+#./main.py joschka32.ldpc check=False decode=bp p=0.01 N=100000 noerr
+#error rate = 0.00008000
+#fail rate = 0.00008000
+#nonuniq = 48
+#distance <= 1600
+
+2019-03-27 12:47:40
+./main.py joschka32.ldpc check=False decode=bp p=0.01 N=1000000 noerr
+error rate = 0.00010100
+fail rate = 0.00009100
+nonuniq = 546
+distance <= 10
 
 
 
@@ -649,11 +731,19 @@ distance <= 3025
 
 
 
-2019-03-25 09:55:37
-./main.py joschka60.ldpc check=False decode=bp p=0.01 N=100000 noerr
-error rate = 0.00003000
-fail rate = 0.00003000
-nonuniq = 188
+#2019-03-25 09:55:37
+#./main.py joschka60.ldpc check=False decode=bp p=0.01 N=100000 noerr
+#error rate = 0.00003000
+#fail rate = 0.00003000
+#nonuniq = 188
+#distance <= 5625
+
+
+2019-03-26 06:36:59
+./main.py joschka60.ldpc check=False decode=bp p=0.01 N=1000000 noerr
+error rate = 0.00001200
+fail rate = 0.00001200
+nonuniq = 1895
 distance <= 5625
 
 
