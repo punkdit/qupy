@@ -1303,17 +1303,20 @@ def test_molien():
     degree = argv.get("degree", 20)
     series = [0.]*(degree+1)
 
+    print("character:", end=" ")
     for g in G:
         r = g.trace() # <--- G acting by left multiplication
         #assert abs(r-round(r.real)) < EPSILON, r
         #r = int(round(r.real))
         #assert abs(r-r.real) < EPSILON, r
         #r = r.real
+        print(fstr(r), end=" ")
 
         for i in range(degree+1):
             # p = 1/(1-r*t)
             val = r**i
             series[i] += val
+    print()
     #assert abs(sum(s%n for s in series))<EPSILON
     series = [s/n for s in series]
     #print(series)
@@ -1359,6 +1362,7 @@ def test_molien4():
     degree = argv.get("degree", 10)
     series = [0.]*(degree+1)
 
+    print("character:", end=" ")
     for i, g in enumerate(PG):
         ginv = PG[inv[i]]
         R = numpy.zeros((n, n), dtype=numpy.complex128)
@@ -1372,8 +1376,8 @@ def test_molien4():
             # p = 1/(1-r*t)
             val = r**i
             series[i] += val
-        #print(fstr(r), end=" ")
-    #print()
+        print(fstr(r), end=" ")
+    print()
 
     series = [s/N for s in series]
     #print(series)
