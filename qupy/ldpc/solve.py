@@ -13,6 +13,7 @@ int_scalar = numpy.int32
 
 from qupy.smap import SMap
 
+
 def array2(items):
     return numpy.array(items, dtype=int_scalar)
 
@@ -1183,7 +1184,7 @@ class System(object):
     def all_solutions(self):
         u = self.solve(unpack=False)
         kern = self.kernel()
-        if not kern:
+        if kern is None:
             return
         for v in span(kern):
             v.shape = u.shape
@@ -1762,6 +1763,7 @@ def test_linear_independent():
     for x in spAA:
         assert contains(spA, x)
 
+
 def test_entry():
 
 #    m, n = 5, 12
@@ -1791,6 +1793,39 @@ def test_entry():
     T = system.solve()
 
     assert eq2(dot2(H, T), identity2(m))
+
+
+def test_chainmap():
+
+    H0 = parse("""
+    11.
+    .11
+    """)
+
+    H1 = parse("""
+    11
+    """)
+
+    m0, n0 = H0.shape
+    m1, n1 = H1.shape
+
+    fn = Unknown(n1, n0)
+    fm = Unknown(m1, m0)
+
+    #print numpy.dot(H, T)
+
+    system = System(fn, fm)
+    #system.append(dot2(H, T), identity2(m))
+    system.append(dot2(fm, H0) - dot2(H1, fn), 0)
+
+    kern = system.kernel()
+    print("solution space:", len(kern))
+
+    for fn, fm in system.all_solutions():
+        print(shortstrx(fn, fm))
+        print()
+
+    #assert eq2(dot2(H, T), identity2(m))
 
 
 def test_pushout():
@@ -1910,21 +1945,30 @@ def test_kernel():
 
 if __name__=="__main__":
 
-    test_solve()
-    test_solve_rand()
-    test_randsolve()
-    test_lu()
-    test_plu()
-    test_logops_bicycle()
-    test_logops_toric()
-    test_conjugate_ops()
-    test_linear_independent()
-    test_entry()
-    test_pushout()
-    test_fromkernel()
-    test_reductor()
-    test_kernel()
+    from qupy.argv import argv
+    name = argv.next()
+    if name:
 
-    print("OK")
+        f = eval(name)
+        f()
+
+    else:
+    
+        test_solve()
+        test_solve_rand()
+        test_randsolve()
+        test_lu()
+        test_plu()
+        test_logops_bicycle()
+        test_logops_toric()
+        test_conjugate_ops()
+        test_linear_independent()
+        test_entry()
+        test_pushout()
+        test_fromkernel()
+        test_reductor()
+        test_kernel()
+    
+        print("OK")
 
 
