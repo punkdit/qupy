@@ -647,11 +647,18 @@ nonuniq = 48368
 distance <= 10000
 
 
-2019-03-25 23:14:04
-./main.py joschka100.ldpc check=False decode=bp p=0.02 N=100000 noerr
-error rate = 0.00025000
-fail rate = 0.00025000
-nonuniq = 7547
+#2019-03-25 23:14:04
+#./main.py joschka100.ldpc check=False decode=bp p=0.02 N=100000 noerr
+#error rate = 0.00025000
+#fail rate = 0.00025000
+#nonuniq = 7547
+#distance <= 15625
+
+2019-03-30 17:56:12
+./main.py joschka100.ldpc check=False decode=bp p=0.02 N=1000000 noerr
+error rate = 0.00025500
+fail rate = 0.00025500
+nonuniq = 76576
 distance <= 15625
 
 
