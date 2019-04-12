@@ -770,5 +770,15 @@ nonuniq = 3584
 distance <= 10000
 
 
+429066.06user 501744.33system 256:53:02elapsed 100%CPU (0avgtext+0avgdata 3717748maxresident)k
+27416inputs+32417632outputs (0major+478729569525minor)pagefaults 0swaps
+2019-04-01 19:41:46
+./main.py joschka100.ldpc check=False decode=bp p=0.01 N=1000000 noerr
+error rate = 0.00003400
+fail rate = 0.00003400
+nonuniq = 5979
+distance <= 15625
+
+
 
 
