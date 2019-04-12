@@ -37,10 +37,10 @@ def main():
     CZ = Z.control()
     assert CX == X.control()
 
-    print( (I@H) * CZ * (I@H) == CX )
-    print( (I@H) * CX * (I@H) == CZ )
-    print( CX * (I@H) == (I@H) * CZ )
-    print( CZ * (I@H) == (I@H) * CX )
+    assert (I@H) * CZ * (I@H) == CX 
+    assert (I@H) * CX * (I@H) == CZ
+    assert CX * (I@H) == (I@H) * CZ
+    assert CZ * (I@H) == (I@H) * CX
 
     # lhs -----------------------------
 
