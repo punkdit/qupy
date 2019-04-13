@@ -591,12 +591,13 @@ class Qu(AbstractQu):
 #        A = Gate.dyads[0]@I + Gate.dyads[1]@self
 #        return A
 
-    def control(self, target=1, *source):
+    def control(self, target=1, *source, rank=None):
         source = source or (0,)
         if target in source:
             raise ValueError("target in source")
 
-        rank = max(target, max(source))+1
+        if rank is None:
+            rank = max(target, max(source))+1
 
         A = Qu((2,)*(2*rank), 'ud'*rank)
 
@@ -608,6 +609,13 @@ class Qu(AbstractQu):
                 factors[target] = self
             A += reduce(matmul, factors)
         return A
+
+    def bounce(self, idx, rank=None):
+        if rank is None:
+            rank = idx + 1
+        factors = [Gate.I] * rank
+        factors[idx] = self
+        return reduce(matmul, factors)
 
     def get_flatop(self):
         op = MonoidalFlatten(self.space)
