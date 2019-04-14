@@ -1,0 +1,14 @@
+2019-04-14 18:51:58
+./main.py qc45.ldpc decode=cluster p=0.001 N=10000
+error rate = 0.01060000
+fail rate = 0.00000000
+nonuniq = 214
+distance <= 18
+
+2019-04-14 18:51:46
+./main.py qc35.ldpc decode=cluster p=0.001 N=10000
+error rate = 0.01270000
+fail rate = 0.00000000
+nonuniq = 34
+distance <= 30
+
