@@ -156,6 +156,9 @@ for key in keys:
     row.sort()
     print(row)
 
+    if argv.minp:
+        row = [item for item in row if item[0]>=argv.minp]
+
     xs = [x for (x, y, errorbar) in row]
     ys = [y for (x, y, errorbar) in row]
     yerr = [errorbar for (x, y, errorbar) in row]

@@ -1,14 +1,210 @@
-2019-04-14 18:51:58
-./main.py qc45.ldpc decode=cluster p=0.001 N=10000
-error rate = 0.01060000
+
+#2019-03-21 19:08:39
+#./main.py joschka16.ldpc p=0.005 decode=cluster N=1000
+#error rate = 0.04000000
+#fail rate = 0.00000000
+#nonuniq = 28
+#distance <= 6
+#
+#2019-03-21 19:09:11
+#./main.py joschka16.ldpc p=0.004 decode=cluster N=1000
+#error rate = 0.02100000
+#fail rate = 0.00000000
+#nonuniq = 22
+#distance <= 6
+#
+#2019-03-21 19:09:34
+#./main.py joschka16.ldpc p=0.003 decode=cluster N=1000
+#error rate = 0.01200000
+#fail rate = 0.00000000
+#nonuniq = 13
+#distance <= 6
+
+#2019-03-21 19:09:49
+#./main.py joschka16.ldpc p=0.002 decode=cluster N=1000
+#error rate = 0.00300000
+#fail rate = 0.00000000
+#nonuniq = 5
+#distance <= 6
+
+#2019-03-21 19:24:52
+#./main.py joschka16.ldpc p=0.001 decode=cluster N=10000
+#error rate = 0.00130000
+#fail rate = 0.00000000
+#nonuniq = 11
+#distance <= 6
+
+
+#2019-03-21 19:10:01
+#./main.py joschka24.ldpc p=0.005 decode=cluster N=1000
+#error rate = 0.08500000
+#fail rate = 0.00000000
+#nonuniq = 39
+#distance <= 10
+#
+#
+#2019-03-21 19:13:07
+#./main.py joschka24.ldpc p=0.004 decode=cluster N=1000
+#error rate = 0.07300000
+#fail rate = 0.00000000
+#nonuniq = 22
+#distance <= 12
+#
+#2019-03-21 19:15:11
+#./main.py joschka24.ldpc p=0.003 decode=cluster N=1000
+#error rate = 0.04300000
+#fail rate = 0.00000000
+#nonuniq = 11
+#distance <= 10
+
+
+# ----------------------------------------------------------------------
+
+#2019-03-21 19:16:33
+#./main.py joschka24.ldpc p=0.002 decode=cluster N=1000
+#error rate = 0.02100000
+#fail rate = 0.00000000
+#nonuniq = 6
+#distance <= 10
+
+#2019-03-25 09:15:59
+#./main.py joschka16.ldpc p=0.002 decode=cluster N=1000
+#error rate = 0.00600000
+#fail rate = 0.00000000
+#nonuniq = 6
+#distance <= 6
+
+#2019-03-25 09:16:09
+#./main.py joschka24.ldpc p=0.002 decode=cluster N=1000
+#error rate = 0.01500000
+#fail rate = 0.00000000
+#nonuniq = 8
+#distance <= 35
+
+2019-03-25 09:16:46
+./main.py joschka32.ldpc p=0.002 decode=cluster N=1000
+error rate = 0.03600000
 fail rate = 0.00000000
-nonuniq = 214
+nonuniq = 11
+distance <= 12
+
+2019-03-25 09:18:59
+./main.py joschka44.ldpc p=0.002 decode=cluster N=1000
+error rate = 0.05800000
+fail rate = 0.00000000
+nonuniq = 42
+distance <= 14
+
+2019-03-25 09:32:39
+./main.py joschka60.ldpc p=0.002 decode=cluster N=1000
+error rate = 0.03000000
+fail rate = 0.00000000
+nonuniq = 90
+distance <= 16
+
+
+
+# ----------------------------------------------------------------------
+
+2019-04-15 15:32:48
+./main.py joschka32.ldpc p=0.0015 decode=cluster N=1000
+error rate = 0.02300000
+fail rate = 0.00000000
+nonuniq = 7
+distance <= 10
+
+2019-04-15 15:33:02
+./main.py joschka44.ldpc p=0.0015 decode=cluster N=1000
+error rate = 0.02600000
+fail rate = 0.00000000
+nonuniq = 17
 distance <= 18
 
-2019-04-14 18:51:46
-./main.py qc35.ldpc decode=cluster p=0.001 N=10000
-error rate = 0.01270000
+
+
+
+# ----------------------------------------------------------------------
+
+
+#2019-03-21 19:17:13
+#./main.py joschka24.ldpc p=0.001 decode=cluster N=1000
+#error rate = 0.00300000
+#fail rate = 0.00000000
+#nonuniq = 1
+#distance <= 33
+
+
+#2019-03-21 19:24:52
+#./main.py joschka16.ldpc p=0.001 decode=cluster N=10000
+#error rate = 0.00130000
+#fail rate = 0.00000000
+#nonuniq = 11
+#distance <= 6
+#
+#2019-03-21 19:25:32
+#./main.py joschka24.ldpc p=0.001 decode=cluster N=10000
+#error rate = 0.00440000
+#fail rate = 0.00000000
+#nonuniq = 9
+#distance <= 10
+#
+#2019-03-21 19:27:59
+#./main.py joschka32.ldpc p=0.001 decode=cluster N=1000
+#error rate = 0.00600000
+#fail rate = 0.00000000
+#nonuniq = 1
+#distance <= 10
+#
+#2019-03-21 19:28:41
+#./main.py joschka44.ldpc p=0.001 decode=cluster N=1000
+#error rate = 0.00500000
+#fail rate = 0.00000000
+#nonuniq = 8
+#distance <= 39
+
+
+
+#2019-03-21 19:38:29
+#./main.py joschka16.ldpc p=0.001 decode=cluster N=100000
+#error rate = 0.00129000
+#fail rate = 0.00000000
+#nonuniq = 150
+#distance <= 6
+
+#2019-03-21 19:44:59
+#./main.py joschka24.ldpc p=0.001 decode=cluster N=100000
+#error rate = 0.00487000
+#fail rate = 0.00000000
+#nonuniq = 70
+#distance <= 10
+
+2019-03-21 20:07:58
+./main.py joschka32.ldpc p=0.001 decode=cluster N=10000
+error rate = 0.00690000
 fail rate = 0.00000000
-nonuniq = 34
-distance <= 30
+nonuniq = 27
+distance <= 10
+
+2019-03-21 20:14:55
+./main.py joschka44.ldpc p=0.001 decode=cluster N=10000
+error rate = 0.01140000
+fail rate = 0.00000000
+nonuniq = 75
+distance <= 14
+
+2019-03-21 20:54:25
+./main.py joschka60.ldpc p=0.001 decode=cluster N=10000
+error rate = 0.00500000
+fail rate = 0.00000000
+nonuniq = 249
+distance <= 18
+
+2019-03-22 09:29:49
+./main.py joschka80.ldpc p=0.001 decode=cluster N=10000
+error rate = 0.00360000
+fail rate = 0.00000000
+nonuniq = 484
+distance <= 20
+
+
 

@@ -115,20 +115,48 @@ def test_2():
         k = CZ * g * ~CZ
         assert find(k, C1)
 
-    r = numpy.exp(-pi*i/8)/sqrt(2)
+    r = numpy.exp(pi*i/8)/sqrt(2)
     v = r*numpy.array([[1., i], [i, 1.]])
     H = Qu((2, 2), 'ud', v)
 
+    plus = 1./sqrt(2) * (bitvec(0) + bitvec(1)) 
+    #print(plus)
+    #print(H*plus) # proportional to plus state
+
+    IH = (I@H).flat()
+    HI = (H@I).flat()
     HH = (H@H).flat()
 
+    assert IH * CZ * IH == CZ * IH * CZ
+
     g = CZ * HH * CZ
-    assert g*g == -II
+    #print((g*g).shortstr())
+    assert g*g == II
     #assert g == SWAP.flat()
     #print(g.v)
     #print(SWAP.flat())
 
+    A = (CZ @ I).flat()
+    B = (I @ CZ).flat()
+    III = (II@I).flat()
 
+    ABA = A*B*A
+    BAB = B*A*B
+    r = numpy.exp(pi*i/8)
+    print((ABA/r).shortstr())
+    print((BAB/r).shortstr())
+    #assert A*B*A == B*A*B
+    op = III
+    for i in range(1, 100):
+        op = ABA * op
+        if op == III:
+            break
+    else:
+        assert 0
+    print(i)
 
+    assert ABA ** 16 == III
+    assert BAB ** 16 == III
 
 if __name__ == "__main__":
 
