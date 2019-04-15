@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from math import sqrt
+from math import sqrt, pi
 from random import choice, randint, seed, shuffle
 from functools import reduce
 from operator import mul, matmul, add
@@ -43,27 +43,91 @@ def inv(A):
 
 
 
-def test():
+def test_1():
 
-    C1 = mulclose([X, Z])
-    C2 = mulclose([H, Z])
-    C3 = mulclose([H, S])
     assert S*S == Z
 
-    print(len(C1))
-    print(len(C2))
-    print(len(C3))
+    i = 1.j
+    phase = numpy.exp(i*pi/8)
+    C1 = mulclose([X, Z, phase*I]) # Pauli group
+    C2 = mulclose([H, S, phase*I]) # Clifford group
 
-    for g in C3:
+    assert len(C1) == 64, len(C1)
+    assert len(C2) == 384, len(C2)
+
+    r = numpy.exp(-pi*i/8)/sqrt(2)
+    v = r*numpy.array([[1., i], [i, 1.]])
+    M = Qu((2, 2), 'ud', v)
+
+    for g in C2:
         ginv = inv(g)
         assert g*ginv == I
 
-    for g in C3:
-        ginv = inv(g)
-        assert g*ginv == I
-        for h in C1:
-            k = g * h * ginv
-            assert find(k, C2) # fail...
+    for g2 in C2:
+        g2inv = inv(g2)
+        assert g2*g2inv == I
+        for g in C1:
+            k = g2 * g * g2inv
+            assert find(k, C1)
+
+    print(M)
+    print(find(M, C2))
+    for g in C1:
+        k = M * g * inv(M)
+        assert find(k, C1)
+
+
+def test_2():
+    "two qubits"
+
+    i = 1.j
+    phase = numpy.exp(i*pi/8)
+
+    II = I@I
+    XI = X@I
+    IX = I@X
+    ZI = Z@I
+    IZ = I@Z
+    gen = [XI, IX, ZI, IZ, phase*II]
+    gen = [op.flat() for op in gen]
+    C1 = mulclose(gen)
+
+    assert len(C1) == 256, len(C1)
+
+#    CZ = Z.control()
+#    op = CZ.flat()
+#    print(op)
+#    print(op.valence)
+
+    r = numpy.exp(-pi*i/8)
+    v = r*numpy.array([
+        [1., 0., 0., 0.],
+        [0., 1.j, 0., 0.],
+        [0., 0., 1.j, 0.],
+        [0., 0., 0., 1.]])
+    CZ = Qu((4, 4), 'ud', v)
+
+    II = II.flat()
+    assert (CZ*~CZ) == II
+
+    assert not find(CZ, C1)
+    for g in C1:
+        k = CZ * g * ~CZ
+        assert find(k, C1)
+
+    r = numpy.exp(-pi*i/8)/sqrt(2)
+    v = r*numpy.array([[1., i], [i, 1.]])
+    H = Qu((2, 2), 'ud', v)
+
+    HH = (H@H).flat()
+
+    g = CZ * HH * CZ
+    assert g*g == -II
+    #assert g == SWAP.flat()
+    #print(g.v)
+    #print(SWAP.flat())
+
+
 
 
 if __name__ == "__main__":
