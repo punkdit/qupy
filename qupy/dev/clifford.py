@@ -127,18 +127,17 @@ def test_2():
     HI = (H@I).flat()
     HH = (H@H).flat()
 
-    assert IH * CZ * IH == CZ * IH * CZ
+    assert IH * CZ * IH == CZ * IH * CZ # Reidemeister III move
 
     g = CZ * HH * CZ
-    #print((g*g).shortstr())
     assert g*g == II
-    #assert g == SWAP.flat()
-    #print(g.v)
-    #print(SWAP.flat())
+    assert g != SWAP.flat()
 
     A = (CZ @ I).flat()
     B = (I @ CZ).flat()
     III = (II@I).flat()
+
+    assert A*B == B*A
 
     ABA = A*B*A
     BAB = B*A*B
