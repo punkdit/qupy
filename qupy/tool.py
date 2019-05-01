@@ -71,3 +71,26 @@ def cross_upper(items, n):
                 yield (items[i],)+tail
 
 
+def choose(items, n):
+    m = len(items)
+    if n==0:
+        yield []
+    elif n==1:
+        for item in items:
+            yield [item,]
+    elif n==2:
+        for i in range(m):
+          for j in range(i+1, m):
+            yield [items[i], items[j]]
+    elif n==3:
+        for i in range(m):
+         for j in range(i+1, m):
+          for k in range(j+1, m):
+            yield [items[i], items[j], items[k]]
+    else:
+        for i in range(m):
+            for _items in choose(items[i+1:], n-1):
+                yield [items[i],]+_items
+
+
+

@@ -8,7 +8,7 @@ from numpy.linalg import lstsq
 
 from qupy.ldpc.css import CSSCode
 from qupy.ldpc.solve import shortstr, zeros2, array2, dot2, parse
-from qupy.tool import write
+from qupy.tool import write, choose
 from qupy.argv import argv
 
 from qupy.ldpc.decoder import Decoder, RandomDecoder
@@ -283,6 +283,16 @@ def main():
         C = argv.get("C", 100)
         code = ensemble.build(n, mx, mz, rw, maxw, C,
             check=check, verbose=verbose)
+
+    elif argv.code == "rm" or argv.code == "reed_muller":
+        from qupy.ldpc import reed_muller
+        r = argv.get("r", 1)
+        m = argv.get("m", 4)
+        puncture = argv.puncture
+        cl_code = reed_muller.build(r, m, puncture)
+        G = cl_code.G
+        G = array2([row for row in G if row.sum()%2==0])
+        code = CSSCode(Hx=G, Hz=G)
 
     elif argv.code == "qr7":
         H = parse("""
@@ -977,28 +987,6 @@ class MultiDecoder(object):
             write("F")
             op = decode1.decode(p, err_op, **kw)
         return op
-
-
-def choose(items, n):
-    m = len(items)
-    if n==0:
-        yield []
-    elif n==1:
-        for item in items:
-            yield [item,]
-    elif n==2:
-        for i in range(m):
-          for j in range(i+1, m):
-            yield [items[i], items[j]]
-    elif n==3:
-        for i in range(m):
-         for j in range(i+1, m):
-          for k in range(j+1, m):
-            yield [items[i], items[j], items[k]]
-    else:
-        for i in range(m):
-            for _items in choose(items[i+1:], n-1):
-                yield [items[i],]+_items
 
 
 
