@@ -1,72 +1,82 @@
 #!/usr/bin/env python3
 
-from qupy.ldpc.solve import pushout, array2, parse, dot2, compose2, eq2
-from qupy.ldpc.css import CSSCode
+import numpy
+
+from qupy.ldpc.solve import pushout, array2, parse, dot2, compose2, eq2, zeros2
+from qupy.ldpc import solve
+from qupy.ldpc import css
+from qupy.ldpc.chain import Chain, Map
+from qupy.ldpc import chain
 
 
 def test():
 
     HxA = array2([[1,1,1,0,0],[0,0,1,1,1]])
     HzA = array2([[1,0,1,1,0],[0,1,1,0,1]])
-    assert dot2(HxA, HzA.transpose()).sum() == 0
+    A = Chain([HxA, HzA.transpose()])
 
     HxB = array2([[1,1,1,0,0],[0,0,1,1,1]])
     HzB = array2([[1,0,1,1,0],[0,1,1,0,1]])
-    assert dot2(HxB, HzB.transpose()).sum() == 0
+    B = Chain([HxB, HzB.transpose()])
 
     HzC = array2(shape=(0, 2))
     HxC = array2([[1,1]])
-    assert dot2(HxC, HzC.transpose()).sum() == 0
-
-    #code = CSSCode(Hx=Hx, Hz=Hz)
-    #print(code)
+    C = Chain([HxC, HzC.transpose()])
 
     # Chain map from C -> A
     CAz = array2(shape=(2, 0))
     CAn = array2([[0,0],[0,0],[0,0],[1,0],[0,1]])
     CAx = array2([[0],[1]])
-
-    compose2(HzC.transpose(), CAn)
-    compose2(CAz, HzA.transpose())
-    assert eq2(compose2(HzC.transpose(), CAn), compose2(CAz, HzA.transpose()))
-    assert eq2(compose2(HxC, CAx), compose2(CAn, HxA))
+    CA = Map(C, A, [CAx, CAn, CAz])
 
     # Chain map from C -> B
-    CBz = array2(shape=(2,0))
-    CBn = array2([[1,0],[0,1],[0,0],[0,0],[0,0]])
-    CBx = array2([[1],[0]])
+    CBz = CAz
+    CBn = CAn
+    CBx = CAx
+    CB = Map(C, B, [CBx, CBn, CBz])
 
-    compose2(HzC.transpose(), CBn)
-    compose2(CBz, HzB.transpose())
-    assert eq2(compose2(HzC.transpose(), CBn), compose2(CBz, HzB.transpose()))
-    assert eq2(compose2(HxC, CBx), compose2(CBn, HxB))
+    AD, BD, D = chain.pushout(CA, CB)
+    code = D.get_code()
+    assert code.mx == 3
+    assert code.mz == 4
+    assert code.k == 1
 
-    Az, Bz = pushout(CAz, CBz)
+    #print(code.longstr())
 
-    print(Az)
-    print(Bz)
+    # Chain map from C -> D
+    CDz = zeros2(4, 0)
+    CDn = zeros2(8, 2)
+    CDn[4,0] = 1
+    CDn[3,1] = 1
+    CDx = zeros2(3, 1)
+    CDx[1,0] = 1
+    CD = Map(C, D, [CDx, CDn, CDz])
 
-    An, Bn = pushout(CAn, CBn)
+    _, _, E = chain.pushout(CA, CD)
+    code = E.get_code()
+    #print(code.longstr())
 
-    print(An)
-    print(Bn)
+    #dual = code.dual()
+    #print(css.lookup_distance(code))
+    print("Hz:")
+    print(code.Hz)
+    print("Hx:")
+    print(code.Hx)
+    print("Lx:")
+    print(code.Lx)
+    print()
 
-    Ax, Bx = pushout(CAx, CBx)
-
-    print(Ax.shape)
-    print(Bx.shape)
-
-    _, _, Hzt = pushout(CAz, CBz,
-        compose2(HzA.transpose(), An),
-        compose2(HzB.transpose(), Bn))
-
-    _, _, Hx = pushout(CAn, CBn,
-        compose2(HxA, Ax),
-        compose2(HxB, Bx))
-
-    code = CSSCode(Hx=Hx, Hz=Hzt.transpose())
-    print(code)
-
+    #H = numpy.concatenate((code.Lx, code.Hx))
+    u = code.Lx
+    H = code.Hx
+    #print(H)
+    d = H.shape[1]
+    for v in solve.image(H.transpose()):
+        v = (u+v)%2
+        d = min(d, v.sum()) or d
+        if v.sum()==4:
+            print(v)
+    print("distance:", d)
 
 
 if __name__ == "__main__":

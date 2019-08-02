@@ -1251,7 +1251,7 @@ def fromkernel(J, check=False):
     k, n = J.shape
     K = zeros2(0, k)
 
-    f, g = pushout(J.transpose(), K, check=check)
+    f, g, _ = pushout(J.transpose(), K, check=check)
 
     return f
 
@@ -1290,6 +1290,7 @@ def pushout(J, K, J1=None, K1=None, check=False):
     JJ = compose2(JJ, R)
     KK = compose2(KK, R)
 
+    F = None
     if J1 is not None:
         assert K1 is not None
         assert J1.shape[0] == K1.shape[0]
@@ -1319,10 +1320,7 @@ def pushout(J, K, J1=None, K1=None, check=False):
         assert eq2(compose2(JJ, F), J1)
         assert eq2(compose2(KK, F), K1)
 
-        return JJ, KK, F
-
-    else:
-        return JJ, KK
+    return JJ, KK, F
 
 
 # _________________________________________________________ #
@@ -1838,7 +1836,7 @@ def test_pushout():
     K = zeros2(2, 1)
     K[1, 0] = 1
 
-    JJ, KK = pushout(J, K)
+    JJ, KK, _ = pushout(J, K)
 
     #print shortstrx(JJ, KK)
 

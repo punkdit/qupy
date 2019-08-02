@@ -6,7 +6,8 @@ import numpy
 from numpy import dot
 
 from qupy.ldpc import solve
-from qupy.ldpc.solve import parse, shortstr, array2, zeros2
+from qupy.ldpc.solve import parse, shortstr, array2, zeros2, eq2, compose2
+from qupy.ldpc import solve
 from qupy.ldpc.tool import write
 
 
@@ -86,13 +87,15 @@ class Chain(object):
     Hs[i].shape[1] == Hs[i+1].shape[0]
     """
 
-    def __init__(self, Hs, Ls=None, d=2):
+    def __init__(self, Hs, Ls=None, d=2, check=True):
         self.d = d
-        self.Hs = [H for H in Hs if H.shape[0] or H.shape[1]]
+        #self.Hs = [H for H in Hs if H.shape[0] or H.shape[1]]
+        self.Hs = list(Hs)
         self.Ls = Ls # homology
+        if check:
+            self.check()
 
     def check(self):
-
         #print "check"
         d = self.d
         Hs = self.Hs
@@ -230,8 +233,8 @@ class Chain(object):
 #            L = None # XXX Fix my shape :-(
         return H, L
 
-    def getcode(self, idx, build=True, check=True):
-        #print "getcode"
+    def get_code(self, idx=0, build=True, check=True):
+        #print "get_code"
         Hs = self.Hs
         Hx = Hs[idx]
         write("li:")
@@ -239,10 +242,10 @@ class Chain(object):
         Hz = Hs[idx+1].transpose()
         write("li:")
         Hz = solve.linear_independent(Hz)
-        print(Hx.shape, Hz.shape)
+        #print(Hx.shape, Hz.shape)
         if self.Ls:
             Lz = self.Ls[idx]
-            #print "getcode:", Lz.shape
+            #print "get_code:", Lz.shape
         else:
             Lz = None
         #print shortstr(dot(Hx, Hz.transpose()))
@@ -256,7 +259,7 @@ class Chain(object):
 
     def allcodes(self, **kw):
         for i in range(len(self)-1):
-            code = self.getcode(i, **kw)
+            code = self.get_code(i, **kw)
             yield code
 
     def dumpcodes(self, **kw):
@@ -266,21 +269,22 @@ class Chain(object):
             print(code.weightstr())
 
 
-class ChainMap(object):
-    def __init__(self, src, tgt, Ds=None):
-        Ds = Ds or [None]*(len(src)+1)
+class Map(object):
+    def __init__(self, src, tgt, Ds, check=True):
+        assert isinstance(src, Chain)
+        assert isinstance(tgt, Chain)
         assert len(src) == len(tgt) == len(Ds)-1
         self.src = src
         self.tgt = tgt
+        Ds = list(Ds)
         self.Ds = Ds
-        n = len(Ds)
-        for i in range(n):
-            D = Ds[i]
-            if D is None:
-                continue
-            print(D.shape, tgt.dim(i), src.dim(i))
-            assert D.shape == (tgt.dim(i), src.dim(i)), "i = %d"%i
-        self.check()
+        for i, D in enumerate(Ds):
+            assert D.shape == (tgt.dim(i-1), src.dim(i-1)), "i = %d"%i
+        if check:
+            self.check()
+
+    def __getitem__(self, idx):
+        return self.Ds[idx]
 
     def check(self):
         src, tgt = self.src, self.tgt
@@ -289,7 +293,32 @@ class ChainMap(object):
             D0, D1 = Ds[i], Ds[i+1]
             if D0 is None or D1 is None:
                 continue
-            assert eq2(compose2(D0, tgt[i]), compose2(src[i], D1))
+            assert eq2(compose2(src[i], D0), compose2(D1, tgt[i]))
+
+
+def pushout(a, b):
+    assert isinstance(a, Map)
+    assert isinstance(b, Map)
+    assert a.src is b.src
+
+    src = a.src
+    n = len(src)
+    amap = []
+    bmap = []
+    chain = []
+    aprev = None
+    bprev = None
+    for i in range(n+1):
+        a1, b1, c1 = solve.pushout(a[i], b[i], aprev, bprev)
+        amap.append(a1)
+        bmap.append(b1)
+        chain.append(c1)
+        aprev = compose2(a.tgt[i], a1)
+        bprev = compose2(b.tgt[i], b1)
+    c = Chain(chain[1:])
+    amap = Map(a.tgt, c, amap)
+    bmap = Map(b.tgt, c, bmap)
+    return amap, bmap, c
 
 
 def test_repitition():
@@ -362,7 +391,7 @@ def test_stean():
     for L in XX.Ls:
         print(L.shape)
 
-    code = XX.getcode(1)
+    code = XX.get_code(1)
     print(code)
     print(code.weightsummary())
     #code.save("stean2_147_33.ldpc")
@@ -374,7 +403,7 @@ def test_stean():
 
     return
 
-    #code = XX.getcode(1)
+    #code = XX.get_code(1)
 
     #code.save('stean2.ldpc')
 
@@ -399,7 +428,7 @@ def test_hyperbicycle():
     XX = X.tensor(X)
     #XX.dumpcodes()
 
-    code = XX.getcode(1)
+    code = XX.get_code(1)
     print(code)
 
     code.save("hyper_%d_%d.ldpc"%(code.n, len(code.Lx)))
@@ -432,7 +461,7 @@ def test_toric4():
     #T3 = T2.tensor(T1)
     T4 = T2.tensor(T2)
 
-    code = T4.getcode(1)
+    code = T4.get_code(1)
     print(code)
 
     code.save("toric4_%d_%d.ldpc"%(code.n, len(code.Lx)))
@@ -441,6 +470,9 @@ def test_toric4():
 def test_product():
 
     from qupy.ldpc import css
+
+    if len(sys.argv) < 2:
+        return
 
     code = css.CSSCode.load(sys.argv[1])
 
@@ -454,19 +486,19 @@ def test_product():
     
         print(len(XX.Hs))
     
-        code = XX.getcode(0)
+        code = XX.get_code(0)
 
     else:
 
         X1 = Chain([code.Hx, code.Hz.transpose()])
         X1.check()
-        #print X1.getcode(0)
+        #print X1.get_code(0)
 
         X2 = Chain([code.Hx, code.Hz.transpose()])
 
         XX = X1.tensor(X2)
 
-        code = XX.getcode(1)
+        code = XX.get_code(1)
 
         print(code)
 
@@ -485,11 +517,8 @@ def test_product():
 
 if __name__ == "__main__":
 
-#    test_repitition()
-#    test_stean()
-#    test_0()
-#    main()
-
+    test_repitition()
+    test_stean()
     test_product()
 
 

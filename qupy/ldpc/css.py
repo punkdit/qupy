@@ -14,7 +14,7 @@ from qupy.ldpc import solve
 from qupy.ldpc.solve import (
     shortstr, shortstrx, hbox,
     eq2, dot2, compose2, rand2,
-    pop2, insert2, append2, pushout,
+    pop2, insert2, append2, 
     array2, zeros2, identity2, parse)
 from qupy.ldpc.tool import write #, load, save
 
