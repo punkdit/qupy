@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from qupy.ldpc.solve import pushout, array2, parse, dot2, compose2
+from qupy.ldpc.solve import pushout, array2, parse, dot2, compose2, eq2
 from qupy.ldpc.css import CSSCode
 
 
@@ -14,34 +14,58 @@ def test():
     HzB = array2([[1,0,1,1,0],[0,1,1,0,1]])
     assert dot2(HxB, HzB.transpose()).sum() == 0
 
+    HzC = array2([[1,1,1,1]])
+    HxC = array2([[1,1,0,0],[1,0,1,0],[0,1,0,1],[0,0,1,1]])
+    assert dot2(HxC, HzC.transpose()).sum() == 0
+
     #code = CSSCode(Hx=Hx, Hz=Hz)
     #print(code)
 
-    czB = array2([[1],[0]])
-    cnB = array2([[1,0],[0,0],[0,0],[0,1],[0,0]])
-    cxB = array2([[], []])
+    # Chain map from C -> A
+    CAz = array2([[0],[1]])
+    CAn = array2([[0,0,0,0],[1,0,0,0],[0,1,0,0],[0,0,0,0],[0,0,0,1]])
+    CAx = array2([[1,0,0,0], [0,0,1,0]])
 
-    assert cxB.shape == (2, 0)
+    compose2(HzC.transpose(), CAn)
+    compose2(CAz, HzA.transpose())
+    assert eq2(compose2(HzC.transpose(), CAn), compose2(CAz, HzA.transpose()))
+    assert eq2(compose2(HxC, CAx), compose2(CAn, HxA))
 
-    czA = array2([[0],[1]])
-    cnA = array2([[0,0],[1,0],[0,0],[0,0],[0,1]])
-    cxA = array2([[], []])
+    # Chain map from C -> B
+    CBz = array2([[1],[0]])
+    CBn = array2([[1,0,0,0],[0,0,0,0],[0,0,1,0],[0,0,0,1],[0,0,0,0]])
+    CBx = array2([[0,1,0,0], [0,0,0,1]])
 
-    Bz, Az = pushout(czB, czA)
+    compose2(HzC.transpose(), CBn)
+    compose2(CBz, HzB.transpose())
+    assert eq2(compose2(HzC.transpose(), CBn), compose2(CBz, HzB.transpose()))
+    assert eq2(compose2(HxC, CBx), compose2(CBn, HxB))
 
-    print(Bz)
+    Az, Bz = pushout(CAz, CBz)
+
     print(Az)
+    print(Bz)
 
-    Bn, An = pushout(cnB, cnA)
+    An, Bn = pushout(CAn, CBn)
 
-    print(Bn)
     print(An)
+    print(Bn)
 
-    _, _, Hzt = pushout(czB, czA, 
-        compose2(HzB.transpose(), Bn),
-        compose2(HzA.transpose(), An)
-    )
+    Ax, Bx = pushout(CAx, CBx)
 
+    print(Ax.shape)
+    print(Bx.shape)
+
+    _, _, Hzt = pushout(CAz, CBz,
+        compose2(HzA.transpose(), An),
+        compose2(HzB.transpose(), Bn))
+
+    _, _, Hx = pushout(CAn, CBn,
+        compose2(HxA, Ax),
+        compose2(HxB, Bx))
+
+    code = CSSCode(Hx=Hx, Hz=Hzt.transpose())
+    print(code)
 
 
 

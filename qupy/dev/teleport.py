@@ -169,7 +169,7 @@ def search():
             print(lhs.shortstr())
             print(['IXZ'[i] for i in idxs])
 
-            break
+            #break
 
 
     if 0:
@@ -185,6 +185,14 @@ def search():
     #print(CX.shortstr())
 
 
+def main():
+
+    cap = ~bitvec(0, 0) + ~bitvec(1, 1)
+    cup = bitvec(0, 0) + bitvec(1, 1)
+
+
+    lhs = (cap @ I) * (I @ cup)
+    print(lhs)
 
 
 if __name__ == "__main__":
@@ -192,6 +200,9 @@ if __name__ == "__main__":
     test()
     state_teleport()
     #gate_teleport()
-    search()
+    #search()
+
+    main()
+
 
 
