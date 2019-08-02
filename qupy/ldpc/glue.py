@@ -14,17 +14,17 @@ def test():
     HzB = array2([[1,0,1,1,0],[0,1,1,0,1]])
     assert dot2(HxB, HzB.transpose()).sum() == 0
 
-    HzC = array2([[1,1,1,1]])
-    HxC = array2([[1,1,0,0],[1,0,1,0],[0,1,0,1],[0,0,1,1]])
+    HzC = array2(shape=(0, 2))
+    HxC = array2([[1,1]])
     assert dot2(HxC, HzC.transpose()).sum() == 0
 
     #code = CSSCode(Hx=Hx, Hz=Hz)
     #print(code)
 
     # Chain map from C -> A
-    CAz = array2([[0],[1]])
-    CAn = array2([[0,0,0,0],[1,0,0,0],[0,1,0,0],[0,0,0,0],[0,0,0,1]])
-    CAx = array2([[1,0,0,0], [0,0,1,0]])
+    CAz = array2(shape=(2, 0))
+    CAn = array2([[0,0],[0,0],[0,0],[1,0],[0,1]])
+    CAx = array2([[0],[1]])
 
     compose2(HzC.transpose(), CAn)
     compose2(CAz, HzA.transpose())
@@ -32,9 +32,9 @@ def test():
     assert eq2(compose2(HxC, CAx), compose2(CAn, HxA))
 
     # Chain map from C -> B
-    CBz = array2([[1],[0]])
-    CBn = array2([[1,0,0,0],[0,0,0,0],[0,0,1,0],[0,0,0,1],[0,0,0,0]])
-    CBx = array2([[0,1,0,0], [0,0,0,1]])
+    CBz = array2(shape=(2,0))
+    CBn = array2([[1,0],[0,1],[0,0],[0,0],[0,0]])
+    CBx = array2([[1],[0]])
 
     compose2(HzC.transpose(), CBn)
     compose2(CBz, HzB.transpose())

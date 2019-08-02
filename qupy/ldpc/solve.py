@@ -14,8 +14,11 @@ int_scalar = numpy.int32
 from qupy.smap import SMap
 
 
-def array2(items):
-    return numpy.array(items, dtype=int_scalar)
+def array2(items=[], shape=None):
+    A = numpy.array(items, dtype=int_scalar)
+    if shape is not None:
+        A.shape = shape
+    return A
 
 
 def zeros2(*shape):
