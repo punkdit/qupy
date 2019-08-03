@@ -4,11 +4,13 @@ import numpy
 import random
 
 from qupy.ldpc.solve import pushout, array2, parse, dot2, compose2, eq2, zeros2
-from qupy.ldpc.solve import rand2, find_kernel, image
+from qupy.ldpc.solve import rand2, find_kernel, image, identity2
 from qupy.ldpc import solve
 from qupy.ldpc import css
 from qupy.ldpc.chain import Chain, Map
 from qupy.ldpc import chain
+from qupy.ldpc.gallagher import classical_distance
+
 from qupy.argv import argv
 
 
@@ -284,29 +286,162 @@ def glue1(H, i1, i2):
     return H
 
 
+def fstr(H):
+    s = str(H).replace("0", ".")
+    lines = s.split('\n')
+    lines = [("%2d "%i)+line for (i, line) in enumerate(lines)]
+    return '\n'.join(lines)
+
+
+#def test_glue():
+#
+#    m, n = 7, 10
+#    m = argv.get("m", 7)
+#    n = argv.get("n", 10)
+#
+#    d = argv.get("d", 0)
+#    p = argv.get("p", 0.5)
+#    weight = argv.weight
+#
+#    while 1:
+#        H = rand2(m, n, p, weight)
+#        if classical_distance(H, d) >= d:
+#            break
+#
+#    print(fstr(H))
+#    w = wenum(H)
+#    print("wenum:", [len(wi) for wi in w])
+#
+#    i0 = argv.i0
+#    i1 = argv.i1
+#    if i0 is None:
+#        return
+#
+#    if argv.transpose:
+#        H1 = glue1(H.transpose(), i0, i1).transpose()
+#    else:
+#        H1 = glue1(H, i0, i1)
+#
+#    print(fstr(H1))
+#
+#    w = wenum(H1)
+#    print("wenum:", [len(wi) for wi in w])
+#    #for v in w[4]:
+#    #    print(v)
+
 
 def test_glue():
 
-    m, n = 7, 10
-    m = argv.get("m", 7)
+    m = argv.get("m", 9)
     n = argv.get("n", 10)
 
-    H = rand2(m, n)
-    print(H)
-    w = wenum(H)
-    print("wenum:", [len(wi) for wi in w])
-    v = w[4][0]
-    print("v:", v)
+    d = argv.get("d", 0)
+    p = argv.get("p", 0.5)
+    weight = argv.weight
 
-    i0 = argv.i0
-    i1 = argv.i1
-    H1 = glue1(H, i0, i1)
-    print(H1)
+    H1 = rand2(m, n, p, weight)
+    K1 = find_kernel(H1)
+    K1t = K1.transpose()
+#    A1 = Chain([H1, K1.transpose()])
+    A1 = Chain([H1])
+
+    print("H1")
+    print(fstr(H1))
+    print()
+    print(fstr(K1))
 
     w = wenum(H1)
-    print([len(wi) for wi in w])
-    #for v in w[4]:
-    #    print(v)
+    print("wenum:", [len(wi) for wi in w])
+
+    H2 = rand2(m, n, p, weight)
+    K2 = find_kernel(H2)
+    K2t = K2.transpose()
+#    A2 = Chain([H2, K2.transpose()])
+    A2 = Chain([H2])
+
+    print("H2")
+    print(fstr(H2))
+    print()
+    print(fstr(K2))
+
+    w = wenum(H2)
+    print("wenum:", [len(wi) for wi in w])
+
+
+    B = Chain([zeros2(0, 1)])
+
+    f1 = Map(B, A1, [zeros2(m, 0), K1t])
+    f2 = Map(B, A2, [zeros2(m, 0), K2t])
+
+    a, b, C = chain.pushout(f1, f2)
+
+    H = C[0]
+    print(fstr(H))
+    w = wenum(H)
+    print("wenum:", [len(wi) for wi in w])
+
+
+def test_glue():
+
+    m = argv.get("m", 9)
+    n = argv.get("n", 10)
+
+    d = argv.get("d", 0)
+    p = argv.get("p", 0.5)
+    weight = argv.weight
+
+    H1 = rand2(m, n, p, weight)
+    G1 = find_kernel(H1)
+    G1t = G1.transpose()
+    H1t = H1.transpose()
+    A1 = Chain([G1, H1t])
+    k1 = len(G1)
+
+    print("H1")
+    print(fstr(H1))
+    print()
+    print(fstr(G1))
+
+    w = wenum(H1)
+    print("wenum:", [len(wi) for wi in w])
+
+    H2 = rand2(m, n, p, weight)
+    H2t = H2.transpose()
+    G2 = find_kernel(H2)
+    G2t = G2.transpose()
+    A2 = Chain([G2, H2t])
+    k2 = len(G2)
+
+    print("H2")
+    print(fstr(H2))
+    print()
+    print(fstr(G2))
+
+    w = wenum(H2)
+    print("wenum:", [len(wi) for wi in w])
+
+    if k1 != k2:
+        return
+    k = k1
+
+    I = identity2(k)
+    B = Chain([I, zeros2(k, 0)])
+
+    a = zeros2(n, k)
+    for i in range(k):
+        a[i, i] = 1
+    f1 = Map(B, A1, [dot2(G1, a), a, zeros2(m, 0)])
+    f2 = Map(B, A2, [dot2(G2, a), a, zeros2(m, 0)])
+
+    a, b, C = chain.pushout(f1, f2)
+
+    H = C[1].transpose()
+    print("H:")
+    print(fstr(H))
+
+    w = wenum(H)
+    print("wenum:", [len(wi) for wi in w])
+
 
 
 
