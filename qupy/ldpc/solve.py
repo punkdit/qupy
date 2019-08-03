@@ -1235,27 +1235,6 @@ def projector(A, check=False):
     return P
 
 
-def fromkernel(J, check=False):
-    """
-    find f as a pushout of the following diagram:
-
-      J^T
-    k ---> n
-    |      |
-    |      | f
-    v      v
-    0 ---> n'
-
-    """
-
-    k, n = J.shape
-    K = zeros2(0, k)
-
-    f, g, _ = pushout(J.transpose(), K, check=check)
-
-    return f
-
-
 def pushout(J, K, J1=None, K1=None, check=False):
     """
     Return JJ,KK given J and K in the following diagram:
@@ -1321,6 +1300,70 @@ def pushout(J, K, J1=None, K1=None, check=False):
         assert eq2(compose2(KK, F), K1)
 
     return JJ, KK, F
+
+
+def fromkernel(J, check=False):
+    """
+    find f as a pushout of the following diagram:
+
+      J^T
+    k ---> n
+    |      |
+    |      | f
+    v      v
+    0 ---> n'
+
+    """
+
+    k, n = J.shape
+    K = zeros2(0, k)
+
+    f, g, _ = pushout(J.transpose(), K, check=check)
+
+    return f
+
+
+def cokernel(J, P1=None):
+    """
+           J
+        k ---> n
+        |      |
+        |      | P
+        v      v
+        0 ---> m
+    """
+
+    if 0:
+        # another way to find the cokernel
+        n = J.shape[0]
+        K = pseudo_inverse(J)
+        I = identity2(n)
+        P = (I-dot2(J, K))%2
+        P = row_reduce(P)
+
+    n, k = J.shape
+    L = zeros2(0, k)
+    Q1 = None
+    if P1 is not None:
+        Q1 = zeros2(P1.shape[0], 0)
+        assert compose2(J, P1).sum() == 0
+
+    P, Q, R = pushout(J, L, P1, Q1)
+    assert Q.shape[1] == 0
+
+    return P, R
+
+
+def coequalizer(J, K, J1=None, K1=None):
+    JK = J-K
+    
+    if J1 is not None:
+        assert K1 is not None
+        JK1 = J1-K1
+    else:
+        JK1 = None
+    P, R = cokernel(JK, JK1)
+    return P, R
 
 
 # _________________________________________________________ #
@@ -1943,6 +1986,24 @@ def test_kernel():
     assert dist == 8
 
 
+def test_colimits():
+
+    for trial in range(1000):
+        m = randint(0, 5)
+        n = randint(0, 5)
+        J = rand2(m, n)
+        P1 = rand2(m, m)
+        if compose2(J, P1).sum() != 0:
+            P1 = None
+        P, R = cokernel(J, P1)
+        assert dot2(compose2(J, P)).sum() == 0
+
+        K = rand2(m, n)
+        P, R = coequalizer(J, K)
+        assert eq2(compose2(J, P), compose2(K, P))
+
+
+
 
 if __name__=="__main__":
 
@@ -1969,6 +2030,7 @@ if __name__=="__main__":
         test_fromkernel()
         test_reductor()
         test_kernel()
+        test_colimits()
     
         print("OK")
 

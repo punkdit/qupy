@@ -19,7 +19,7 @@ def test():
     HzB = array2([[1,0,1,1,0],[0,1,1,0,1]])
     B = Chain([HxB, HzB.transpose()])
 
-    HzC = array2(shape=(0, 2))
+    HzC = zeros2(0, 2)
     HxC = array2([[1,1]])
     C = Chain([HxC, HzC.transpose()])
 
@@ -56,6 +56,8 @@ def test():
     code = E.get_code()
     #print(code.longstr())
 
+    return
+
     #dual = code.dual()
     #print(css.lookup_distance(code))
     print("Hz:")
@@ -79,8 +81,46 @@ def test():
     print("distance:", d)
 
 
+def test_color():
+
+    HxA = array2([[1,1,1,1]])
+    HzA = array2([[1,1,1,1]])
+    A = Chain([HxA, HzA.transpose()])
+
+    HxB = array2([[1,1,1,1]])
+    HzB = array2([[1,1,1,1]])
+    B = Chain([HxB, HzB.transpose()])
+
+    HzC = zeros2(0, 2)
+    HxC = array2([[1,1]])
+    C = Chain([HxC, HzC.transpose()])
+
+    #HzC = zeros2(0, 2)
+    #HxC = zeros2(0, 2)
+    #C = Chain([HxC, HzC.transpose()])
+
+    # Chain map from C -> A
+    CAz = zeros2(1, 0)
+    CAn = zeros2(4, 2)
+    CAn[0, 0] = 1
+    CAn[1, 1] = 1
+    CAx = array2([[1]])
+    CA = Map(C, A, [CAx, CAn, CAz])
+
+    # Chain map from C -> B
+    CBz = CAz
+    CBn = CAn
+    CBx = CAx
+    CB = Map(C, B, [CBx, CBn, CBz])
+
+    AD, BD, D = chain.pushout(CA, CB)
+    code = D.get_code()
+    #print(code)
+
+
 if __name__ == "__main__":
-    test()
+    #test()
+    test_color()
 
 
 

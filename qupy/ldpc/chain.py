@@ -293,7 +293,12 @@ class Map(object):
             D0, D1 = Ds[i], Ds[i+1]
             if D0 is None or D1 is None:
                 continue
-            assert eq2(compose2(src[i], D0), compose2(D1, tgt[i]))
+            lhs, rhs = compose2(src[i], D0), compose2(D1, tgt[i])
+            if not eq2(lhs, rhs):
+                print("Not a chain map:")
+                print("lhs =", lhs)
+                print("rhs =", rhs)
+                raise Exception
 
 
 def pushout(a, b):
