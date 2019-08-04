@@ -14,6 +14,13 @@ from qupy.ldpc.gallagher import classical_distance
 from qupy.argv import argv
 
 
+def fstr(H):
+    s = str(H).replace("0", ".")
+    lines = s.split('\n')
+    lines = [("%2d "%i)+line for (i, line) in enumerate(lines)]
+    return '\n'.join(lines)
+
+
 def test():
 
     HxA = array2([[1,1,1,0,0],[0,0,1,1,1]])
@@ -286,13 +293,6 @@ def glue1(H, i1, i2):
     return H
 
 
-def fstr(H):
-    s = str(H).replace("0", ".")
-    lines = s.split('\n')
-    lines = [("%2d "%i)+line for (i, line) in enumerate(lines)]
-    return '\n'.join(lines)
-
-
 #def test_glue():
 #
 #    m, n = 7, 10
@@ -330,55 +330,55 @@ def fstr(H):
 #    #    print(v)
 
 
-def test_glue():
-
-    m = argv.get("m", 9)
-    n = argv.get("n", 10)
-
-    d = argv.get("d", 0)
-    p = argv.get("p", 0.5)
-    weight = argv.weight
-
-    H1 = rand2(m, n, p, weight)
-    K1 = find_kernel(H1)
-    K1t = K1.transpose()
-#    A1 = Chain([H1, K1.transpose()])
-    A1 = Chain([H1])
-
-    print("H1")
-    print(fstr(H1))
-    print()
-    print(fstr(K1))
-
-    w = wenum(H1)
-    print("wenum:", [len(wi) for wi in w])
-
-    H2 = rand2(m, n, p, weight)
-    K2 = find_kernel(H2)
-    K2t = K2.transpose()
-#    A2 = Chain([H2, K2.transpose()])
-    A2 = Chain([H2])
-
-    print("H2")
-    print(fstr(H2))
-    print()
-    print(fstr(K2))
-
-    w = wenum(H2)
-    print("wenum:", [len(wi) for wi in w])
-
-
-    B = Chain([zeros2(0, 1)])
-
-    f1 = Map(B, A1, [zeros2(m, 0), K1t])
-    f2 = Map(B, A2, [zeros2(m, 0), K2t])
-
-    a, b, C = chain.pushout(f1, f2)
-
-    H = C[0]
-    print(fstr(H))
-    w = wenum(H)
-    print("wenum:", [len(wi) for wi in w])
+#def test_glue():
+#
+#    m = argv.get("m", 9)
+#    n = argv.get("n", 10)
+#
+#    d = argv.get("d", 0)
+#    p = argv.get("p", 0.5)
+#    weight = argv.weight
+#
+#    H1 = rand2(m, n, p, weight)
+#    K1 = find_kernel(H1)
+#    K1t = K1.transpose()
+##    A1 = Chain([H1, K1.transpose()])
+#    A1 = Chain([H1])
+#
+#    print("H1")
+#    print(fstr(H1))
+#    print()
+#    print(fstr(K1))
+#
+#    w = wenum(H1)
+#    print("wenum:", [len(wi) for wi in w])
+#
+#    H2 = rand2(m, n, p, weight)
+#    K2 = find_kernel(H2)
+#    K2t = K2.transpose()
+##    A2 = Chain([H2, K2.transpose()])
+#    A2 = Chain([H2])
+#
+#    print("H2")
+#    print(fstr(H2))
+#    print()
+#    print(fstr(K2))
+#
+#    w = wenum(H2)
+#    print("wenum:", [len(wi) for wi in w])
+#
+#
+#    B = Chain([zeros2(0, 1)])
+#
+#    f1 = Map(B, A1, [zeros2(m, 0), K1t])
+#    f2 = Map(B, A2, [zeros2(m, 0), K2t])
+#
+#    a, b, C = chain.pushout(f1, f2)
+#
+#    H = C[0]
+#    print(fstr(H))
+#    w = wenum(H)
+#    print("wenum:", [len(wi) for wi in w])
 
 
 def test_glue():
@@ -445,6 +445,49 @@ def test_glue():
 
 
 
+def test_color():
+
+    HxA = array2([[1,1,0,0],[1,0,1,0],[1,1,1,1]])
+    HzA = array2([[1,1,1,1]])
+    A = Chain([HxA, HzA.transpose()])
+
+    HxB = HxA
+    HzB = HzA
+    B = Chain([HxB, HzB.transpose()])
+
+    HzC = zeros2(0, 2)
+    HxC = array2([[1,0],[0,1]])
+    C = Chain([HxC, HzC.transpose()])
+
+    # Chain map from C -> A
+    CAz = zeros2(1, 0)
+    CAn = zeros2(4, 2)
+    CAn[0, 0] = 1
+    CAn[1, 1] = 1
+    CAx = dot2(HxA, CAn)
+    CA = Map(C, A, [CAx, CAn, CAz])
+
+    # Chain map from C -> B
+    CBz = CAz
+    CBn = CAn
+    CBx = CAx
+    CB = Map(C, B, [CBx, CBn, CBz])
+
+    AD, BD, D = chain.pushout(CA, CB)
+    code = D.get_code()
+    print(code)
+    print("A --> D")
+    print(fstr(AD[0]))
+    print("-----------")
+    print(fstr(AD[1]))
+    print("B --> D")
+    print(fstr(BD[0]))
+    print("-----------")
+    print(fstr(BD[1]))
+    print("Hx:")
+    print(fstr(code.Hx))
+
+
 
     
 
@@ -458,9 +501,10 @@ if __name__ == "__main__":
 
     #test()
     #test_selfdual()
-    test_colimit()
-    test_equalizer()
-    test_glue()
+    #test_colimit()
+    #test_equalizer()
+    #test_glue()
+    test_color()
 
     print("OK")
 
