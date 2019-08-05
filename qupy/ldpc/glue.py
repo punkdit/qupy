@@ -465,6 +465,7 @@ def test_color():
     CAn[0, 0] = 1
     CAn[1, 1] = 1
     CAx = dot2(HxA, CAn)
+    #print(CAx)
     CA = Map(C, A, [CAx, CAn, CAz])
 
     # Chain map from C -> B
@@ -487,9 +488,38 @@ def test_color():
     print("Hx:")
     print(fstr(code.Hx))
 
+    # argh...
 
 
+def test_ldpc():
+
+    n = argv.get("n", 30)
+    m = argv.get("m", n-6)
+
+    d = argv.get("d", 0)
+    p = argv.get("p", 0.5)
+    weight = argv.get("weight", 4)
+
+    H = rand2(m, n, p, weight)
+
+    print(fstr(H))
     
+    #G = find_kernel(H)
+    #print(fstr(G))
+
+    n1 = argv.get("n1", n-1)
+    f = rand2(n1, n, 0., weight)
+    print()
+    print(fstr(f))
+    
+    J, K, _ = pushout(f, H)
+    
+    print("\n"+fstr(J))
+    print("\n"+fstr(K))
+    KH = dot2(K, H)
+    print("\n"+fstr(dot2(K, H)))
+    print(KH.sum(1))
+
 
 
 if __name__ == "__main__":
@@ -504,7 +534,8 @@ if __name__ == "__main__":
     #test_colimit()
     #test_equalizer()
     #test_glue()
-    test_color()
+    #test_color()
+    test_ldpc()
 
     print("OK")
 
