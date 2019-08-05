@@ -67,33 +67,39 @@ def main():
 
     P = build_code(pauli)
     n = P.grade
-    print(P)
-    print(P*P)
+    #print(P)
+    #print(P*P)
+
     P = r*P
     assert P*P == P
 
-    Xn = reduce(matmul, [X]*n)
-    Sn = reduce(matmul, [S]*n)
-    Sin = reduce(matmul, [Si]*n)
-    Tn = reduce(matmul, [T]*n)
-    Tin = reduce(matmul, [Ti]*n)
-    Kn = reduce(matmul, [K]*n)
-    Kin = reduce(matmul, [Ki]*n)
+    #Xn = reduce(matmul, [X]*n)
 
     #print("K transverse:", Kn*P == P*Kn)
-    print("P:")
-    print(P)
 
     #print(P*Kn == Kn*P)
 
     gate = argv.get("gate", "S")
 
-    if gate == "S":
+    if gate == "X":
+        Xn = reduce(matmul, [X]*n)
+        print("go:")
+        Q = Xn*P*Xn
+    elif gate == "S": # clifford
+        Sn = reduce(matmul, [S]*n)
+        Sin = reduce(matmul, [Si]*n)
+        print("go:")
         Q = Sn*P*Sin
-    elif gate == "T":
-        Q = Tn*P*Tin
-    elif gate == "K":
+    elif gate == "K": # clifford
+        Kn = reduce(matmul, [K]*n)
+        Kin = reduce(matmul, [Ki]*n)
+        print("go:")
         Q = Kn*P*Kin
+    elif gate == "T": # non-clifford
+        Tn = reduce(matmul, [T]*n)
+        Tin = reduce(matmul, [Ti]*n)
+        print("go:")
+        Q = Tn*P*Tin
     else:
         assert 0, gate
 
