@@ -775,7 +775,7 @@ class StabilizerCode(object):
 
 
 
-def build_code(pauli):
+def build_code(pauli, name=None):
     I = pauli.I
     X = pauli.X
     Y = pauli.Y
@@ -788,26 +788,29 @@ def build_code(pauli):
         code = StabilizerCode(pauli, sx+sz)
         return code
 
-    if argv.two:
+    if name is None:
+        name = argv.next()
+
+    if name=="two":
         code = StabilizerCode(pauli, "XX ZZ")
         op = code.get_projector()
-    elif argv.four:
+    elif name=="four":
         code = StabilizerCode(pauli, "XXII ZZII IIXX IIZZ")
         op = code.get_projector()
-    elif argv.five:
+    elif name=="five":
         code = StabilizerCode(pauli, "XZZXI IXZZX XIXZZ ZXIXZ")
         op = (I@I@I@I@I+I@X@Z@Z@X-I@Z@Y@Y@Z-I@Y@X@X@Y
             +X@I@X@Z@Z-X@X@Y@I@Y+X@Z@Z@X@I-X@Y@I@Y@X
             -Z@I@Z@Y@Y+Z@X@I@X@Z+Z@Z@X@I@X-Z@Y@Y@Z@I
             -Y@I@Y@X@X-Y@X@X@Y@I-Y@Z@I@Z@Y-Y@Y@Z@I@Z)
         assert op == code.get_projector()
-    elif argv.seven:
+    elif name=="seven":
         code = StabilizerCode(pauli, "XZZXIII IXZZXII IIXZZXI IIIXZZX XIIIXZZ ZXIIIXZ ZZXIIIX")
         op = code.get_projector()
-    elif argv.steane:
+    elif name=="steane":
         code = StabilizerCode(pauli, "XXXXIII XXIIXXI XIXIXIX ZZZZIII ZZIIZZI ZIZIZIZ")
         op = code.get_projector()
-    elif argv.rm:
+    elif name=="rm":
         s = """
         1.1.1.1.1.1.1.1
         .11..11..11..11
@@ -816,13 +819,16 @@ def build_code(pauli):
         """
         code = mk_stab(s)
         op = code.get_projector()
-    elif argv.toric:
+    elif name=="toric":
         s = """
-        11.11...
-        .111..1.
-        1...11.1
-        """
-        code = mk_stab(s)
+        XX.XX...  
+        X...XX.X 
+        .XXX..X.
+        ZZZ..Z..
+        Z.ZZ...Z
+        .Z..ZZZ.
+        """.replace(".", "I")
+        code = StabilizerCode(pauli, s)
         op = code.get_projector()
     else:
         op = argv.op

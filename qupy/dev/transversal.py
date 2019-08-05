@@ -58,7 +58,7 @@ def main():
     assert Si*S == I
     assert T*Ti == I
     assert Ti*T == I
-    K = S*H # the Bravyi-Kitaev T gate
+    K = S*H # the "Bravyi-Kitaev T" gate
     Ki = H*Si
     assert K*Ki == I
 
@@ -67,6 +67,8 @@ def main():
 
     P = build_code(pauli)
     n = P.grade
+    print(P)
+    print(P*P)
     P = r*P
     assert P*P == P
 
@@ -84,9 +86,16 @@ def main():
 
     #print(P*Kn == Kn*P)
 
-    Q = Sn*P*Sin
-    #Q = Tn*P*Tin
-    #Q = Kn*P*Kin
+    gate = argv.get("gate", "S")
+
+    if gate == "S":
+        Q = Sn*P*Sin
+    elif gate == "T":
+        Q = Tn*P*Tin
+    elif gate == "K":
+        Q = Kn*P*Kin
+    else:
+        assert 0, gate
 
     print("Q:")
     print(Q)
