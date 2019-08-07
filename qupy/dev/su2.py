@@ -773,6 +773,51 @@ class StabilizerCode(object):
 
 
 
+def build_rm(pauli):
+    """
+Lx:Lz =
+...1.111.111111. ............1111
+......11..111111 .........1.11.1.
+.....1.1.1.11111 ..........1111..
+............1111 ...1...1.1111...
+.........11..11. ......11..11....
+..........11..11 .....11..11.....
+Hx:Tz =
+1111111111111111 1...............
+.1.1.1.1.1.1.1.1 11..............
+..11..11..11..11 1.1.............
+....1111....1111 1...1...........
+........11111111 1.......1.......
+Tx:Hz =
+...1.11..11.1..1 1111111111111111
+......11..1111.. .1.1.1.1.1.1.1.1
+.....1.1.1.11.1. ..11..11..11..11
+...1...1.11..11. ....1111....1111
+...1.11....1.11. ........11111111
+    """
+    
+    sx = """
+    .X.X.X.X.X.X.X.X
+    ..XX..XX..XX..XX
+    ....XXXX....XXXX
+    ........XXXXXXXX
+    """.replace(".", "I")
+    
+    sz = """
+    .Z.Z.Z.Z.Z.Z.Z.Z
+    ..ZZ..ZZ..ZZ..ZZ
+    ....ZZZZ....ZZZZ
+    ........ZZZZZZZZ
+    ............ZZZZ
+    .........Z.ZZ.Z.
+    ..........ZZZZ..
+    ...Z...Z.ZZZZ...
+    ......ZZ..ZZ....
+    .....ZZ..ZZ.....
+    """.replace(".", "I")
+    code = StabilizerCode(pauli, sx+sz)
+
+    return code
 
 
 def build_code(pauli, name=None):
@@ -811,13 +856,7 @@ def build_code(pauli, name=None):
         code = StabilizerCode(pauli, "XXXXIII XXIIXXI XIXIXIX ZZZZIII ZZIIZZI ZIZIZIZ")
         op = code.get_projector()
     elif name=="rm":
-        s = """
-        1.1.1.1.1.1.1.1
-        .11..11..11..11
-        ...1111....1111
-        .......11111111
-        """
-        code = mk_stab(s)
+        code = build_rm(pauli)
         op = code.get_projector()
     elif name=="toric":
         s = """
