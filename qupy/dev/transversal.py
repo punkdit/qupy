@@ -7,7 +7,7 @@ from math import sqrt
 import numpy
 
 from qupy.dense import Qu
-from qupy.dev.su2 import (StabilizerCode, build_code, EPSILON, cyclotomic,
+from qupy.dev.su2 import (StabilizerCode, EPSILON, cyclotomic,
     promote_pauli, decompose)
 
 from qupy.argv import argv
@@ -20,6 +20,101 @@ else:
 
 
 
+def build_rm(pauli):
+    """
+Lx:Lz =
+...1.111.111111. ............1111
+......11..111111 .........1.11.1.
+.....1.1.1.11111 ..........1111..
+............1111 ...1...1.1111...
+.........11..11. ......11..11....
+..........11..11 .....11..11.....
+Hx:Tz =
+1111111111111111 1...............
+.1.1.1.1.1.1.1.1 11..............
+..11..11..11..11 1.1.............
+....1111....1111 1...1...........
+........11111111 1.......1.......
+Tx:Hz =
+...1.11..11.1..1 1111111111111111
+......11..1111.. .1.1.1.1.1.1.1.1
+.....1.1.1.11.1. ..11..11..11..11
+...1...1.11..11. ....1111....1111
+...1.11....1.11. ........11111111
+    """
+
+    sx = """
+    .X.X.X.X.X.X.X.X
+    ..XX..XX..XX..XX
+    ....XXXX....XXXX
+    ........XXXXXXXX
+    """.replace(".", "I")
+
+    sz = """
+    .Z.Z.Z.Z.Z.Z.Z.Z
+    ..ZZ..ZZ..ZZ..ZZ
+    ....ZZZZ....ZZZZ
+    ........ZZZZZZZZ
+    ............ZZZZ
+    .........Z.ZZ.Z.
+    ..........ZZZZ..
+    ...Z...Z.ZZZZ...
+    ......ZZ..ZZ....
+    .....ZZ..ZZ.....
+    """.replace(".", "I")
+    code = StabilizerCode(pauli, sx+sz)
+
+    return code
+
+
+
+def build_code(pauli, name=None):
+    I = pauli.I
+    X = pauli.X
+    Y = pauli.Y
+    Z = pauli.Z
+
+    def mk_stab(s):
+        s = s.replace(".", "I")
+        sx = s.replace("1", "X")
+        sz = s.replace("1", "Z")
+        code = StabilizerCode(pauli, sx+sz)
+        return code
+
+    if name is None:
+        name = argv.next()
+
+    if name=="two":
+        code = StabilizerCode(pauli, "XX ZZ")
+    elif name=="four":
+        code = StabilizerCode(pauli, "XXII ZZII IIXX IIZZ")
+    elif name=="five":
+        code = StabilizerCode(pauli, "XZZXI IXZZX XIXZZ ZXIXZ")
+        op = (I@I@I@I@I+I@X@Z@Z@X-I@Z@Y@Y@Z-I@Y@X@X@Y
+            +X@I@X@Z@Z-X@X@Y@I@Y+X@Z@Z@X@I-X@Y@I@Y@X
+            -Z@I@Z@Y@Y+Z@X@I@X@Z+Z@Z@X@I@X-Z@Y@Y@Z@I
+            -Y@I@Y@X@X-Y@X@X@Y@I-Y@Z@I@Z@Y-Y@Y@Z@I@Z)
+        assert op == code.get_projector()
+    elif name=="seven":
+        code = StabilizerCode(pauli, "XZZXIII IXZZXII IIXZZXI IIIXZZX XIIIXZZ ZXIIIXZ")
+    elif name=="steane":
+        code = StabilizerCode(pauli, "XXXXIII XXIIXXI XIXIXIX ZZZZIII ZZIIZZI ZIZIZIZ")
+    elif name=="rm":
+        code = build_rm(pauli)
+    elif name=="toric":
+        s = """
+        XX.XX...
+        X...XX.X
+        .XXX..X.
+        ZZZ..Z..
+        Z.ZZ...Z
+        .Z..ZZZ.
+        """.replace(".", "I")
+        code = StabilizerCode(pauli, s)
+    return code
+
+
+
 def get_projector():
     pauli = build_algebra("IXZY",
         "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
@@ -29,7 +124,8 @@ def get_projector():
     Y = pauli.Y
     Z = pauli.Z
 
-    op = build_code(pauli)
+    code = build_code(pauli)
+    op = code.get_projector()
     return op
 
 
@@ -62,13 +158,15 @@ def main():
     Ki = H*Si
     assert K*Ki == I
 
-    m = argv.get("m", 4) # number of independent stab gen
-    r = 2**(-m)
-
-    P = build_code(pauli)
+    code = build_code(pauli)
+    P = code.get_projector()
     n = P.grade
     #print(P)
     #print(P*P)
+
+    m = len(code.ops) # number of independent stab gen
+    print("m =", m)
+    r = 2**(-m)
 
     P = r*P
     assert P*P == P
