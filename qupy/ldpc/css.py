@@ -253,14 +253,13 @@ class CSSCode(object):
         Hx, Hz = self.Hx, self.Hz
         Lx, Lz = self.Lx, self.Lz
         Tx, Tz = self.Tx, self.Tz
-        #print shortstrx(Hx)
-        #print "%d stabilizers"%len(Hx)
-    
-        #print shortstrx(Hx)
-        #print shortstrx(solve.row_reduce(Hx))
-        #print shortstrx(solve.row_reduce(Hx))
 
-        write('li:')
+        if verbose:
+            _write = write
+        else:
+            _write = lambda *args : None
+    
+        _write('li:')
         self.Hx = Hx = solve.linear_independent(Hx)
         self.Hz = Hz = solve.linear_independent(Hz)
     
@@ -269,28 +268,27 @@ class CSSCode(object):
         assert n==nx
         assert mz+mx<=n, (mz, mx, n)
     
-        write('build:')
-        if verbose:
-            print(shortstrx(Hx))
+        _write('build:')
     
         if check:
             # check kernel of Hx contains image of Hz^t
             check_commute(Hx, Hz)
     
         if Lz is None:
-            write('find_logops(Lz):')
+            _write('find_logops(Lz):')
             Lz = solve.find_logops(Hx, Hz, verbose=verbose)
             #print shortstr(Lz)
-            #write(len(Lz))
+            #_write(len(Lz))
 
         k = len(Lz)
         assert n-mz-mx==k, "_should be %d logops, found %d. Is Hx/z degenerate?"%(
             n-mx-mz, k)
-        print("n=%d, mx=%d, mz=%d, k=%d" % (n, mx, mz, k))
+
+        _write("n=%d, mx=%d, mz=%d, k=%d\n" % (n, mx, mz, k))
     
         # Find Lx --------------------------
         if Lx is None:
-            write('find_logops(Lx):')
+            _write('find_logops(Lx):')
             Lx = solve.find_logops(Hz, Hx, verbose=verbose)
 
         assert len(Lx)==k
@@ -315,7 +313,7 @@ class CSSCode(object):
         if not logops_only:
 
             # Find Tz --------------------------
-            write('Find(Tz):')
+            _write('Find(Tz):')
             U = zeros2(mx+k, n)
             U[:mx] = Hx
             U[mx:] = Lx
@@ -330,7 +328,7 @@ class CSSCode(object):
             check_commute(Lx, Tz)
     
             # Find Tx --------------------------
-            write('Find(Tx):')
+            _write('Find(Tx):')
             U = zeros2(n, n)
             U[:mz] = Hz
             U[mz:mz+k] = Lz
@@ -341,7 +339,7 @@ class CSSCode(object):
             Tx_t = solve.solve(U, B)
             Tx = Tx_t.transpose()
     
-            write('\n')
+            _write('\n')
         
             if check:
                 check_conjugate(Hz, Tx)
@@ -357,7 +355,7 @@ class CSSCode(object):
     def do_check(self):
         if not self.check:
             return
-        write("checking...")
+        #write("checking...")
         Lx, Lz, Hx, Tz, Hz, Tx, Gx, Gz = (
             self.Lx, self.Lz, self.Hx,
             self.Tz, self.Hz, self.Tx,
@@ -377,7 +375,7 @@ class CSSCode(object):
         for ops in all_ops:
             if ops is not None:
                 assert ops.shape[1] == self.n
-        write("done\n")
+        #write("done\n")
 
     _dual = None
     def dual(self, build=False, check=False):
