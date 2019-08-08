@@ -1,23 +1,45 @@
 #!/usr/bin/env python3
 
+import numpy
+
 from qupy.ldpc.solve import parse, zeros2, span, dot2, row_reduce, array2
 from qupy.ldpc.css import CSSCode
 
 
 def z_weld(acode, bcode, pairs):
+
+    for c in [acode, bcode]:
+        print("Lx:")
+        print(c.Lx)
+        print("Lz:")
+        print(c.Lz)
+        print("Hx:")
+        print(c.Hx)
+        print("Hz:")
+        print(c.Hz)
+        print("-------------------")
+
     mx = acode.mx + bcode.mx
     #for (i, j) in pairs:
     assert len(set(pairs)) == len(pairs) # uniq
+
     n = acode.n + bcode.n - len(pairs)
 
-    Hx = zeros2(mx, n)
-    Hx[:acode.mx, :acode.n] = acode.Hx
-    Hx[acode.mx:, acode.n-len(pairs):] = bcode.Hx
-        
-    az = acode.mz + bcode.mz
-    Az = zeros2(az, n)
-    Az[:acode.mz, :acode.n] = acode.Hz
-    Az[acode.mz:, acode.n-len(pairs):] = bcode.Hz
+#    Hx = zeros2(mx, n)
+#    Hx[:acode.mx, :acode.n] = acode.Hx
+#    Hx[acode.mx:, acode.n-len(pairs):] = bcode.Hx
+#        
+#    az = acode.mz + bcode.mz + acode.k + bcode.k
+#    Az = zeros2(az, n)
+#    r0, r1 = 0, acode.mz
+#    Az[r0:r1, :acode.n] = acode.Hx; r0, r1 = r1, r1+len(acode.Hx)
+#    Az[r0:r1, acode.n-len(pairs):] = bcode.Hx; r0, r1 = r1, r1+len(bcode.Hx)
+##    Az[r0:r1, :acode.n] = acode.Lz; r0, r1 = r1, r1+len(acode.Lz)
+##    #assert r1 == len(Az), (r1, len(Az))
+##    Az[r0:r1, acode.n-len(pairs):] = bcode.Lz; r0, r1 = r1, r1+len(bcode.Lz)
+#
+#    print("Az:")
+#    print(Az)
 
     #print(Az)
     Hz = []
