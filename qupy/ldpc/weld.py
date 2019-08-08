@@ -19,7 +19,7 @@ def z_weld(acode, bcode, pairs):
     Az[:acode.mz, :acode.n] = acode.Hz
     Az[acode.mz:, acode.n-len(pairs):] = bcode.Hz
 
-    print(Az)
+    #print(Az)
     Hz = []
     for z in span(Az):
         #print(z)
@@ -29,6 +29,9 @@ def z_weld(acode, bcode, pairs):
     Hz = array2(Hz)
     Hz = row_reduce(Hz)
     
+    print("Hx:")
+    print(Hx)
+    print("Hz:")
     print(Hz)
 
 
