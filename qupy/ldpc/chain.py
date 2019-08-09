@@ -6,7 +6,7 @@ import numpy
 from numpy import dot
 
 from qupy.ldpc import solve
-from qupy.ldpc.solve import parse, shortstr, array2, zeros2, eq2, compose2
+from qupy.ldpc.solve import parse, shortstr, array2, zeros2, eq2, compose2, dot2
 from qupy.ldpc import solve
 from qupy.ldpc.tool import write
 
@@ -96,6 +96,16 @@ class Chain(object):
         if check:
             self.check()
 
+    def __str__(self):
+        Hs = self.Hs
+        s = ''.join( "%d <--- " % H.shape[0] for H in Hs)
+        s += str(Hs[-1].shape[1])
+        return "Chain(%s)"%s
+
+    def __repr__(self):
+        s = ''.join(str(H).replace("\n ", "") for H in self.Hs)
+        return "Chain(%s)"%s
+
     def check(self):
         #print "check"
         d = self.d
@@ -140,12 +150,20 @@ class Chain(object):
         return len(self.Hs)
 
     def __eq__(self, other):
-        if self is other:
-            return True
-        assert 0, "not implemented"
+        assert len(self) == len(other)
+        if len(self) != len(other):
+            return False
+        n = len(self)
+        for i in range(n):
+            if not eq2(self.Hs[i], other.Hs[i]):
+                return False
+        return True
 
     def __ne__(self, other):
-        assert 0, "not implemented"
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        assert 0, "todo"
 
     def to_zero(self):
         Hs = self.Hs
@@ -159,14 +177,14 @@ class Chain(object):
         Ds.append(zeros2(0, H.shape[1]))
         chain = Chain(chain)
         assert len(self) == len(chain)
-        f = Map(self, chain, Ds)
+        f = Morphism(self, chain, Ds)
         return f
 
     def from_zero(self):
         dual = self.get_dual()
         f = dual.to_zero()
         f = f.get_dual()
-        assert f.src is self
+        assert f.tgt is self
         return f
 
     def get_dual(self):
@@ -302,7 +320,7 @@ class Chain(object):
             print(code.weightstr())
 
 
-class Map(object):
+class Morphism(object):
     def __init__(self, src, tgt, Ds, check=True):
         assert isinstance(src, Chain)
         assert isinstance(tgt, Chain)
@@ -320,28 +338,6 @@ class Map(object):
         if check:
             self.check()
 
-    def __len__(self):
-        return len(self.Ds)
-
-    def __getitem__(self, idx):
-        return self.Ds[idx]
-
-    def __add__(self, other):
-        assert len(self) == len(other)
-        assert self.shape == other.shape
-        n = len(self)
-        d = self.d
-        Ds = [(self[i]+other[i])%d for i in range(n)]
-        return Map(self.src, self.tgt, Ds)
-
-    def __sub__(self, other):
-        assert len(self) == len(other)
-        assert self.shape == other.shape
-        n = len(self)
-        d = self.d
-        Ds = [(self[i]-other[i])%d for i in range(n)]
-        return Map(self.src, self.tgt, Ds)
-
     def check(self):
         src, tgt = self.src, self.tgt
         Ds = self.Ds
@@ -351,51 +347,161 @@ class Map(object):
                 continue
             lhs, rhs = compose2(src[i], D0), compose2(D1, tgt[i])
             if not eq2(lhs, rhs):
-                print("Not a chain map:")
+                print("!!!!! Not a chain map !!!!!")
                 print("lhs =", lhs)
                 print("rhs =", rhs)
                 raise Exception
 
+    def get_dual(self):
+        tgt, src = self.shape
+        Ds = [D.transpose() for D in reversed(self.Ds)]
+        return Morphism(tgt.get_dual(), src.get_dual(), Ds)
 
-def pushout(a, b, C=None):
-    assert isinstance(a, Map)
-    assert isinstance(b, Map)
+    def __len__(self):
+        return len(self.Ds)
+
+    def __getitem__(self, idx):
+        return self.Ds[idx]
+
+    def __eq__(self, other):
+        assert isinstance(other, Morphism)
+        assert self.shape == other.shape
+        if self.shape != other.shape:
+            return False
+        n = len(self)
+        for i in range(n):
+            if not eq2(self[i], other[i]):
+                return False
+        return True
+
+    def __ne__(self, other):
+        return not (self == other)
+
+    def __hash__(self):
+        assert 0, "todo"
+
+    def __add__(self, other):
+        assert len(self) == len(other)
+        assert self.shape == other.shape
+        n = len(self)
+        d = self.d
+        Ds = [(self[i]+other[i])%d for i in range(n)]
+        return Morphism(self.src, self.tgt, Ds)
+
+    def __sub__(self, other):
+        assert len(self) == len(other)
+        assert self.shape == other.shape
+        n = len(self)
+        d = self.d
+        Ds = [(self[i]-other[i])%d for i in range(n)]
+        return Morphism(self.src, self.tgt, Ds)
+
+    def __mul__(self, other):
+        "composition: apply other then self"
+        assert isinstance(other, Morphism)
+        assert other.tgt == self.src
+        n = len(self)
+        Ds = [dot2(self[i], other[i]) for i in range(n)]
+        return Morphism(other.src, self.tgt, Ds)
+
+
+class Diagram(object):
+    def __init__(self, morphs):
+        for m in morphs:
+            assert isinstance(m, Morphism)
+        self.obs = list(obs)
+        self.morphs = list(morphs)
+
+    #def colimit(self):
+
+
+
+class Cocone(object):
+    def __init__(self, diagram, morphs):
+        assert isinstance(diagram, Diagram)
+        self.diagram = diagram
+        tgt = None # apex of Cocone
+        for i, m in enumerate(morphs):
+            assert isinstance(m, Morphism)
+            assert tgt is None or m.tgt == tgt
+            tgt = m.tgt
+            assert diagram.obs[i] == m.src
+        self.tgt = tgt
+        self.morphs = list(morphs)
+
+
+def pushout(a, b, _amorph=None, _bmorph=None, _chain=None, check=True):
+    """
+        Construct pushout of Morphism's a, b.
+        If supplied with another cocone over a, b then
+        also construct unique Morphism to that code.
+    """
+    assert isinstance(a, Morphism)
+    assert isinstance(b, Morphism)
     assert a.src == b.src
 
     src = a.src
     n = len(src)
-    amap = []
-    bmap = []
+    amorph = []
+    bmorph = []
     chain = []
     aprev = None
     bprev = None
     for i in range(n+1):
         a1, b1, c1 = solve.pushout(a[i], b[i], aprev, bprev)
-        amap.append(a1)
-        bmap.append(b1)
+        amorph.append(a1)
+        bmorph.append(b1)
         chain.append(c1)
         aprev = compose2(a.tgt[i], a1)
         bprev = compose2(b.tgt[i], b1)
-    c = Chain(chain[1:])
-    amap = Map(a.tgt, c, amap)
-    bmap = Map(b.tgt, c, bmap)
-    #if C is not None:
-    #    assert isinstance(C, Chain)
-    #    assert len(C) == len(a.tgt)
-    return amap, bmap, c
+        #_a1, _b1, _ = solve.pushout(a[i], b[i])
+        #assert eq2(a1, _a1)
+        #assert eq2(b1, _b1)
+    chain = Chain(chain[1:])
+    amorph = Morphism(a.tgt, chain, amorph)
+    bmorph = Morphism(b.tgt, chain, bmorph)
+    if check:
+        assert amorph * a == bmorph * b
+    assert (_amorph is None) == (_bmorph is None) == (_chain is None)
+    morph = None
+    if _amorph is not None:
+        assert amorph.tgt == bmorph.tgt
+        assert _amorph * a == _bmorph * b, "not a cocone!"
+        Ds = []
+        for i in range(n+1):
+            a1, b1, d = solve.pushout(a[i], b[i], _amorph[i], _bmorph[i])
+            Ds.append(d)
+            assert eq2(dot2(d, a1), _amorph[i])
+            assert eq2(dot2(d, b1), _bmorph[i])
+            assert eq2(a1, amorph[i])
+            assert eq2(b1, bmorph[i])
+        morph = Morphism(chain, _chain, Ds)
+        if check:
+            #lhs = morph * amorph
+            #rhs = _amorph
+            #print(lhs.shape)
+            #print(rhs.shape)
+            assert morph * amorph == _amorph
+            assert morph * bmorph == _bmorph
+
+    return amorph, bmorph, chain, morph
 
 
 def equalizer(a, b):
-    assert isinstance(a, Map)
-    assert isinstance(b, Map)
+    assert isinstance(a, Morphism)
+    assert isinstance(b, Morphism)
     assert a.shape == b.shape
     tgt, src = a.shape
 
     ab = a-b
     c = src.to_zero()
-    amap, bmap, chain = pushout(ab, c)
-    return amap, bmap, chain
+    amorph, bmorph, chain, _ = pushout(ab, c)
+    return amorph, bmorph, chain
 
+
+# --------------------------------------------------------
+# tests
+#
 
 def test_repitition():
 

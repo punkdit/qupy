@@ -3,11 +3,11 @@
 import numpy
 import random
 
-from qupy.ldpc.solve import pushout, array2, parse, dot2, compose2, eq2, zeros2
+from qupy.ldpc.solve import array2, parse, dot2, compose2, eq2, zeros2
 from qupy.ldpc.solve import rand2, find_kernel, image, identity2
 from qupy.ldpc import solve
 from qupy.ldpc import css
-from qupy.ldpc.chain import Chain, Map
+from qupy.ldpc.chain import Chain, Morphism
 from qupy.ldpc import chain
 from qupy.ldpc.gallagher import classical_distance
 
@@ -39,15 +39,15 @@ def test():
     CAz = array2(shape=(2, 0))
     CAn = array2([[0,0],[0,0],[0,0],[1,0],[0,1]])
     CAx = array2([[0],[1]])
-    CA = Map(C, A, [CAx, CAn, CAz])
+    CA = Morphism(C, A, [CAx, CAn, CAz])
 
     # Chain map from C -> B
     CBz = CAz
     CBn = CAn
     CBx = CAx
-    CB = Map(C, B, [CBx, CBn, CBz])
+    CB = Morphism(C, B, [CBx, CBn, CBz])
 
-    AD, BD, D = chain.pushout(CA, CB)
+    AD, BD, D, _ = chain.pushout(CA, CB)
     code = D.get_code()
     assert code.mx == 3
     assert code.mz == 4
@@ -62,9 +62,9 @@ def test():
     CDn[3,1] = 1
     CDx = zeros2(3, 1)
     CDx[1,0] = 1
-    CD = Map(C, D, [CDx, CDn, CDz])
+    CD = Morphism(C, D, [CDx, CDn, CDz])
 
-    _, _, E = chain.pushout(CA, CD)
+    _, _, E, _ = chain.pushout(CA, CD)
     code = E.get_code()
     #print(code.longstr())
 
@@ -117,15 +117,15 @@ def test_selfdual():
     CAn[0, 0] = 1
     CAn[1, 1] = 1
     CAx = array2([[1]])
-    CA = Map(C, A, [CAx, CAn, CAz])
+    CA = Morphism(C, A, [CAx, CAn, CAz])
 
     # Chain map from C -> B
     CBz = CAz
     CBn = CAn
     CBx = CAx
-    CB = Map(C, B, [CBx, CBn, CBz])
+    CB = Morphism(C, B, [CBx, CBn, CBz])
 
-    AD, BD, D = chain.pushout(CA, CB)
+    AD, BD, D, _ = chain.pushout(CA, CB)
     code = D.get_code()
     #print(code)
 
@@ -149,13 +149,13 @@ def test_colimit():
     CAn = zeros2(n, 1)
     CAn[0, 0] = 1
     CAn[n-1, 0] = 1
-    CA = Map(C, A, [CAm, CAn])
+    CA = Morphism(C, A, [CAm, CAn])
 
     CBm = zeros2(0, 1)
     CBn = zeros2(0, 1)
-    CB = Map(C, B, [CBm, CBn])
+    CB = Morphism(C, B, [CBm, CBn])
 
-    AD, BD, D = chain.pushout(CA, CB)
+    AD, BD, D, _ = chain.pushout(CA, CB)
     assert eq2(D[0], array2([[1,1,1], [0,1,1]])) # glue two checks at a bit
 
     # --------------------------
@@ -168,13 +168,13 @@ def test_colimit():
     CAn[0, 0] = 1
     CAn[n-1, 0] = 1
     CAm = zeros2(m, 0)
-    CA = Map(C, A, [CAn, CAm])
+    CA = Morphism(C, A, [CAn, CAm])
 
     CBn = zeros2(0, 1)
     CBm = zeros2(0, 0)
-    CB = Map(C, B, [CBn, CBm])
+    CB = Morphism(C, B, [CBn, CBm])
 
-    AD, BD, D = chain.pushout(CA, CB)
+    AD, BD, D, _ = chain.pushout(CA, CB)
     D = D[0]
     #print(D)
     assert eq2(D, array2([[1,0,1], [1,1,0], [0,1,1]])) # glue two bits
@@ -196,13 +196,13 @@ def test_equalizer():
     fm[m-1, 0] = 1
     fn = zeros2(n, 1)
     fn[n-1, 0] = 1
-    f = Map(C, A, [fm, fn])
+    f = Morphism(C, A, [fm, fn])
 
     gm = zeros2(m, 1)
     gm[0, 0] = 1
     gn = zeros2(n, 1)
     gn[0, 0] = 1
-    g = Map(C, A, [gm, gn])
+    g = Morphism(C, A, [gm, gn])
 
     AD, BD, D = chain.equalizer(f, g)
     assert eq2(D[0], array2([[1,1,1], [0,1,1]])) # glue two checks at a bit
@@ -215,12 +215,12 @@ def test_equalizer():
     fn = zeros2(n, 1)
     fn[0, 0] = 1
     fm = zeros2(m, 0)
-    f = Map(C, A, [fn, fm])
+    f = Morphism(C, A, [fn, fm])
 
     gn = zeros2(n, 1)
     gn[n-1, 0] = 1
     gm = zeros2(m, 0)
-    g = Map(C, A, [gn, gm])
+    g = Morphism(C, A, [gn, gm])
 
     AD, BD, D = chain.equalizer(f, g)
     D = D[0]
@@ -253,14 +253,14 @@ def glue2(H1, H2, i1, i2):
     C1n = zeros2(n1, 1)
     C1n[i1, 0] = 1
     C1m = dot2(H1, C1n)
-    C1 = Map(C, A1, [C1m, C1n])
+    C1 = Morphism(C, A1, [C1m, C1n])
 
     C2n = zeros2(n2, 1)
     C2n[i2, 0] = 1
     C2m = dot2(H2, C2n)
-    C2 = Map(C, A2, [C2m, C2n])
+    C2 = Morphism(C, A2, [C2m, C2n])
 
-    AD, BD, D = chain.pushout(C1, C2)
+    AD, BD, D, _ = chain.pushout(C1, C2)
 
     H = D[0]
     #print(H.shape)
@@ -278,12 +278,12 @@ def glue1(H, i1, i2):
     fn = zeros2(n, 1)
     fn[i1, 0] = 1
     fm = dot2(H, fn)
-    f = Map(C, A, [fm, fn])
+    f = Morphism(C, A, [fm, fn])
 
     gn = zeros2(n, 1)
     gn[i2, 0] = 1
     gm = dot2(H, gn)
-    g = Map(C, A, [gm, gn])
+    g = Morphism(C, A, [gm, gn])
 
     _, _, D = chain.equalizer(f, g)
 
@@ -370,10 +370,10 @@ def glue1(H, i1, i2):
 #
 #    B = Chain([zeros2(0, 1)])
 #
-#    f1 = Map(B, A1, [zeros2(m, 0), K1t])
-#    f2 = Map(B, A2, [zeros2(m, 0), K2t])
+#    f1 = Morphism(B, A1, [zeros2(m, 0), K1t])
+#    f2 = Morphism(B, A2, [zeros2(m, 0), K2t])
 #
-#    a, b, C = chain.pushout(f1, f2)
+#    a, b, C, _ = chain.pushout(f1, f2)
 #
 #    H = C[0]
 #    print(fstr(H))
@@ -430,10 +430,10 @@ def test_glue():
     a = zeros2(n, k)
     for i in range(k):
         a[i, i] = 1
-    f1 = Map(B, A1, [dot2(G1, a), a, zeros2(m, 0)])
-    f2 = Map(B, A2, [dot2(G2, a), a, zeros2(m, 0)])
+    f1 = Morphism(B, A1, [dot2(G1, a), a, zeros2(m, 0)])
+    f2 = Morphism(B, A2, [dot2(G2, a), a, zeros2(m, 0)])
 
-    a, b, C = chain.pushout(f1, f2)
+    a, b, C, _ = chain.pushout(f1, f2)
 
     H = C[1].transpose()
     print("H:")
@@ -466,15 +466,15 @@ def test_color():
     CAn[1, 1] = 1
     CAx = dot2(HxA, CAn)
     #print(CAx)
-    CA = Map(C, A, [CAx, CAn, CAz])
+    CA = Morphism(C, A, [CAx, CAn, CAz])
 
     # Chain map from C -> B
     CBz = CAz
     CBn = CAn
     CBx = CAx
-    CB = Map(C, B, [CBx, CBn, CBz])
+    CB = Morphism(C, B, [CBx, CBn, CBz])
 
-    AD, BD, D = chain.pushout(CA, CB)
+    AD, BD, D, _ = chain.pushout(CA, CB)
     code = D.get_code()
     print(code)
     print("A --> D")
@@ -512,13 +512,61 @@ def test_ldpc():
     print()
     print(fstr(f))
     
-    J, K, _ = pushout(f, H)
+    J, K, _ = solve.pushout(f, H)
     
     print("\n"+fstr(J))
     print("\n"+fstr(K))
     KH = dot2(K, H)
     print("\n"+fstr(dot2(K, H)))
     print(KH.sum(1))
+
+
+def rand_full_rank(m, n=None):
+    if n is None:
+        n=m
+    assert n>=m
+    while 1:
+        f = rand2(m, n)
+        if solve.rank(f) == m:
+            break
+    return f
+
+
+#def rand_iso(achain):
+    
+
+
+def test_universal():
+
+    for trial in range(100):
+
+        m, n = 3, 4
+        J = rand2(m, n)
+        K = rand2(m, n)
+    
+        a = Chain([J])
+        b = Chain([K])
+        amorph = a.from_zero()
+        bmorph = b.from_zero()
+    
+        am, bm, c, u = chain.pushout(amorph, bmorph)
+        assert u is None
+    
+        C = c[0]
+        mm, nn = C.shape
+    
+        f = rand_full_rank(nn-2, nn)
+        g, H, _ = solve.pushout(C, f)
+    
+        _c = Chain([H])
+        m = Morphism(c, _c, [g, f])
+        assert m*am is not None
+        assert m*bm is not None
+    
+        _, _, _, u = chain.pushout(amorph, bmorph, m*am, m*bm, _c)
+        assert u is not None
+        assert u==m
+
 
 
 
@@ -529,13 +577,15 @@ if __name__ == "__main__":
         numpy.random.seed(_seed)
         random.seed(_seed)
 
-    #test()
-    #test_selfdual()
-    #test_colimit()
-    #test_equalizer()
-    #test_glue()
-    #test_color()
-    test_ldpc()
+#    test()
+#    test_selfdual()
+#    test_colimit()
+#    test_equalizer()
+#    test_glue()
+#    test_color()
+#    test_ldpc()
+
+    test_universal()
 
     print("OK")
 

@@ -1773,40 +1773,21 @@ def test_conjugate_ops():
 
 def test_linear_independent():
 
-    A = parse("""
-    ...1111.......
-    .11..11.......
-    .1111.........
-    1.1.1.1.......
-    1.11.1........
-    11..11........
-    11.1..1.......
-    ..........1111
-    ........11..11
-    ........1111..
-    .......1.1.1.1
-    .......1.11.1.
-    .......11..11.
-    """)
+    for i in range(100):
 
-    spA = list(span(A))
-    AA = linear_independent(A, check=True, verbose=False)
-    #print shortstr(AA)
-    assert AA.shape == row_reduce(A, truncate=True).shape
-    #print shortstr(row_reduce(A))
-    spAA = list(span(AA))
+        A = rand2(10, 5)
+    
+        spA = list(span(A))
+        AA = linear_independent(A, check=True, verbose=False)
+        assert AA.shape == row_reduce(A, truncate=True).shape
+        spAA = list(span(AA))
+    
+        assert len(spA) == len(spAA)
+        for x in spA:
+            assert contains(spAA, x)
+        for x in spAA:
+            assert contains(spA, x)
 
-    #print "LI:"
-    #print shortstr(AA)
-
-    #print "reduced:"
-    #print shortstr(row_reduce(AA))
-
-    assert len(spA) == len(spAA)
-    for x in spA:
-        assert contains(spAA, x)
-    for x in spAA:
-        assert contains(spA, x)
 
 
 def test_entry():
