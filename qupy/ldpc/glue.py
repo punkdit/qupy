@@ -577,13 +577,13 @@ if __name__ == "__main__":
         numpy.random.seed(_seed)
         random.seed(_seed)
 
-#    test()
-#    test_selfdual()
-#    test_colimit()
-#    test_equalizer()
-#    test_glue()
-#    test_color()
-#    test_ldpc()
+    test()
+    test_selfdual()
+    test_colimit()
+    test_equalizer()
+    test_glue()
+    test_color()
+    test_ldpc()
 
     test_universal()
 

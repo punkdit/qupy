@@ -405,36 +405,36 @@ class Morphism(object):
         return Morphism(other.src, self.tgt, Ds)
 
 
-class Diagram(object):
-    def __init__(self, morphs):
-        for m in morphs:
-            assert isinstance(m, Morphism)
-        self.obs = list(obs)
-        self.morphs = list(morphs)
-
-    #def colimit(self):
-
-
-
-class Cocone(object):
-    def __init__(self, diagram, morphs):
-        assert isinstance(diagram, Diagram)
-        self.diagram = diagram
-        tgt = None # apex of Cocone
-        for i, m in enumerate(morphs):
-            assert isinstance(m, Morphism)
-            assert tgt is None or m.tgt == tgt
-            tgt = m.tgt
-            assert diagram.obs[i] == m.src
-        self.tgt = tgt
-        self.morphs = list(morphs)
+#class Diagram(object):
+#    def __init__(self, morphs):
+#        for m in morphs:
+#            assert isinstance(m, Morphism)
+#        self.obs = list(obs)
+#        self.morphs = list(morphs)
+#
+#    #def colimit(self):
+#
+#
+#
+#class Cocone(object):
+#    def __init__(self, diagram, morphs):
+#        assert isinstance(diagram, Diagram)
+#        self.diagram = diagram
+#        tgt = None # apex of Cocone
+#        for i, m in enumerate(morphs):
+#            assert isinstance(m, Morphism)
+#            assert tgt is None or m.tgt == tgt
+#            tgt = m.tgt
+#            assert diagram.obs[i] == m.src
+#        self.tgt = tgt
+#        self.morphs = list(morphs)
 
 
 def pushout(a, b, _amorph=None, _bmorph=None, _chain=None, check=True):
     """
         Construct pushout of Morphism's a, b.
         If supplied with another cocone over a, b then
-        also construct unique Morphism to that code.
+        also construct unique Morphism to that cocone.
     """
     assert isinstance(a, Morphism)
     assert isinstance(b, Morphism)
