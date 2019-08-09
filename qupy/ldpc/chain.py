@@ -357,7 +357,7 @@ class Map(object):
                 raise Exception
 
 
-def pushout(a, b):
+def pushout(a, b, C=None):
     assert isinstance(a, Map)
     assert isinstance(b, Map)
     assert a.src == b.src
@@ -379,6 +379,9 @@ def pushout(a, b):
     c = Chain(chain[1:])
     amap = Map(a.tgt, c, amap)
     bmap = Map(b.tgt, c, bmap)
+    #if C is not None:
+    #    assert isinstance(C, Chain)
+    #    assert len(C) == len(a.tgt)
     return amap, bmap, c
 
 
