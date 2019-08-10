@@ -17,10 +17,10 @@ from qupy.ldpc.solve import (
     pop2, insert2, append2, 
     array2, zeros2, identity2, parse)
 from qupy.ldpc.tool import write #, load, save
+from qupy.ldpc.chain import Chain, Morphism, equalizer
 
 #from qupy.ldpc.decoder import Decoder, RandomDecoder
 ##from qupy.ldpc.dynamic import Tanner
-#from qupy.ldpc.chain import Chain, ChainMap
 #from qupy.ldpc.bpdecode import RadfordBPDecoder
 #from qupy.ldpc.cluster import ClusterCSSDecoder
 ##from qupy.ldpc import ensemble
@@ -508,6 +508,35 @@ class CSSCode(object):
             else:
                 lines.append("%s()"%name)
         return '\n'.join(lines)
+
+    def glue(self, i1, i2):
+        assert i1!=i2
+
+        Hx = self.Hx
+        Hz = self.Hz
+        mx, n = Hx.shape
+        mz, _ = Hz.shape
+        k = 1 
+    
+        A = Chain([Hz, Hx.transpose()])
+        C  = Chain([identity2(k), zeros2(k, 0)])
+    
+        fn = zeros2(n, 1)
+        fn[i1, 0] = 1 
+        fm = dot2(Hz, fn) 
+        f = Morphism(C, A, [fm, fn, zeros2(mx, 0)])
+    
+        gn = zeros2(n, 1)
+        gn[i2, 0] = 1 
+        gm = dot2(Hz, gn) 
+        g = Morphism(C, A, [gm, gn, zeros2(mx, 0)])
+    
+        _, _, D = equalizer(f, g)
+    
+        Hz, Hxt = D[0], D[1]
+        Hx = Hxt.transpose()
+        code = CSSCode(Hx=Hx, Hz=Hz)
+        return code
 
     @property
     def distance(self):

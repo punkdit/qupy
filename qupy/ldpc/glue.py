@@ -5,8 +5,9 @@ import random
 
 from qupy.ldpc.solve import array2, parse, dot2, compose2, eq2, zeros2
 from qupy.ldpc.solve import rand2, find_kernel, image, identity2, rank, shortstr
+from qupy.ldpc.solve import shortstrx
 from qupy.ldpc import solve
-from qupy.ldpc import css
+from qupy.ldpc.css import CSSCode
 from qupy.ldpc.chain import Chain, Morphism
 from qupy.ldpc import chain
 from qupy.ldpc.gallagher import classical_distance
@@ -293,94 +294,6 @@ def glue1(H, i1, i2):
     return H
 
 
-#def test_glue():
-#
-#    m, n = 7, 10
-#    m = argv.get("m", 7)
-#    n = argv.get("n", 10)
-#
-#    d = argv.get("d", 0)
-#    p = argv.get("p", 0.5)
-#    weight = argv.weight
-#
-#    while 1:
-#        H = rand2(m, n, p, weight)
-#        if classical_distance(H, d) >= d:
-#            break
-#
-#    print(fstr(H))
-#    w = wenum(H)
-#    print("wenum:", [len(wi) for wi in w])
-#
-#    i0 = argv.i0
-#    i1 = argv.i1
-#    if i0 is None:
-#        return
-#
-#    if argv.transpose:
-#        H1 = glue1(H.transpose(), i0, i1).transpose()
-#    else:
-#        H1 = glue1(H, i0, i1)
-#
-#    print(fstr(H1))
-#
-#    w = wenum(H1)
-#    print("wenum:", [len(wi) for wi in w])
-#    #for v in w[4]:
-#    #    print(v)
-
-
-#def test_glue():
-#
-#    m = argv.get("m", 9)
-#    n = argv.get("n", 10)
-#
-#    d = argv.get("d", 0)
-#    p = argv.get("p", 0.5)
-#    weight = argv.weight
-#
-#    H1 = rand2(m, n, p, weight)
-#    K1 = find_kernel(H1)
-#    K1t = K1.transpose()
-##    A1 = Chain([H1, K1.transpose()])
-#    A1 = Chain([H1])
-#
-#    print("H1")
-#    print(fstr(H1))
-#    print()
-#    print(fstr(K1))
-#
-#    w = wenum(H1)
-#    print("wenum:", [len(wi) for wi in w])
-#
-#    H2 = rand2(m, n, p, weight)
-#    K2 = find_kernel(H2)
-#    K2t = K2.transpose()
-##    A2 = Chain([H2, K2.transpose()])
-#    A2 = Chain([H2])
-#
-#    print("H2")
-#    print(fstr(H2))
-#    print()
-#    print(fstr(K2))
-#
-#    w = wenum(H2)
-#    print("wenum:", [len(wi) for wi in w])
-#
-#
-#    B = Chain([zeros2(0, 1)])
-#
-#    f1 = Morphism(B, A1, [zeros2(m, 0), K1t])
-#    f2 = Morphism(B, A2, [zeros2(m, 0), K2t])
-#
-#    a, b, C, _ = chain.pushout(f1, f2)
-#
-#    H = C[0]
-#    print(fstr(H))
-#    w = wenum(H)
-#    print("wenum:", [len(wi) for wi in w])
-
-
 def test_glue():
 
     m = argv.get("m", 9)
@@ -491,7 +404,56 @@ def test_color():
     # argh...
 
 
-def make_ldpc(m, n, p, weight, dist=0):
+def rand_full_rank(m, n=None):
+    if n is None:
+        n=m
+    assert n>=m
+    while 1:
+        f = rand2(m, n)
+        if rank(f) == m:
+            break
+    return f
+
+
+#def rand_iso(achain):
+    
+
+
+
+def test_universal():
+
+    for trial in range(100):
+
+        m, n = 3, 4
+        J = rand2(m, n)
+        K = rand2(m, n)
+    
+        a = Chain([J])
+        b = Chain([K])
+        amorph = a.from_zero()
+        bmorph = b.from_zero()
+    
+        am, bm, c, u = chain.pushout(amorph, bmorph)
+        assert u is None
+    
+        C = c[0]
+        mm, nn = C.shape
+    
+        f = rand_full_rank(nn-2, nn)
+        g, H, _ = solve.pushout(C, f)
+    
+        _c = Chain([H])
+        m = Morphism(c, _c, [g, f])
+        assert m*am is not None
+        assert m*bm is not None
+    
+        _, _, _, u = chain.pushout(amorph, bmorph, m*am, m*bm, _c)
+        assert u is not None
+        assert u==m
+
+
+
+def make_ldpc(m, n, p=0.5, weight=None, dist=0):
     while 1:
         H = rand2(m, n, p, weight)
         d = classical_distance(H, dist)
@@ -539,6 +501,7 @@ def ldpc_str(H):
     d = classical_distance(H)
     return "[%d, %d, %d]" % (n, k, d)
 
+
 def test_ldpc():
 
     n = argv.get("n", 14)
@@ -571,53 +534,153 @@ def test_ldpc():
         print(shortstr(K))
 
 
-def rand_full_rank(m, n=None):
-    if n is None:
-        n=m
-    assert n>=m
+
+def glue_quantum(Hx1, Hz1, Hx2, Hz2, pairs):
+
+    mx1, n1 = Hx1.shape
+    mx2, n2 = Hx2.shape
+    mz1, _ = Hz1.shape
+    mz2, _ = Hz2.shape
+    k = len(pairs)
+
+    A1 = Chain([Hz1, Hx1.transpose()])
+    A2 = Chain([Hz2, Hx2.transpose()])
+    C  = Chain([identity2(k), zeros2(k, 0)])
+
+    C1n = zeros2(n1, k)
+    for idx, pair in enumerate(pairs):
+        i, j = pair
+        C1n[i, idx] = 1
+    C1m = dot2(Hz1, C1n)
+    C1 = Morphism(C, A1, [C1m, C1n, zeros2(mx1, 0)])
+
+    C2n = zeros2(n2, k)
+    for idx, pair in enumerate(pairs):
+        i, j = pair
+        C2n[j, idx] = 1
+    C2m = dot2(Hz2, C2n)
+    C2 = Morphism(C, A2, [C2m, C2n, zeros2(mx2, 0)])
+
+    AD, BD, D, _ = chain.pushout(C1, C2)
+
+    Hz, Hxt = D[0], D[1]
+    #print(H.shape)
+    #print(H)
+
+    return Hz, Hxt.transpose()
+
+
+def glue1_quantum(Hx, Hz, i1, i2):
+    assert i1!=i2
+
+    mx, n = Hx.shape
+    mz, _ = Hz.shape
+    k = 1
+
+    A = Chain([Hz, Hx.transpose()])
+    C  = Chain([identity2(k), zeros2(k, 0)])
+
+    fn = zeros2(n, 1)
+    fn[i1, 0] = 1
+    fm = dot2(Hz, fn)
+    f = Morphism(C, A, [fm, fn, zeros2(mx, 0)])
+
+    gn = zeros2(n, 1)
+    gn[i2, 0] = 1
+    gm = dot2(Hz, gn)
+    g = Morphism(C, A, [gm, gn, zeros2(mx, 0)])
+
+    _, _, D = chain.equalizer(f, g)
+
+    Hz, Hxt = D[0], D[1]
+    return Hz, Hxt.transpose()
+
+
+def make_q(n, m):
+    k = n-2*m
+    assert k>=0 
+
+    assert m>0
+    Hx = [rand2(1, n)[0]]
+    Hz = []
     while 1:
-        f = rand2(m, n)
-        if rank(f) == m:
+        _Hx = array2(Hx)
+        while 1:
+            v = rand2(1, n)
+            if dot2(Hx, v.transpose()).sum() == 0:
+                break
+        Hz.append(v[0])
+        if len(Hz)==m:
             break
-    return f
+        while 1:
+            v = rand2(1, n)
+            if dot2(Hz, v.transpose()).sum() == 0:
+                break
+        Hx.append(v[0])
+    Hx = array2(Hx)
+    Hz = array2(Hz)
+    assert dot2(Hx, Hz.transpose()).sum() == 0
+
+    return Hx, Hz
 
 
-#def rand_iso(achain):
+def make_quantum(n, m, dist=0):
+    while 1:
+        Hx, Hz = make_q(n, m)
+        if rank(Hx) < m or rank(Hz) < m:
+            continue
+        d = classical_distance(Hx, dist)
+        if d < dist:
+            continue
+        d = classical_distance(Hz, dist)
+        if d < dist:
+            continue
+        break
+    return Hx, Hz
+
+
+def test_quantum():
+
+    m = argv.get("m", 4)
+    n = argv.get("n", m+m+1)
+    dist = argv.get("dist", 0)
+    N = argv.get("N", 2)
+
+    codes = []
+    code = None
+    for i in range(N):
+        Hx, Hz = make_quantum(n, m, dist)
+        print("Hx, Hz:")
+        print(shortstrx(Hx, Hz))
+        c = CSSCode(Hx=Hx, Hz=Hz)
+        codes.append(c)
+        code = c if code is None else code + c
+
+    print(code)
+    code.save("glue.ldpc")
+
+    return
+
+    code = CSSCode(Hx=Hx, Hz=Hz)
+    print(code)
+    code = code+code
+    print(shortstrx(code.Hx, code.Hz))
+    #Hx, Hz = glue1_quantum(code.Hx, code.Hz, 0, 1)
+    #code = CSSCode(Hx=Hx, Hz=Hz)
+    code = code.glue(0, n)
+    print(code)
+    print(shortstrx(code.Hx, code.Hz))
+    return
+
+    k = argv.get("k", 1)
+    pairs = [(i, i) for i in range(k)]
     
+    H1x, H1z = glue_quantum(Hx, Hz, Hx, Hz, pairs)
+    assert dot2(H1x, H1z.transpose()).sum() == 0
 
-
-def test_universal():
-
-    for trial in range(100):
-
-        m, n = 3, 4
-        J = rand2(m, n)
-        K = rand2(m, n)
-    
-        a = Chain([J])
-        b = Chain([K])
-        amorph = a.from_zero()
-        bmorph = b.from_zero()
-    
-        am, bm, c, u = chain.pushout(amorph, bmorph)
-        assert u is None
-    
-        C = c[0]
-        mm, nn = C.shape
-    
-        f = rand_full_rank(nn-2, nn)
-        g, H, _ = solve.pushout(C, f)
-    
-        _c = Chain([H])
-        m = Morphism(c, _c, [g, f])
-        assert m*am is not None
-        assert m*bm is not None
-    
-        _, _, _, u = chain.pushout(amorph, bmorph, m*am, m*bm, _c)
-        assert u is not None
-        assert u==m
-
-
+    code = CSSCode(Hx=H1x, Hz=H1z)
+    print(code)
+    print(shortstrx(code.Hx, code.Hz))
 
 
 if __name__ == "__main__":
@@ -634,8 +697,8 @@ if __name__ == "__main__":
 #    test_glue()
 #    test_color()
 #    test_universal()
-
-    test_ldpc()
+#    test_ldpc()
+    test_quantum()
 
     print("OK")
 
