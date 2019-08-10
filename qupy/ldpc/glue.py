@@ -4,7 +4,7 @@ import numpy
 import random
 
 from qupy.ldpc.solve import array2, parse, dot2, compose2, eq2, zeros2
-from qupy.ldpc.solve import rand2, find_kernel, image, identity2
+from qupy.ldpc.solve import rand2, find_kernel, image, identity2, rank, shortstr
 from qupy.ldpc import solve
 from qupy.ldpc import css
 from qupy.ldpc.chain import Chain, Morphism
@@ -491,34 +491,84 @@ def test_color():
     # argh...
 
 
+def make_ldpc(m, n, p, weight, dist=0):
+    while 1:
+        H = rand2(m, n, p, weight)
+        d = classical_distance(H, dist)
+        if d>=dist:
+            break
+    return H
+
+
+def glue_pairs(H1, H2, pairs):
+
+    m1, n1 = H1.shape
+    m2, n2 = H2.shape
+    k = len(pairs)
+
+    A1 = Chain([H1])
+    A2 = Chain([H2])
+    C  = Chain([identity2(k)])
+
+    C1n = zeros2(n1, k)
+    for idx, pair in enumerate(pairs):
+        i, j = pair
+        C1n[i, idx] = 1
+    C1m = dot2(H1, C1n)
+    C1 = Morphism(C, A1, [C1m, C1n])
+
+    C2n = zeros2(n2, k)
+    for idx, pair in enumerate(pairs):
+        i, j = pair
+        C2n[j, idx] = 1
+    C2m = dot2(H2, C2n)
+    C2 = Morphism(C, A2, [C2m, C2n])
+
+    AD, BD, D, _ = chain.pushout(C1, C2)
+
+    H = D[0]
+    #print(H.shape)
+    #print(H)
+    return H
+
+
+def ldpc_str(H):
+    m, n = H.shape
+    assert rank(H) == m
+    k = n-m
+    d = classical_distance(H)
+    return "[%d, %d, %d]" % (n, k, d)
+
 def test_ldpc():
 
-    n = argv.get("n", 30)
-    m = argv.get("m", n-6)
+    n = argv.get("n", 14)
+    m = argv.get("m", n-3)
 
     d = argv.get("d", 0)
     p = argv.get("p", 0.5)
     weight = argv.get("weight", 4)
+    dist = argv.get("dist", 4)
 
-    H = rand2(m, n, p, weight)
+    H1 = make_ldpc(m, n, p, weight, dist)
+    #print(fstr(H1))
 
-    print(fstr(H))
-    
-    #G = find_kernel(H)
-    #print(fstr(G))
+    #Gt = find_kernel(H1)
+    #w = wenum(H1)
+    #print("wenum:", [len(wi) for wi in w])
 
-    n1 = argv.get("n1", n-1)
-    f = rand2(n1, n, 0., weight)
-    print()
-    print(fstr(f))
-    
-    J, K, _ = solve.pushout(f, H)
-    
-    print("\n"+fstr(J))
-    print("\n"+fstr(K))
-    KH = dot2(K, H)
-    print("\n"+fstr(dot2(K, H)))
-    print(KH.sum(1))
+    H2 = make_ldpc(m, n, p, weight, dist)
+    #print(fstr(H2))
+
+    k = argv.get("k", 3)
+    pairs = [(i, i) for i in range(k)]
+    K = glue_pairs(H1, H2, pairs)
+    #print(fstr(K))
+    assert rank(K) == len(K)
+
+    print(ldpc_str(H1), "+", ldpc_str(H2), "=", ldpc_str(K))
+
+    if argv.show:
+        print(shortstr(K))
 
 
 def rand_full_rank(m, n=None):
@@ -527,7 +577,7 @@ def rand_full_rank(m, n=None):
     assert n>=m
     while 1:
         f = rand2(m, n)
-        if solve.rank(f) == m:
+        if rank(f) == m:
             break
     return f
 
@@ -577,15 +627,15 @@ if __name__ == "__main__":
         numpy.random.seed(_seed)
         random.seed(_seed)
 
-    test()
-    test_selfdual()
-    test_colimit()
-    test_equalizer()
-    test_glue()
-    test_color()
-    test_ldpc()
+#    test()
+#    test_selfdual()
+#    test_colimit()
+#    test_equalizer()
+#    test_glue()
+#    test_color()
+#    test_universal()
 
-    test_universal()
+    test_ldpc()
 
     print("OK")
 
