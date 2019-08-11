@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
+import os
+
 import numpy
+from numpy import random as ra
 import random
 
 from qupy.ldpc.solve import array2, parse, dot2, compose2, eq2, zeros2
@@ -11,6 +14,7 @@ from qupy.ldpc.css import CSSCode
 from qupy.ldpc.chain import Chain, Morphism
 from qupy.ldpc import chain
 from qupy.ldpc.gallagher import classical_distance
+from qupy.ldpc.bpdecode import RadfordBPDecoder
 
 from qupy.argv import argv
 
@@ -596,24 +600,24 @@ def glue1_quantum(Hx, Hz, i1, i2):
     return Hz, Hxt.transpose()
 
 
-def make_q(n, m):
+def make_q(n, m, weight=None):
     k = n-2*m
     assert k>=0 
 
     assert m>0
-    Hx = [rand2(1, n)[0]]
+    Hx = [rand2(1, n, weight=weight)[0]]
     Hz = []
     while 1:
         _Hx = array2(Hx)
         while 1:
-            v = rand2(1, n)
+            v = rand2(1, n, weight=weight)
             if dot2(Hx, v.transpose()).sum() == 0:
                 break
         Hz.append(v[0])
         if len(Hz)==m:
             break
         while 1:
-            v = rand2(1, n)
+            v = rand2(1, n, weight=weight)
             if dot2(Hz, v.transpose()).sum() == 0:
                 break
         Hx.append(v[0])
@@ -624,9 +628,9 @@ def make_q(n, m):
     return Hx, Hz
 
 
-def make_quantum(n, m, dist=0):
+def make_quantum(n, m, dist=0, weight=None):
     while 1:
-        Hx, Hz = make_q(n, m)
+        Hx, Hz = make_q(n, m, weight)
         if rank(Hx) < m or rank(Hz) < m:
             continue
         d = classical_distance(Hx, dist)
@@ -639,26 +643,76 @@ def make_quantum(n, m, dist=0):
     return Hx, Hz
 
 
+def score(code, p=0.05, N=10000):
+    # each bit gets a score: higher is worse
+    decoder = RadfordBPDecoder(2, code.Hz)
+    n = code.n
+    counts = numpy.zeros(n, dtype=int)
+
+    err = 0
+    for trial in range(N):
+        err_op = ra.binomial(1, p, (code.n,))
+        err_op = err_op.astype(numpy.int32)
+        #write(str(err_op.sum()))
+        s = dot2(code.Hz, err_op) # syndrome
+        #write(":s%d:"%s.sum())
+        op = decoder.decode(p, err_op, verbose=False)
+        success = False
+        if op is not None:
+            op = (op+err_op)%2
+            # Should be a codeword of Hz (kernel of Hz)
+            assert dot2(code.Hz, op).sum() == 0
+            #write("%d:"%op.sum())
+            if dot2(code.Lz, op).sum():
+#                counts += op
+                counts += err_op
+            else:
+                success = True
+        if not success:
+            err += 1
+
+    return counts, (err / N)
+
+def make_surface():
+    Hx = array2([[1,1,1,0,0],[0,0,1,1,1]])
+    Hz = array2([[1,0,1,1,0],[0,1,1,0,1]])
+    return Hx, Hz
+
+
 def test_quantum():
 
     m = argv.get("m", 4)
     n = argv.get("n", m+m+1)
     dist = argv.get("dist", 0)
     N = argv.get("N", 2)
+    M = argv.get("M", N)
+    p = argv.get("p", 0.03)
+    weight = argv.weight
 
     codes = []
     code = None
     for i in range(N):
-        Hx, Hz = make_quantum(n, m, dist)
+        #Hx, Hz = make_quantum(n, m, dist, weight)
+        Hx, Hz = make_surface()
         print("Hx, Hz:")
         print(shortstrx(Hx, Hz))
         c = CSSCode(Hx=Hx, Hz=Hz)
         codes.append(c)
         code = c if code is None else code + c
 
-    print(code)
-    code.save("glue.ldpc")
+    for _ in range(2*M):
+        print(code)
+        #code.save("glue.ldpc")
+        counts, err = score(code, p)
+        print("err = %.4f"%err)
+        i0 = numpy.argmin(counts)
+        i1 = numpy.argmax(counts)
+        assert i0 != i1
+        print(counts, i0, i1)
+        code = code.glue(i0, i1)
+        code = code.dual()
 
+    print(shortstrx(code.Hx, code.Hz))
     return
 
     code = CSSCode(Hx=Hx, Hz=Hz)
@@ -684,6 +738,11 @@ def test_quantum():
 
 
 if __name__ == "__main__":
+
+    if argv.noerr:
+        print("redirecting stderr to stderr.out")
+        fd = os.open("stderr.out", os.O_CREAT|os.O_WRONLY)
+        os.dup2(fd, 2)
 
     _seed = argv.get("seed")
     if _seed is not None:
