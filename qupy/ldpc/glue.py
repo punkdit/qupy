@@ -773,10 +773,17 @@ def glue_logops():
     Hx = code.Hx
     Hz = cat((code.Lz, code.Hz))
 
+    idxs = list(range(2*n))
+    idxs.sort(key = lambda i : (-code.Lz[:, i].sum(),))
+    Hx = Hx[:, idxs]
+    Hz = Hz[:, idxs]
+
     print(shortstrx(Hx, Hz))
 
-    i0 = argv.get("i0", 0)
-    i1 = argv.get("i1", n)
+    i0 = argv.get("i0")
+    i1 = argv.get("i1")
+    if i0 is None:
+        return
 
 #    code = code.glue(0, n)
 #    print(code)
