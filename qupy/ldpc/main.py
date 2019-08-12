@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from random import randint
+from random import randint, seed
 
 import numpy
 import numpy.random as ra
@@ -302,17 +302,43 @@ def main():
         cl_code = reed_muller.build(r, m, puncture)
         H = cl_code.G
         H = array2([row for row in H if row.sum()%2==0])
-        print(H)
-        m, n = 5, 5
+        print(shortstr(H))
+        m, n = 4, 4
         J = zeros2(m, n)
         for i in range(m):
             J[i, i] = 1
             J[i, (i+1)%n] = 1
-        print(J)
-        Hx, Hz, Lx, Lz = hypergraph_product(H, J)
+        #print(J)
+        Hx, Hz, Lx, Lz = hypergraph_product(J, H)
         code = CSSCode(Hx=Hx, Hz=Hz, Lx=Lx, Lz=Lz)
-        print(code.weightstr())
+        #print(code.weightstr())
+        #print("Hz:")
         #print(shortstr(code.Hz))
+        #print("Hx:")
+        #print(shortstr(code.Hx))
+
+    elif argv.code == "qgall":
+        from qupy.ldpc.gallagher import make_gallagher, hypergraph_product
+        l = argv.get("l", 3) # column weight
+        m = argv.get("m", 4) # row weight
+        n = argv.get("n", 8) # cols
+        r = argv.get("r", n*l//m) # rows
+        dist = argv.get("dist", 4) # distance
+        H = make_gallagher(r, n, l, m, dist)
+        #print(H)
+        rm = argv.get("rm", dist)
+        J = zeros2(rm ,rm)
+        for i in range(rm):
+            J[i, i] = 1
+            J[i, (i+1)%rm] = 1
+        #print(J)
+        Hx, Hz, Lx, Lz = hypergraph_product(J, H)
+        code = CSSCode(Hx=Hx, Hz=Hz, Lx=Lx, Lz=Lz)
+        #print(code.weightstr())
+        #print("Hz:")
+        #print(shortstr(code.Hz))
+        #print("Hx:")
+        #print(shortstr(code.Hx))
 
     elif argv.code == "qr7":
         H = parse("""
