@@ -123,6 +123,8 @@ def hypergraph_product(H1, H2):
     L2 = solve.find_kernel(H2)
     L2t = L2.transpose()
 
+    Lzt = None
+
     if 0:
         S1t = solve.pseudo_inverse(L1)
         S1 = S1t.transpose()
@@ -151,16 +153,17 @@ def hypergraph_product(H1, H2):
 
     elif len(L1) == 0:
         Lzt = numpy.kron(L2, E1)
-        assert 0, "todo"
+        #assert 0, "todo" # ??
 
     else:
         A = numpy.kron(E2, L1)
         B = numpy.kron(L2, E1)
         A = numpy.concatenate((A, zeros2(B.shape[0], A.shape[1])))
-        assert 0, "todo"
+        #assert 0, "todo" # ??
 
-    Lz = Lzt.transpose()
-    assert dot2(Hx, Lzt).sum() == 0
+    if Lzt is not None:
+        Lz = Lzt.transpose()
+        assert dot2(Hx, Lzt).sum() == 0
 
     if 0:
         print("H2.transpose()")

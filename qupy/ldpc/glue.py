@@ -4,6 +4,7 @@ import os
 
 import numpy
 from numpy import random as ra
+from numpy import concatenate as cat
 import random
 
 from qupy.ldpc.solve import array2, parse, dot2, compose2, eq2, zeros2
@@ -597,7 +598,7 @@ def glue1_quantum(Hx, Hz, i1, i2):
     _, _, D = chain.equalizer(f, g)
 
     Hz, Hxt = D[0], D[1]
-    return Hz, Hxt.transpose()
+    return Hxt.transpose(), Hz
 
 
 def make_q(n, m, weight=None):
@@ -683,7 +684,7 @@ def test_quantum():
 
     m = argv.get("m", 4)
     n = argv.get("n", m+m+1)
-    dist = argv.get("dist", 0)
+    dist = argv.get("dist", 3)
     N = argv.get("N", 2)
     M = argv.get("M", N)
     p = argv.get("p", 0.03)
@@ -692,8 +693,8 @@ def test_quantum():
     codes = []
     code = None
     for i in range(N):
-        #Hx, Hz = make_quantum(n, m, dist, weight)
-        Hx, Hz = make_surface()
+        Hx, Hz = make_quantum(n, m, dist, weight)
+        #Hx, Hz = make_surface()
         print("Hx, Hz:")
         print(shortstrx(Hx, Hz))
         c = CSSCode(Hx=Hx, Hz=Hz)
@@ -737,6 +738,56 @@ def test_quantum():
     print(shortstrx(code.Hx, code.Hz))
 
 
+def glue_logops():
+
+    m = argv.get("m", 4)
+    n = argv.get("n", m+m+1)
+    dist = argv.get("dist", 3)
+    N = argv.get("N", 2)
+    M = argv.get("M", N)
+    p = argv.get("p", 0.03)
+    weight = argv.weight
+
+    codes = []
+    code = None
+    for i in range(N):
+        Hx, Hz = make_quantum(n, m, dist, weight)
+        #Hx, Hz = make_surface()
+        print("Hx, Hz:")
+        print(shortstrx(Hx, Hz))
+        c = CSSCode(Hx=Hx, Hz=Hz)
+        codes.append(c)
+        code = c if code is None else code + c
+
+    A, B = codes
+    code = A+B
+    
+    print(code)
+    print("Lx, Lz:")
+    print(shortstrx(code.Lx, code.Lz))
+    print("Hx, Hz:")
+    print(shortstrx(code.Hx, code.Hz))
+    print()
+
+    #Hx = cat((code.Lx, code.Hx))
+    Hx = code.Hx
+    Hz = cat((code.Lz, code.Hz))
+
+    print(shortstrx(Hx, Hz))
+
+    i0 = argv.get("i0", 0)
+    i1 = argv.get("i1", n)
+
+#    code = code.glue(0, n)
+#    print(code)
+#    print(shortstrx(code.Hx, code.Hz))
+
+    Hx, Hz = glue1_quantum(Hx, Hz, i0, i1)
+    print("Hx, Hz:")
+    print(shortstrx(Hx, Hz))
+
+
+
 if __name__ == "__main__":
 
     if argv.noerr:
@@ -749,15 +800,20 @@ if __name__ == "__main__":
         numpy.random.seed(_seed)
         random.seed(_seed)
 
-#    test()
-#    test_selfdual()
-#    test_colimit()
-#    test_equalizer()
-#    test_glue()
-#    test_color()
-#    test_universal()
-#    test_ldpc()
-    test_quantum()
+    name = argv.next()
+    if name is not None:
+        f = eval(name)
+        f()
+    else:
+        test()
+        test_selfdual()
+        test_colimit()
+        test_equalizer()
+        test_glue()
+        test_color()
+        test_universal()
+        #test_ldpc()
+        #test_quantum()
 
     print("OK")
 

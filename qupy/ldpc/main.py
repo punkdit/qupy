@@ -293,6 +293,27 @@ def main():
         G = array2([row for row in G if row.sum()%2==0])
         code = CSSCode(Hx=G, Hz=G)
 
+    elif argv.code == "qrm":
+        from qupy.ldpc.gallagher import get_code, hypergraph_product
+        from qupy.ldpc import reed_muller
+        r = argv.get("r", 1)
+        m = argv.get("m", 4)
+        puncture = argv.puncture
+        cl_code = reed_muller.build(r, m, puncture)
+        H = cl_code.G
+        H = array2([row for row in H if row.sum()%2==0])
+        print(H)
+        m, n = 5, 5
+        J = zeros2(m, n)
+        for i in range(m):
+            J[i, i] = 1
+            J[i, (i+1)%n] = 1
+        print(J)
+        Hx, Hz, Lx, Lz = hypergraph_product(H, J)
+        code = CSSCode(Hx=Hx, Hz=Hz, Lx=Lx, Lz=Lz)
+        print(code.weightstr())
+        #print(shortstr(code.Hz))
+
     elif argv.code == "qr7":
         H = parse("""
         ...1111
