@@ -16,8 +16,12 @@ from qupy.ldpc.chain import Chain, Morphism
 from qupy.ldpc import chain
 from qupy.ldpc.gallagher import classical_distance
 from qupy.ldpc.bpdecode import RadfordBPDecoder
+from qupy.ldpc import reed_muller
 
 from qupy.argv import argv
+
+from bruhat.codes import strong_morthogonal
+
 
 
 def fstr(H):
@@ -792,6 +796,64 @@ def glue_logops():
     Hx, Hz = glue1_quantum(Hx, Hz, i0, i1)
     print("Hx, Hz:")
     print(shortstrx(Hx, Hz))
+
+
+def make_morthogonal(m, n, genus):
+    while 1:
+        G = rand2(m, n)
+        if strong_morthogonal(G, genus) and rank(G)==m and numpy.min(G.sum(0)):
+            break
+    return G
+
+
+def direct_sum(A, B):
+    C = zeros2(A.shape[0] + B.shape[0], A.shape[1] + B.shape[1])
+    C[:A.shape[0], :A.shape[1]] = A
+    C[A.shape[0]:, A.shape[1]:] = B
+    return C
+
+
+def glue_morth():
+
+    m = argv.get("m", 4)
+    n = argv.get("n", m+m+1)
+    genus = argv.get("genus", 2)
+
+    #H = make_morthogonal(m, n, genus)
+    H = reed_muller.build(1, 4).G
+    print(shortstrx(H))
+    assert dot2(H, H.transpose()).sum() == 0
+
+    Hx = Hz = H
+    print(classical_distance(Hx))
+    print(classical_distance(Hz))
+
+    Hx = direct_sum(Hx, Hx)
+    Hz = direct_sum(Hz, Hz)
+    print(shortstrx(Hx, Hz))
+    print(strong_morthogonal(Hx, genus))
+    print(strong_morthogonal(Hz, genus))
+    print()
+    code = CSSCode(Hx=Hx, Hz=Hz)
+
+    Hx, Hz = glue1_quantum(Hx, Hz, 0, n)
+    print(shortstrx(Hx, Hz))
+    print(strong_morthogonal(Hx, genus))
+    print(strong_morthogonal(Hz, genus))
+    print()
+    code = CSSCode(Hx=Hx, Hz=Hz)
+
+    Hx, Hz = glue1_quantum(Hx, Hz, 0, n)
+    print(shortstrx(Hx, Hz))
+    print(strong_morthogonal(Hx, genus))
+    print(strong_morthogonal(Hz, genus))
+    print()
+
+    code = CSSCode(Hx=Hx, Hz=Hz)
+    print(code)
+    print(classical_distance(Hx))
+    print(classical_distance(Hz))
+    #print(code.longstr())
 
 
 
