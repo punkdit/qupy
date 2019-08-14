@@ -9,7 +9,7 @@ import random
 
 from qupy.ldpc.solve import array2, parse, dot2, compose2, eq2, zeros2
 from qupy.ldpc.solve import rand2, find_kernel, image, identity2, rank, shortstr
-from qupy.ldpc.solve import shortstrx
+from qupy.ldpc.solve import shortstrx, pseudo_inverse, linear_independent, span
 from qupy.ldpc import solve
 from qupy.ldpc.css import CSSCode
 from qupy.ldpc.chain import Chain, Morphism
@@ -19,8 +19,47 @@ from qupy.ldpc.bpdecode import RadfordBPDecoder
 from qupy.ldpc import reed_muller
 
 from qupy.argv import argv
+from qupy.tool import cross, choose
 
-from bruhat.codes import strong_morthogonal
+
+def is_morthogonal(G, m):
+    k = len(G)
+    if m==1:
+        for v in G:
+            if v.sum()%2 != 0:
+                return False
+        return True
+    if m>2 and not is_morthogonal(G, m-1):
+        return False
+    items = list(range(k))
+    for idxs in choose(items, m):
+        v = G[idxs[0]]
+        for idx in idxs[1:]:
+            v = v * G[idx]
+        if v.sum()%2 != 0:
+            return False
+    return True
+
+
+def strong_morthogonal(G, m):
+    k = len(G)
+    assert m>=1
+    if m==1:
+        for v in G:
+            if v.sum()%2 != 0:
+                return False
+        return True
+    if not strong_morthogonal(G, m-1):
+        return False
+    items = list(range(k))
+    for idxs in choose(items, m):
+        v = G[idxs[0]]
+        for idx in idxs[1:]:
+            v = v * G[idx]
+        if v.sum()%2 != 0:
+            return False
+    return True
+
 
 
 
@@ -605,6 +644,34 @@ def glue1_quantum(Hx, Hz, i1, i2):
     return Hxt.transpose(), Hz
 
 
+def glue_self(Hx, Hz, pairs):
+    mx, n = Hx.shape
+    mz, _ = Hz.shape
+    k = len(pairs)
+
+    A = Chain([Hz, Hx.transpose()])
+    C  = Chain([identity2(k), zeros2(k, 0)])
+
+    fn = zeros2(n, k)
+    for idx, pair in enumerate(pairs):
+        i1, i2 = pair
+        fn[i1, idx] = 1
+    fm = dot2(Hz, fn)
+    f = Morphism(C, A, [fm, fn, zeros2(mx, 0)])
+
+    gn = zeros2(n, k)
+    for idx, pair in enumerate(pairs):
+        i1, i2 = pair
+        gn[i2, idx] = 1
+    gm = dot2(Hz, gn)
+    g = Morphism(C, A, [gm, gn, zeros2(mx, 0)])
+
+    _, _, D = chain.equalizer(f, g)
+
+    Hz, Hxt = D[0], D[1]
+    return Hxt.transpose(), Hz
+
+
 def make_q(n, m, weight=None):
     k = n-2*m
     assert k>=0 
@@ -813,20 +880,212 @@ def direct_sum(A, B):
     return C
 
 
+def find_triorth(m, k):
+    # Bravyi, Haah, 1209.2426v1 sec IX.
+    # https://arxiv.org/pdf/1209.2426.pdf
+
+    verbose = argv.get("verbose")
+    #m = argv.get("m", 6) # _number of rows
+    #k = argv.get("k", None) # _number of odd-weight rows
+
+    # these are the variables N_x
+    xs = list(cross([(0, 1)]*m))
+
+    maxweight = argv.maxweight
+    minweight = argv.get("minweight", 1)
+
+    xs = [x for x in xs if minweight <= sum(x)]
+    if maxweight:
+        xs = [x for x in xs if sum(x) <= maxweight]
+
+    N = len(xs)
+
+    lhs = []
+    rhs = []
+
+    # bi-orthogonality
+    for a in range(m):
+      for b in range(a+1, m):
+        v = zeros2(N)
+        for i, x in enumerate(xs):
+            if x[a] == x[b] == 1:
+                v[i] = 1
+        if v.sum():
+            lhs.append(v)
+            rhs.append(0)
+
+    # tri-orthogonality
+    for a in range(m):
+      for b in range(a+1, m):
+       for c in range(b+1, m):
+        v = zeros2(N)
+        for i, x in enumerate(xs):
+            if x[a] == x[b] == x[c] == 1:
+                v[i] = 1
+        if v.sum():
+            lhs.append(v)
+            rhs.append(0)
+
+#    # dissallow columns with weight <= 1
+#    for i, x in enumerate(xs):
+#        if sum(x)<=1:
+#            v = zeros2(N)
+#            v[i] = 1
+#            lhs.append(v)
+#            rhs.append(0)
+
+    if k is not None:
+      # constrain to k _number of odd-weight rows
+      assert 0<=k<m
+      for a in range(m):
+        v = zeros2(N)
+        for i, x in enumerate(xs):
+          if x[a] == 1:
+            v[i] = 1
+        lhs.append(v)
+        if a<k:
+            rhs.append(1)
+        else:
+            rhs.append(0)
+
+    A = array2(lhs)
+    rhs = array2(rhs)
+    #print(shortstr(A))
+
+    B = pseudo_inverse(A)
+    soln = dot2(B, rhs)
+    if not eq2(dot2(A, soln), rhs):
+        print("no solution")
+        return
+    if verbose:
+        print("soln:")
+        print(shortstr(soln))
+
+    soln.shape = (N, 1)
+    rhs.shape = A.shape[0], 1
+
+    K = array2(list(find_kernel(A)))
+    #print(K)
+    #print( dot2(A, K.transpose()))
+    #sols = []
+    #for v in span(K):
+    best = None
+    density = 1.0
+    size = 99*N
+    trials = argv.get("trials", 1024)
+    count = 0
+    for trial in range(trials):
+        u = rand2(len(K), 1)
+        v = dot2(K.transpose(), u)
+        #print(v)
+        v = (v+soln)%2
+        assert eq2(dot2(A, v), rhs)
+
+        if v.sum() > size:
+            continue
+        size = v.sum()
+
+        Gt = []
+        for i, x in enumerate(xs):
+            if v[i]:
+                Gt.append(x)
+        if not Gt:
+            continue
+        Gt = array2(Gt)
+        G = Gt.transpose()
+        assert is_morthogonal(G, 3)
+        if G.shape[1]<m:
+            continue
+
+        if 0 in G.sum(1):
+            continue
+
+        if argv.strong_morthogonal and not strong_morthogonal(G, 3):
+            continue
+
+        #print(shortstr(G))
+#        for g in G:
+#            print(shortstr(g), g.sum())
+#        print()
+
+        _density = float(G.sum()) / (G.shape[0]*G.shape[1])
+        #if best is None or _density < density:
+        if best is None or G.shape[1] <= size:
+            best = G
+            size = G.shape[1]
+            density = _density
+
+        if 0:
+            #sols.append(G)
+            Gx = even_rows(G)
+            assert is_morthogonal(Gx, 3)
+            if len(Gx)==0:
+                continue
+            GGx = array2(list(span(Gx)))
+            assert is_morthogonal(GGx, 3)
+
+        count += 1
+
+    print("found %d solutions" % count)
+    if best is None:
+        return
+
+    G = best
+    #print(shortstr(G))
+
+    for g in G:
+        print(shortstr(g), g.sum())
+    print()
+    print("density:", density)
+    print("shape:", G.shape)
+
+    G = linear_independent(G)
+
+    if 0:
+        A = list(span(G))
+        print(strong_morthogonal(A, 1))
+        print(strong_morthogonal(A, 2))
+        print(strong_morthogonal(A, 3))
+
+    G = [row for row in G if row.sum()%2 == 0]
+    return array2(G)
+
+    #print(shortstr(dot2(G, G.transpose())))
+
+    if 0:
+        B = pseudo_inverse(A)
+        v = dot2(B, rhs)
+        print("B:")
+        print(shortstr(B))
+        print("v:")
+        print(shortstr(v))
+        assert eq2(dot2(B, v), rhs)
+
+
+
+
 def glue_morth():
 
     m = argv.get("m", 4)
     n = argv.get("n", m+m+1)
     genus = argv.get("genus", 2)
 
-    #H = make_morthogonal(m, n, genus)
-    H = reed_muller.build(1, 4).G
-    print(shortstrx(H))
+    if 0:
+        H = make_morthogonal(m, n, genus)
+    elif 0:
+        H = reed_muller.build(1, 4).G
+        print(shortstrx(H))
+    else:
+        H = find_triorth(m, 1)
+
     assert dot2(H, H.transpose()).sum() == 0
 
     Hx = Hz = H
-    print(classical_distance(Hx))
-    print(classical_distance(Hz))
+    if 0:
+        print(classical_distance(Hx))
+        print(classical_distance(Hz))
+    i0 = 0
+    i1 = Hx.shape[1]
 
     Hx = direct_sum(Hx, Hx)
     Hz = direct_sum(Hz, Hz)
@@ -835,24 +1094,26 @@ def glue_morth():
     print(strong_morthogonal(Hz, genus))
     print()
     code = CSSCode(Hx=Hx, Hz=Hz)
+    print(code)
 
-    Hx, Hz = glue1_quantum(Hx, Hz, 0, n)
+    Hx, Hz = glue_self(Hx, Hz, [(i0, i1), (i0, i1+1)])
+    #Hx, Hz = glue_self(Hx, Hz, [(i0, i1)])
     print(shortstrx(Hx, Hz))
     print(strong_morthogonal(Hx, genus))
     print(strong_morthogonal(Hz, genus))
     print()
     code = CSSCode(Hx=Hx, Hz=Hz)
 
-    Hx, Hz = glue1_quantum(Hx, Hz, 0, n)
-    print(shortstrx(Hx, Hz))
-    print(strong_morthogonal(Hx, genus))
-    print(strong_morthogonal(Hz, genus))
-    print()
+#    Hx, Hz = glue_self(Hx, Hz, [(0, n)])
+#    print(shortstrx(Hx, Hz))
+#    print(strong_morthogonal(Hx, genus))
+#    print(strong_morthogonal(Hz, genus))
+#    print()
 
     code = CSSCode(Hx=Hx, Hz=Hz)
     print(code)
-    print(classical_distance(Hx))
-    print(classical_distance(Hz))
+    #print(classical_distance(Hx))
+    #print(classical_distance(Hz))
     #print(code.longstr())
 
 

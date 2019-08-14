@@ -487,7 +487,7 @@ def pushout(a, b, _amorph=None, _bmorph=None, _chain=None, check=True):
     return amorph, bmorph, chain, morph
 
 
-def equalizer(a, b):
+def equalizer(a, b): # actually this is a co-equalizer
     assert isinstance(a, Morphism)
     assert isinstance(b, Morphism)
     assert a.shape == b.shape
