@@ -23,6 +23,47 @@ if __name__ == "__main__":
     import os
     datestr = os.popen('date "+%F %H:%M:%S"').read().strip()
 
+def is_morthogonal(G, m):
+    k = len(G)
+    if m==1:
+        for v in G:
+            if v.sum()%2 != 0:
+                return False
+        return True
+    if m>2 and not is_morthogonal(G, m-1):
+        return False
+    items = list(range(k))
+    for idxs in choose(items, m):
+        v = G[idxs[0]]
+        for idx in idxs[1:]:
+            v = v * G[idx]
+        if v.sum()%2 != 0:
+            return False
+    return True
+
+
+def strong_morthogonal(G, m):
+    k = len(G)
+    assert m>=1
+    if m==1:
+        for v in G:
+            if v.sum()%2 != 0:
+                return False
+        return True
+    if not strong_morthogonal(G, m-1):
+        return False
+    items = list(range(k))
+    for idxs in choose(items, m):
+        v = G[idxs[0]]
+        for idx in idxs[1:]:
+            v = v * G[idx]
+        if v.sum()%2 != 0:
+            return False
+    return True
+
+
+
+
 
 
 def main():
@@ -209,13 +250,18 @@ def main():
         from qupy.ldpc.gcolor import  Lattice
         l = argv.get('l', 1)
         lattice = Lattice(l)
-        code = lattice.build_code()
-
-        #print "Gx:", code.Gx.shape
-        #print shortstr(code.Gx)
-        print("Gx rank:", solve.rank(code.Gx))
-        print("Hx:")
-        print(shortstr(code.Hx))
+        #code = lattice.build_code()
+        G = lattice.Hx
+        print(shortstr(G))
+        m, n = G.shape
+        G1 = zeros2(m+1, n+1)
+        G1[1:, 1:] = G
+        G1[0, :] = 1
+        print()
+        print(shortstr(G1))
+        for genus in range(1, 5):
+            print(genus, strong_morthogonal(G1, genus))
+        code = CSSCode(Hx=G1, Hz=G1)
 
     elif argv.code == 'self_ldpc':
 
@@ -361,6 +407,45 @@ def main():
         .11.111...11........1..
         1..1..11111..........1.
         .1..1..11111..........1
+        """)
+        code = CSSCode(Hx=H, Hz=H)
+
+    elif argv.code == "dgolay": # double golay code (tri-orthogonal)
+        H = parse("""
+        111111111111111111111111........................
+        .1111.1.11..11..1.1....1.1111.1.11..11..1.1....1
+        ..1111.1.11..11..1.1...1..1111.1.11..11..1.1...1
+        ...1111.1.11..11..1.1..1...1111.1.11..11..1.1..1
+        ....1111.1.11..11..1.1.1....1111.1.11..11..1.1.1
+        .....1111.1.11..11..1.11.....1111.1.11..11..1.11
+        1.....1111.1.11..11..1.11.....1111.1.11..11..1.1
+        .1.....1111.1.11..11..11.1.....1111.1.11..11..11
+        1.1.....1111.1.11..11..11.1.....1111.1.11..11..1
+        .1.1.....1111.1.11..11.1.1.1.....1111.1.11..11.1
+        ..1.1.....1111.1.11..111..1.1.....1111.1.11..111
+        1..1.1.....1111.1.11..111..1.1.....1111.1.11..11
+        11..1.1.....1111.1.11..111..1.1.....1111.1.11..1
+        """)
+        code = CSSCode(Hx=H, Hz=H)
+
+    elif argv.code == "dham": # double hamming code (tri-orthogonal)
+        H = parse("""
+        11111111........
+        .11.1..1.11.1..1
+        ..11.1.1..11.1.1
+        ...11.11...11.11
+        1...11.11...11.1
+        """)
+        code = CSSCode(Hx=H, Hz=H)
+
+    elif argv.code == "ddham": # double double hamming code
+        H = parse("""
+        1111111111111111................
+        11111111........11111111........
+        .11.1..1.11.1..1.11.1..1.11.1..1
+        ..11.1.1..11.1.1..11.1.1..11.1.1
+        ...11.11...11.11...11.11...11.11
+        1...11.11...11.11...11.11...11.1
         """)
         code = CSSCode(Hx=H, Hz=H)
 
