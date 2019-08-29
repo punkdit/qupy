@@ -157,6 +157,48 @@ def test_2():
     assert ABA ** 16 == III
     assert BAB ** 16 == III
 
+
+def test_clifford():
+
+    # Clifford group:
+    # https://www.mathstat.dal.ca/~selinger/papers/clifford.pdf
+
+    i = 1.j
+    phase = numpy.exp(i*pi/4)
+
+    II = I@I
+    XI = X@I
+    IX = I@X
+    ZI = Z@I
+    IZ = I@Z
+    gen = [XI, IX, ZI, IZ, phase*II]
+    gen = [op.flat() for op in gen]
+    C1 = mulclose(gen) 
+
+    assert len(C1) == 128, len(C1)
+
+#    CZ = Z.control()
+#    op = CZ.flat()
+#    print(op)
+#    print(op.valence)
+
+    v = numpy.array([
+        [1., 0., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., -1.]])
+    v.shape = (2,2,2,2)
+    #CZ = Qu((4, 4), 'ud', v)
+    CZ = Qu((2,2, 2,2), 'udud', v)
+
+    print(CZ.shortstr())
+    XX = X@X
+    A = (CZ)*IX
+    print(A.shortstr())
+
+    print("OK")
+
+
 if __name__ == "__main__":
 
     name = argv.next() or "test"
