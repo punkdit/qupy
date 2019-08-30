@@ -24,6 +24,15 @@ S, T = Gate.S, Gate.T # S aka P
 SWAP = Gate.SWAP
 CX = Gate.CN
 
+v = numpy.array([
+    [1., 0., 0., 0.],
+    [0., 1., 0., 0.],
+    [0., 0., 1., 0.],
+    [0., 0., 0., -1.]])
+v.shape = (2,2,2,2)
+CZ = Qu((2,2,2,2), 'udud', v)
+
+
 def find(op, ops):
     for op1 in ops:
         #if numpy.abs(op-op1).sum() < EPSILON:
@@ -165,6 +174,7 @@ def test_clifford():
 
     i = 1.j
     phase = numpy.exp(i*pi/4)
+    phase = -1.
 
     II = I@I
     XI = X@I
@@ -172,31 +182,36 @@ def test_clifford():
     ZI = Z@I
     IZ = I@Z
     gen = [XI, IX, ZI, IZ, phase*II]
-    gen = [op.flat() for op in gen]
     C1 = mulclose(gen) 
+    assert len(C1) == 32, len(C1)
 
-    assert len(C1) == 128, len(C1)
+    assert (H*H) == I
+    gen = gen + [H@I, I@H, CZ]
 
-#    CZ = Z.control()
-#    op = CZ.flat()
-#    print(op)
-#    print(op.valence)
+#    C1 = mulclose(gen, verbose=True, maxsize=1630) 
+#    print("C1:", len(C1))
+#
+#    print(CZ.shortstr())
+#    XX = X@X
+#    A = (CZ)*IX
+#    print(A.shortstr())
+#
+#    v = numpy.array([
+#        [0., 1., 0., 0.],
+#        [0., 0., 1., 0.],
+#        [0., 0., 0., 1.],
+#        [-1., 0., 0., 0.]])
+#    v.shape = (2,2,2,2)
+#    A = Qu((2,2, 2,2), 'udud', v)
+#
+#    for B in C1:
+#        if B==A:
+#            print("FOUND")
+#
+#    print("OK")
 
-    v = numpy.array([
-        [1., 0., 0., 0.],
-        [0., 1., 0., 0.],
-        [0., 0., 1., 0.],
-        [0., 0., 0., -1.]])
-    v.shape = (2,2,2,2)
-    #CZ = Qu((4, 4), 'ud', v)
-    CZ = Qu((2,2, 2,2), 'udud', v)
 
-    print(CZ.shortstr())
-    XX = X@X
-    A = (CZ)*IX
-    print(A.shortstr())
-
-    print("OK")
+    # See bruhat/dev/clifford.gap for a better implementation of this.
 
 
 if __name__ == "__main__":
