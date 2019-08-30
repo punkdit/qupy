@@ -406,8 +406,6 @@ l1 = Vector(r12, -r12, -r12)
 l2 = Vector(-r12, r12, -r12)
 l3 = Vector(-r12, -r12, r12)
 
-print( 4*l0.dot(l0), 3)
-print( type(4*l0.dot(l0)), 3)
 assert 4*l0.dot(l0) == 3
 
 assert Rational(1) % r12 == 0
