@@ -660,6 +660,15 @@ def main():
         """) # distance = 4
         code = CSSCode(Hx=H, Hz=H)
 
+    elif argv.code == "glue":
+        from qupy.ldpc.glue import glue_classical
+        H = glue_classical()
+        H = H.copy()
+        code = CSSCode(Hx=H, Hz=H)
+        #if argv.classical_distance:
+        #    from qupy.ldpc.gallagher import classical_distance
+        #    print("distance:", classical_distance(H))
+
     elif argv.code == "randselfdual":
         m = argv.get("m", 4)
         n = argv.get("n", 8)

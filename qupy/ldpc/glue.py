@@ -1063,6 +1063,33 @@ def find_triorth(m, k):
 
 
 
+def glue_self_classical(Hz, pairs):
+    mz, n = Hz.shape
+    k = len(pairs)
+
+    A = Chain([Hz])
+    C  = Chain([identity2(k)])
+
+    fn = zeros2(n, k)
+    for idx, pair in enumerate(pairs):
+        i1, i2 = pair
+        fn[i1, idx] = 1
+    fm = dot2(Hz, fn)
+    f = Morphism(C, A, [fm, fn])
+
+    gn = zeros2(n, k)
+    for idx, pair in enumerate(pairs):
+        i1, i2 = pair
+        gn[i2, idx] = 1
+    gm = dot2(Hz, gn)
+    g = Morphism(C, A, [gm, gn])
+
+    _, _, D = chain.equalizer(f, g)
+
+    Hz = D[0]
+    return Hz
+
+
 
 def glue_morth():
 
@@ -1096,6 +1123,13 @@ def glue_morth():
     code = CSSCode(Hx=Hx, Hz=Hz)
     print(code)
 
+    if 0:
+        Hz = glue_self_classical(Hz, [(i0, i1), (i0, i1+1)])
+        print(shortstrx(Hz))
+        print(strong_morthogonal(Hz, genus))
+        print()
+        return
+
     Hx, Hz = glue_self(Hx, Hz, [(i0, i1), (i0, i1+1)])
     #Hx, Hz = glue_self(Hx, Hz, [(i0, i1)])
     print(shortstrx(Hx, Hz))
@@ -1116,6 +1150,104 @@ def glue_morth():
     #print(classical_distance(Hz))
     #print(code.longstr())
 
+
+def glue_classical():
+
+    from bruhat.triply_even import build
+
+    genus = argv.get("genus", 3)
+
+    m = argv.get("dim", 7)
+    idx = argv.get("idx", 144)
+    H = build.get(m, idx)
+    H = H.astype(numpy.int32)
+    n = H.shape[1]
+
+    if argv.scramble:
+        R = rand2(m, m)
+        H = dot2(R, H)
+
+    print(shortstrx(H))
+    assert dot2(H, H.transpose()).sum() == 0
+
+    i0 = argv.get("i0", 0)
+    i1 = argv.get("i1", i0)
+    i2 = argv.get("i2", n)
+    i3 = argv.get("i3", i2+1)
+    # glue i0<-->i2 and i1<-->i3
+
+    H2 = direct_sum(H, H)
+    #print(shortstrx(H2))
+    assert strong_morthogonal(H2, genus)
+    print()
+
+    H3 = glue_self_classical(H2, [(i0, i2), (i1, i3)])
+    print(shortstrx(H3))
+    assert strong_morthogonal(H3, genus)
+
+    print()
+    print(shortstr((H2[:m, 1:n] + H3[:m, 1:n])%2))
+    #print(eq2(H2[m+2:, i1+2:], H3[m:, i1:]))
+
+    #print(classical_distance(H3))
+    return H3
+
+
+def glue_gcolor():
+    from qupy.ldpc.gcolor import  Lattice
+    l = argv.get('l', 1)
+    lattice = Lattice(l)
+    #code = lattice.build_code()
+    H = lattice.Hx
+    print("H:", H.shape)
+    print(shortstr(H))
+    m, n = H.shape
+    H1 = zeros2(m+1, n+1)
+    H1[1:, 1:] = H
+    H1[0, :] = 1
+#    print()
+#    print(shortstr(H1))
+#    for genus in range(1, 5):
+#        print(genus, strong_morthogonal(H1, genus))
+
+    H = H1
+
+    genus = argv.get("genus", 3)
+
+    H = H.astype(numpy.int32)
+    n = H.shape[1]
+
+    if argv.scramble:
+        R = rand2(m, m)
+        H = dot2(R, H)
+
+    print("H:", H.shape)
+    print(shortstrx(H))
+    assert dot2(H, H.transpose()).sum() == 0
+
+    i0 = argv.get("i0", 0)
+    i1 = argv.get("i1", i0)
+    i2 = argv.get("i2", n)
+    i3 = argv.get("i3", i2+1)
+    # glue i0<-->i2 and i1<-->i3
+
+    H2 = direct_sum(H, H)
+    print(H2.shape)
+    print(shortstrx(H2))
+    assert strong_morthogonal(H2, genus)
+    print()
+
+    H3 = glue_self_classical(H2, [(i0, i2), (i1, i3)])
+    print(H3.shape)
+    print(shortstrx(H3))
+    assert strong_morthogonal(H3, genus)
+
+    print()
+    print(shortstr((H2[:m, 1:n] + H3[:m, 1:n])%2))
+    #print(eq2(H2[m+2:, i1+2:], H3[m:, i1:]))
+
+    #print(classical_distance(H3))
+    return H3
 
 
 if __name__ == "__main__":
