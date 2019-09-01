@@ -661,8 +661,8 @@ def main():
         code = CSSCode(Hx=H, Hz=H)
 
     elif argv.code == "glue":
-        from qupy.ldpc.glue import glue_classical
-        H = glue_classical()
+        from qupy.ldpc.glue import glue_classical, glue_classical_self
+        H = glue_classical_self()
         H = H.copy()
         code = CSSCode(Hx=H, Hz=H)
         #if argv.classical_distance:

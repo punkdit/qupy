@@ -1176,7 +1176,8 @@ def glue_classical():
     i3 = argv.get("i3", i2+1)
     # glue i0<-->i2 and i1<-->i3
 
-    H2 = direct_sum(H, H)
+    #H2 = direct_sum(H, H)
+    H2 = H
     #print(shortstrx(H2))
     assert strong_morthogonal(H2, genus)
     print()
@@ -1191,6 +1192,55 @@ def glue_classical():
 
     #print(classical_distance(H3))
     return H3
+
+
+def glue_classical_self():
+
+    from bruhat.triply_even import build
+
+    genus = argv.get("genus", 3)
+
+    m = argv.get("dim", 7)
+    idx = argv.get("idx", 144)
+    H = build.get(m, idx)
+    H = H.astype(numpy.int32)
+
+    count = argv.get("count", 1)
+    for ii in range(count):
+        m, n = H.shape
+        R = rand2(m, m)
+        H = dot2(R, H)
+        if ii==0:
+            print(H.shape)
+            print(shortstrx(H))
+
+        assert dot2(H, H.transpose()).sum() == 0
+    
+#        i0 = argv.get("i0", 0)
+#        i1 = argv.get("i1", i0)
+#        i2 = argv.get("i2", 1)
+#        i3 = argv.get("i3", i2+1)
+
+        items = list(range(n))
+        i0 = random.choice(items)
+        items.remove(i0)
+        i1 = i0
+        i2 = random.choice(items)
+        items.remove(i2)
+        i3 = random.choice(items)
+        items.remove(i3)
+        # glue i0<-->i2 and i1<-->i3
+    
+        assert strong_morthogonal(H, genus)
+        print()
+    
+        H3 = glue_self_classical(H, [(i0, i2), (i1, i3)])
+        print(H3.shape)
+        print(shortstrx(H3))
+        assert strong_morthogonal(H3, genus)
+        H = H3
+    
+    return H
 
 
 def glue_gcolor():
