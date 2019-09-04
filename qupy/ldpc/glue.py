@@ -1194,18 +1194,52 @@ def glue_classical():
     return H3
 
 
+def shorten(G, i):
+    print(shortstrx(G))
+    H = array2(list(find_kernel(G)))
+    m, n = H.shape
+    H1 = zeros2(m+1, n)
+    H1[:m, :] = H
+    H1[m, i] = 1
+    print()
+    print(shortstrx(H1))
+    print()
+    G1 = array2(list(find_kernel(H1)))
+    m, n = G1.shape
+    G2 = zeros2(m, n-1)
+    G2[:, :i] = G1[:, :i]
+    G2[:, i:] = G1[:, i+1:]
+    print()
+    print(shortstrx(G2))
+    print(strong_morthogonal(G2, 2))
+    H2 = array2(list(find_kernel(G2)))
+    print(classical_distance(H2))
+
+
 def glue_classical_self():
 
     from bruhat.triply_even import build
+    from bruhat.triply_even import codes24
 
     genus = argv.get("genus", 3)
 
-    m = argv.get("dim", 7)
-    idx = argv.get("idx", 144)
-    H = build.get(m, idx)
-    H = H.astype(numpy.int32)
+    if argv.golay:
+        H = codes24.get("g_{24}")
+    else:
+        m = argv.get("dim", 7)
+        idx = argv.get("idx", 144)
+        H = build.get(m, idx)
 
+    H = shorten(H, 0)
+    return
+
+    H = H.astype(numpy.int32)
     count = argv.get("count", 1)
+    if count==0:
+        print(H.shape)
+        print(shortstrx(H))
+
+    print("distance:", classical_distance(H))
     for ii in range(count):
         m, n = H.shape
         R = rand2(m, m)
@@ -1231,15 +1265,16 @@ def glue_classical_self():
         items.remove(i3)
         # glue i0<-->i2 and i1<-->i3
     
-        assert strong_morthogonal(H, genus)
+        print("strong_morthogonal(%d) = %s" % (genus, strong_morthogonal(H, genus)))
         print()
     
         H3 = glue_self_classical(H, [(i0, i2), (i1, i3)])
         print(H3.shape)
         print(shortstrx(H3))
-        assert strong_morthogonal(H3, genus)
+        print("strong_morthogonal(%d) = %s" % (genus, strong_morthogonal(H3, genus)))
         H = H3
     
+    print("distance:", classical_distance(H))
     return H
 
 

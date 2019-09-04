@@ -660,7 +660,7 @@ def main():
         """) # distance = 4
         code = CSSCode(Hx=H, Hz=H)
 
-    elif argv.code == "glue":
+    elif argv.code == "glue_classical_self":
         from qupy.ldpc.glue import glue_classical, glue_classical_self
         H = glue_classical_self()
         H = H.copy()
