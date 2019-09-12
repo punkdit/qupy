@@ -62,10 +62,36 @@ Tx:Hz =
     ......ZZ..ZZ....
     .....ZZ..ZZ.....
     """.replace(".", "I")
+    sz = """
+    .Z.Z.Z.Z.Z.Z.Z.Z
+    ..ZZ..ZZ..ZZ..ZZ
+    ....ZZZZ....ZZZZ
+    ........ZZZZZZZZ
+    """.replace(".", "I")
+
     code = StabilizerCode(pauli, sx+sz)
 
     return code
 
+
+def build_color(pauli):
+    sx = """
+    X.X.X.X.X.X.X.X
+    .XX..XX..XX..XX
+    ...XXXX....XXXX
+    .......XXXXXXXX
+    """.replace(".", "I")
+
+    sz = """
+    Z.Z.Z.Z.Z.Z.Z.Z
+    .ZZ..ZZ..ZZ..ZZ
+    ...ZZZZ....ZZZZ
+    .......ZZZZZZZZ
+    """.replace(".", "I")
+
+    code = StabilizerCode(pauli, sx+sz)
+
+    return code
 
 
 def build_code(pauli, name=None):
@@ -101,6 +127,8 @@ def build_code(pauli, name=None):
         code = StabilizerCode(pauli, "XXXXIII XXIIXXI XIXIXIX ZZZZIII ZZIIZZI ZIZIZIZ")
     elif name=="rm":
         code = build_rm(pauli)
+    elif name=="color":
+        code = build_color(pauli)
     elif name=="toric":
         s = """
         XX.XX...
@@ -127,6 +155,60 @@ def get_projector():
     code = build_code(pauli)
     op = code.get_projector()
     return op
+
+
+def get_gauge(pauli):
+
+    I = pauli.I
+    X = pauli.X
+    Y = pauli.Y
+    Z = pauli.Z
+
+    RM24 = """
+    1111111111111111
+    .1.1.1.1.1.1.1.1
+    ..11..11..11..11
+    ....1111....1111
+    ........11111111
+    ...1...1...1...1
+    .....1.1.....1.1
+    .........1.1.1.1
+    ......11......11
+    ..........11..11
+    ............1111
+    """
+
+    sx = """
+    X.X.X.X.X.X.X.X
+    .XX..XX..XX..XX
+    ...XXXX....XXXX
+    .......XXXXXXXX
+    ..X...X...X...X
+    ....X.X.....X.X
+    ........X.X.X.X
+    .....XX......XX
+    .........XX..XX
+    ...........XXXX
+    """.replace(".", "I")
+
+    sz = """
+    Z.Z.Z.Z.Z.Z.Z.Z
+    .ZZ..ZZ..ZZ..ZZ
+    ...ZZZZ....ZZZZ
+    .......ZZZZZZZZ
+    ..Z...Z...Z...Z
+    ....Z.Z.....Z.Z
+    ........Z.Z.Z.Z
+    .....ZZ......ZZ
+    .........ZZ..ZZ
+    ...........ZZZZ
+    """.replace(".", "I")
+
+    ops = sx+sz
+    ops = ops.strip().split()
+    ops = [pauli.parse(s) for s in ops]
+    H = reduce(add, ops)
+    return H
 
 
 def main():
@@ -158,23 +240,21 @@ def main():
     Ki = H*Si
     assert K*Ki == I
 
-    code = build_code(pauli)
-    P = code.get_projector()
+    if argv.gauge:
+        P = get_gauge(pauli)
+    else:
+        code = build_code(pauli)
+        P = code.get_projector()
+        m = len(code.ops) # number of independent stab gen
+        print("m =", m)
+        r = 2**(-m)
+        P = r*P
+        assert P*P == P
+
     n = P.grade
-    #print(P)
-    #print(P*P)
-
-    m = len(code.ops) # number of independent stab gen
-    print("m =", m)
-    r = 2**(-m)
-
-    P = r*P
-    assert P*P == P
 
     #Xn = reduce(matmul, [X]*n)
-
     #print("K transverse:", Kn*P == P*Kn)
-
     #print(P*Kn == Kn*P)
 
     gate = argv.get("gate", "S")
