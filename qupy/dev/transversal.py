@@ -125,6 +125,8 @@ def build_code(pauli, name=None):
         code = StabilizerCode(pauli, "XZZXIII IXZZXII IIXZZXI IIIXZZX XIIIXZZ ZXIIIXZ")
     elif name=="steane":
         code = StabilizerCode(pauli, "XXXXIII XXIIXXI XIXIXIX ZZZZIII ZZIIZZI ZIZIZIZ")
+    elif name=="eight":
+        code = StabilizerCode(pauli, "XXXXXXXX ZZZZZZZZ")
     elif name=="rm":
         code = build_rm(pauli)
     elif name=="color":
@@ -157,7 +159,7 @@ def get_projector():
     return op
 
 
-def get_gauge(pauli):
+def get_hamiltonian(pauli):
 
     I = pauli.I
     X = pauli.X
@@ -178,36 +180,52 @@ def get_gauge(pauli):
     ............1111
     """
 
-    sx = """
-    X.X.X.X.X.X.X.X
-    .XX..XX..XX..XX
-    ...XXXX....XXXX
-    .......XXXXXXXX
-    ..X...X...X...X
-    ....X.X.....X.X
-    ........X.X.X.X
-    .....XX......XX
-    .........XX..XX
-    ...........XXXX
-    """.replace(".", "I")
-
-    sz = """
-    Z.Z.Z.Z.Z.Z.Z.Z
-    .ZZ..ZZ..ZZ..ZZ
-    ...ZZZZ....ZZZZ
-    .......ZZZZZZZZ
-    ..Z...Z...Z...Z
-    ....Z.Z.....Z.Z
-    ........Z.Z.Z.Z
-    .....ZZ......ZZ
-    .........ZZ..ZZ
-    ...........ZZZZ
-    """.replace(".", "I")
+    if argv.gauge:
+        sx = """
+        X.X.X.X.X.X.X.X
+        .XX..XX..XX..XX
+        ...XXXX....XXXX
+        .......XXXXXXXX
+        ..X...X...X...X
+        ....X.X.....X.X
+        ........X.X.X.X
+        .....XX......XX
+        .........XX..XX
+        ...........XXXX
+        """.replace(".", "I")
+    
+        sz = """
+        Z.Z.Z.Z.Z.Z.Z.Z
+        .ZZ..ZZ..ZZ..ZZ
+        ...ZZZZ....ZZZZ
+        .......ZZZZZZZZ
+        ..Z...Z...Z...Z
+        ....Z.Z.....Z.Z
+        ........Z.Z.Z.Z
+        .....ZZ......ZZ
+        .........ZZ..ZZ
+        ...........ZZZZ
+        """.replace(".", "I")
+    else:
+        sx = """
+        X.X.X.X.X.X.X.X
+        .XX..XX..XX..XX
+        ...XXXX....XXXX
+        .......XXXXXXXX
+        """.replace(".", "I")
+    
+        sz = """
+        Z.Z.Z.Z.Z.Z.Z.Z
+        .ZZ..ZZ..ZZ..ZZ
+        ...ZZZZ....ZZZZ
+        .......ZZZZZZZZ
+        """.replace(".", "I")
 
     ops = sx+sz
     ops = ops.strip().split()
     ops = [pauli.parse(s) for s in ops]
     H = reduce(add, ops)
+    print(H)
     return H
 
 
@@ -240,8 +258,8 @@ def main():
     Ki = H*Si
     assert K*Ki == I
 
-    if argv.gauge:
-        P = get_gauge(pauli)
+    if argv.hamiltonian:
+        P = get_hamiltonian(pauli)
     else:
         code = build_code(pauli)
         P = code.get_projector()
@@ -282,7 +300,7 @@ def main():
         assert 0, gate
 
     print("Q:")
-    print(Q)
+    print(32*Q)
     print("Q==P:", Q == P)
 
     QQ = (Q*Q)
