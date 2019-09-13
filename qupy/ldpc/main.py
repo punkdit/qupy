@@ -6,7 +6,7 @@ import numpy
 import numpy.random as ra
 from numpy.linalg import lstsq
 
-from qupy.ldpc.css import CSSCode
+from qupy.ldpc.css import CSSCode, randcss
 from qupy.ldpc.solve import shortstr, zeros2, array2, dot2, parse
 from qupy.tool import write, choose
 from qupy.argv import argv
@@ -658,6 +658,18 @@ def main():
         .1.1.1.1.1.1.1.1
         1..1.11..11.1..1
         """) # distance = 4
+        code = CSSCode(Hx=H, Hz=H)
+
+    elif argv.code == "B11": # Pless 1971, punctured B12
+        H = parse("""
+        .1111......
+        ...1111....
+        .....1111..
+        .......1111
+        1.1.1.1.1.1
+        """)
+        from qupy.ldpc.gallagher import classical_distance
+        print(classical_distance(H))
         code = CSSCode(Hx=H, Hz=H)
 
     elif argv.code == "glue_classical_self":

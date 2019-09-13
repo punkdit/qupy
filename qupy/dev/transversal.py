@@ -126,7 +126,7 @@ def build_code(pauli, name=None):
     elif name=="steane":
         code = StabilizerCode(pauli, "XXXXIII XXIIXXI XIXIXIX ZZZZIII ZZIIZZI ZIZIZIZ")
     elif name=="eight":
-        code = StabilizerCode(pauli, "XXXXXXXX ZZZZZZZZ")
+        code = StabilizerCode(pauli, "XXXXXXXX ZZZZIIII IIIIZZZZ ZIZIZIZI ZZIIZZII")
     elif name=="rm":
         code = build_rm(pauli)
     elif name=="color":
@@ -139,6 +139,20 @@ def build_code(pauli, name=None):
         ZZZ..Z..
         Z.ZZ...Z
         .Z..ZZZ.
+        """.replace(".", "I")
+        code = StabilizerCode(pauli, s)
+    elif name=="B11":
+        s = """
+        .XXXX......
+        ...XXXX....
+        .....XXXX..
+        .......XXXX
+        X.X.X.X.X.X
+        .ZZZZ......
+        ...ZZZZ....
+        .....ZZZZ..
+        .......ZZZZ
+        Z.Z.Z.Z.Z.Z
         """.replace(".", "I")
         code = StabilizerCode(pauli, s)
     return code
@@ -278,36 +292,36 @@ def main():
     gate = argv.get("gate", "S")
 
     if gate == "X":
-        Xn = reduce(matmul, [X]*n)
+        A = B = reduce(matmul, [X]*n)
         print("go:")
         Q = Xn*P*Xn
     elif gate == "S": # clifford
-        Sn = reduce(matmul, [S]*n)
-        Sin = reduce(matmul, [Si]*n)
-        print("go:")
-        Q = Sn*P*Sin
+        A = reduce(matmul, [S]*n)
+        B = reduce(matmul, [Si]*n)
+    elif gate == "SSdag": # clifford
+        A = reduce(matmul, ([S, Si]*n)[:n])
+        B = reduce(matmul, ([Si, S]*n)[:n])
+    elif gate == "S2": # clifford
+        A = reduce(matmul, [S, Si]*2 + [I]*4)
+        B = reduce(matmul, [Si, S]*2 + [I]*4)
     elif gate == "K": # clifford
-        Kn = reduce(matmul, [K]*n)
-        Kin = reduce(matmul, [Ki]*n)
-        print("go:")
-        Q = Kn*P*Kin
+        A = reduce(matmul, [K]*n)
+        B = reduce(matmul, [Ki]*n)
     elif gate == "T": # non-clifford
-        Tn = reduce(matmul, [T]*n)
-        Tin = reduce(matmul, [Ti]*n)
-        print("go:")
-        Q = Tn*P*Tin
+        A = reduce(matmul, [T]*n)
+        B = reduce(matmul, [Ti]*n)
     else:
         assert 0, gate
 
-    print("Q:")
+    print("go:")
+    Q = A*P*B
+
+    print("32*Q:")
     print(32*Q)
     print("Q==P:", Q == P)
 
     QQ = (Q*Q)
-    #print("Q*Q:")
-    #print(QQ)
-
-    assert QQ == Q
+    print("Q*Q==Q:", QQ == Q)
 
 
 
