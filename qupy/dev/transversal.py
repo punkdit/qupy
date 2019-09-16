@@ -88,6 +88,19 @@ def build_color(pauli):
     ...ZZZZ....ZZZZ
     .......ZZZZZZZZ
     """.replace(".", "I")
+    
+    sz = """
+    Z.Z.Z.Z.Z.Z.Z.Z
+    .ZZ..ZZ..ZZ..ZZ
+    ...ZZZZ....ZZZZ
+    .......ZZZZZZZZ
+    ..Z...Z...Z...Z
+    ....Z.Z.....Z.Z
+    ........Z.Z.Z.Z
+    .....ZZ......ZZ
+    .........ZZ..ZZ
+    ...........ZZZZ
+    """.replace(".", "I")
 
     code = StabilizerCode(pauli, sx+sz)
 
@@ -126,7 +139,8 @@ def build_code(pauli, name=None):
     elif name=="steane":
         code = StabilizerCode(pauli, "XXXXIII XXIIXXI XIXIXIX ZZZZIII ZZIIZZI ZIZIZIZ")
     elif name=="eight":
-        code = StabilizerCode(pauli, "XXXXXXXX ZZZZIIII IIIIZZZZ ZIZIZIZI ZZIIZZII")
+        #code = StabilizerCode(pauli, "XXXXXXXX ZZZZIIII IIIIZZZZ ZIZIZIZI ZZIIZZII")
+        code = StabilizerCode(pauli, "XXXXXXXX ZZZZZZZZ IIZIIZZZ IZZIIZZI ZIIZZZII")
     elif name=="rm":
         code = build_rm(pauli)
     elif name=="color":
