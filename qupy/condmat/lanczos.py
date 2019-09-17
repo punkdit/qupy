@@ -74,9 +74,8 @@ class Op(la.LinearOperator):
     def __init__(self, n):
         self.n = n
         la.LinearOperator.__init__(self, 
-            (n, n),
-            dtype=scalar, 
-            matvec=self.matvec)
+            shape=(n, n),
+            dtype=scalar)
 
     def __len__(self):
         return self.n
@@ -93,7 +92,7 @@ class Op(la.LinearOperator):
     def __rmul__(self, alpha):
         return RMulOp(self, alpha)
 
-    def matvec(self, v, w=None, verbose=False):
+    def _matvec(self, v, w=None, verbose=False):
         if self.verbose:
             write('.')
         assert len(v) == self.n
@@ -108,7 +107,7 @@ class Op(la.LinearOperator):
         v = numpy.zeros(n)
         for i in range(n):
             v[i] = 1
-            A[:, i] = self.matvec(v)
+            A[:, i] = self._matvec(v)
             v[i] = 0
         return A
 
@@ -154,7 +153,7 @@ class XOp(Op):
     def __str__(self):
         return "XOp(%d, %s, %s)"%(self.n, self.idxs, self.alpha)
 
-    def matvec(self, v, w=None, verbose=False):
+    def _matvec(self, v, w=None, verbose=False):
         if self.verbose:
             write('.')
         assert len(v) == len(self.perm)
@@ -163,13 +162,14 @@ class XOp(Op):
         #for i, j in enumerate(self.perm):
         #    w[j] += v[i]
         v = v[self.perm]
-        w += self.alpha * v
+        w += self.alpha * v # TypeError
+        #w = w + self.alpha * v
         return w
 
 
-class ZOp(Op):
-    def __init__(self, n, idxs, alpha=1.0):
-        " Z operator to specified qubits "
+class ROp(Op):
+    def __init__(self, n, idxs, w, alpha=1.0):
+        " _apply phase operator to specified qubits "
         if type(idxs) in (int, int):
             idxs = [idxs]
         for idx in idxs:
@@ -185,28 +185,52 @@ class ZOp(Op):
             phase = 1
             for flip in mask:
                 if flip and i%2:
-                    phase *= -1
+                    phase *= w
                 i >>= 1
             phases.append(phase)
         #print "ZOp:", idxs, phases
         self.phases = numpy.array(phases)
         self.idxs = list(idxs)
         self.alpha = alpha
+        self.w = w
+        self._dtype = self.phases.dtype
+        assert self._dtype == self.phases.dtype
         Op.__init__(self, 2**n)
 
     def __str__(self):
-        return "ZOp(%d, %s, %s)"%(self.n, self.idxs, self.alpha)
+        return "ROp(%d, %s, %s, %s)"%(self.n, self.idxs, self.w, self.alpha)
 
-    def matvec(self, v, w=None, verbose=False):
+    def _matvec(self, v, w=None, verbose=False):
         if self.verbose:
             write('.')
         assert len(v) == len(self.phases)
         if w is None:
-            w = numpy.zeros(len(v))
+            w = numpy.zeros(len(v), dtype=self._dtype)
+        #else:
+        #    w = w.astype(self._dtype) # breaks
         #for i, phase in enumerate(self.phases):
         #    w[i] += phase * v[i]
-        w += self.alpha * self.phases * v
+        assert self._dtype == self.phases.dtype
+        try:
+            w += self.alpha * self.phases * v # TypeError
+            #w = w + self.alpha * self.phases * v
+        except:
+            print(self._dtype, w.dtype, self.phases.dtype, v.dtype)
+            raise
         return w
+
+
+class ZOp(ROp):
+    def __init__(self, n, idxs, alpha=1.0):
+        " Z operator to specified qubits "
+        ROp.__init__(self, n, idxs, -1.0, alpha)
+
+    def __str__(self):
+        return "ZOp(%d, %s, %s)"%(self.n, self.idxs, self.alpha)
+
+
+def cyclotomic(n):
+    return numpy.exp(2*numpy.pi*1.j/n)
 
 
 def mkop(tp, s):
@@ -231,15 +255,15 @@ class SumOp(Op):
         self.count = 0
         Op.__init__(self, self.n)
 
-    def matvec(self, v, w=None, verbose=True):
-        #print "SumOp.matvec"
+    def _matvec(self, v, w=None, verbose=True):
+        #print "SumOp._matvec"
         if self.verbose:
             write('.')
         assert len(v)==self.n
         if w is None:
             w = numpy.zeros(len(v))
         for op in self.ops:
-            op.matvec(v, w)
+            op._matvec(v, w)
         self.count += 1
         return w
 
@@ -250,13 +274,13 @@ class RMulOp(Op):
         self.alpha = alpha
         Op.__init__(self, op.n)
 
-    def matvec(self, v, w=None, verbose=True):
+    def _matvec(self, v, w=None, verbose=True):
         if self.verbose:
             write('.')
         assert len(v)==self.n
         if w is None:
             w = numpy.zeros(len(v))
-        w += self.alpha * self.op.matvec(v, verbose=verbose)
+        w += self.alpha * self.op._matvec(v, verbose=verbose)
         return w
 
 
@@ -267,15 +291,15 @@ class MulOp(Op):
         assert a.n == b.n, (a.n, b.n)
         Op.__init__(self, a.n)
 
-    def matvec(self, v, w=None, verbose=True):
+    def _matvec(self, v, w=None, verbose=True):
         if self.verbose:
             write('.')
         assert len(v)==self.n
         if w is None:
             w = numpy.zeros(len(v))
         a, b = self.ops
-        v = b.matvec(v, verbose=verbose)
-        v = a.matvec(v, verbose=verbose)
+        v = b._matvec(v, verbose=verbose)
+        v = a._matvec(v, verbose=verbose)
         w += v
         return w
 
@@ -295,7 +319,7 @@ class Model(object):
     def get_syndrome(self, v):
         syndrome = []
         for op in self.xstabs+self.zstabs:
-            v1 = op.matvec(v)
+            v1 = op._matvec(v)
             r = numpy.dot(v, v1) # real values
             syndrome.append(r)
         return syndrome
@@ -428,11 +452,11 @@ def commutes(A, B, sign=-1):
     n = A.n
     v = numpy.random.normal(size=n)
 
-    Av = A.matvec(v)
-    BAv = B.matvec(Av)
+    Av = A._matvec(v)
+    BAv = B._matvec(Av)
 
-    Bv = B.matvec(v)
-    ABv = A.matvec(Bv)
+    Bv = B._matvec(v)
+    ABv = A._matvec(Bv)
 
     r = numpy.abs(BAv + sign * ABv).sum()
 
@@ -559,7 +583,7 @@ def test():
     
         while 1:
     
-            u = A.matvec(v)
+            u = A._matvec(v)
             eigval = numpy.dot(v, u)
     
             u = u + sigma * v
@@ -585,6 +609,22 @@ def test():
         vals, vecs = la.eigsh(A, k=k, v0=v0, which=which, maxiter=None) #, tol=1e-8)
         #vals, vecs = la.eigs(A, k=k, v0=v0, which='LR', maxiter=None) #, tol=1e-8)
         print()
+        print("vecs.shape:", vecs.shape)
+
+        if argv.transversal:
+            n = model.n
+            w = cyclotomic(8)
+            print(w)
+            T = ROp(n, list(range(n)), w)
+            print(T.phases)
+            for i in range(vecs.shape[1]):
+                v = vecs[:, i]
+                #v = T._matvec(v)
+                v = T.phases * v
+                u = A._matvec(v.real) + 1.j*A._matvec(v.imag)
+                eigval = numpy.dot(v.conj(), u)
+                print(numpy.dot(v.conj(), v))
+                print("eigval:", vals[i], "-->", eigval.real)
     
     # vals go from smallest to highest
     show_eigs(vals)
