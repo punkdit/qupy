@@ -139,8 +139,10 @@ def build_code(pauli, name=None):
     elif name=="steane":
         code = StabilizerCode(pauli, "XXXXIII XXIIXXI XIXIXIX ZZZZIII ZZIIZZI ZIZIZIZ")
     elif name=="eight":
-        #code = StabilizerCode(pauli, "XXXXXXXX ZZZZIIII IIIIZZZZ ZIZIZIZI ZZIIZZII")
-        code = StabilizerCode(pauli, "XXXXXXXX ZZZZZZZZ IIZIIZZZ IZZIIZZI ZIIZZZII")
+        code = StabilizerCode(pauli, "XXXXXXXX ZZZZIIII IIIIZZZZ ZIZIZIZI ZZIIZZII")
+        #code = StabilizerCode(pauli, 
+        #    "XXXXXXXX ZZZZIIII IIIIZZZZ ZIZIZIZI ZZIIZZII ZZIIIIII ZIIIZIII ZIZIIIII") # True
+        #code = StabilizerCode(pauli, "XXXXXXXX ZZZZZZZZ IIZIIZZZ IZZIIZZI ZIIZZZII") # False
     elif name=="rm":
         code = build_rm(pauli)
     elif name=="color":
