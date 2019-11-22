@@ -342,7 +342,7 @@ class RadfordBPDecoder(BaseDecoder):
         op = open('%s.out'%stem).read()
 
         #op = c_out.read()
-        #print "read:", repr(op)
+        #print("[%s]" % repr(op), end="")
         op = [int(c) for c in op.strip()]
         syndrome = self.check(op)
 #        if verbose:
