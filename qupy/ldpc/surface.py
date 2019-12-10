@@ -227,6 +227,8 @@ def test():
     code = encode * trivial
     print(code.longstr())
 
+    assert code == repitition
+
     return
 
 
