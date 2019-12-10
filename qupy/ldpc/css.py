@@ -8,6 +8,7 @@ import time
 import numpy
 import numpy.random as ra
 from numpy.linalg import lstsq
+from numpy import concatenate as cat
 
 from qupy.ldpc import solve
 from qupy.ldpc.solve import (
@@ -588,6 +589,75 @@ class CSSCode(object):
                 if 0<d<dz:
                     dz = d
         return dx, dz
+
+    @classmethod
+    def get_trivial(cls, n, idx):
+        Lx = zeros2(1, n)
+        Lz = zeros2(1, n)
+        Lx[0, idx] = 1
+        Lz[0, idx] = 1
+        Hx = zeros2(0, n)
+        Hz = zeros2(n-1, n)
+        for i in range(n-1):
+            if i<idx:
+                Hz[i, i] = 1
+            elif i>=idx:
+                Hz[i, i+1] = 1
+        code = cls(Lx=Lx, Lz=Lz, Hx=Hx, Hz=Hz, check=True)
+        #print(code.longstr())
+        return code
+
+#    def to_symplectic(self):
+#        Lx, Lz, Hx, Tz, Hz, Tx, Gx, Gz = (
+#            self.Lx, self.Lz, self.Hx,
+#            self.Tz, self.Hz, self.Tx,
+#            self.Gx, self.Gz)
+#        assert Gx is None
+#        assert Gz is None
+#        LxLz = cat((Lx, Lz), axis=1)
+#        HxTz = cat((Hx, Tz), axis=1)
+#        TxHz = cat((Tx, Hz), axis=1)
+#        A = cat((LxLz, HxTz, TxHz))
+#        return A
+#
+#    @classmethod
+#    def from_symplectic(cls, A, n, k, mx, mz):
+#        LxLz = A[:k, :]
+#        HxTz = A[k:k+mx, :]
+#        TxHz = A[k+mx:, :]
+#        Lx, Lz = LxLz[:, :n], LxLz[:, n:]
+#        Hx, Tz = HxTz[:, :n], HxTz[:, n:]
+#        Tx, Hz = TxHz[:, :n], TxHz[:, n:]
+#        code = cls(Lx=Lx, Lz=Lz, Hx=Hx, Tz=Tz, Hz=Hz, Tx=Tx)
+#        return code
+
+    def to_symplectic(self):
+        Lx, Lz, Hx, Tz, Hz, Tx, Gx, Gz = (
+            self.Lx, self.Lz, self.Hx,
+            self.Tz, self.Hz, self.Tx,
+            self.Gx, self.Gz)
+        assert Gx is None
+        assert Gz is None
+        n = self.n
+        Lx = cat((Lx, zeros2(len(Lx), n)), axis=1)
+        Lz = cat((zeros2(len(Lz), n), Lz), axis=1)
+        Hx = cat((Hx, zeros2(len(Hx), n)), axis=1)
+        Hz = cat((zeros2(len(Hz), n), Hz), axis=1)
+        Tx = cat((Tx, zeros2(len(Tx), n)), axis=1)
+        Tz = cat((zeros2(len(Tz), n), Tz), axis=1)
+        A = cat((Lx, Hx, Tx, Lz, Tz, Hz))
+        return A
+
+    @classmethod
+    def from_symplectic(cls, A, n, k, mx, mz):
+        LxLz = A[:k, :]
+        HxTz = A[k:k+mx, :]
+        TxHz = A[k+mx:, :]
+        Lx, Lz = LxLz[:, :n], LxLz[:, n:]
+        Hx, Tz = HxTz[:, :n], HxTz[:, n:]
+        Tx, Hz = TxHz[:, :n], TxHz[:, n:]
+        code = cls(Lx=Lx, Lz=Lz, Hx=Hx, Tz=Tz, Hz=Hz, Tx=Tx)
+        return code
 
     def get_chain(self):
         if self.mx and self.mz:
