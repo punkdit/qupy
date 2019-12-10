@@ -9,7 +9,6 @@ import numpy
 import numpy.random as ra
 from numpy.linalg import lstsq
 
-#from qupy.tool.smap import SMap
 from qupy.ldpc import solve
 from qupy.ldpc.solve import (
     shortstr, shortstrx, hbox,
@@ -18,13 +17,6 @@ from qupy.ldpc.solve import (
     array2, zeros2, identity2, parse)
 from qupy.ldpc.tool import write #, load, save
 from qupy.ldpc.chain import Chain, Morphism, equalizer
-
-#from qupy.ldpc.decoder import Decoder, RandomDecoder
-##from qupy.ldpc.dynamic import Tanner
-#from qupy.ldpc.bpdecode import RadfordBPDecoder
-#from qupy.ldpc.cluster import ClusterCSSDecoder
-##from qupy.ldpc import ensemble
-##from qupy.ldpc import lp
 
 dot = numpy.dot
 
