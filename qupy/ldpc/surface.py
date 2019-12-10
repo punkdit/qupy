@@ -33,7 +33,7 @@ class Clifford(object):
             other.Gx, other.Gz)
         assert Gx is None
         assert Gz is None
-        A = self.A
+        A = self.A.transpose()
         LxLz = dot2(cat((Lx, Lz), axis=1), A)
         HxTz = dot2(cat((Hx, Tz), axis=1), A)
         TxHz = dot2(cat((Tx, Hz), axis=1), A)
@@ -220,6 +220,7 @@ def test():
     print(repitition.longstr())
 
     CN_01 = Clifford.cnot(n, 0, 1)
+    print(CN_01)
     CN_12 = Clifford.cnot(n, 1, 2)
     encode = CN_12 * CN_01
 
