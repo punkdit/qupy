@@ -3,45 +3,82 @@
 from collections import namedtuple
 
 import numpy
+from numpy import concatenate as cat
 
 from qupy.smap import SMap
-from qupy.ldpc.solve import zeros2, shortstr, solve, dot2, array2
+from qupy.ldpc.solve import zeros2, shortstr, solve, dot2, array2, eq2, parse
 from qupy.ldpc.css import CSSCode
 
 
-#_Coord = namedtuple("_Coord", ["i", "j", "k"])
-#class Coord(_Coord):
-#
-#    def __new__(cls, i, j, k):
-#        assert k==0 or k==1
-#        return _Coord.__new__(cls, i, j, k)
-#
-#    #def __add__(self, 
-#
-#    def __lt__(self, other):
-#
-#        assert isinstance(other, Coord)
-#        if self.i < other.i and self.j < other.j:
-#            return True
-#        if self.i < other.i and self.j <= other.j:
-#            return True
-#        if self.i <= other.i and self.j < other.j:
-#            return True
-#        if self.i <= other.i and self.j <= other.j and self.k < other.k:
-#            return True
-#        return False
-#
-#    def __le__(self, other):
-#        assert isinstance(other, Coord)
-#        return self==other or self.__lt__(other)
-#
-#    def span(self, other):
-#        if not self<other:
-#            return
-#        for i in range(self.i, other.i):
-#          for j in range(self.j, other.j):
-#
-#print(Coord(0, 0, 0))
+class Clifford(object):
+    def __init__(self, A):
+        self.A = A
+        m, n = A.shape
+        self.shape = A.shape
+        assert n%2 == 0
+        self.n = n//2 # qubits
+
+    def __str__(self):
+        return str(self.A)
+
+    def __mul__(self, other):
+        if isinstance(other, Clifford):
+            A = dot2(self.A, other.A)
+            return Clifford(A)
+        assert isinstance(other, CSSCode)
+        assert other.n == self.n
+        Lx, Lz, Hx, Tz, Hz, Tx, Gx, Gz = (
+            other.Lx, other.Lz, other.Hx,
+            other.Tz, other.Hz, other.Tx,
+            other.Gx, other.Gz)
+        assert Gx is None
+        assert Gz is None
+        A = self.A
+        LxLz = dot2(cat((Lx, Lz), axis=1), A)
+        HxTz = dot2(cat((Hx, Tz), axis=1), A)
+        TxHz = dot2(cat((Tx, Hz), axis=1), A)
+        n = self.n
+        Lx, Lz = LxLz[:, :n], LxLz[:, n:]
+        Hx, Tz = HxTz[:, :n], HxTz[:, n:]
+        Tx, Hz = TxHz[:, :n], TxHz[:, n:]
+        code = CSSCode(Lx=Lx, Lz=Lz, Hx=Hx, Tz=Tz, Hz=Hz, Tx=Tx)
+        return code
+
+    def __eq__(self, other):
+        assert isinstance(other, Clifford)
+        assert self.shape == other.shape
+        return eq2(self.A, other.A)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    @classmethod
+    def identity(cls, n):
+        A = zeros2(2*n, 2*n)
+        for i in range(2*n):
+            A[i, i] = 1
+        return Clifford(A)
+
+    @classmethod
+    def hadamard(cls, n, idx):
+        A = zeros2(2*n, 2*n)
+        for i in range(2*n):
+            if i==idx:
+                A[i, n+i] = 1
+            elif i==n+idx:
+                A[i, i-n] = 1
+            else:
+                A[i, i] = 1
+        return Clifford(A)
+
+    @classmethod
+    def cnot(cls, n, src, tgt):
+        A = cls.identity(n).A
+        assert src!=tgt
+        A[tgt, src] = 1
+        A[src+n, tgt+n] = 1
+        return Clifford(A)
+
 
 
 class Surface(object):
@@ -162,7 +199,35 @@ class Surface(object):
         return code
 
 
+
 def test():
+
+    n = 4
+    I = Clifford.identity(n)
+    H = Clifford.hadamard(n, 0)
+    assert H*H == I
+
+    CN = Clifford.cnot(n, 0, 1)
+    assert CN*CN == I
+
+    n = 3
+    trivial = CSSCode(
+        Lx=parse("1.."), Lz=parse("1.."), Hx=zeros2(0, n), Hz=parse(".1. ..1"))
+    print(trivial.longstr())
+
+    repitition = CSSCode(
+        Lx=parse("111"), Lz=parse("1.."), Hx=zeros2(0, n), Hz=parse("11. .11"))
+    print(repitition.longstr())
+
+    CN_01 = Clifford.cnot(n, 0, 1)
+    CN_12 = Clifford.cnot(n, 1, 2)
+    encode = CN_12 * CN_01
+
+    code = encode * trivial
+    print(code.longstr())
+
+    return
+
 
     surf = Surface()
     surf.add((0, 0), (2, 4))
@@ -181,6 +246,8 @@ def test():
     code = surf.get_code()
     print(code)
     print(code.longstr())
+
+
 
 if __name__ == "__main__":
 
