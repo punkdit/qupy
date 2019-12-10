@@ -58,6 +58,17 @@ def direct_sum(A, B):
     return C
 
 
+def row_equal(A, B):
+    assert A.shape[1] == B.shape[1]
+    if A.shape[0] != B.shape[0]:
+        return False
+    A = shortstr(A).split()
+    B = shortstr(B).split()
+    A.sort()
+    B.sort()
+    return A==B
+
+
 class CSSCode(object):
 
     def __init__(self,
@@ -135,6 +146,18 @@ class CSSCode(object):
             Lx=Lx, Lz=Lz, Hx=Hx, Tz=Tz, 
             Hz=Hz, Tx=Tx, check=self.check)
         return code
+
+    def row_equal(self, other):
+        "same stabilizers and logical operators, up to reordering"
+        if not row_equal(self.Lx, other.Lx):
+            return False
+        if not row_equal(self.Lz, other.Lz):
+            return False
+        if not row_equal(self.Hx, other.Hx):
+            return False
+        if not row_equal(self.Hz, other.Hz):
+            return False
+        return True
 
     def __add__(self, other):
         "perform direct sum"
@@ -530,6 +553,7 @@ class CSSCode(object):
         code = CSSCode(Hx=Hx, Hz=Hz)
         return code
 
+    """
     @property
     def distance(self):
         "simple upper bound on the distance"
@@ -543,6 +567,27 @@ class CSSCode(object):
                 w = min(op.sum(), w)
         return w
     d = distance
+    """
+
+    def distance(self):
+        Lx = list(solve.span(self.Lx))
+        dx = self.n
+        for u in solve.span(self.Hx):
+            for v in Lx:
+                w = (u+v)%2
+                d = w.sum()
+                if 0<d<dx:
+                    dx = d
+
+        Lz = list(solve.span(self.Lz))
+        dz = self.n
+        for u in solve.span(self.Hz):
+            for v in Lz:
+                w = (u+v)%2
+                d = w.sum()
+                if 0<d<dz:
+                    dz = d
+        return dx, dz
 
     def get_chain(self):
         if self.mx and self.mz:

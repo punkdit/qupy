@@ -5,9 +5,38 @@ from collections import namedtuple
 import numpy
 from numpy import concatenate as cat
 
+from qupy.util import mulclose_fast
+from qupy.argv import argv
 from qupy.smap import SMap
 from qupy.ldpc.solve import zeros2, shortstr, solve, dot2, array2, eq2, parse
 from qupy.ldpc.css import CSSCode
+
+
+def mulclose_find(gen, names, verbose=False, maxsize=None):
+    ops = set(gen)
+    words = dict((g, (names[i],)) for (i, g) in enumerate(gen))
+    bdy = gen
+    while bdy:
+        _bdy = set()
+        for g in bdy:
+            for h in gen:
+                k = g*h
+                if k in ops:
+                    if len(words[g]+words[h]) < len(words[k]):
+                        words[k] = words[g]+words[h]
+                        assert 0
+                else:
+                    words[k] = words[g]+words[h]
+                    ops.add(k)
+                    _bdy.add(k)
+        bdy = _bdy
+        if verbose:
+            print("mulclose:", len(ops))
+        if maxsize and len(ops) >= maxsize:
+            break
+    return ops, words
+
+
 
 
 class Clifford(object):
@@ -22,9 +51,11 @@ class Clifford(object):
         return str(self.A)
 
     def __mul__(self, other):
-        if isinstance(other, Clifford):
-            A = dot2(self.A, other.A)
-            return Clifford(A)
+        assert isinstance(other, Clifford)
+        A = dot2(self.A, other.A)
+        return Clifford(A)
+
+    def __call__(self, other):
         assert isinstance(other, CSSCode)
         assert other.n == self.n
         Lx, Lz, Hx, Tz, Hz, Tx, Gx, Gz = (
@@ -51,6 +82,9 @@ class Clifford(object):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash(self.A.tostring())
 
     @classmethod
     def identity(cls, n):
@@ -86,6 +120,10 @@ class Surface(object):
     def __init__(self):
         self.keys = []
         self.keymap = {}
+
+    @property
+    def n(self):
+        return len(self.keys)
 
     def _add(self, key):
         keys = self.keys
@@ -138,9 +176,18 @@ class Surface(object):
         smap = self.mk_smap()
         return str(smap)
 
-    def strop(self, op, c="*"):
+    def str_span(self, span, c="*"):
         smap = self.mk_smap()
-        for (i, j, k) in op:
+        for (i, j, k) in span:
+            smap[self.get_coord(i, j, k)] = c
+        return str(smap)
+
+    def str_op(self, op, c="*"):
+        smap = self.mk_smap()
+        for idx, key in enumerate(self.keys):
+            if op[idx]==0:
+                continue
+            (i, j, k) = key
             smap[self.get_coord(i, j, k)] = c
         return str(smap)
 
@@ -198,6 +245,15 @@ class Surface(object):
         code = CSSCode(Hx=Hx, Hz=Hz)
         return code
 
+    def dump_code(self, code):
+        assert code.n == self.n
+        str_op = self.str_op
+        print("Lx:")
+        for op in code.Lx:
+            print(str_op(op, "X"))
+        print("Lz:")
+        for op in code.Lz:
+            print(str_op(op, "Z"))
 
 
 def test():
@@ -213,42 +269,56 @@ def test():
     n = 3
     trivial = CSSCode(
         Lx=parse("1.."), Lz=parse("1.."), Hx=zeros2(0, n), Hz=parse(".1. ..1"))
-    print(trivial.longstr())
 
     repitition = CSSCode(
         Lx=parse("111"), Lz=parse("1.."), Hx=zeros2(0, n), Hz=parse("11. .11"))
-    print(repitition.longstr())
+
+    assert not trivial.row_equal(repitition)
 
     CN_01 = Clifford.cnot(n, 0, 1)
-    print(CN_01)
     CN_12 = Clifford.cnot(n, 1, 2)
     encode = CN_12 * CN_01
 
-    code = encode * trivial
-    print(code.longstr())
-
-    assert code == repitition
-
-    return
+    code = CN_01 ( trivial )
+    assert not code.row_equal(repitition)
+    code = CN_12 ( code )
+    assert code.row_equal(repitition)
 
 
     surf = Surface()
-    surf.add((0, 0), (2, 4))
+    surf.add((0, 0), (2, 2))
 
     print(surf)
 
-    x_ops, z_ops = surf.get_ops()
-
-#    for op in x_ops:
+#    x_ops, z_ops = surf.get_ops()
+#
+#    for span in x_ops:
 #        print()
-#        print(surf.strop(op, "X"))
-#    for op in z_ops:
+#        print(surf.str_span(span, "X"))
+#    for span in z_ops:
 #        print()
-#        print(surf.strop(op, "Z"))
+#        print(surf.str_span(span, "Z"))
 
     code = surf.get_code()
     print(code)
-    print(code.longstr())
+    #print(code.longstr())
+    #print(code.distance())
+
+    #surf.dump_code(code)
+
+#    n = code.n
+    n = argv.get("n", 2)
+    gen = [Clifford.hadamard(n, i) for i in range(n)]
+    names = ["H_%d"%i for i in range(n)]
+    for i in range(n):
+      for j in range(n):
+        if i!=j:
+            gen.append(Clifford.cnot(n, i, j))
+            names.append("CN(%d,%d)"%(i,j))
+
+    #G = mulclose_fast(gen)
+    G, lookup = mulclose_find(gen, names)
+    print(len(G))
 
 
 
