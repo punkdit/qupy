@@ -172,28 +172,56 @@ class Clifford(object):
         A[tgt, src] = 1
         A[src+n, tgt+n] = 1
         return Clifford(A)
-
+    
+    @classmethod
+    def swap(cls, n, idx, jdx):
+        A = zeros2(2*n, 2*n)
+        assert idx != jdx
+        for i in range(n):
+            if i==idx:
+                A[i, jdx] = 1 # X sector
+                A[i+n, jdx+n] = 1 # Z sector
+            elif i==jdx:
+                A[i, idx] = 1 # X sector
+                A[i+n, idx+n] = 1 # Z sector
+            else:
+                A[i, i] = 1 # X sector
+                A[i+n, i+n] = 1 # Z sector
+        return Clifford(A)
 
 
 class Surface(object):
 
     def __init__(self):
-        self.keys = []
-        self.keymap = {}
+        self.keys = [] # list of coordinates (i, j, k)
+        self.keymap = {} # map coordinate to index in keys
+        self.surf_keys = set() # surface code qubit coordinates
+        self.z_keys = set() # single qubit |0>  coordinates
+        self.x_keys = set() # single qubit |+>  coordinates
 
     @property
     def n(self):
         return len(self.keys)
 
-    def _add(self, key):
+    def add_key(self, key, tp=None):
         keys = self.keys
         keymap = self.keymap
+        attr = None
+        if tp is not None:
+            attr = getattr(self, tp, None)
         if key in keymap:
+            #if attr is not None:
+            #    assert key in attr, "type mismatch"
+            if attr is not None:
+                attr.add(key)
             return
-        keymap[key] = len(keys)
+        idx = len(keys)
         keys.append(key)
+        keymap[key] = idx
+        if attr is not None:
+            attr.add(key)
 
-    def add(self, top_left, bot_right):
+    def add_surf(self, top_left, bot_right):
 
         i0, j0 = top_left
         i1, j1 = bot_right
@@ -209,7 +237,22 @@ class Surface(object):
                 ks = (1,)
             for k in ks:
                 key = (i, j, k)
-                self._add(key)
+                self.add_key(key, "surf_keys")
+
+    def add_x(self, key):
+        self.add_key(key, "x_keys")
+
+    def add_z(self, key):
+        self.add_key(key, "z_keys")
+
+    def add_logical(self, key):
+        self.add_key(key)
+
+    def clone_keys(self):
+        surf = Surface()
+        for key in self.keys:
+            surf.add_key(key)
+        return surf
 
     def get_coord(self, i, j, k=None):
         if k is not None:
@@ -236,9 +279,9 @@ class Surface(object):
         smap = self.mk_smap()
         return str(smap)
 
-    def str_span(self, span, c="*"):
+    def str_stab(self, stab, c="*"):
         smap = self.mk_smap()
-        for (i, j, k) in span:
+        for (i, j, k) in stab:
             smap[self.get_coord(i, j, k)] = c
         return str(smap)
 
@@ -251,9 +294,12 @@ class Surface(object):
             smap[self.get_coord(i, j, k)] = c
         return str(smap)
 
-    def get_ops(self):
+    def get_stabs(self):
         keys = self.keys
         keymap = self.keymap
+        surf_keys = self.surf_keys
+        x_keys = self.x_keys
+        z_keys = self.z_keys
         i0 = min(i for (i,j,k) in keys)
         i1 = max(i for (i,j,k) in keys)
         j0 = min(j for (i,j,k) in keys)
@@ -263,44 +309,51 @@ class Surface(object):
         deltas = [(0, 0, 0), (0, 0, 1), (0, 1, 1), (1, 0, 0)]
         for i in range(i0, i1+1):
           for j in range(j0, j1+1):
-            span = []
+            stab = []
             for di, dj, k in deltas:
                 key = (i+di, j+dj, k)
-                if key not in keymap:
+                if key not in surf_keys:
                     continue
-                span.append(key)
-            if len(span)>=3:
-                z_ops.append(span)
+                stab.append(key)
+            if len(stab)>=3:
+                z_ops.append(stab)
 
         x_ops = []
         deltas = [(0, 0, 0), (0, 0, 1), (-1, 0, 1), (0, -1, 0)]
         for i in range(i0, i1+1):
           for j in range(j0, j1+1):
-            span = []
+            stab = []
             for di, dj, k in deltas:
                 key = (i+di, j+dj, k)
-                if key not in keymap:
+                if key not in surf_keys:
                     continue
-                span.append(key)
-            if len(span)>=3:
-                x_ops.append(span)
+                stab.append(key)
+            if len(stab)>=3:
+                x_ops.append(stab)
+
+        for key in keys:
+            if key in x_keys:
+                x_ops.append([key])
+        for key in keys:
+            if key in z_keys:
+                z_ops.append([key])
 
         return x_ops, z_ops
 
     def get_code(self):
         keys = self.keys
         keymap = self.keymap
-        x_ops, z_ops = self.get_ops()
+        x_ops, z_ops = self.get_stabs()
         n = len(keys)
         mx = len(x_ops)
         mz = len(z_ops)
         Hx = zeros2(mx, n)
         Hz = zeros2(mz, n)
-        for idx, span in enumerate(x_ops):
-            for key in span:
+        for idx, stab in enumerate(x_ops):
+            for key in stab:
                 Hx[idx, keymap[key]] = 1
-        for idx, span in enumerate(z_ops):
-            for key in span:
+        for idx, stab in enumerate(z_ops):
+            for key in stab:
                 Hz[idx, keymap[key]] = 1
         code = CSSCode(Hx=Hx, Hz=Hz)
         return code
@@ -359,13 +412,29 @@ def get_gen(n, pairs=None):
 
 def test_symplectic():
 
+    n = 3
+    I = Clifford.identity(n)
+    for idx in range(n):
+      for jdx in range(n):
+        if idx==jdx:
+            continue
+        CN_01 = Clifford.cnot(n, idx, jdx)
+        CN_10 = Clifford.cnot(n, jdx, idx)
+        assert CN_01*CN_01 == I
+        assert CN_10*CN_10 == I
+        lhs = CN_10 * CN_01 * CN_10
+        rhs = Clifford.swap(n, idx, jdx)
+        assert lhs == rhs
+        lhs = CN_01 * CN_10 * CN_01
+        assert lhs == rhs
+
     n = 4
     I = Clifford.identity(n)
     H = Clifford.hadamard(n, 0)
     assert H*H == I
 
-    CN = Clifford.cnot(n, 0, 1)
-    assert CN*CN == I
+    CN_01 = Clifford.cnot(n, 0, 1)
+    assert CN_01*CN_01 == I
 
     n = 3
     trivial = CSSCode(
@@ -428,32 +497,44 @@ def get_encoder(source, target):
 def test_surface_1():
 
     surf = Surface()
-    surf.add((0, 0), (2, 2))
-    print(surf)
+    surf.add_surf((0, 0), (2, 2))
+    #print(surf)
 
-#    x_ops, z_ops = surf.get_ops()
-#    for span in x_ops:
+#    x_ops, z_ops = surf.get_stabs()
+#    for stab in x_ops:
 #        print()
-#        print(surf.str_span(span, "X"))
-#    for span in z_ops:
+#        print(surf.str_stab(stab, "X"))
+#    for stab in z_ops:
 #        print()
-#        print(surf.str_span(span, "Z"))
+#        print(surf.str_stab(stab, "Z"))
 
     code = surf.get_code()
     n = code.n
-    print(code)
-    print(code.longstr())
+    #print(code)
+    #print(code.longstr())
+    assert n==5
 
     idx = surf.keymap[(1, 0, 0)]
-    trivial = CSSCode.get_trivial(surf.n, idx)
+    source = CSSCode.get_trivial(surf.n, idx)
+    print(source.longstr())
+
+    logical = (1, 0, 0)
+    trivial = surf.clone_keys()
+    #trivial.add_logical(logical)
+    for key in surf.keys:
+        if key != logical:
+            trivial.add_z(key)
+    source = trivial.get_code()
+    print(source.longstr())
 
     if 0:
         op = Clifford.identity(n)
-        for i in [0, 1, 3, 4]:
+        #for i in [0, 1, 3, 4]:
+        for i in [0, 4]:
             op = op*Clifford.hadamard(n, i)
-        trivial = op(trivial)
+        source = op(source)
 
-    A = get_encoder(trivial, code)
+    A = get_encoder(source, code)
 
     pairs = None
     #pairs = [(0, 2), (1, 2), (3, 2), (4, 2)]
@@ -469,12 +550,12 @@ def test_surface_1():
 def test_surface():
 
     source = Surface()
-    source.add((1, 1), (3, 3))
+    source.add_surf((1, 1), (3, 3))
     print(source)
     print()
 
     target = Surface()
-    target.add((0, 0), (4, 4))
+    target.add_surf((0, 0), (4, 4))
     print(target)
 
     
@@ -483,8 +564,17 @@ def test_surface():
 
 if __name__ == "__main__":
 
-    test_symplectic()
-    test_surface()
+    name = argv.next()
+    if name:
+
+        fn = eval(name)
+        fn()
+
+    else:
+    
+        test_symplectic()
+        test_surface_1()
+        test_surface()
 
 
 
