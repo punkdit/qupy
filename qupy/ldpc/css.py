@@ -648,16 +648,16 @@ class CSSCode(object):
         A = cat((Lx, Hx, Tx, Lz, Tz, Hz))
         return A
 
-    @classmethod
-    def from_symplectic(cls, A, n, k, mx, mz):
-        LxLz = A[:k, :]
-        HxTz = A[k:k+mx, :]
-        TxHz = A[k+mx:, :]
-        Lx, Lz = LxLz[:, :n], LxLz[:, n:]
-        Hx, Tz = HxTz[:, :n], HxTz[:, n:]
-        Tx, Hz = TxHz[:, :n], TxHz[:, n:]
-        code = cls(Lx=Lx, Lz=Lz, Hx=Hx, Tz=Tz, Hz=Hz, Tx=Tx)
-        return code
+#    @classmethod
+#    def from_symplectic(cls, A, n, k, mx, mz):
+#        LxLz = A[:k, :]
+#        HxTz = A[k:k+mx, :]
+#        TxHz = A[k+mx:, :]
+#        Lx, Lz = LxLz[:, :n], LxLz[:, n:]
+#        Hx, Tz = HxTz[:, :n], HxTz[:, n:]
+#        Tx, Hz = TxHz[:, :n], TxHz[:, n:]
+#        code = cls(Lx=Lx, Lz=Lz, Hx=Hx, Tz=Tz, Hz=Hz, Tx=Tx)
+#        return code
 
     def get_chain(self):
         if self.mx and self.mz:

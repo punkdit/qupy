@@ -197,33 +197,57 @@ class Surface(object):
     def __init__(self):
         self.keys = [] # list of coordinates (i, j, k)
         self.keymap = {} # map coordinate to index in keys
-        self.surf_keys = set() # surface code qubit coordinates
-        self.z_keys = set() # single qubit |0>  coordinates
-        self.x_keys = set() # single qubit |+>  coordinates
+        #self.surf_keys = set() # surface code qubit coordinates
+        #self.z_keys = set() # single qubit |0>  coordinates
+        #self.x_keys = set() # single qubit |+>  coordinates
+        self.tpmap = {} # map coordinate to tp "S", "Z", "X", "L"
 
     @property
     def n(self):
         return len(self.keys)
 
-    def add_key(self, key, tp=None):
+    def __repr__(self):
+        return "Surface(%s)"%(self.keys,)
+        
+#    def __repr__(self):
+#        surf_keys = self.surf_keys
+#        z_keys = self.z_keys
+#        x_keys = self.x_keys
+#        return "Surface(%s, surf_keys=%s, z_keys=%s, x_keys=%s)" % (
+#            self.keys, surf_keys, z_keys, x_keys)
+
+    def get_keys(self, tp):
+        assert tp in "SZXL"
+        return [key for key in self.keys if self.tpmap[key] == tp]
+
+    @property
+    def surf_keys(self):
+        return self.get_keys("S")
+
+    @property
+    def x_keys(self):
+        return self.get_keys("X")
+
+    @property
+    def z_keys(self):
+        return self.get_keys("Z")
+
+    @property
+    def logop_keys(self):
+        return self.get_keys("L")
+            
+    def set_key(self, key, tp="L"):
+        assert tp in ["S", "Z", "X", "L"]
         keys = self.keys
         keymap = self.keymap
-        attr = None
-        if tp is not None:
-            attr = getattr(self, tp, None)
+        self.tpmap[key] = tp
         if key in keymap:
-            #if attr is not None:
-            #    assert key in attr, "type mismatch"
-            if attr is not None:
-                attr.add(key)
             return
         idx = len(keys)
         keys.append(key)
         keymap[key] = idx
-        if attr is not None:
-            attr.add(key)
 
-    def add_surf(self, top_left, bot_right):
+    def add_many(self, top_left, bot_right, tp="S"):
 
         i0, j0 = top_left
         i1, j1 = bot_right
@@ -239,21 +263,21 @@ class Surface(object):
                 ks = (1,)
             for k in ks:
                 key = (i, j, k)
-                self.add_key(key, "surf_keys")
+                self.set_key(key, tp)
 
     def add_x(self, key):
-        self.add_key(key, "x_keys")
+        self.set_key(key, "X")
 
     def add_z(self, key):
-        self.add_key(key, "z_keys")
+        self.set_key(key, "Z")
 
     def add_logical(self, key):
-        self.add_key(key)
+        self.set_key(key, "L")
 
     def clone_keys(self):
         surf = Surface()
         for key in self.keys:
-            surf.add_key(key)
+            surf.set_key(key)
         return surf
 
     def get_coord(self, i, j, k=None):
@@ -359,6 +383,19 @@ class Surface(object):
                 Hz[idx, keymap[key]] = 1
         code = CSSCode(Hx=Hx, Hz=Hz)
         return code
+
+
+    def dump(self):
+        sep = "_"*self.n*2
+        for tp in "SXZL":
+            smap = self.mk_smap()
+            for key in self.get_keys(tp):
+                (i, j, k) = key
+                smap[self.get_coord(i, j, k)] = tp
+            print(sep)
+            print("tp = %r"%(tp,))
+            print(smap)
+        print(sep)
 
     def dump_idxs(self):
         n = self.n
@@ -499,7 +536,7 @@ def get_encoder(source, target):
 def test_encode():
 
     surf = Surface()
-    surf.add_surf((0, 0), (2, 2))
+    surf.add_many((0, 0), (2, 2))
     #print(surf)
 
     if 0:
@@ -526,10 +563,10 @@ def test_encode():
     trivial.add_z(trivial.keys[3])
     
     source = trivial.get_code()
-    print("source:")
-    print(source.longstr())
-    print("target")
-    print(target.longstr())
+    #print("source:")
+    #print(source.longstr())
+    #print("target")
+    #print(target.longstr())
 
     if 0:
         op = Clifford.identity(n)
@@ -550,27 +587,55 @@ def test_encode():
 
     B = None
     for result in mulclose_find(gen, names, A):
-        print(len(result), ":", "*".join(result))
+        #print(len(result), ":", "*".join(result))
         B = reduce(mul, [gen[names.index(op)] for op in result])
         #print(B)
+        break
 
     assert B is not None
-    print("result")
+    #print("result")
     code = B(source)
-    print(code.longstr())
+    #print(code.longstr())
     assert code.row_equal(target)
 
 
 def test_surface():
 
+    """
+    Try to encode n=5 surface code into n=25 surface code
+    """
+
     source = Surface()
-    source.add_surf((1, 1), (3, 3))
-    print(source)
+    source.add_many((0, 0), (4, 4), "L")
+    source.add_many((1, 1), (3, 3))
+
+    source.set_key((0, 1, 1), "X")
+    source.set_key((0, 2, 1), "X")
+    source.set_key((3, 1, 1), "X")
+    source.set_key((3, 2, 1), "X")
+
+    source.set_key((1, 0, 0), "X")
+    source.set_key((2, 0, 0), "X")
+    source.set_key((3, 0, 0), "X")
+    source.set_key((1, 2, 0), "X")
+    source.set_key((2, 2, 0), "X")
+    source.set_key((3, 2, 0), "X")
+
+    for key in source.keys:
+        if source.tpmap[key] == "L":
+            source.set_key(key, "Z")
+
+    assert source.n == 25
+
+    #print(repr(source))
+    source.dump()
+    print(source.get_code().longstr())
     print()
 
     target = Surface()
-    target.add_surf((0, 0), (4, 4))
+    target.add_many((0, 0), (4, 4))
     print(target)
+    print(target.get_code().longstr())
 
     
 
