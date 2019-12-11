@@ -593,6 +593,7 @@ def test_encode():
         break
 
     assert B is not None
+    assert B==A
     #print("result")
     code = B(source)
     #print(code.longstr())
@@ -638,6 +639,8 @@ def test_surface():
     print(target.get_code().longstr())
 
     
+    A = get_encoder(source, target)
+    print(A)
 
 
 
