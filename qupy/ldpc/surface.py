@@ -90,7 +90,9 @@ class Clifford(object):
         self.key = A.tostring()
 
     def __str__(self):
-        return str(self.A)
+        s = str(self.A)
+        s = s.replace("0", ".")
+        return s
 
     def __mul__(self, other):
         assert isinstance(other, Clifford)
@@ -494,38 +496,40 @@ def get_encoder(source, target):
     return A
 
 
-def test_surface_1():
+def test_encode():
 
     surf = Surface()
     surf.add_surf((0, 0), (2, 2))
     #print(surf)
 
-#    x_ops, z_ops = surf.get_stabs()
-#    for stab in x_ops:
-#        print()
-#        print(surf.str_stab(stab, "X"))
-#    for stab in z_ops:
-#        print()
-#        print(surf.str_stab(stab, "Z"))
+    if 0:
+        x_ops, z_ops = surf.get_stabs()
+        for stab in x_ops:
+            print()
+            print(surf.str_stab(stab, "X"))
+        for stab in z_ops:
+            print()
+            print(surf.str_stab(stab, "Z"))
 
-    code = surf.get_code()
-    n = code.n
-    #print(code)
-    #print(code.longstr())
+    target = surf.get_code()
+    n = target.n
     assert n==5
 
-    idx = surf.keymap[(1, 0, 0)]
-    source = CSSCode.get_trivial(surf.n, idx)
-    print(source.longstr())
+    #idx = surf.keymap[(1, 0, 0)]
+    #source = CSSCode.get_trivial(surf.n, idx)
+    #print(source.longstr())
 
-    logical = (1, 0, 0)
     trivial = surf.clone_keys()
-    #trivial.add_logical(logical)
-    for key in surf.keys:
-        if key != logical:
-            trivial.add_z(key)
+    trivial.add_x(trivial.keys[0])
+    trivial.add_x(trivial.keys[1])
+    trivial.add_z(trivial.keys[2])
+    trivial.add_z(trivial.keys[3])
+    
     source = trivial.get_code()
+    print("source:")
     print(source.longstr())
+    print("target")
+    print(target.longstr())
 
     if 0:
         op = Clifford.identity(n)
@@ -534,17 +538,27 @@ def test_surface_1():
             op = op*Clifford.hadamard(n, i)
         source = op(source)
 
-    A = get_encoder(source, code)
+    A = get_encoder(source, target)
 
     pairs = None
     #pairs = [(0, 2), (1, 2), (3, 2), (4, 2)]
-    pairs = [(0, 2), (1, 2), (3, 2), (4, 2),
-        (2, 0), (2, 1), (2, 3), (2, 4)]
+    #pairs = [(0, 2), (1, 2), (3, 2), (4, 2), (2, 0), (2, 1), (2, 3), (2, 4), (1, 4), (4, 3)] #... etc....
+    pairs = [(0, 3), (1, 0), (1, 2), (1, 4), (2, 3), (4, 3)]
+    pairs += [(0, 2)]
     gen, names = get_gen(surf.n, pairs)
-
     #G = mulclose_fast(gen)
+
+    B = None
     for result in mulclose_find(gen, names, A):
-        print("*".join(result))
+        print(len(result), ":", "*".join(result))
+        B = reduce(mul, [gen[names.index(op)] for op in result])
+        #print(B)
+
+    assert B is not None
+    print("result")
+    code = B(source)
+    print(code.longstr())
+    assert code.row_equal(target)
 
 
 def test_surface():
@@ -573,7 +587,7 @@ if __name__ == "__main__":
     else:
     
         test_symplectic()
-        test_surface_1()
+        test_encode()
         test_surface()
 
 
