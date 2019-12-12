@@ -12,6 +12,7 @@ from qupy.ldpc import solve
 from qupy.ldpc.solve import (
     pop2, zeros2, dot2, array2, eq2, rand2, binomial2,
     randexpo, shortstr, shortstrx)
+from qupy.ldpc.dynamic import Tanner
 
 from qupy.argv import argv
 
@@ -708,4 +709,118 @@ class MultiDecoder(Decoder):
 
 
 
+
+
+class StarDynamicDistance(Decoder):
+    """ Search for small weight logical operators.
+        These upper-bound the distance.
+    """
+    def __init__(self, code):
+        self.code = code
+        Hx, Lx = self.Hx, self.Lx
+
+
+    # XX _should be method mindist of CSSCode ? XX
+    def find_full(self, target=None, stopat=None, verbose=False):
+        Hx = self.Hx
+        Lx = self.Lx
+
+        M0 = argv.get("M0", 10)
+        target = target or argv.target
+
+        best_T = Lx[0]
+        best_w = best_T.sum()
+        for i in range(Lx.shape[0]):
+        
+            H = zeros2(Lx.shape[0]-1+Hx.shape[0], self.n)
+            H[:i] = Lx[:i]
+            H[i:Lx.shape[0]-1] = Lx[i+1:]
+            H[Lx.shape[0]-1:] = Hx
+            graph = Tanner(H)
+
+            T1 = Lx[i].copy()
+            for j in range(M0):
+                #print "l_op:"
+                #print strop(l_op)
+                T1 = best_T.copy()
+                for op in Hx:
+                    if random()<0.5:
+                        T1 += op
+                        T1 %= 2
+                for op in Lx:
+                    if random()<0.5:
+                        T1 += op
+                        T1 %= 2
+                if target:
+                    T1 = graph.minimize(T1, target, maxsize=argv.maxsize, verbose=verbose)
+                    break
+                else:
+                    T1 = graph.localmin(T1, stopat=stopat, verbose=verbose)
+                w = T1.sum()
+                if w and w < best_w:
+                    best_T = T1
+                    best_w = w
+                    write("%s:"%w)
+                    if stopat is not None and w <= stopat:
+                        return best_T
+
+        return best_T
+
+    def find(self, target=None, stopat=None, idx=None, verbose=False):
+        Hx = self.Hx
+        Lx = self.Lx
+
+        M0 = argv.get("M0", 1)
+        target = target or argv.target
+
+        if idx is None:
+            best_i = 0
+            best_w = Lx[0].sum()
+            for i in range(1, Lx.shape[0]):
+                w = Lx[i].sum() 
+                if w < best_w:
+                    best_i = i
+                    best_w = w
+    
+            i = best_i
+        else:
+            i = idx
+            best_w = Lx[i].sum()
+
+        best_T = Lx[i]
+        write("%s:"%best_w)
+
+        H = zeros2(Lx.shape[0]-1+Hx.shape[0], self.n)
+        H[:i] = Lx[:i]
+        H[i:Lx.shape[0]-1] = Lx[i+1:]
+        H[Lx.shape[0]-1:] = Hx
+        graph = Tanner(H)
+
+        T1 = Lx[i].copy()
+        for j in range(M0):
+            #print "l_op:"
+            #print strop(l_op)
+            T1 = best_T.copy()
+            #for op in Hx:
+            #    if random()<0.5:
+            #        T1 += op
+            #        T1 %= 2
+            #for op in Lx:
+            #    if random()<0.5:
+            #        T1 += op
+            #        T1 %= 2
+            if target:
+                T1 = graph.minimize(T1, target, maxsize=argv.maxsize, verbose=verbose)
+                break
+            else:
+                T1 = graph.localmin(T1, stopat=stopat, verbose=verbose)
+            w = T1.sum()
+            if w and w < best_w:
+                best_T = T1
+                best_w = w
+                write("%s:"%w)
+                if stopat is not None and w <= stopat:
+                    return best_T
+
+        return best_T
 

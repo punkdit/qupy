@@ -12,6 +12,7 @@ from qupy.argv import argv
 from qupy.smap import SMap
 from qupy.ldpc.solve import zeros2, shortstr, solve, dot2, array2, eq2, parse, pseudo_inverse
 from qupy.ldpc.css import CSSCode
+from qupy.ldpc.decoder import StarDynamicDistance
 
 
 def mulclose_find(gen, names, target, verbose=False, maxsize=None):
@@ -90,8 +91,9 @@ class Clifford(object):
         self.key = A.tostring()
 
     def __str__(self):
-        s = str(self.A)
-        s = s.replace("0", ".")
+        #s = str(self.A)
+        #s = s.replace("0", ".")
+        s = shortstr(self.A)
         return s
 
     def __mul__(self, other):
@@ -247,7 +249,18 @@ class Surface(object):
         keys.append(key)
         keymap[key] = idx
 
-    def add_many(self, top_left, bot_right, tp="S"):
+    def del_key(self, key):
+        keys = self.keys
+        keymap = self.keymap
+        tpmap = self.tpmap
+        del tpmap[key]
+        idx = keymap[key]
+        del keymap[key]
+        keys.pop(idx)
+        for idx, key in enumerate(keys):
+            keymap[key] = idx
+
+    def set_many(self, top_left, bot_right, tp="S"):
 
         i0, j0 = top_left
         i1, j1 = bot_right
@@ -264,6 +277,24 @@ class Surface(object):
             for k in ks:
                 key = (i, j, k)
                 self.set_key(key, tp)
+
+    def del_many(self, top_left, bot_right):
+
+        i0, j0 = top_left
+        i1, j1 = bot_right
+
+        # smooth at top and bot
+        # rough at left and right
+        for i in range(i0, i1):
+          for j in range(j0, j1):
+            ks = (0, 1)
+            if i==i1-1:
+                ks = (0,)
+            if j==j0:
+                ks = (0,)
+            for k in ks:
+                key = (i, j, k)
+                self.del_key(key)
 
     def add_x(self, key):
         self.set_key(key, "X")
@@ -290,7 +321,7 @@ class Surface(object):
             col = 2*j
         return (row, col)
 
-    def mk_smap(self):
+    def get_smap(self):
         smap = SMap()
         get_coord = self.get_coord
         for (i, j, k) in self.keys:
@@ -302,17 +333,17 @@ class Surface(object):
         return smap
 
     def __str__(self):
-        smap = self.mk_smap()
+        smap = self.get_smap()
         return str(smap)
 
     def str_stab(self, stab, c="*"):
-        smap = self.mk_smap()
+        smap = self.get_smap()
         for (i, j, k) in stab:
             smap[self.get_coord(i, j, k)] = c
         return str(smap)
 
     def str_op(self, op, c="*"):
-        smap = self.mk_smap()
+        smap = self.get_smap()
         for idx, key in enumerate(self.keys):
             if op[idx]==0:
                 continue
@@ -366,7 +397,23 @@ class Surface(object):
 
         return x_ops, z_ops
 
+    def check(self):
+        x_ops, z_ops = self.get_stabs()
+        for xop in x_ops:
+          for zop in z_ops:
+            xop = set(xop)
+            zop = set(zop)
+            n = len(xop.intersection(zop))
+            if n%2:
+                print("FAIL "*10)
+                print(self.str_stab(xop, "X"))
+                print("FAIL "*10)
+                print(self.str_stab(zop, "Z"))
+                assert 0
+                return
+
     def get_code(self):
+        self.check()
         keys = self.keys
         keymap = self.keymap
         x_ops, z_ops = self.get_stabs()
@@ -388,7 +435,7 @@ class Surface(object):
     def dump(self):
         sep = "_"*self.n*2
         for tp in "SXZL":
-            smap = self.mk_smap()
+            smap = self.get_smap()
             for key in self.get_keys(tp):
                 (i, j, k) = key
                 smap[self.get_coord(i, j, k)] = tp
@@ -402,11 +449,20 @@ class Surface(object):
         keys = self.keys
         sep = '.'*2*self.n
         for idx in range(n):
-            smap = self.mk_smap()
+            smap = self.get_smap()
             (i, j, k) = keys[idx]
             smap[self.get_coord(i, j, k)] = str(idx)
             print(smap)
             print(sep)
+
+    def dump_stabs(self):
+        x_ops, z_ops = self.get_stabs()
+        for stab in x_ops:
+            print()
+            print(self.str_stab(stab, "X"))
+        for stab in z_ops:
+            print()
+            print(self.str_stab(stab, "Z"))
 
     def dump_code(self, code):
         assert code.n == self.n
@@ -536,17 +592,8 @@ def get_encoder(source, target):
 def test_encode():
 
     surf = Surface()
-    surf.add_many((0, 0), (2, 2))
+    surf.set_many((0, 0), (2, 2))
     #print(surf)
-
-    if 0:
-        x_ops, z_ops = surf.get_stabs()
-        for stab in x_ops:
-            print()
-            print(surf.str_stab(stab, "X"))
-        for stab in z_ops:
-            print()
-            print(surf.str_stab(stab, "Z"))
 
     target = surf.get_code()
     n = target.n
@@ -607,8 +654,8 @@ def test_surface():
     """
 
     source = Surface()
-    source.add_many((0, 0), (4, 4), "L")
-    source.add_many((1, 1), (3, 3))
+    source.set_many((0, 0), (4, 4), "L")
+    source.set_many((1, 1), (3, 3))
 
     source.set_key((0, 1, 1), "X")
     source.set_key((0, 2, 1), "X")
@@ -634,13 +681,39 @@ def test_surface():
     print()
 
     target = Surface()
-    target.add_many((0, 0), (4, 4))
+    target.set_many((0, 0), (4, 4))
     print(target)
     print(target.get_code().longstr())
 
-    
-    A = get_encoder(source, target)
-    print(A)
+    A = get_encoder(source.get_code(), target.get_code())
+    #print(A)
+
+
+def test_puncture():
+
+    source = Surface()
+    source.set_many((0, 0), (7, 7), "S")
+    source.del_many((2, 1), (6, 5))
+    source.set_key((2, 1, 0), "S")
+    source.set_key((5, 1, 0), "S")
+    source.set_key((2, 4, 0), "S")
+    source.set_key((5, 4, 0), "S")
+    print(source.get_smap())
+
+    source.check()
+    #source.dump_stabs()
+
+    code = source.get_code()
+    print(code)
+
+    #source.dump_code(code)
+
+    decoder = StarDynamicDistance(code)
+
+    for idx in range(4):
+        op = decoder.find(idx=idx)
+        print(source.str_op(op))
+        print()
 
 
 
@@ -657,6 +730,7 @@ if __name__ == "__main__":
         test_symplectic()
         test_encode()
         test_surface()
+        test_puncture()
 
 
 
