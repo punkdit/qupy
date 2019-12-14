@@ -523,6 +523,26 @@ def test_symplectic():
         lhs = CN_01 * CN_10 * CN_01
         assert lhs == rhs
 
+    #print(Clifford.cnot(3, 0, 2))
+
+    #if 0:
+    cnot = Clifford.cnot
+    hadamard = Clifford.hadamard
+    n = 2
+    gen = [cnot(n, 0, 1), cnot(n, 1, 0), hadamard(n, 0), hadamard(n, 1)]
+    print(len(mulclose_fast(gen))) # index 10 in Sp(2, 4)
+    n = 3
+    gen = [
+        cnot(n, 0, 1), cnot(n, 1, 0),
+        cnot(n, 0, 2), cnot(n, 2, 0),
+        cnot(n, 1, 2), cnot(n, 2, 1),
+        hadamard(n, 0),
+        hadamard(n, 1),
+        hadamard(n, 2),
+    ]
+    print(len(mulclose_fast(gen))) # index 36 in Sp(2,4)
+
+
     n = 4
     I = Clifford.identity(n)
     H = Clifford.hadamard(n, 0)
