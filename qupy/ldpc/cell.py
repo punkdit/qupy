@@ -117,15 +117,15 @@ class Complex(object):
         edges = self.lookup[1]
 
         # build faces
-        for i in range(i0, i1):
-          for j in range(j0, j1):
+        for i in range(i0, i1-1):
+          for j in range(j0, j1-1):
             top = edges.get((i, j, "h"))
             left = edges.get((i, j, "v"))
             bot = edges.get((i+1, j, "h"))
             right = edges.get((i, j+1, "v"))
             bdy = [top, left, bot, right]
             bdy = [cell for cell in bdy if cell]
-            if len(bdy)<3:
+            if len(bdy)==0:
                 continue
             cell = Cell(2, bdy)
             self.set((i, j), cell)
@@ -212,18 +212,11 @@ class Complex(object):
 
 def test_cell():
 
-    top = Cell(2)
-
-    top.append(Cell(1))
-
     rows, cols = 4, 3
 
     cx = Complex()
     cx.build_surface((0, 0), (rows, cols))
-    #print(cx)
     edges = cx.lookup[1].values()
-    #for cell in edges:
-    #    print(cell.key, cell.bdy)
     for cell in edges:
         assert len(cell)==2, cell
     code = cx.get_code()
@@ -248,6 +241,14 @@ def test_cell():
     assert code.mx == 4
     assert code.mz == 6
 
+    cx = Complex()
+    cx.build_surface((0, 0), (rows, cols), 
+        open_top=True, open_bot=True, open_left=True, open_right=True)
+    code = cx.get_code()
+    assert code.n == 7
+    assert code.k == 0
+    assert code.mx == 2
+    assert code.mz == 5
 
 
 if __name__ == "__main__":
