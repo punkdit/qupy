@@ -4,6 +4,7 @@
 from collections import namedtuple
 from functools import reduce
 from operator import mul
+from random import shuffle, seed
 
 import numpy
 from numpy import concatenate as cat
@@ -28,9 +29,11 @@ class Cell(object):
         self.bdy = list(bdy)
         self.key = key
 
-    def __str__(self):
+    def __repr__(self):
         return "Cell(%d, %s, %s)"%(self.grade, self.bdy, self.key)
-    __repr__ = __str__
+
+    def __str__(self):
+        return "Cell(%d, %s)"%(self.grade, self.key)
 
     def check(self):
         grade = self.grade
@@ -44,6 +47,15 @@ class Cell(object):
 
     def __len__(self):
         return len(self.bdy)
+
+    def __getitem__(self, idx):
+        return self.bdy[idx]
+
+    def __lt__(self, other):
+        return self.key < other.key
+
+    def __le__(self, other):
+        return self.key <= other.key
 
     #def get_dual(self):
 
@@ -63,6 +75,52 @@ class Complex(object):
         assert cell.key is None
         cell.key = key
 
+    def get_cells(self, grade):
+        cells = list(self.lookup[grade].values())
+        cells.sort()
+        return cells
+
+    def get_code(self):
+        verts = self.lookup[0]
+        edges = self.lookup[1]
+        faces = self.lookup[2]
+            
+        n = len(edges)
+        mx = len(verts)
+        mz = len(faces)
+        Hx = zeros2(mx, n)
+        Hz = zeros2(mz, n)
+
+        cols = list(edges.keys())
+        cols.sort()
+        rows = list(verts.keys())
+        rows.sort()
+
+        for j, col in enumerate(cols):
+          edge = edges[col]
+          for i, row in enumerate(rows): # ugh
+            vert = verts[row]
+            if vert in edge.bdy:
+                Hx[i, j] = 1
+        
+        rows = list(faces.keys())
+        rows.sort()
+
+        for j, col in enumerate(cols):
+          edge = edges[col]
+          for i, row in enumerate(rows): # ugh
+            face = faces[row]
+            if edge in face.bdy:
+                Hz[i, j] = 1
+
+        #print()
+        #print(shortstr(Hx))
+        #print()
+        #print(shortstr(Hz))
+
+        code = CSSCode(Hx=Hx, Hz=Hz)
+        return code
+        
     def build_surface(self, top_left, bot_right, 
         open_top=False, open_bot=False, open_left=False, open_right=False):
         # open boundary is "rough". default to smooth
@@ -130,6 +188,52 @@ class Complex(object):
             cell = Cell(2, bdy)
             self.set((i, j), cell)
 
+    def build_toris(self, rows, cols):
+
+        # build verts
+        for i in range(rows):
+          for j in range(cols):
+            cell = Cell(0)
+            key = (i, j)
+            self.set(key, cell)
+
+        verts = self.lookup[0]
+
+        # build edges
+        for i in range(rows):
+          for j in range(cols):
+            ks = "hv" # horizontal, _vertical edge
+            for k in ks:
+                bdy = []
+                vert = verts.get((i, j))
+                assert vert is not None
+                bdy.append(vert)
+                if k == "h":
+                    vert = verts.get((i, (j+1)%cols))
+                else:
+                    vert = verts.get(((i+1)%rows, j))
+                assert vert is not None
+                bdy.append(vert)
+                assert len(bdy)==2
+                cell = Cell(1, bdy)
+                key = (i, j, k)
+                self.set(key, cell)
+
+        edges = self.lookup[1]
+
+        # build faces
+        for i in range(rows):
+          for j in range(cols):
+            top = edges.get((i, j, "h"))
+            left = edges.get((i, j, "v"))
+            bot = edges.get(((i+1)%rows, j, "h"))
+            right = edges.get((i, (j+1)%cols, "v"))
+            bdy = [top, left, bot, right]
+            bdy = [cell for cell in bdy if cell]
+            assert len(bdy)==4
+            cell = Cell(2, bdy)
+            self.set((i, j), cell)
+
     def get_coord(self, i, j, k=None):
         mul = 2
         if k is None:
@@ -142,7 +246,7 @@ class Complex(object):
             col = mul*j + (1-k)
         return row, col
 
-    def __str__(self):
+    def get_smap(self):
         get_coord = self.get_coord
         smap = SMap()
 
@@ -164,53 +268,149 @@ class Complex(object):
             i, j = key
             row, col = get_coord(i, j)
             smap[row+1, col+1] = "o"
+        return smap
 
+    def __str__(self):
+        smap = self.get_smap()
         return str(smap)
 
-    def get_code(self):
-        verts = self.lookup[0]
-        edges = self.lookup[1]
-        faces = self.lookup[2]
-            
-        n = len(edges)
-        mx = len(verts)
-        mz = len(faces)
-        Hx = zeros2(mx, n)
-        Hz = zeros2(mz, n)
 
-        cols = list(edges.keys())
-        cols.sort()
-        rows = list(verts.keys())
-        rows.sort()
+class Flow(object):
+    def __init__(self, cx):
+        self.cx = cx
+        self.pairs = {}
 
-        for j, col in enumerate(cols):
-          edge = edges[col]
-          for i, row in enumerate(rows): # ugh
-            vert = verts[row]
-            if vert in edge.bdy:
-                Hx[i, j] = 1
-        
-        rows = list(faces.keys())
-        rows.sort()
+    def add(self, src, tgt):
+        assert isinstance(src, Cell)
+        assert isinstance(tgt, Cell)
+        assert src.grade == tgt.grade-1
+        assert src in tgt
+        pairs = self.pairs.setdefault(src.grade, [])
+        pairs.append((src, tgt))
 
-        for j, col in enumerate(cols):
-          edge = edges[col]
-          for i, row in enumerate(rows): # ugh
-            face = faces[row]
-            if edge in face.bdy:
-                Hz[i, j] = 1
+    def remove(self, src, tgt):
+        self.pairs[src.grade].remove((src, tgt))
 
-        #print()
-        #print(shortstr(Hx))
-        #print()
-        #print(shortstr(Hz))
+    def get_pairs(self):
+        pairs = []
+        cx = self.cx
+        edges = cx.get_cells(1)
+        faces = cx.get_cells(2)
+        for edge in edges:
+            for vert in edge:
+                pairs.append((vert, edge))
+        for face in faces:
+            for edge in face:
+                pairs.append((edge, face))
+        return pairs
 
-        code = CSSCode(Hx=Hx, Hz=Hz)
-        return code
-        
+    def get_critical(self):
+        cx = self.cx
+        remove = set()
+        for grade, pairs in self.pairs.items():
+          for src, tgt in pairs:
+            remove.add(src)
+            remove.add(tgt)
+        critical = []
+        for grade in range(3):
+            cells = cx.get_cells(grade)
+            for cell in cells:
+                if cell not in remove:
+                    critical.append(cell)
+        return critical
+
+    def get_adj(self, grade):
+        "return flow (adjacency) matrix for this grade"
+        cells = self.cx.get_cells(grade)
+        lookup = dict((cell, idx) for (idx, cell) in enumerate(cells))
+        N = len(cells)
+        A = numpy.zeros((N, N), dtype=int)
+        pairs = self.pairs[grade-1]
+        flow = dict((src, tgt) for src, tgt in pairs)
+        for i, cell in enumerate(cells):
+            for src in cell.bdy:
+                tgt = flow.get(src)
+                if tgt != None:
+                    j = lookup[tgt]
+                    if i!=j:
+                        A[j, i] = 1
+        return A
+
+    def accept(self, src, tgt):
+        assert isinstance(src, Cell)
+        assert isinstance(tgt, Cell)
+        assert src.grade == tgt.grade-1
+        pairs = self.pairs.setdefault(src.grade, [])
+        for pair in pairs:
+            if pair[0] == src or pair[1] == tgt:
+                return False
+        pairs = self.pairs.setdefault(src.grade-1, [])
+        for pair in pairs:
+            if pair[1] == src:
+                return False
+        pairs = self.pairs.setdefault(src.grade+1, [])
+        for pair in pairs:
+            if pair[0] == tgt:
+                return False
+
+        self.add(src, tgt)
+        for grade in (1, 2):
+            A = self.get_adj(grade)
+            #print(shortstr(A))
+            N = len(A)
+            B = A.copy()
+            for i in range(N):
+                B = numpy.dot(A, B)
+                for j in range(N):
+                    if B[j, j]:
+                        self.remove(src, tgt)
+                        return False
+        self.remove(src, tgt)
+        return True
+
+    def __str__(self):
+        items = ['%s->%s' % (src.key, tgt.key) for (src, tgt) in self.pairs[0]]
+        items += ['%s->%s' % (src.key, tgt.key) for (src, tgt) in self.pairs[1]]
+        s = ", ".join(items)
+        return "Flow(%s)"%(s,)
+
+    def build(self):
+        pairs = self.get_pairs()
+        shuffle(pairs)
+    
+        idx = 0
+        while idx < len(pairs):
+            src, tgt = pairs[idx]
+            if self.accept(src, tgt):
+                self.add(src, tgt)
+            idx += 1
 
 
-def test_cell():
+def test_flow():
+
+    #seed(0)
+
+    m, n = 3, 3 
+
+    cx = Complex()
+    #cx.build_surface((0, 0), (m, n))
+    cx.build_surface((0, 0), (m, n), open_top=True, open_bot=True)
+    #cx.build_toris(m, n)
+    
+    print(cx)
+
+    flow = Flow(cx)
+    flow.build()
+    #for (src, tgt) in pairs:
+    #    assert not flow.accept(src, tgt)
+
+    print(flow)
+    for crit in flow.get_critical():
+        print(crit)
+
+
+
+def test_surface():
 
     rows, cols = 4, 3
 
@@ -250,6 +450,13 @@ def test_cell():
     assert code.mx == 2
     assert code.mz == 5
 
+    cx = Complex()
+    cx.build_toris(rows, cols)
+    #print(cx)
+    code = cx.get_code()
+    #print(code)
+
+
 
 if __name__ == "__main__":
 
@@ -261,5 +468,6 @@ if __name__ == "__main__":
 
     else:
 
-        test_cell()
+        test_surface()
+        test_flow()
 
