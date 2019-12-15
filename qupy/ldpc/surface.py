@@ -194,6 +194,119 @@ class Clifford(object):
         return Clifford(A)
 
 
+def get_gen(n, pairs=None):
+    #gen = [Clifford.hadamard(n, i) for i in range(n)]
+    #names = ["H_%d"%i for i in range(n)]
+    gen = []
+    names = []
+    if pairs is None:
+        pairs = []
+        for i in range(n):
+          for j in range(n):
+            if i!=j:
+                pairs.append((i, j))
+    for (i, j) in pairs:
+        assert i!=j
+        gen.append(Clifford.cnot(n, i, j))
+        names.append("CN(%d,%d)"%(i,j))
+
+    return gen, names
+
+
+def test_symplectic():
+
+    n = 3
+    I = Clifford.identity(n)
+    for idx in range(n):
+      for jdx in range(n):
+        if idx==jdx:
+            continue
+        CN_01 = Clifford.cnot(n, idx, jdx)
+        CN_10 = Clifford.cnot(n, jdx, idx)
+        assert CN_01*CN_01 == I
+        assert CN_10*CN_10 == I
+        lhs = CN_10 * CN_01 * CN_10
+        rhs = Clifford.swap(n, idx, jdx)
+        assert lhs == rhs
+        lhs = CN_01 * CN_10 * CN_01
+        assert lhs == rhs
+
+    #print(Clifford.cnot(3, 0, 2))
+
+    #if 0:
+    cnot = Clifford.cnot
+    hadamard = Clifford.hadamard
+    n = 2
+    gen = [cnot(n, 0, 1), cnot(n, 1, 0), hadamard(n, 0), hadamard(n, 1)]
+    print(len(mulclose_fast(gen))) # index 10 in Sp(2, 4)
+    n = 3
+    gen = [
+        cnot(n, 0, 1), cnot(n, 1, 0),
+        cnot(n, 0, 2), cnot(n, 2, 0),
+        cnot(n, 1, 2), cnot(n, 2, 1),
+        hadamard(n, 0),
+        hadamard(n, 1),
+        hadamard(n, 2),
+    ]
+    print(len(mulclose_fast(gen))) # index 36 in Sp(2,4)
+
+
+    n = 4
+    I = Clifford.identity(n)
+    H = Clifford.hadamard(n, 0)
+    assert H*H == I
+
+    CN_01 = Clifford.cnot(n, 0, 1)
+    assert CN_01*CN_01 == I
+
+    n = 3
+    trivial = CSSCode(
+        Lx=parse("1.."), Lz=parse("1.."), Hx=zeros2(0, n), Hz=parse(".1. ..1"))
+
+    assert trivial.row_equal(CSSCode.get_trivial(3, 0))
+
+    repitition = CSSCode(
+        Lx=parse("111"), Lz=parse("1.."), Hx=zeros2(0, n), Hz=parse("11. .11"))
+
+    assert not trivial.row_equal(repitition)
+
+    CN_01 = Clifford.cnot(n, 0, 1)
+    CN_12 = Clifford.cnot(n, 1, 2)
+    CN_21 = Clifford.cnot(n, 2, 1)
+    CN_10 = Clifford.cnot(n, 1, 0)
+    encode = CN_12 * CN_01
+
+    code = CN_01 ( trivial )
+    assert not code.row_equal(repitition)
+    code = CN_12 ( code )
+    assert code.row_equal(repitition)
+
+#    assert (CN_21 * CN_10)(trivial).row_equal(repitition)
+#    assert (CN_10 * CN_21)(trivial).row_equal(repitition)
+
+#    src = Clifford(trivial.to_symplectic())
+#    src_inv = src.inverse()
+#    tgt = Clifford(repitition.to_symplectic())
+#    A = (src_inv * tgt).transpose()
+#    #print(A)
+
+    A = get_encoder(trivial, repitition)
+
+    gen, names = get_gen(3)
+    for word in mulclose_find(gen, names, A):
+        #print("word:")
+        #print(word)
+    
+        items = [gen[names.index(op)] for op in word]
+        op = reduce(mul, items)
+    
+        #print(op)
+        #assert op*(src) == (tgt)
+    
+        #print(op(trivial).longstr())
+        assert op(trivial).row_equal(repitition)
+    
+
 class Surface(object):
 
     def __init__(self):
@@ -486,118 +599,6 @@ class Surface(object):
             print("."*w)
 
 
-def get_gen(n, pairs=None):
-    #gen = [Clifford.hadamard(n, i) for i in range(n)]
-    #names = ["H_%d"%i for i in range(n)]
-    gen = []
-    names = []
-    if pairs is None:
-        pairs = []
-        for i in range(n):
-          for j in range(n):
-            if i!=j:
-                pairs.append((i, j))
-    for (i, j) in pairs:
-        assert i!=j
-        gen.append(Clifford.cnot(n, i, j))
-        names.append("CN(%d,%d)"%(i,j))
-
-    return gen, names
-
-
-def test_symplectic():
-
-    n = 3
-    I = Clifford.identity(n)
-    for idx in range(n):
-      for jdx in range(n):
-        if idx==jdx:
-            continue
-        CN_01 = Clifford.cnot(n, idx, jdx)
-        CN_10 = Clifford.cnot(n, jdx, idx)
-        assert CN_01*CN_01 == I
-        assert CN_10*CN_10 == I
-        lhs = CN_10 * CN_01 * CN_10
-        rhs = Clifford.swap(n, idx, jdx)
-        assert lhs == rhs
-        lhs = CN_01 * CN_10 * CN_01
-        assert lhs == rhs
-
-    #print(Clifford.cnot(3, 0, 2))
-
-    #if 0:
-    cnot = Clifford.cnot
-    hadamard = Clifford.hadamard
-    n = 2
-    gen = [cnot(n, 0, 1), cnot(n, 1, 0), hadamard(n, 0), hadamard(n, 1)]
-    print(len(mulclose_fast(gen))) # index 10 in Sp(2, 4)
-    n = 3
-    gen = [
-        cnot(n, 0, 1), cnot(n, 1, 0),
-        cnot(n, 0, 2), cnot(n, 2, 0),
-        cnot(n, 1, 2), cnot(n, 2, 1),
-        hadamard(n, 0),
-        hadamard(n, 1),
-        hadamard(n, 2),
-    ]
-    print(len(mulclose_fast(gen))) # index 36 in Sp(2,4)
-
-
-    n = 4
-    I = Clifford.identity(n)
-    H = Clifford.hadamard(n, 0)
-    assert H*H == I
-
-    CN_01 = Clifford.cnot(n, 0, 1)
-    assert CN_01*CN_01 == I
-
-    n = 3
-    trivial = CSSCode(
-        Lx=parse("1.."), Lz=parse("1.."), Hx=zeros2(0, n), Hz=parse(".1. ..1"))
-
-    assert trivial.row_equal(CSSCode.get_trivial(3, 0))
-
-    repitition = CSSCode(
-        Lx=parse("111"), Lz=parse("1.."), Hx=zeros2(0, n), Hz=parse("11. .11"))
-
-    assert not trivial.row_equal(repitition)
-
-    CN_01 = Clifford.cnot(n, 0, 1)
-    CN_12 = Clifford.cnot(n, 1, 2)
-    CN_21 = Clifford.cnot(n, 2, 1)
-    CN_10 = Clifford.cnot(n, 1, 0)
-    encode = CN_12 * CN_01
-
-    code = CN_01 ( trivial )
-    assert not code.row_equal(repitition)
-    code = CN_12 ( code )
-    assert code.row_equal(repitition)
-
-#    assert (CN_21 * CN_10)(trivial).row_equal(repitition)
-#    assert (CN_10 * CN_21)(trivial).row_equal(repitition)
-
-#    src = Clifford(trivial.to_symplectic())
-#    src_inv = src.inverse()
-#    tgt = Clifford(repitition.to_symplectic())
-#    A = (src_inv * tgt).transpose()
-#    #print(A)
-
-    A = get_encoder(trivial, repitition)
-
-    gen, names = get_gen(3)
-    for word in mulclose_find(gen, names, A):
-        #print("word:")
-        #print(word)
-    
-        items = [gen[names.index(op)] for op in word]
-        op = reduce(mul, items)
-    
-        #print(op)
-        #assert op*(src) == (tgt)
-    
-        #print(op(trivial).longstr())
-        assert op(trivial).row_equal(repitition)
-    
 
 def get_encoder(source, target):
     assert isinstance(source, CSSCode)
