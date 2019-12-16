@@ -12,7 +12,7 @@ from numpy import concatenate as cat
 from qupy.util import mulclose_fast
 from qupy.argv import argv
 from qupy.smap import SMap
-from qupy.ldpc.solve import zeros2, shortstr, parse, pseudo_inverse, int_scalar
+from qupy.ldpc.solve import zeros2, shortstr, parse, pseudo_inverse, int_scalar, dot2
 from qupy.ldpc.css import CSSCode
 #from qupy.ldpc.decoder import StarDynamicDistance
 
@@ -23,7 +23,7 @@ from qupy.smap import SMap
 class Matrix(object):
     """ rows and cols : list of hashable items """
 
-    def __init__(self, rows, cols):
+    def __init__(self, rows, cols, elements={}):
         rows = list(rows)
         cols = list(cols)
         self.rows = rows
@@ -32,10 +32,42 @@ class Matrix(object):
         self.set_cols = set(cols)
         #self.row_lookup = dict((row, idx) for (idx, row) in rows)
         #self.col_lookup = dict((col, idx) for (idx, col) in cols)
-        self.elements = {} # zero
+        self.elements = dict(elements)
+
+    def copy(self):
+        return Matrix(self.rows, self.cols, self.elements)
+
+    def __len__(self):
+        return len(self.rows)
 
     def __str__(self):
         return "Matrix(%d, %d)"%(len(self.rows), len(self.cols))
+
+    def __eq__(self, other):
+        return self.elements == other.elements
+
+    def __ne__(self, other):
+        return self.elements != other.elements
+
+    @classmethod
+    def identity(cls, items):
+        elements = dict(((i, i), 1) for i in items)
+        A = cls(items, items, elements)
+        return A
+
+    @classmethod
+    def inclusion(cls, rows, cols):
+        A = cls(rows, cols)
+        for i in cols:
+            A[i, i] = 1
+        return A
+
+    @classmethod
+    def retraction(cls, rows, cols):
+        A = cls(rows, cols)
+        for i in rows:
+            A[i, i] = 1
+        return A
 
     def __setitem__(self, key, value):
         row, col = key
@@ -49,13 +81,36 @@ class Matrix(object):
         elif (row, col) in elements:
             del elements[row, col]
 
-    def __getitem__(self, key):
-        row, col = key
-        #idx = self.row_lookup[row]
-        #jdx = self.col_lookup[col]
-        assert row in self.set_rows
-        assert col in self.set_cols
-        value = self.elements.get((row, col), 0)
+    def __getitem__(self, item):
+        row, col = item
+        
+        if isinstance(row, slice) and isinstance(col, slice):
+            assert row == slice(None)
+            assert col == slice(None)
+            value = self
+
+        elif isinstance(col, slice):
+            assert col == slice(None)
+            value = []
+            assert row in self.set_rows
+            for (r,c) in self.elements.keys():
+                if r == row:
+                    value.append(c)
+
+        elif isinstance(row, slice):
+            assert row == slice(None)
+            value = []
+            assert col in self.set_cols
+            for (r,c) in self.elements.keys():
+                if c == col:
+                    value.append(r)
+
+        else:
+            #idx = self.row_lookup[row]
+            #jdx = self.col_lookup[col]
+            assert row in self.set_rows
+            assert col in self.set_cols
+            value = self.elements.get((row, col), 0)
         return value
 
     def __add__(self, other):
@@ -80,7 +135,11 @@ class Matrix(object):
     def sum(self):
         return sum(self.elements.values())
 
-    def todense(self, rows, cols):
+    def todense(self, rows=None, cols=None):
+        if rows is None:
+            rows = self.rows
+        if cols is None:
+            cols = self.cols
         assert set(rows) == self.set_rows, "%s\n%s"%(set(rows), self.set_rows)
         assert set(cols) == self.set_cols, "%s\n%s"%(set(cols), self.set_cols)
         row_lookup = dict((row, idx) for (idx, row) in enumerate(rows))
@@ -428,22 +487,32 @@ class Flow(object):
             A[tgt, src] += 1
         return A
 
+#    def get_adj(self, grade):
+#        "return flow (adjacency) matrix for this grade"
+#        cells = self.cx.get_cells(grade)
+#        lookup = dict((cell, idx) for (idx, cell) in enumerate(cells))
+#        N = len(cells)
+#        A = numpy.zeros((N, N), dtype=int_scalar)
+#        pairs = self.pairs[grade-1]
+#        flow = dict((src, tgt) for src, tgt in pairs)
+#        for i, cell in enumerate(cells):
+#            for src in cell.bdy:
+#                tgt = flow.get(src)
+#                if tgt != None:
+#                    j = lookup[tgt]
+#                    if i!=j:
+#                        A[j, i] = 1
+#        return A, lookup
+
     def get_adj(self, grade):
         "return flow (adjacency) matrix for this grade"
-        cells = self.cx.get_cells(grade)
-        lookup = dict((cell, idx) for (idx, cell) in enumerate(cells))
-        N = len(cells)
-        A = numpy.zeros((N, N), dtype=int_scalar)
-        pairs = self.pairs[grade-1]
-        flow = dict((src, tgt) for src, tgt in pairs)
-        for i, cell in enumerate(cells):
-            for src in cell.bdy:
-                tgt = flow.get(src)
-                if tgt != None:
-                    j = lookup[tgt]
-                    if i!=j:
-                        A[j, i] = 1
-        return A, lookup
+        cx = self.cx
+        A = cx.get_bdymap(grade) # grade --> grade-1
+        B = self.get_flowmap(grade-1) # grade-1 --> grade
+        C = B*A # grade --> grade
+        for cell in cx.get_cells(grade):
+            C[cell, cell] = 0
+        return C
 
     def accept(self, src, tgt):
         assert isinstance(src, Cell)
@@ -462,15 +531,19 @@ class Flow(object):
             if pair[0] == tgt:
                 return False
 
+        cx = self.cx
         self.add(src, tgt)
         for grade in (1, 2):
-            A, _ = self.get_adj(grade)
+            A = self.get_adj(grade)
             #print(shortstr(A))
-            N = len(A)
+            #N = len(A)
             B = A.copy()
-            for i in range(N):
-                B = numpy.dot(A, B)
-                for j in range(N):
+            cells = cx.get_cells(grade)
+            while B.sum():
+                #B = numpy.dot(A, B)
+                B = A*B
+                #for j in range(N):
+                for j in cells:
                     if B[j, j]:
                         self.remove(src, tgt)
                         return False
@@ -519,6 +592,7 @@ def test_flow():
     print(cx)
 
     for trial in range(10):
+
         flow = Flow(cx)
         flow.build()
 
@@ -526,17 +600,62 @@ def test_flow():
         B = cx.get_bdymap(1) # 1 --> 0
         C = A*B
 
-        A = flow.get_flowmap(1)
+        #cells = cx.get_cells(1)
+        #print(shortstr(C.todense(cells, cells)))
+        #print()
+        #print(shortstr(flow.get_adj(1).todense(cells, cells)))
+
+        #A = flow.get_flowmap(1)
 
         crit = {}
-        for grade in range(3):
+        for grade in [2, 1, 0]:
             crit[grade] = flow.get_critical(grade)
 
-        for grade in [1, 2]:
-            A, lookup = flow.get_adj(grade)
-            B = A.copy()
-            while B.sum():
-                B = numpy.dot(A, B)
+        chain = []
+        for grade in [2, 1]:
+            bdy = Matrix(crit[grade-1], crit[grade])
+            A = flow.get_adj(grade)  # grade --> grade-1 --> grade
+            B = cx.get_bdymap(grade) # grade --> grade-1
+            #J = Matrix.inclusion(cx.get_cells(grade), crit[grade])
+            #K = Matrix.retraction(crit[grade-1], cx.get_cells(grade-1))
+
+            C = Matrix.identity(cx.get_cells(grade))
+            while C.sum():
+                #print()
+                #print(shortstr(C.todense()))
+                D = B*C # grade --> grade-1
+                for a in crit[grade-1]:
+                  for b in crit[grade]:
+                    if D[a, b]:
+                        bdy[a, b] += D[a, b]
+
+                C = A*C
+
+            #print(bdy.todense())
+            chain.append(bdy)
+
+        A, B = chain
+        BA = B*A
+        for k,v in BA.elements.items():
+            assert v%2 == 0
+        #print(BA.todense())
+
+        Hzt = A.todense() % 2
+        Hz = Hzt.transpose()
+        Hx = B.todense() % 2
+
+        assert dot2(Hx, Hzt).sum() == 0
+        code = CSSCode(Hx=Hx, Hz=Hz)
+        print("k =", code.k)
+
+#        for grade in [1, 2]:
+#            A = flow.get_adj(grade)
+#            B = A.copy()
+#            while B.sum():
+#                #B = numpy.dot(A, B)
+#                B = A*B
+
+        #break
         
     #return
 
