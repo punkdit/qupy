@@ -115,19 +115,19 @@ class Matrix(object):
 
     def __add__(self, other):
         assert self.set_cols == other.set_rows
-        A = Matrix(self.rows, other.cols)
+        A = self.copy()
         # could optimize, but do we care...
-        for i in self.rows:
-          for j in self.cols:
-            A[i, j] = self[i, j] + other[i, j]
+        for i,j in other.elements.keys():
+            A[i, j] += other[i, j]
         return A
 
     def __mul__(self, other):
         assert self.set_cols == other.set_rows
         A = Matrix(self.rows, other.cols)
         # could optimize, but do we care...
-        for i in self.rows:
-          for j in self.cols:
+        #for i in self.rows:
+        #  for j in self.cols:
+        for (i, j) in self.elements.keys():
             for k in other.cols:
                 A[i, k] = A[i, k] + self[i, j] * other[j, k]
         return A
@@ -481,7 +481,7 @@ class Flow(object):
         edges = cx.get_cells(grade)
         faces = cx.get_cells(grade+1)
         A = Matrix(faces, edges)
-        pairs = self.pairs[grade]
+        pairs = self.pairs.setdefault(grade, [])
         for src, tgt in pairs:
             assert src.grade == grade
             A[tgt, src] += 1
@@ -567,59 +567,20 @@ class Flow(object):
                 self.add(src, tgt)
             idx += 1
 
-    def get_homology(self):
-        crit = {0:[], 1:[], 2:[]}
-        crit = self.get_critical()
-
-
-def test_flow():
-
-    #seed(0)
-
-    m, n = argv.get("m", 3), argv.get("n", 3) 
-
-    cx = Complex()
-
-    if argv.disc:
-        cx.build_surface((0, 0), (m, n))
-    elif argv.surface:
-        cx.build_surface((0, 0), (m, n), open_top=True, open_bot=True)
-    elif argv.torus:
-        cx.build_torus(m, n)
-    else:
-        cx.build_torus(m, n)
-    
-    print(cx)
-
-    for trial in range(10):
-
-        flow = Flow(cx)
-        flow.build()
-
-        A = flow.get_flowmap(0) # 0 --> 1
-        B = cx.get_bdymap(1) # 1 --> 0
-        C = A*B
-
-        #cells = cx.get_cells(1)
-        #print(shortstr(C.todense(cells, cells)))
-        #print()
-        #print(shortstr(flow.get_adj(1).todense(cells, cells)))
-
-        #A = flow.get_flowmap(1)
-
+    def morse_homology(self, grade=1):
+        cx = self.cx
+        cells = {}
         crit = {}
         for grade in [2, 1, 0]:
-            crit[grade] = flow.get_critical(grade)
+            cells[grade] = cx.get_cells(grade)
+            crit[grade] = self.get_critical(grade)
 
         chain = []
         for grade in [2, 1]:
             bdy = Matrix(crit[grade-1], crit[grade])
-            A = flow.get_adj(grade)  # grade --> grade-1 --> grade
+            A = self.get_adj(grade)  # grade --> grade-1 --> grade
             B = cx.get_bdymap(grade) # grade --> grade-1
-            #J = Matrix.inclusion(cx.get_cells(grade), crit[grade])
-            #K = Matrix.retraction(crit[grade-1], cx.get_cells(grade-1))
-
-            C = Matrix.identity(cx.get_cells(grade))
+            C = Matrix.identity(cells[grade])
             while C.sum():
                 #print()
                 #print(shortstr(C.todense()))
@@ -633,10 +594,41 @@ def test_flow():
 
             #print(bdy.todense())
             chain.append(bdy)
+        return chain
 
+
+def test_flow():
+
+    #seed(0)
+
+    m, n = argv.get("m", 3), argv.get("n", 3) 
+
+    cx = Complex()
+
+    if argv.disc:
+        cx.build_surface((0, 0), (m, n))
+        k = 0
+    elif argv.surface:
+        cx.build_surface((0, 0), (m, n), open_top=True, open_bot=True)
+        k = 0
+    elif argv.torus:
+        cx.build_torus(m, n)
+        k = 2
+    else:
+        cx.build_torus(m, n)
+        k = 2
+    
+    #print(cx)
+
+    for trial in range(10):
+
+        flow = Flow(cx)
+        flow.build()
+
+        chain = flow.morse_homology(1)
         A, B = chain
         BA = B*A
-        for k,v in BA.elements.items():
+        for key,v in BA.elements.items():
             assert v%2 == 0
         #print(BA.todense())
 
@@ -646,23 +638,9 @@ def test_flow():
 
         assert dot2(Hx, Hzt).sum() == 0
         code = CSSCode(Hx=Hx, Hz=Hz)
-        print("k =", code.k)
+        #print("k =", code.k)
+        assert code.k == k, (code.k, k)
 
-#        for grade in [1, 2]:
-#            A = flow.get_adj(grade)
-#            B = A.copy()
-#            while B.sum():
-#                #B = numpy.dot(A, B)
-#                B = A*B
-
-        #break
-        
-    #return
-
-    print(flow)
-    for grade in range(3):
-      for crit in flow.get_critical(grade):
-        print(crit)
 
 
 
@@ -717,7 +695,12 @@ def test_surface():
 if __name__ == "__main__":
 
     name = argv.next()
-    if name:
+
+    if argv.profile:
+        import cProfile as profile
+        profile.run("%s()"%name)
+
+    elif name:
 
         fn = eval(name)
         fn()
