@@ -12,7 +12,7 @@ from numpy import concatenate as cat
 from qupy.util import mulclose_fast
 from qupy.argv import argv
 from qupy.smap import SMap
-from qupy.ldpc.solve import zeros2, shortstr, parse, pseudo_inverse
+from qupy.ldpc.solve import zeros2, shortstr, parse, pseudo_inverse, int_scalar
 from qupy.ldpc.css import CSSCode
 #from qupy.ldpc.decoder import StarDynamicDistance
 
@@ -20,6 +20,77 @@ from qupy.argv import argv
 from qupy.smap import SMap
 
 
+class Matrix(object):
+    """ rows and cols : list of hashable items """
+
+    def __init__(self, rows, cols):
+        rows = list(rows)
+        cols = list(cols)
+        self.rows = rows
+        self.cols = cols
+        self.set_rows = set(rows)
+        self.set_cols = set(cols)
+        #self.row_lookup = dict((row, idx) for (idx, row) in rows)
+        #self.col_lookup = dict((col, idx) for (idx, col) in cols)
+        self.elements = {} # zero
+
+    def __str__(self):
+        return "Matrix(%d, %d)"%(len(self.rows), len(self.cols))
+
+    def __setitem__(self, key, value):
+        row, col = key
+        #idx = self.row_lookup[row]
+        #jdx = self.col_lookup[col]
+        assert row in self.set_rows
+        assert col in self.set_cols
+        elements = self.elements
+        if value != 0:
+            elements[row, col] = value
+        elif (row, col) in elements:
+            del elements[row, col]
+
+    def __getitem__(self, key):
+        row, col = key
+        #idx = self.row_lookup[row]
+        #jdx = self.col_lookup[col]
+        assert row in self.set_rows
+        assert col in self.set_cols
+        value = self.elements.get((row, col), 0)
+        return value
+
+    def __add__(self, other):
+        assert self.set_cols == other.set_rows
+        A = Matrix(self.rows, other.cols)
+        # could optimize, but do we care...
+        for i in self.rows:
+          for j in self.cols:
+            A[i, j] = self[i, j] + other[i, j]
+        return A
+
+    def __mul__(self, other):
+        assert self.set_cols == other.set_rows
+        A = Matrix(self.rows, other.cols)
+        # could optimize, but do we care...
+        for i in self.rows:
+          for j in self.cols:
+            for k in other.cols:
+                A[i, k] = A[i, k] + self[i, j] * other[j, k]
+        return A
+
+    def sum(self):
+        return sum(self.elements.values())
+
+    def todense(self, rows, cols):
+        assert set(rows) == self.set_rows, "%s\n%s"%(set(rows), self.set_rows)
+        assert set(cols) == self.set_cols, "%s\n%s"%(set(cols), self.set_cols)
+        row_lookup = dict((row, idx) for (idx, row) in enumerate(rows))
+        col_lookup = dict((col, idx) for (idx, col) in enumerate(cols))
+        A = numpy.zeros((len(rows), len(cols)), dtype=int_scalar)
+        elements = self.elements
+        for (row, col) in elements.keys():
+            value = elements[row, col]
+            A[row_lookup[row], col_lookup[col]] = value
+        return A
 
 
 class Cell(object):
@@ -80,43 +151,70 @@ class Complex(object):
         cells.sort()
         return cells
 
-    def get_code(self):
-        verts = self.lookup[0]
-        edges = self.lookup[1]
-        faces = self.lookup[2]
-            
-        n = len(edges)
-        mx = len(verts)
-        mz = len(faces)
-        Hx = zeros2(mx, n)
-        Hz = zeros2(mz, n)
-
-        cols = list(edges.keys())
-        cols.sort()
-        rows = list(verts.keys())
-        rows.sort()
-
-        for j, col in enumerate(cols):
-          edge = edges[col]
-          for i, row in enumerate(rows): # ugh
-            vert = verts[row]
-            if vert in edge.bdy:
-                Hx[i, j] = 1
+#    def __XX__get_code(self):
+#        verts = self.lookup[0]
+#        edges = self.lookup[1]
+#        faces = self.lookup[2]
+#            
+#        n = len(edges)
+#        mx = len(verts)
+#        mz = len(faces)
+#        Hx = zeros2(mx, n)
+#        Hz = zeros2(mz, n)
+#
+#        cols = list(edges.keys())
+#        cols.sort()
+#        rows = list(verts.keys())
+#        rows.sort()
+#
+#        for j, col in enumerate(cols):
+#          edge = edges[col]
+#          for i, row in enumerate(rows): # ugh
+#            vert = verts[row]
+#            if vert in edge.bdy:
+#                Hx[i, j] = 1
+#        
+#        rows = list(faces.keys())
+#        rows.sort()
+#
+#        for j, col in enumerate(cols):
+#          edge = edges[col]
+#          for i, row in enumerate(rows): # ugh
+#            face = faces[row]
+#            if edge in face.bdy:
+#                Hz[i, j] = 1
+#
+#        #print()
+#        #print(shortstr(Hx))
+#        #print()
+#        #print(shortstr(Hz))
+#
+#        code = CSSCode(Hx=Hx, Hz=Hz)
+#        return code
         
-        rows = list(faces.keys())
-        rows.sort()
+    def get_bdymap(self, grade):
+        # grade -> grade-1
+        cols = self.get_cells(grade)
+        rows = self.get_cells(grade-1)
+        A = Matrix(rows, cols)
+        for col in cols:
+            assert col.grade == grade
+            for row in col:
+                assert row.grade == grade-1
+                A[row, col] = (A[row, col] + 1)%2
+        return A
 
-        for j, col in enumerate(cols):
-          edge = edges[col]
-          for i, row in enumerate(rows): # ugh
-            face = faces[row]
-            if edge in face.bdy:
-                Hz[i, j] = 1
+    def get_code(self, grade=1):
+        verts = self.get_cells(grade-1)
+        edges = self.get_cells(grade)
+        faces = self.get_cells(grade+1)
+            
+        Hzt = self.get_bdymap(grade+1)
+        Hzt = Hzt.todense(edges, faces)
+        Hz = Hzt.transpose()
 
-        #print()
-        #print(shortstr(Hx))
-        #print()
-        #print(shortstr(Hz))
+        Hx = self.get_bdymap(grade)
+        Hx = Hx.todense(verts, edges)
 
         code = CSSCode(Hx=Hx, Hz=Hz)
         return code
@@ -188,7 +286,7 @@ class Complex(object):
             cell = Cell(2, bdy)
             self.set((i, j), cell)
 
-    def build_toris(self, rows, cols):
+    def build_torus(self, rows, cols):
 
         # build verts
         for i in range(rows):
@@ -304,27 +402,38 @@ class Flow(object):
                 pairs.append((edge, face))
         return pairs
 
-    def get_critical(self):
+    def get_critical(self, grade):
         cx = self.cx
         remove = set()
-        for grade, pairs in self.pairs.items():
+        for _grade, pairs in self.pairs.items():
           for src, tgt in pairs:
             remove.add(src)
             remove.add(tgt)
         critical = []
-        for grade in range(3):
-            cells = cx.get_cells(grade)
-            for cell in cells:
-                if cell not in remove:
-                    critical.append(cell)
+        cells = cx.get_cells(grade)
+        for cell in cells:
+            if cell not in remove:
+                critical.append(cell)
         return critical
+
+    def get_flowmap(self, grade):
+        # grade --> grade+1
+        cx = self.cx
+        edges = cx.get_cells(grade)
+        faces = cx.get_cells(grade+1)
+        A = Matrix(faces, edges)
+        pairs = self.pairs[grade]
+        for src, tgt in pairs:
+            assert src.grade == grade
+            A[tgt, src] += 1
+        return A
 
     def get_adj(self, grade):
         "return flow (adjacency) matrix for this grade"
         cells = self.cx.get_cells(grade)
         lookup = dict((cell, idx) for (idx, cell) in enumerate(cells))
         N = len(cells)
-        A = numpy.zeros((N, N), dtype=int)
+        A = numpy.zeros((N, N), dtype=int_scalar)
         pairs = self.pairs[grade-1]
         flow = dict((src, tgt) for src, tgt in pairs)
         for i, cell in enumerate(cells):
@@ -334,7 +443,7 @@ class Flow(object):
                     j = lookup[tgt]
                     if i!=j:
                         A[j, i] = 1
-        return A
+        return A, lookup
 
     def accept(self, src, tgt):
         assert isinstance(src, Cell)
@@ -355,7 +464,7 @@ class Flow(object):
 
         self.add(src, tgt)
         for grade in (1, 2):
-            A = self.get_adj(grade)
+            A, _ = self.get_adj(grade)
             #print(shortstr(A))
             N = len(A)
             B = A.copy()
@@ -385,27 +494,55 @@ class Flow(object):
                 self.add(src, tgt)
             idx += 1
 
+    def get_homology(self):
+        crit = {0:[], 1:[], 2:[]}
+        crit = self.get_critical()
+
 
 def test_flow():
 
     #seed(0)
 
-    m, n = 3, 3 
+    m, n = argv.get("m", 3), argv.get("n", 3) 
 
     cx = Complex()
-    #cx.build_surface((0, 0), (m, n))
-    cx.build_surface((0, 0), (m, n), open_top=True, open_bot=True)
-    #cx.build_toris(m, n)
+
+    if argv.disc:
+        cx.build_surface((0, 0), (m, n))
+    elif argv.surface:
+        cx.build_surface((0, 0), (m, n), open_top=True, open_bot=True)
+    elif argv.torus:
+        cx.build_torus(m, n)
+    else:
+        cx.build_torus(m, n)
     
     print(cx)
 
-    flow = Flow(cx)
-    flow.build()
-    #for (src, tgt) in pairs:
-    #    assert not flow.accept(src, tgt)
+    for trial in range(10):
+        flow = Flow(cx)
+        flow.build()
+
+        A = flow.get_flowmap(0) # 0 --> 1
+        B = cx.get_bdymap(1) # 1 --> 0
+        C = A*B
+
+        A = flow.get_flowmap(1)
+
+        crit = {}
+        for grade in range(3):
+            crit[grade] = flow.get_critical(grade)
+
+        for grade in [1, 2]:
+            A, lookup = flow.get_adj(grade)
+            B = A.copy()
+            while B.sum():
+                B = numpy.dot(A, B)
+        
+    #return
 
     print(flow)
-    for crit in flow.get_critical():
+    for grade in range(3):
+      for crit in flow.get_critical(grade):
         print(crit)
 
 
@@ -451,7 +588,7 @@ def test_surface():
     assert code.mz == 5
 
     cx = Complex()
-    cx.build_toris(rows, cols)
+    cx.build_torus(rows, cols)
     #print(cx)
     code = cx.get_code()
     #print(code)
