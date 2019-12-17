@@ -19,6 +19,35 @@ from qupy.ldpc.css import CSSCode
 from qupy.argv import argv
 from qupy.smap import SMap
 
+try:
+    from pyx import canvas, path, deco, trafo, style, text, color, deformer, unit
+    from pyx.color import rgb
+    
+    black = rgb(0., 0., 0.)
+    blue = rgb(0.1, 0.1, 0.9)
+    red = lred = rgb(1., 0., 0.)
+    green = rgb(0.0, 0.6, 0.0)
+    white = rgb(1., 1., 1.)
+    #shade = rgb(0.75, 0.55, 0)
+    grey = rgb(0.75, 0.75, 0.75)
+    yellow = rgb(1., 1., 0.)
+    
+    st_dashed = [style.linestyle.dashed]
+    st_dotted = [style.linestyle.dotted]
+    st_round = [style.linecap.round]
+    
+    st_thick = [style.linewidth.thick]
+    st_Thick = [style.linewidth.Thick]
+    st_THick = [style.linewidth.THick]
+    st_THICK = [style.linewidth.THICK]
+    #print dir(style.linewidth)
+
+    import boxs
+
+except ImportError:
+    print("warning: pyx not found")
+
+
 
 class Matrix(object):
     """ rows and cols : list of hashable items """
@@ -596,13 +625,150 @@ class Flow(object):
             chain.append(bdy)
         return chain
 
+    def render(self, cvs=None, name=None, size=1.0):
+        if cvs is None:
+            cvs = canvas.canvas()
+
+        dx, dy = size, -size
+        r = 0.05 * size
+        mul = 1.5 # critical radius
+
+        cx = self.cx
+        critical = self.get_critical(0)
+        cells = cx.get_cells(0)
+        for cell in cells:
+            i, j = cell.key
+            x, y = dx*j, dy*i
+            cell.pos = (x, y)
+            if cell in critical:
+                cvs.stroke(path.circle(x, y, mul*r), [blue]+st_thick)
+            else:
+                cvs.fill(path.circle(x, y, r))
+
+        critical = self.get_critical(1)
+        cells = cx.get_cells(1)
+        for cell in cells:
+            i, j, k = cell.key
+            assert k in "hv"
+            x0, y0 = dx*j, dy*i
+            if k=="h":
+                x1, y1 = dx*(j+1), dy*i
+            else:
+                x1, y1 = dx*j, dy*(i+1)
+
+            x = 0.5*(x0+x1)
+            y = 0.5*(y0+y1)
+            if cell in critical:
+                cvs.stroke(path.circle(x, y, mul*r), [red]+st_thick)
+            else:
+                cvs.fill(path.circle(x, y, 1*r), [red]+st_thick)
+            cvs.stroke(path.line(x0, y0, x1, y1))
+            cell.pos = (x0, y0, x1, y1, x, y)
+
+        critical = self.get_critical(2)
+        cells = cx.get_cells(2)
+        for cell in cells:
+            i, j = cell.key
+            x, y = dx*(j+0.5), dy*(i+0.5)
+            cell.pos = (x, y)
+            if cell in critical:
+                cvs.stroke(path.circle(x, y, mul*r), [green]+st_thick)
+
+        for src, tgt in self.pairs[0]:
+            i0, j0 = src.key # vert
+            i1, j1, k = tgt.key # edge
+            if k=="h":
+                assert i0 == i1 # same row
+                if j0==j1:
+                    pass
+                elif j0-1==j1:
+                    pass
+                elif j0<j1:
+                    j0 = j1+1
+            else:
+                assert j0 == j1
+                if i1>i0:
+                    i0 = i1+1
+
+            x0, y0 = dx*j0, dy*i0
+            if k=="h":
+                x1, y1 = dx*(j1+0.5), dy*i1
+            else:
+                x1, y1 = dx*j1, dy*(i1+0.5)
+            cvs.stroke(path.line(x0, y0, x1, y1), [deco.earrow(), green]+st_thick)
+
+        for src, tgt in self.pairs[1]:
+            i0, j0, k = src.key # edge
+            i1, j1 = tgt.key # face
+
+            if k=="h":
+                assert j0==j1
+                if i0==i1 or i0-1==i1:
+                    pass
+                elif i0 < i1:
+                    i0 = i1+1
+            if k=="v":
+                assert i0==i1
+                if j0==j1 or j0-1==j1:
+                    pass
+                elif j0 < j1:
+                    j0 = j1+1
+
+            x0, y0 = dx*j0, dy*i0
+            if k=="h":
+                x1, y1 = dx*(j0+1), dy*i0
+            else:
+                x1, y1 = dx*j0, dy*(i0+1)
+            x0 = 0.5*(x0+x1)
+            y0 = 0.5*(y0+y1)
+            x1, y1 = dx*(j1+0.5), dy*(i1+0.5)
+
+            cvs.stroke(path.line(x0, y0, x1, y1), [deco.earrow(), blue]+st_thick)
+
+        if name:
+            cvs.writePDFfile(name)
+            cvs.writeSVGfile(name)
+            print("saved", name)
+
+        return cvs
+
+
+
+def render_flow():
+    m, n = argv.get("m", 3), argv.get("n", 3) 
+    cx = Complex()
+    cx.build_torus(m, n)
+
+    rows = []
+    row = []
+    while len(rows) < 4:
+        print(len(row), len(rows))
+        flow = Flow(cx)
+        flow.build()
+        
+        a, b, c = [len(flow.get_critical(grade)) for grade in [0, 1, 2]]
+        if (a, b, c) != (1, 2, 1):
+            continue
+
+        #flow.render(name="output")
+        row.append(flow.render(size=1.3))
+        if len(row)==3:
+            rows.append(row)
+            row = []
+
+    PAD = 2.0
+    rows = [boxs.HBox([cvs for cvs in row], pad=PAD) for row in rows]
+    box = boxs.VBox(rows, pad=PAD)
+    box.save("output")
+
+    print("OK")
+
 
 def test_flow():
 
-    #seed(0)
+    seed(3)
 
     m, n = argv.get("m", 3), argv.get("n", 3) 
-
     cx = Complex()
 
     if argv.disc:
@@ -624,6 +790,10 @@ def test_flow():
 
         flow = Flow(cx)
         flow.build()
+
+        if argv.render:
+            flow.render(name="output")
+            break
 
         chain = flow.morse_homology(1)
         A, B = chain

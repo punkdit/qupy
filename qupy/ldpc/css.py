@@ -660,6 +660,15 @@ class CSSCode(object):
 #        code = cls(Lx=Lx, Lz=Lz, Hx=Hx, Tz=Tz, Hz=Hz, Tx=Tx)
 #        return code
 
+#    def get_encoder(source, target):
+#        from qupy.ldpc.clifford import Clifford
+#        assert isinstance(target, CSSCode)
+#        src = Clifford(source.to_symplectic())
+#        src_inv = src.inverse()
+#        tgt = Clifford(target.to_symplectic())
+#        A = (src_inv * tgt).transpose()
+#        return A
+
     def get_chain(self):
         if self.mx and self.mz:
             chain = Chain([self.Hx, self.Hz.transpose()])

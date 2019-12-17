@@ -182,17 +182,23 @@ def hbox(items, space=''):
 
 
 
+#def enum2(n):
+#    "enumerate through each vector of dimension n"
+#    #assert n < 20, "too big"
+#    N = 2**n
+#    i = 0
+#    rn = list(range(n))
+#    while i < N:
+#        a = [(i>>j)%2 for j in range(n)]
+#        a = array2(a)
+#        yield a
+#        i += 1
+
 def enum2(n):
-    "enumerate through each vector of dimension n"
-    #assert n < 20, "too big"
-    N = 2**n
-    i = 0
-    rn = list(range(n))
-    while i < N:
-        a = [(i>>j)%2 for j in range(n)]
+    for a in  numpy.ndindex((2,)*n):
         a = array2(a)
         yield a
-        i += 1
+
 
 
 def swap_row(A, j, k):
