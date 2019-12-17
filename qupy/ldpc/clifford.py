@@ -219,7 +219,12 @@ class Matrix(object):
         A[src+n, tgt+n] = 1
         return Matrix(A)
 
-
+    @classmethod
+    def sgate(cls, n, i):
+        A = cls.identity(n).A
+        assert 0<=i<n
+        A[i+n, i] = 1
+        return Matrix(A)
     
     @classmethod
     def swap(cls, n, idx, jdx):
@@ -299,8 +304,8 @@ class Matrix(object):
 def get_gen(n, pairs=None):
     gen = [Matrix.hadamard(n, i) for i in range(n)]
     names = ["H_%d"%i for i in range(n)]
-    #gen = []
-    #names = []
+    gen += [Matrix.sgate(n, i) for i in range(n)]
+    names += ["S_%d"%i for i in range(n)]
     if pairs is None:
         pairs = []
         for i in range(n):
@@ -484,6 +489,11 @@ def get_transvect(n):
 
 def test_isotropic():
 
+    n = 2
+    gen, _ = get_gen(n)
+    print(len(mulclose_fast(gen)))
+    return
+
     n = argv.get("n", 3)
     F = Matrix.symplectic_form(n).A
 
@@ -498,8 +508,8 @@ def test_isotropic():
     found = set(found)
     print(len(found))
 
-    #gen, _ = get_gen(n)
-    gen = get_transvect(n)
+    gen, _ = get_gen(n)
+    #gen = get_transvect(n)
 
     orbit = set()
     A = iter(found).__next__()
