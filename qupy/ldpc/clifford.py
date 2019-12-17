@@ -8,10 +8,11 @@ import numpy
 from numpy import concatenate as cat
 
 from qupy.util import mulclose_fast
+from qupy.tool import cross, choose
 from qupy.argv import argv
 from qupy.smap import SMap
 from qupy.ldpc.solve import zeros2, shortstr, solve, dot2, array2, eq2, parse, pseudo_inverse, identity2
-from qupy.ldpc.solve import enum2
+from qupy.ldpc.solve import enum2, row_reduce
 from qupy.ldpc.css import CSSCode
 from qupy.ldpc.decoder import StarDynamicDistance
 
@@ -81,15 +82,60 @@ def mulclose_names(gen, names, verbose=False, maxsize=None):
 
 
 
+def get_cell(row, col, p=2):
+    """
+        return all matrices in bruhat cell at (row, col)
+        These have shape (col, col+row).
+    """
 
-class Symplectic(object):
+    if col == 0:
+        yield zeros2(0, row)
+        return
+
+    if row == 0:
+        yield identity2(col)
+        return
+
+    # recursive steps:
+    m, n = col, col+row
+    for left in get_cell(row, col-1, p):
+        A = zeros2(m, n)
+        A[:m-1, :n-1] = left
+        A[m-1, n-1] = 1
+        yield A
+
+    els = list(range(p))
+    vecs = list(cross((els,)*m))
+    for right in get_cell(row-1, col, p):
+        for v in vecs:
+            A = zeros2(m, n)
+            A[:, :n-1] = right
+            A[:, n-1] = v
+            yield A
+
+
+
+def all_codes(m, n, q=2):
+    """
+        All full-rank generator matrices of shape (m, n)
+    """
+    assert m<=n
+    col = m
+    row = n-m
+    return get_cell(row, col, q)
+
+
+
+
+class Matrix(object):
     def __init__(self, A):
         self.A = A
         m, n = A.shape
         self.shape = A.shape
         assert n%2 == 0
-        self.n = n//2 # qubits
-        self.key = A.tostring()
+        self.n = n
+        self.m = m
+        self.key = A.tostring() # careful !!
 
     def __str__(self):
         #s = str(self.A)
@@ -98,16 +144,17 @@ class Symplectic(object):
         return s
 
     def __mul__(self, other):
-        assert isinstance(other, Symplectic)
+        assert isinstance(other, Matrix)
+        assert other.m == self.n
         A = dot2(self.A, other.A)
-        return Symplectic(A)
+        return Matrix(A)
 
     def __getitem__(self, key):
         return self.A[key]
 
     def __call__(self, other):
         assert isinstance(other, CSSCode)
-        assert other.n == self.n
+        assert other.n*2 == self.n
         Lx, Lz, Hx, Tz, Hz, Tx, Gx, Gz = (
             other.Lx, other.Lz, other.Hx,
             other.Tz, other.Hz, other.Tx,
@@ -118,7 +165,7 @@ class Symplectic(object):
         LxLz = dot2(cat((Lx, Lz), axis=1), A)
         HxTz = dot2(cat((Hx, Tz), axis=1), A)
         TxHz = dot2(cat((Tx, Hz), axis=1), A)
-        n = self.n
+        n = self.n//2
         Lx, Lz = LxLz[:, :n], LxLz[:, n:]
         Hx, Tz = HxTz[:, :n], HxTz[:, n:]
         Tx, Hz = TxHz[:, :n], TxHz[:, n:]
@@ -127,23 +174,14 @@ class Symplectic(object):
 
     def transpose(self):
         A = self.A.transpose().copy()
-        return Symplectic(A)
+        return Matrix(A)
 
     def inverse(self):
         A = pseudo_inverse(self.A)
-        return Symplectic(A)
-
-#    def __call__(self, other):
-#        assert isinstance(other, CSSCode)
-#        assert other.n == self.n
-#        A = self.A.transpose()
-#        B = other.to_symplectic()
-#        C = dot2(B, A)
-#        code = CSSCode.from_symplectic(C, other.n, other.k, other.mx, other.mz)
-#        return code
+        return Matrix(A)
 
     def __eq__(self, other):
-        assert isinstance(other, Symplectic)
+        assert isinstance(other, Matrix)
         assert self.shape == other.shape
         #return eq2(self.A, other.A)
         return self.key == other.key
@@ -159,7 +197,7 @@ class Symplectic(object):
         A = zeros2(2*n, 2*n)
         for i in range(2*n):
             A[i, i] = 1
-        return Symplectic(A)
+        return Matrix(A)
 
     @classmethod
     def hadamard(cls, n, idx):
@@ -171,7 +209,7 @@ class Symplectic(object):
                 A[i, i-n] = 1
             else:
                 A[i, i] = 1
-        return Symplectic(A)
+        return Matrix(A)
 
     @classmethod
     def cnot(cls, n, src, tgt):
@@ -179,7 +217,9 @@ class Symplectic(object):
         assert src!=tgt
         A[tgt, src] = 1
         A[src+n, tgt+n] = 1
-        return Symplectic(A)
+        return Matrix(A)
+
+
     
     @classmethod
     def swap(cls, n, idx, jdx):
@@ -195,15 +235,15 @@ class Symplectic(object):
             else:
                 A[i, i] = 1 # X sector
                 A[i+n, i+n] = 1 # Z sector
-        return Symplectic(A)
+        return Matrix(A)
 
     @classmethod
-    def bilinear_form(cls, n):
+    def symplectic_form(cls, n):
         A = zeros2(2*n, 2*n)
         I = identity2(n)
         A[:n, n:] = I
         A[n:, :n] = I
-        A = Symplectic(A)
+        A = Matrix(A)
         return A
 
     @classmethod
@@ -212,7 +252,7 @@ class Symplectic(object):
         assert x.shape[0]%2 == 0
         n = x.shape[0] // 2
         assert x.shape == (2*n,)
-        F = cls.bilinear_form(n)
+        F = cls.symplectic_form(n)
         Fx = dot2(F.A, x)
         A = zeros2(2*n, 2*n)
         for i in range(2*n):
@@ -222,20 +262,45 @@ class Symplectic(object):
             u += v*x
             A[:, i] = u
         A %= 2
-        A = Symplectic(A)
+        A = Matrix(A)
         return A
 
-    def check(M):
-        n = M.n
-        A = Symplectic.bilinear_form(n)
-        assert M.transpose() * A * M == A
+    def is_symplectic(M):
+        assert M.n % 2 == 0
+        n = M.n//2
+        A = Matrix.symplectic_form(n)
+        return M.transpose() * A * M == A
+
+    def normal_form(self):
+        A = self.A
+        #print("normal_form")
+        #print(A)
+        A = row_reduce(A)
+        #print(A)
+        m, n = A.shape
+        j = 0
+        for i in range(m):
+            while A[i, j] == 0:
+                j += 1
+            i0 = i-1
+            while i0>=0:
+                r = A[i0, j]
+                if r!=0:
+                    A[i0, :] += A[i, :]
+                    A %= 2
+                i0 -= 1
+            j += 1
+        #print(A)
+        A = Matrix(A)
+        return A
+
 
 
 def get_gen(n, pairs=None):
-    #gen = [Symplectic.hadamard(n, i) for i in range(n)]
-    #names = ["H_%d"%i for i in range(n)]
-    gen = []
-    names = []
+    gen = [Matrix.hadamard(n, i) for i in range(n)]
+    names = ["H_%d"%i for i in range(n)]
+    #gen = []
+    #names = []
     if pairs is None:
         pairs = []
         for i in range(n):
@@ -244,7 +309,7 @@ def get_gen(n, pairs=None):
                 pairs.append((i, j))
     for (i, j) in pairs:
         assert i!=j
-        gen.append(Symplectic.cnot(n, i, j))
+        gen.append(Matrix.cnot(n, i, j))
         names.append("CN(%d,%d)"%(i,j))
 
     return gen, names
@@ -253,9 +318,9 @@ def get_gen(n, pairs=None):
 def get_encoder(source, target):
     assert isinstance(source, CSSCode)
     assert isinstance(target, CSSCode)
-    src = Symplectic(source.to_symplectic())
+    src = Matrix(source.to_symplectic())
     src_inv = src.inverse()
-    tgt = Symplectic(target.to_symplectic())
+    tgt = Matrix(target.to_symplectic())
     A = (src_inv * tgt).transpose()
     return A
 
@@ -264,31 +329,41 @@ def get_encoder(source, target):
 def test_symplectic():
 
     n = 3
-    I = Symplectic.identity(n)
+    I = Matrix.identity(n)
     for idx in range(n):
       for jdx in range(n):
         if idx==jdx:
             continue
-        CN_01 = Symplectic.cnot(n, idx, jdx)
-        CN_10 = Symplectic.cnot(n, jdx, idx)
+        CN_01 = Matrix.cnot(n, idx, jdx)
+        CN_10 = Matrix.cnot(n, jdx, idx)
         assert CN_01*CN_01 == I
         assert CN_10*CN_10 == I
         lhs = CN_10 * CN_01 * CN_10
-        rhs = Symplectic.swap(n, idx, jdx)
+        rhs = Matrix.swap(n, idx, jdx)
         assert lhs == rhs
         lhs = CN_01 * CN_10 * CN_01
         assert lhs == rhs
 
-    #print(Symplectic.cnot(3, 0, 2))
+    #print(Matrix.cnot(3, 0, 2))
 
     #if 0:
-    cnot = Symplectic.cnot
-    hadamard = Symplectic.hadamard
+    cnot = Matrix.cnot
+    hadamard = Matrix.hadamard
     n = 2
     gen = [cnot(n, 0, 1), cnot(n, 1, 0), hadamard(n, 0), hadamard(n, 1)]
     for A in gen:
-        A.check()
-    assert len(mulclose_fast(gen))==72 # index 10 in Sp(2, 4)
+        assert A.is_symplectic()
+    Cliff2 = mulclose_fast(gen)
+    assert len(Cliff2)==72 # index 10 in Sp(2, 4)
+
+    CZ = array2([
+        [1, 0, 0, 0],
+        [0, 1, 0, 0],
+        [0, 1, 1, 0],
+        [1, 0, 0, 1]])
+    CZ = Matrix(CZ)
+    assert CZ.is_symplectic()
+    assert CZ in Cliff2
 
     n = 3
     gen = [
@@ -300,8 +375,18 @@ def test_symplectic():
         hadamard(n, 2),
     ]
     for A in gen:
-        A.check()
+        assert A.is_symplectic()
     assert len(mulclose_fast(gen))==40320 # index 36 in Sp(2,4)
+
+    if 0:
+        # cnot's generate GL(2, n)
+        n = 4
+        gen = []
+        for i in range(n):
+          for j in range(n):
+            if i!=j:
+                gen.append(cnot(n, i, j))
+        assert len(mulclose_fast(gen)) == 20160
 
 
     if 0:
@@ -309,9 +394,9 @@ def test_symplectic():
         count = 0
         for A in enum2(4*n*n):
             A.shape = (2*n, 2*n)
-            A = Symplectic(A)
+            A = Matrix(A)
             try:
-                A.check()
+                assert A.is_symplectic()
                 count += 1
             except:
                 pass
@@ -321,20 +406,32 @@ def test_symplectic():
     for n in [1, 2]:
         gen = []
         for x in enum2(2*n):
-            A = Symplectic.transvect(x)
-            A.check()
+            A = Matrix.transvect(x)
+            assert A.is_symplectic()
             gen.append(A)
-        assert len(mulclose_fast(gen)) == [6, 720][n-1]
+        G = mulclose_fast(gen)
+        assert len(G) == [6, 720][n-1]
+
+    n = 2
+    Sp = G
+    #print(len(Sp))
+    found = set()
+    for g in Sp:
+        A = g.A.copy()
+        A[:n, n:] = 0
+        A[n:, :n] = 0
+        found.add(str(A))
+    #print(len(A))
 
     #return
 
 
     n = 4
-    I = Symplectic.identity(n)
-    H = Symplectic.hadamard(n, 0)
+    I = Matrix.identity(n)
+    H = Matrix.hadamard(n, 0)
     assert H*H == I
 
-    CN_01 = Symplectic.cnot(n, 0, 1)
+    CN_01 = Matrix.cnot(n, 0, 1)
     assert CN_01*CN_01 == I
 
     n = 3
@@ -348,10 +445,10 @@ def test_symplectic():
 
     assert not trivial.row_equal(repitition)
 
-    CN_01 = Symplectic.cnot(n, 0, 1)
-    CN_12 = Symplectic.cnot(n, 1, 2)
-    CN_21 = Symplectic.cnot(n, 2, 1)
-    CN_10 = Symplectic.cnot(n, 1, 0)
+    CN_01 = Matrix.cnot(n, 0, 1)
+    CN_12 = Matrix.cnot(n, 1, 2)
+    CN_21 = Matrix.cnot(n, 2, 1)
+    CN_10 = Matrix.cnot(n, 1, 0)
     encode = CN_12 * CN_01
 
     code = CN_01 ( trivial )
@@ -376,6 +473,58 @@ def test_symplectic():
         assert op(trivial).row_equal(repitition)
     
 
+def get_transvect(n):
+    gen = []
+    for x in enum2(2*n):
+        A = Matrix.transvect(x)
+        assert A.is_symplectic()
+        gen.append(A)
+    return gen
+
+
+def test_isotropic():
+
+    n = argv.get("n", 3)
+    F = Matrix.symplectic_form(n).A
+
+    found = []
+    for A in all_codes(n, 2*n):
+        B = dot2(dot2(A, F), A.transpose())
+        if B.sum() == 0:
+            A = Matrix(A)
+            found.append(A)
+            #print(A)
+
+    found = set(found)
+    print(len(found))
+
+    #gen, _ = get_gen(n)
+    gen = get_transvect(n)
+
+    orbit = set()
+    A = iter(found).__next__()
+
+    bdy = [A]
+    orbit = set(bdy)
+    while bdy:
+        _bdy = []
+        for A in bdy:
+          print(A)
+          for g in gen:
+            B = A*g
+            print(B)
+            print()
+            B = B.normal_form()
+            print(B)
+            print()
+            assert B in found
+            if B not in orbit:
+                _bdy.append(B)
+                orbit.add(B)
+        bdy = _bdy
+
+    print(len(orbit))
+
 
 
 if __name__ == "__main__":
@@ -394,5 +543,6 @@ if __name__ == "__main__":
     else:
 
         test_symplectic()
+        test_isotropic()
 
 
