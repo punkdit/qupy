@@ -625,7 +625,7 @@ class Flow(object):
             chain.append(bdy)
         return chain
 
-    def render(self, cvs=None, name=None, size=1.0):
+    def render(self, cvs=None, name=None, size=1.0, double=False):
         if cvs is None:
             cvs = canvas.canvas()
 
@@ -695,7 +695,11 @@ class Flow(object):
                 x1, y1 = dx*(j1+0.5), dy*i1
             else:
                 x1, y1 = dx*j1, dy*(i1+0.5)
-            cvs.stroke(path.line(x0, y0, x1, y1), [deco.earrow(), green]+st_thick)
+            if double:
+                dx1, dy1 = x1-x0, y1-y0
+                x1 += dx1
+                y1 += dy1
+            cvs.stroke(path.line(x0, y0, x1, y1), [deco.earrow(), green]+st_THick)
 
         for src, tgt in self.pairs[1]:
             i0, j0, k = src.key # edge
@@ -723,7 +727,11 @@ class Flow(object):
             y0 = 0.5*(y0+y1)
             x1, y1 = dx*(j1+0.5), dy*(i1+0.5)
 
-            cvs.stroke(path.line(x0, y0, x1, y1), [deco.earrow(), blue]+st_thick)
+            if double:
+                dx1, dy1 = x1-x0, y1-y0
+                x0 -= dx1
+                y0 -= dy1
+            cvs.stroke(path.line(x0, y0, x1, y1), [deco.earrow(), blue]+st_THick)
 
         if name:
             cvs.writePDFfile(name)
@@ -736,25 +744,36 @@ class Flow(object):
 
 def render_flow():
     m, n = argv.get("m", 3), argv.get("n", 3) 
+    nrows, ncols = argv.get("nrows", 1), argv.get("ncols", 1) 
+    double = argv.double
     cx = Complex()
-    cx.build_torus(m, n)
+
+    #cx.build_torus(m, n)
+    #signature = (1, 2, 1)
+
+    #cx.build_surface((0, 0), (m+1, n+1))
+    signature = None
+
+    cx.build_surface((0, 0), (m+1, n+1), open_top=True, open_bot=True)
+    signature = (0, 1, 0)
 
     rows = []
     row = []
-    while len(rows) < 4:
-        print(len(row), len(rows))
+    while len(rows) < nrows:
         flow = Flow(cx)
         flow.build()
         
-        a, b, c = [len(flow.get_critical(grade)) for grade in [0, 1, 2]]
-        if (a, b, c) != (1, 2, 1):
+        dims = [len(flow.get_critical(grade)) for grade in [0, 1, 2]]
+        print("dims:", dims)
+        if signature is not None and tuple(dims) != signature:
             continue
 
         #flow.render(name="output")
-        row.append(flow.render(size=1.3))
-        if len(row)==3:
+        row.append(flow.render(size=1.3, double=double))
+        if len(row)==ncols:
             rows.append(row)
             row = []
+        print(len(row), len(rows))
 
     PAD = 2.0
     rows = [boxs.HBox([cvs for cvs in row], pad=PAD) for row in rows]

@@ -3,6 +3,7 @@
 from collections import namedtuple
 from functools import reduce
 from operator import mul
+from random import shuffle
 
 import numpy
 from numpy import concatenate as cat
@@ -18,37 +19,34 @@ from qupy.ldpc.decoder import StarDynamicDistance
 
 
 def mulclose_find(gen, names, target, verbose=False, maxsize=None):
+    gen = list(gen)
     ops = set(gen)
     lookup = dict((g, (names[i],)) for (i, g) in enumerate(gen))
-    bdy = gen
+    bdy = list(gen)
     dist = 1
-    found = False
     while bdy:
-        _bdy = set()
+        _bdy = []
+        shuffle(bdy)
         for g in bdy:
+            shuffle(gen)
             for h in gen:
                 k = g*h
                 if k in ops:
                     if len(lookup[g]+lookup[h]) < len(lookup[k]):
                         lookup[k] = lookup[g]+lookup[h]
                         assert 0
-                    #continue
-
                 else:
                     word = lookup[g]+lookup[h]
                     if len(word) > dist:
                         dist = len(word)
                         if verbose:
                             print("dist:", dist)
-                        if found:
-                            return
                     lookup[k] = word
                     ops.add(k)
-                    _bdy.add(k)
+                    _bdy.append(k)
 
                 if k==target:
-                    yield lookup[g]+lookup[h]
-                    found = True
+                    return lookup[g]+lookup[h]
         bdy = _bdy
         #if verbose:
         #    print("mulclose:", len(ops))
@@ -524,6 +522,94 @@ def test_isotropic():
         bdy = _bdy
 
     print(len(orbit))
+
+
+def test_encode():
+
+    n = 5
+
+    target = parse("""
+    1.11......
+    .11.1.....
+    .....111..
+    .......111
+    1.1.1.....
+    ........1.
+    ......1...
+    1.........
+    1.1.......
+    ......1..1
+    """)
+    target = Matrix(target)
+    assert target.is_symplectic()
+
+    source = parse("""
+    ...1......
+    .1........
+    .....1....
+    .......1..
+    ....1.....
+    ........1.
+    ......1...
+    1.........
+    ..1.......
+    .........1
+    """)
+    source = Matrix(source)
+    assert source.is_symplectic()
+
+    def get_encoder(source, target):
+        assert isinstance(source, CSSCode)
+        assert isinstance(target, CSSCode)
+        src = Matrix(source.to_symplectic())
+        src_inv = src.inverse()
+        tgt = Matrix(target.to_symplectic())
+        A = (src_inv * tgt).transpose()
+        return A
+
+    #print(Matrix.cnot(2, 0, 1))
+    #return
+
+    #source = source.transpose()
+    #target = target.transpose()
+
+    def cnot(i, j):
+        g = Matrix.cnot(n, i-1, j-1)
+        g.name = "cnot(%d,%d)"%(i, j)
+        return g
+
+    assert cnot(3,1) == cnot(1,3).transpose()
+    #gen = [cnot(3,1), cnot(2,3), cnot(2,5), cnot(4,3), cnot(5,3)]
+    gen = [cnot(3,1), cnot(2,3), cnot(2,5), cnot(4,3), cnot(4,1), cnot(5,3), cnot(5,4),
+        cnot(2,1),
+    ]
+    #gen = [cnot(i,j) for i in range(1,n+1) for j in range(1,n+1) if i!=j]
+    names = [g.name for g in gen]
+
+    gen = [g.transpose() for g in gen]
+
+    #A = (source.inverse() * target).transpose()
+    #A = source.inverse() * target
+    A = target * source.inverse()
+    assert A.is_symplectic()
+    #print(A)
+
+    words = set()
+    for trial in range(100):
+        word = mulclose_find(gen, names, A)
+        if word is None:
+            break
+        if word not in words:
+            print(word)
+            words.add(word)
+
+    if word is None:
+        print("not found")
+        return
+    ops = [gen[names.index(c)] for c in word]
+    op = reduce(mul, ops)
+    assert op*source == target
+    
 
 
 
