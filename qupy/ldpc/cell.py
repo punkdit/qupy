@@ -706,17 +706,19 @@ class Flow(object):
             i1, j1 = tgt.key # face
 
             if k=="h":
-                assert j0==j1
+                assert j0==j1 # same col
                 if i0==i1 or i0-1==i1:
                     pass
                 elif i0 < i1:
-                    i0 = i1+1
+                    #i0 = i1+1
+                    i1 = i0-1
             if k=="v":
-                assert i0==i1
+                assert i0==i1 # same row
                 if j0==j1 or j0-1==j1:
                     pass
                 elif j0 < j1:
-                    j0 = j1+1
+                    #j0 = j1+1
+                    j1 = j0-1
 
             x0, y0 = dx*j0, dy*i0
             if k=="h":
@@ -746,16 +748,27 @@ def render_flow():
     m, n = argv.get("m", 3), argv.get("n", 3) 
     nrows, ncols = argv.get("nrows", 1), argv.get("ncols", 1) 
     double = argv.double
+    name = argv.get("name", "output")
+
     cx = Complex()
 
-    #cx.build_torus(m, n)
-    #signature = (1, 2, 1)
+    if argv.torus:
+        cx.build_torus(m, n)
+        signature = (1, 2, 1)
 
-    #cx.build_surface((0, 0), (m+1, n+1))
-    signature = None
+    elif argv.disc:
+        cx.build_surface((0, 0), (m+1, n+1))
+        signature = (1, 0, 0)
 
-    cx.build_surface((0, 0), (m+1, n+1), open_top=True, open_bot=True)
-    signature = (0, 1, 0)
+    else:
+    
+        cx.build_surface((0, 0), (m+1, n+1), open_top=True, open_bot=True)
+        signature = (0, 1, 0)
+
+    if argv.showcode:
+        code = cx.get_code()
+        print(code)
+        return
 
     rows = []
     row = []
@@ -778,7 +791,7 @@ def render_flow():
     PAD = 2.0
     rows = [boxs.HBox([cvs for cvs in row], pad=PAD) for row in rows]
     box = boxs.VBox(rows, pad=PAD)
-    box.save("output")
+    box.save(name)
 
     print("OK")
 
