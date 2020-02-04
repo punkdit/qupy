@@ -206,15 +206,41 @@ def main():
     elif argv.code == 'toric':
 
         from qupy.ldpc.toric import Toric2D
+        
         l = argv.get('l', 8)
+        li = argv.get('li', l)
+        lj = argv.get('lj', l)
+        si = argv.get('si', 0)
+        sj = argv.get('sj', 0)
 
-        toric = Toric2D(l)
+        toric = Toric2D(li, lj, si, sj)
         Hx, Hz = toric.Hx, toric.Hz
         strop = toric.strop
         #print("Hx:")
         #print(shortstr(Hx))
         #print("Lx:")
         #print(shortstr(toric.Lx))
+        code = CSSCode(Hx=Hx, Hz=Hz, Lx=toric.Lx, Lz=toric.Lz)
+
+    elif argv.code == 'cylinder':
+
+        from qupy.ldpc.toric import Cylinder
+        
+        l = argv.get('l', 8)
+        li = argv.get('li', l)
+        lj = argv.get('lj', l)
+        si = argv.get('si', 0)
+        sj = argv.get('sj', 0)
+        assert si==0
+
+        surface = Cylinder(li, lj, sj)
+        Hx, Hz = surface.Hx, surface.Hz
+        strop = surface.strop
+        #print("Hx:")
+        #print(shortstr(Hx))
+        #print("Lx:")
+        #print(shortstr(surface.Lx))
+        code = CSSCode(Hx=Hx, Hz=Hz)
 
     elif argv.code == 'torichie':
 
@@ -228,6 +254,8 @@ def main():
 
         from qupy.ldpc.toric import Surface
         l = argv.get('l', 8)
+        si = argv.get('si', 0) # todo
+        sj = argv.get('sj', 0)
 
         surface = Surface(l)
         #Hx, Hz = surface.Hx, surface.Hz
@@ -995,6 +1023,12 @@ def main():
 
             if op.sum() and not success:
                 distance = min(distance, op.sum())
+                if op.sum() == 2:
+                    print()
+                    print("main:")
+                    print(shortstr(op))
+                    print()
+                    print(strop(op))
 
                 if argv.minop and argv.minop >= op.sum():
                     a = dot2(code.Lz, op)

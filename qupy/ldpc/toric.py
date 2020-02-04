@@ -117,28 +117,35 @@ class Toric3D(object):
 
 
 class Toric2D(object):
-    def __init__(self, l, allgen=False):
+    def __init__(self, li, lj=None, si=0, sj=0, allgen=False):
+
+        "l : linear size, si : shear, sj : shear"
+
+        if lj is None:
+            lj = li
     
+        assert si==0 or sj==0, "broken..."
+
         keys = []
         keymap = {}
-        for i in range(l):
-          for j in range(l):
+        for i in range(li):
+          for j in range(lj):
             for k in (0, 1):
                 m = len(keys)
                 keys.append((i, j, k))
-                for di in (-l, 0, l):
-                  for dj in (-l, 0, l):
-                    keymap[i+di, j+dj, k] = m
+                for di in (-1, 0, 1):
+                  for dj in (-1, 0, 1):
+                    keymap[i+di*li+dj*si, j+dj*lj+di*sj, k] = m
     
-        if l>2:
+        if li>2 and lj>2:
             assert keys[keymap[2, 1, 0]] == (2, 1, 0)
     
         if allgen:
-            m = l**2 # rows (constraints)
+            m = li*lj # rows (constraints)
         else:
-            m = l**2-1 # rows (constraints)
+            m = li*lj-1 # rows (constraints)
         n = len(keys) # cols (bits)
-        assert n == 2*(l**2)
+        assert n == 2*li*lj
     
         Lx = zeros2(2, n)
         Lz = zeros2(2, n)
@@ -147,16 +154,34 @@ class Toric2D(object):
         Hz = zeros2(m, n)
         Tx = zeros2(m, n)
 
-        for i in range(l):
-            Lx[0, keymap[i, l-1, 1]] = 1
-            Lx[1, keymap[l-1, i, 0]] = 1
-            Lz[0, keymap[0, i, 1]] = 1
-            Lz[1, keymap[i, 0, 0]] = 1
-    
+        def fill(A, i, j, k, di, dj):
+            while 1:
+                idx = keymap[i, j, k]
+                if A[idx] == 1:
+                    break
+                A[idx] = 1
+                (i, j, k) = keys[idx]
+                i += di
+                j += dj
+            #print(A)
+
+        fill(Lz[0], 0, 0, 0, 1, 0)
+        fill(Lz[1], 0, 0, 1, 0, 1)
+        fill(Lx[0], 0, 0, 0, 0, 1)
+        fill(Lx[1], 0, 0, 1, 1, 0)
+        #print(shortstr(Lx))
+        #print(shortstr(Lz))
+
+#        for i in range(l):
+#            Lx[0, keymap[i, l-1, 1]] = 1
+#            Lx[1, keymap[l-1, i, 0]] = 1
+#            Lz[0, keymap[0, i, 1]] = 1
+#            Lz[1, keymap[i, 0, 0]] = 1
+
         row = 0
         xmap = {}
-        for i in range(l):
-          for j in range(l):
+        for i in range(li):
+          for j in range(lj):
             if (i, j)==(0, 0) and not allgen:
                 continue
             Hx[row, keymap[i, j, 0]] = 1
@@ -176,9 +201,9 @@ class Toric2D(object):
 
         row = 0
         zmap = {}
-        for i in range(l):
-          for j in range(l):
-            if i==l-1 and j==l-1 and not allgen:
+        for i in range(li):
+          for j in range(lj):
+            if i==li-1 and j==lj-1 and not allgen:
                 continue
             Hz[row, keymap[i, j, 0]] = 1
             Hz[row, keymap[i, j, 1]] = 1
@@ -186,11 +211,11 @@ class Toric2D(object):
             Hz[row, keymap[i, j+1, 0]] = 1
             zmap[i, j] = row
             i1 = i
-            while i1<l-1:
+            while i1<li-1:
                 Tx[row, keymap[i1+1, j, 1]] = 1
                 i1 += 1
             j1 = j
-            while j1<l-1:
+            while j1<lj-1:
                 Tx[row, keymap[i1, j1+1, 0]] = 1
                 j1 += 1
             row += 1
@@ -207,7 +232,8 @@ class Toric2D(object):
         self.keymap = keymap
         self.xmap = xmap
         self.zmap = zmap
-        self.l = l
+        self.li = li
+        self.lj = lj
 
         #for row in self.Hx:
         #    print("op:")
@@ -472,5 +498,129 @@ class Surface(object):
                     c = '|-'[k]
             m[row, col] = c
         return str(m).replace('0', '.')
+
+
+class Cylinder(object):
+    def __init__(self, li=8, lj=8, sj=0):
+    
+        keys = []
+        keymap = {}
+        for i in range(li):
+          for j in range(lj):
+            ks = (0, 1) if j>0 else (0,)
+            for k in ks:
+                m = len(keys)
+                keys.append((i, j, k))
+                for di in (-1, 0, 1):
+                    keymap[i+di*li, j+di*sj, k] = m # periodic in i-direction
+    
+        if li>2:
+            assert keys[keymap[2, 1, 0]] == (2, 1, 0)
+    
+        assert sj>=0, "not implemented.."
+
+        extra = 0
+        if sj>0:
+            extra = 1 # need an extra qubit 
+            key = (-1, lj-sj, 1)
+            assert key not in keys
+            assert key not in keymap
+            m = len(keys)
+            keys.append(key)
+            keymap[key] = m
+            keymap[li-1, lj, 1] = m
+        del m
+            
+        mx = li*(lj-1) # stars
+        mz = li*lj-1 # plaqs
+
+        n = len(keys) # cols (bits)
+#        assert n == 2*li*(lj-1) + li
+#        assert mx+mz+1==n, (mx+mz, n)
+        print("n =", n)
+    
+        self.mx = mx
+        self.mz = mz
+        self.n = n
+        self.keys = keys
+        self.keymap = keymap
+
+        Hx = zeros2(mx, n)
+        Hz = zeros2(mz, n)
+
+
+        # stars
+        row = 0
+        xmap = {}
+        for i in range(li):
+          for j in range(lj-1):
+            Hx[row, keymap[i, j, 0]] = 1
+            Hx[row, keymap[i, j+1, 0]] = 1
+            Hx[row, keymap[i, j+1, 1]] = 1
+            key = (i-1, j+1, 1)
+            if key in keymap:
+                Hx[row, keymap[key]] = 1
+            xmap[i, j] = row
+            row += 1
+        assert row==mx, (row, m)
+
+        # plaqs
+        row = 0
+        zmap = {}
+        for i in range(li):
+          for j in range(lj):
+            #if (i,j) == (li-1, lj-1):
+            #    break # we are done
+            if (i,j) == (li-1, 0):
+                continue # put a hole here
+            hz = [(i, j, 0), (i+1, j, 0), (i, j, 1), (i, j+1, 1)]
+            for key in hz:
+                if key in keymap:
+                    Hz[row, keymap[key]] = 1
+#            Hz[row, keymap[i, j, 0]] = 1
+#            if j>0:
+#                Hz[row, keymap[i, j, 1]] = 1
+#            if j<lj-1:
+#                Hz[row, keymap[i, j+1, 1]] = 1
+            zmap[i, j] = row
+            row += 1
+        assert row==mz
+
+        self.Hx = Hx
+        self.Hz = Hz
+        self.xmap = xmap
+        self.zmap = zmap
+        self.li = li
+        self.lj = lj
+
+    def get_code(self, **kw):
+        from qupy.ldpc.css import CSSCode
+        code = CSSCode(Hx=self.Hx, Hz=self.Hz, **kw)
+        code.__dict__.update(self.__dict__)
+        return code 
+
+    def strop(self, u, fancy=False):
+        m = SMap()
+        n = u.shape[0]
+        for i in range(n):
+            c = str(min(1, u[i]))
+            i, j, k = self.keys[i]
+            row = 2*i + k
+            col = 4*j + 2*k
+            #if i%2==0 and j%2==0 and k==0:
+            if fancy:
+                if k==0:
+                    m[row-1, col] = '+'
+                if c=='I':
+                    c = '|-'[k]
+            m[row, col] = c
+        return str(m).replace('0', '.')
+
+    def strop(self, u, fancy=False):
+        items = []
+        for i in range(self.n):
+            if u[i]:
+                items.append(self.keys[i])
+        return str(items)
 
 
