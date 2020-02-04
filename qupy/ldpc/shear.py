@@ -41,7 +41,7 @@ def main():
 
     decoder = ClusterCSSDecoder(2, code.Hx, code.Hz)
 
-    N = argv.get("N", 100)
+    N = argv.get("N", 0)
     p = argv.get("p", 0.05)
     verbose = argv.verbose
 
