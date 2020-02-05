@@ -1023,12 +1023,12 @@ def main():
 
             if op.sum() and not success:
                 distance = min(distance, op.sum())
-                if op.sum() == 2:
-                    print()
-                    print("main:")
-                    print(shortstr(op))
-                    print()
-                    print(strop(op))
+                #if op.sum() == 2:
+                #    print()
+                #    print("main:")
+                #    print(shortstr(op))
+                #    print()
+                #    print(strop(op))
 
                 if argv.minop and argv.minop >= op.sum():
                     a = dot2(code.Lz, op)

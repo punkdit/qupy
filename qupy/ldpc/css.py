@@ -318,7 +318,7 @@ class CSSCode(object):
         U = dot2(Lz, Lx.transpose())
         I = identity2(k)
         A = solve.solve(U, I)
-        assert A is not None
+        assert A is not None, "problem with logops: %s"%(U,)
         #assert eq2(dot2(U, A), I)
         #assert eq2(dot2(Lz, Lx.transpose(), A), I)
 

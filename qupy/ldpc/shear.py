@@ -38,6 +38,7 @@ def main():
     code = CSSCode(Hx=Hx, Hz=Hz, Lx=toric.Lx, Lz=toric.Lz)
 
     print(code)
+    print(code.Lx)
 
     decoder = ClusterCSSDecoder(2, code.Hx, code.Hz)
 
@@ -49,6 +50,8 @@ def main():
     count = 0
     failcount = 0
     nonuniq = 0
+
+    total = numpy.array([0.]*code.k)
 
     for trial in range(N):
 
@@ -65,6 +68,7 @@ def main():
 
         c = 'F'
         success = False
+        result = numpy.array([1]*code.k)
         if op is not None:
             op = (op+err_op)%2
             # Should be a codeword of Hz (kernel of Hz)
@@ -74,11 +78,11 @@ def main():
                 continue
             write("%d:"%op.sum())
 
-            #print "is_stab:"
-            #print strop(op)
             # Are we in the image of Hx ? If so, then success.
-            #success = code.is_stab(op)
-            success = dot2(code.Lz, op).sum()==0
+            result = dot2(code.Lz, op)
+            success = result.sum()==0
+
+            #print(result, end=" ")
 
             if success and op.sum():
                 nonuniq += 1
@@ -97,16 +101,8 @@ def main():
             if failures:
                 print(shortstr(err_op), file=failures)
                 failures.flush()
- 
-        if argv.n_rank:
-            r = 2.*int(success) - 1
-            #print "r =", r
-            if err_op.sum():
-                r /= err_op.sum()
-                #print r
-                #print r*err_op
-                n_ranks += r*err_op
-                n_record.append((err_op, success))
+
+        total += result
  
         write(c+' ')
         count += success
@@ -119,6 +115,8 @@ def main():
         print("fail rate = %.8f" % (1.*failcount / (trial+1)))
         print("nonuniq = %d" % nonuniq)
         print("distance <= %d" % distance)
+        total = total/(trial+1)
+        print("logop errors = [%s]" % ', '.join(str(x) for x in total))
 
 
 
