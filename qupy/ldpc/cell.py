@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+"""
+another version: bruhat/morse.py
+"""
+
 
 from collections import namedtuple
 from functools import reduce

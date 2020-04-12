@@ -46,6 +46,7 @@ def mulclose_find(gen, names, target, verbose=False, maxsize=None):
                     _bdy.append(k)
 
                 if k==target:
+                    assert type( lookup[g]+lookup[h] ) == tuple
                     return lookup[g]+lookup[h]
         bdy = _bdy
         #if verbose:
@@ -462,9 +463,12 @@ def test_symplectic():
     A = get_encoder(trivial, repitition)
 
     gen, names = get_gen(3)
-    for word in mulclose_find(gen, names, A):
+    word = mulclose_find(gen, names, A)
+
+    if 1:
+        assert type(word) is tuple
         #print("word:")
-        #print(word)
+        #print(repr(word))
     
         items = [gen[names.index(op)] for op in word]
         op = reduce(mul, items)
@@ -487,7 +491,7 @@ def get_transvect(n):
 
 def test_isotropic():
 
-    n = 2
+    n = 3
     gen, _ = get_gen(n)
     print(len(mulclose_fast(gen)))
     return
