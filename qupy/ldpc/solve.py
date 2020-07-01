@@ -636,6 +636,10 @@ def find_kernel(A, inplace=False, check=False, verbose=False):
         basis.append(v)
 
     K = numpy.array(basis, dtype=int_scalar)
+    if not basis:
+        K.shape = (0, A.shape[1])
+    else:
+        assert K.shape[1] == A.shape[1]
 
     return K
 

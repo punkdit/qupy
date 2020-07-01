@@ -382,7 +382,8 @@ def main():
         for i in range(m):
             J[i, i] = 1
             J[i, (i+1)%n] = 1
-        #print(J)
+        print()
+        print(shortstr(J))
         Hx, Hz, Lx, Lz = hypergraph_product(J, H)
         code = CSSCode(Hx=Hx, Hz=Hz, Lx=Lx, Lz=Lz)
         #print(code.weightstr())

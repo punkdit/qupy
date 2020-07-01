@@ -107,7 +107,7 @@ class CSSCode(object):
                 self.build_from_gauge(check=check)
         #elif None in (Lx, Lz, Tx, Tz) and build:
         elif build and (Lx is None or Lz is None or Tx is None or Tz is None):
-            self.build(check=check, logops_only=logops_only)
+            self.build(check=check, logops_only=logops_only, verbose=verbose)
         elif Hz is not None and Hx is not None:
             _, n = Hz.shape
             self.k = n - Hz.shape[0] - Hx.shape[0]

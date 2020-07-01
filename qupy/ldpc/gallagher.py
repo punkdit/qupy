@@ -27,11 +27,12 @@ def classical_distance(H, max_dist=0):
     return dist
 
 
-def make_gallagher(r, n, l, m, distance=0):
+def make_gallagher(r, n, l, m, distance=0, verbose=False):
     assert r%l == 0
     assert n%m == 0
     assert r*m == n*l
-    print("make_gallagher", r, n, l, m, distance)
+    if verbose:
+        print("make_gallagher", r, n, l, m, distance)
     H = zeros2(r, n)
     H1 = zeros2(r//l, n)
     H11 = identity2(r//l)
@@ -53,12 +54,15 @@ def make_gallagher(r, n, l, m, distance=0):
         assert k <= 24, "ummm, too big? k = %d" % k
         if distance is None:
             break
-        write("/")
+        if verbose:
+            write("/")
         dist = classical_distance(Hli, distance)
         if dist >= distance:
             break
-        write(".")
-    write("\n")
+        if verbose:
+            write(".")
+    if verbose:
+        write("\n")
     return Hli
 
 
