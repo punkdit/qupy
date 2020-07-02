@@ -13,8 +13,10 @@ from qupy.ldpc.solve import row_reduce, RowReduction, span, get_reductor
 from qupy.ldpc.solve import u_inverse, find_logops, solve, find_kernel, linear_independent
 from qupy.ldpc.solve import rand2, find_stabilizers, find_errors, enum2
 #from qupy.ldpc.solve import minweight
-
 #from code import lstr2
+
+from qupy.condmat.build_gcc import build_gcc96, build_gcc192, build_gcc384
+
 
 from qupy.argv import argv
 
@@ -808,6 +810,7 @@ def build_projective(n, dim=2):
     Hz = None
 
     return Gx, Gz, Hx, Hz
+
 
 
 

@@ -12,10 +12,8 @@ from numpy import concatenate as cat
 
 from qupy.ldpc import solve
 from qupy.ldpc.solve import (
-    shortstr, shortstrx, hbox,
-    eq2, dot2, compose2, rand2,
-    pop2, insert2, append2, 
-    array2, zeros2, identity2)
+    shortstr, shortstrx, hbox, eq2, dot2, compose2, rand2,
+    pop2, insert2, append2, array2, zeros2, identity2, rank)
 from qupy.ldpc.tool import write #, load, save
 from qupy.ldpc.chain import Chain, Morphism, equalizer
 from qupy.ldpc.dynamic import Tanner
@@ -228,16 +226,26 @@ class CSSCode(object):
             check_commute(Hz, Gx)
             check_commute(Hx, Gz)
 
-        Gxr = numpy.concatenate((Hx, Gx))
-        Gxr = solve.linear_independent(Gxr)
-        assert eq2(Gxr[:len(Hx)], Hx)
-        Gxr = Gxr[len(Hx):]
-    
-        Gzr = numpy.concatenate((Hz, Gz))
-        Gzr = solve.linear_independent(Gzr)
-        assert eq2(Gzr[:len(Hz)], Hz)
-        Gzr = Gzr[len(Hz):]
+        #Gxr = numpy.concatenate((Hx, Gx))
+        #Gxr = solve.linear_independent(Gxr)
+        #print(Hx.shape)
+        #assert rank(Hx) == len(Hx)
+        #assert eq2(Gxr[:len(Hx)], Hx)
+        #Gxr = Gxr[len(Hx):]
 
+        Px = solve.get_reductor(Hx).transpose()
+        Gxr = dot2(Gx, Px)
+        Gxr = solve.linear_independent(Gxr)
+    
+        #Gzr = numpy.concatenate((Hz, Gz))
+        #Gzr = solve.linear_independent(Gzr)
+        #assert eq2(Gzr[:len(Hz)], Hz)
+        #Gzr = Gzr[len(Hz):]
+
+        Pz = solve.get_reductor(Hz).transpose()
+        Gzr = dot2(Gz, Pz)
+        Gzr = solve.linear_independent(Gzr)
+    
         if Lx is None:
             Lx = solve.find_logops(Gz, Hx)
         if Lz is None:
@@ -245,6 +253,8 @@ class CSSCode(object):
 
         write('\n')
 
+        print("Gxr", Gxr.shape)
+        print("Gzr", Gzr.shape)
         assert len(Gxr)==len(Gzr)
         kr = len(Gxr)
         V = dot2(Gxr, Gzr.transpose())
