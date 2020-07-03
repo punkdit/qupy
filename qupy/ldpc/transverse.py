@@ -11,7 +11,7 @@ from qupy.tool import write, choose
 from qupy.ldpc.css import CSSCode, randcss
 from qupy.ldpc.solve import shortstr, zeros2, array2, dot2, parse, identity2, rank
 from qupy.ldpc.solve import find_kernel, cokernel, eq2, get_reductor
-from qupy.ldpc.solve import linear_independent, solve
+from qupy.ldpc.solve import linear_independent, solve, row_reduce
 from qupy.ldpc.gallagher import make_gallagher
 
 
@@ -36,6 +36,31 @@ def kron(A, B):
     return C
 
 
+def remove_dependent(H):
+    "remove dependent rows of H, first to last"
+    if len(H) <2:
+        return H
+    idxs = set(range(len(H)))
+    #print(H)
+    K = find_kernel(H.transpose())
+    #print("K:")
+    #print(K)
+    K = row_reduce(K, truncate=True)
+    #print("K:")
+    #print(K)
+    assert dot2(K, H).sum() == 0
+    deps = []
+    for row in K:
+        #print(row)
+        idx = numpy.where(row!=0)[0][0]
+        deps.append(idx)
+        idxs.remove(idx)
+    assert len(set(deps)) == len(K)
+    idxs = list(idxs)
+    idxs.sort()
+    return H[idxs]
+
+
 def hypergraph_product(C, D, check=False):
     #print("hypergraph_product:", C.shape, D.shape)
     c0, c1 = C.shape
@@ -54,13 +79,16 @@ def hypergraph_product(C, D, check=False):
 
     assert dot2(Hz, Hx.transpose()).sum() == 0
 
+    n = Hx.shape[1]
+    assert Hz.shape[1] == n
+
     # ---------------------------------------------------
     # Build Lx 
 
     Kt = find_kernel(C)
     assert Kt.shape[1] == c1
     K = Kt.transpose()
-#    E = unit2(d0)
+    #E = unit2(d0)
     E = identity2(d0)
 
     Lxt0 = kron(K, E), zeros2(c0*d1, K.shape[1]*d0)
@@ -69,7 +97,7 @@ def hypergraph_product(C, D, check=False):
 
     K = find_kernel(D).transpose()
     assert K.shape[0] == d1
-#    E = unit2(c0)
+    #E = unit2(c0)
     E = identity2(c0)
 
     Lxt1 = zeros2(c1*d0, K.shape[1]*c0), kron(E, K)
@@ -95,7 +123,7 @@ def hypergraph_product(C, D, check=False):
     counit = lambda n : unit2(n).transpose()
 
     K = find_cokernel(D) # matrix of row vectors
-#    E = counit(c1)
+    #E = counit(c1)
     E = identity2(c1)
     Lz0 = kron(E, K), zeros2(K.shape[0]*c1, c0*d1)
     Lz0 = numpy.concatenate(Lz0, axis=1) # horizontal concatenate
@@ -103,7 +131,7 @@ def hypergraph_product(C, D, check=False):
     assert dot2(Lz0, Hx.transpose()).sum() == 0
 
     K = find_cokernel(C)
-#    E = counit(d1)
+    #E = counit(d1)
     E = identity2(d1)
     Lz1 = zeros2(K.shape[0]*d1, c1*d0), kron(K, E)
     Lz1 = numpy.concatenate(Lz1, axis=1) # horizontal concatenate
@@ -112,16 +140,6 @@ def hypergraph_product(C, D, check=False):
 
     assert dot2(Lz, Hx.transpose()).sum() == 0
 
-    if 0:
-        P = get_reductor(Hz)
-        Lz = dot2(Lz, P.transpose())
-        Lz = linear_independent(Lz)
-
-    k = len(Lz)
-    assert k == len(Lx)
-
-    # ---------------------------------------------------
-    # 
 
     if 0:
         print("Hx:", Hx.shape)
@@ -142,24 +160,41 @@ def hypergraph_product(C, D, check=False):
       for lz in Lz:
         w = (lx*lz).sum()
         overlap = max(overlap, w)
-    print("max overlap:", overlap)
+    assert overlap == 1, overlap
+    #print("max overlap:", overlap)
 
-    return
+
+    Lx = linear_independent(Lx)
+    Lz = linear_independent(Lz)
 
     assert rank(Hx) == len(Hx)
     assert rank(Hz) == len(Hz)
+    mx = len(Hx)
+    mz = len(Hz)
 
-    HxLx = numpy.concatenate((Hx, Lx), axis=0)
-    assert rank(HxLx) == len(HxLx)
+    assert rank(Lx) == len(Lx)
+    assert rank(Lz) == len(Lz)
 
-    HzLz = numpy.concatenate((Hz, Lz), axis=0)
-    assert rank(HzLz) == len(HzLz)
+    # remove excess logops...
+    LxHx = numpy.concatenate((Lx, Hx), axis=0)
+    LxHx = remove_dependent(LxHx)
+    assert rank(LxHx) == len(LxHx)
+    assert len(LxHx) >= mx
+    assert eq2(LxHx[-len(Hx):], Hx)
+    Lx = LxHx[:-mx]
+
+    LzHz = numpy.concatenate((Lz, Hz), axis=0)
+    LzHz = remove_dependent(LzHz)
+    assert rank(LzHz) == len(LzHz)
+    assert len(LzHz) >= mz
+    assert eq2(LzHz[-len(Hz):], Hz)
+    Lz = LzHz[:-mz]
+
+    k = len(Lx)
+    assert k == len(Lz)
 
     #assert eq2(dot2(Lz, Lxt), identity2(k))
-
-    n = Hx.shape[1]
-    assert len(Hx) + len(Hz) + k == n
-    #Lx = Lz = None
+    assert mx + mz + k == n
 
     if argv.code:
         print("code = CSSCode()")
@@ -201,6 +236,12 @@ def main():
         .11.
         ..11
         1..1
+        """)
+    elif argv.hamming:
+        C = parse("""
+        ...1111
+        .11..11
+        1.1.1.1
         """)
     else:
         # Surface

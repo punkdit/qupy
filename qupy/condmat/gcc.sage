@@ -77,7 +77,7 @@ def dump(H):
     H = H.replace("0", ".")
     print(H)
 
-n, R = rels[3]
+n, R = rels[0]
 
 H = get_color_code(R)
 #print("H =")
@@ -91,7 +91,6 @@ G = get_gauge_matrix(R)
 
 set([r.hamming_weight() for r in G])
 
-print("G =")
 dump(G)
 
 

@@ -550,7 +550,7 @@ def linear_independent(A, check=False, verbose=False):
 
 
 def find_kernel(A, inplace=False, check=False, verbose=False):
-    """return a list of vectors that span the nullspace of A.
+    """return matrix with rows of vectors that span the nullspace of A.
         This is the transpose of the matrix K, s.t. AK = 0.
     """
 
