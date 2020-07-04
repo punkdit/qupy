@@ -160,22 +160,29 @@ def hypergraph_product(C, D, check=False):
       for lz in Lz:
         w = (lx*lz).sum()
         overlap = max(overlap, w)
-    assert overlap == 1, overlap
+    assert overlap <= 1, overlap
     #print("max overlap:", overlap)
-
-
-    Lx = linear_independent(Lx)
-    Lz = linear_independent(Lz)
 
     assert rank(Hx) == len(Hx)
     assert rank(Hz) == len(Hz)
     mx = len(Hx)
     mz = len(Hz)
 
-    assert rank(Lx) == len(Lx)
-    assert rank(Lz) == len(Lz)
+#    Lx = linear_independent(Lx)
+#    Lz = linear_independent(Lz)
+#
+#    assert rank(Lx) == len(Lx)
+#    assert rank(Lz) == len(Lz)
+#
+    #A = dot2(Lx, Lz.transpose())
+    #print(A.shape)
+    #print(shortstr(A))
 
-    # remove excess logops...
+    # ---------------------------------------------------
+    # Remove excess logops.
+
+    print("remove_dependent")
+
     LxHx = numpy.concatenate((Lx, Hx), axis=0)
     LxHx = remove_dependent(LxHx)
     assert rank(LxHx) == len(LxHx)
@@ -225,9 +232,12 @@ def main():
         m = argv.get("m", 4) # row weight
         n = argv.get("n", 8) # cols
         r = argv.get("r", n*l//m) # rows
-        d = argv.get("d", 0) # distance
+        d = argv.get("d", 1) # distance
         C = make_gallagher(r, n, l, m, d)
         #print(shortstr(C))
+        D = make_gallagher(r, n, l, m, d)
+        assert rank(C) == len(C)
+        assert rank(D) == len(D)
 
     elif argv.torus:
         # Torus
@@ -237,12 +247,14 @@ def main():
         ..11
         1..1
         """)
+        D = C
     elif argv.hamming:
         C = parse("""
         ...1111
         .11..11
         1.1.1.1
         """)
+        D = C
     else:
         # Surface
         C = parse("""
@@ -250,9 +262,11 @@ def main():
         .11.
         ..11
         """)
+        D = C
 
-    D = C.transpose()
-    hypergraph_product(C, D)
+    Ct = C.transpose()
+    Dt = D.transpose()
+    hypergraph_product(C, Dt)
     #hypergraph_product(D, D)
     #hypergraph_product(C, C)
     #hypergraph_product(D, C)
