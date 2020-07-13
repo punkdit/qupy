@@ -12,7 +12,7 @@ from qupy.ldpc.css import CSSCode, randcss
 from qupy.ldpc.solve import shortstr, zeros2, array2, dot2, parse, identity2, rank
 from qupy.ldpc.solve import find_kernel, cokernel, eq2, get_reductor
 from qupy.ldpc.solve import linear_independent, solve, row_reduce
-from qupy.ldpc.gallagher import make_gallagher
+from qupy.ldpc.gallagher import make_gallagher, classical_distance
 
 
 def find_cokernel(H):
@@ -36,10 +36,8 @@ def kron(A, B):
     return C
 
 
-def remove_dependent(H):
+def dependent_rows(H):
     "remove dependent rows of H, first to last"
-    if len(H) <2:
-        return H
     idxs = set(range(len(H)))
     #print(H)
     K = find_kernel(H.transpose())
@@ -58,11 +56,115 @@ def remove_dependent(H):
     assert len(set(deps)) == len(K)
     idxs = list(idxs)
     idxs.sort()
+    deps.sort()
+    return idxs, deps
+
+
+def remove_dependent(H):
+    "remove dependent rows of H, first to last"
+    if len(H) <2:
+        return H
+    idxs, deps = dependent_rows(H)
     return H[idxs]
 
 
+def min_span(K):
+    "find minimum weight span"
+    Kt = K.transpose()
+    dist = {}
+    for u in numpy.ndindex((2,)*K.shape[0]):
+        v = dot2(Kt, u)
+        if v.sum()==0:
+            continue
+        weight = v.sum()
+        #dist[weight] = dist.get(weight, 0) + 1
+        dist.setdefault(weight, []).append(v)
+    keys = list(dist.keys())
+    keys.sort(reverse=True)
+    rows = []
+    for k in keys:
+        #print("%s:%s" % (k, len(dist[k])), end=" ")
+        rows.extend(dist[k])
+    #print()
+    A = array2(rows)
+    #print(A.shape)
+    A = remove_dependent(A)
+    #print(shortstr(A))
+    return A
+
+
+def is_correctable(n, idxs, Lx, Lz):
+    "is an X error supported on indexes idxs, or Z error on idxs, correctable?"
+    A = zeros2(len(idxs), n)
+    for i, idx in enumerate(idxs):
+        A[i, idx] = 1
+    #print("correctable", len(idxs))
+    
+    for Lops in [Lx, Lz]:
+        B = numpy.concatenate((Lops, A), axis=0)
+        #print(B.shape)
+        B1 = remove_dependent(B)
+        #print(B1.shape)
+    
+        if len(B1) < len(B):
+            return False
+
+    return True
+
+
+
+def mk_logops(L, H):
+    m = len(H)
+    #print("L:", len(L))
+
+    L0 = L # save this
+    LH = numpy.concatenate((L, H), axis=0)
+
+    #LH = remove_dependent(LH)
+    keep, remove = dependent_rows(LH)
+    #print("dependent_rows:", len(keep), len(remove))
+
+    LH = LH[keep]
+
+    assert rank(LH) == len(LH)
+    assert len(LH) >= m
+    assert eq2(LH[-len(H):], H)
+    L = LH[:-m]
+    #print("L:", len(L))
+
+    # find disjoint set of L ops
+    keep = set([idx for idx in keep if idx<len(L0)])
+    assert len(keep) == len(L)
+
+    idxs = list(range(len(L0)))
+    idxs.sort(key = lambda idx: -int(idx in keep))
+    assert idxs[0] in keep
+    L1 = L0[idxs]
+    assert L1.shape == L0.shape
+
+    LH = numpy.concatenate((L1, H), axis=0)
+    LH = remove_dependent(LH)
+    L1 = LH[:-m]
+    assert len(L) == len(L1), (L.shape, L1.shape)
+
+    #print(shortstr(L))
+    #print("--")
+    #print(shortstr(L1))
+
+    #print("--")
+    A = numpy.dot(L, L1.transpose())
+    #assert A.sum() == 0, "found overlap"
+    if A.sum():
+        print("WARNING: A.sum() =", A.sum())
+        print("failed to find disjoint logops")
+
+    return L, L1
+
+
 def hypergraph_product(C, D, check=False):
-    #print("hypergraph_product:", C.shape, D.shape)
+    print("hypergraph_product:", C.shape, D.shape)
+    print("distance:", classical_distance(C))
+
     c0, c1 = C.shape
     d0, d1 = D.shape
     E1 = identity2(c0)
@@ -86,6 +188,7 @@ def hypergraph_product(C, D, check=False):
     # Build Lx 
 
     Kt = find_kernel(C)
+    #Kt = min_span(Kt) # does not seem to matter... ??
     assert Kt.shape[1] == c1
     K = Kt.transpose()
     #E = unit2(d0)
@@ -104,6 +207,8 @@ def hypergraph_product(C, D, check=False):
     Lxt1 = numpy.concatenate(Lxt1, axis=0)
     assert dot2(Hz, Lxt1).sum() == 0
 
+    #print("Lxt0", Lxt0.shape)
+    #print("Lxt1", Lxt1.shape)
     Lxt = numpy.concatenate((Lxt0, Lxt1), axis=1) # horizontal concatenate
     Lx = Lxt.transpose()
 
@@ -168,34 +273,28 @@ def hypergraph_product(C, D, check=False):
     mx = len(Hx)
     mz = len(Hz)
 
-#    Lx = linear_independent(Lx)
-#    Lz = linear_independent(Lz)
-#
-#    assert rank(Lx) == len(Lx)
-#    assert rank(Lz) == len(Lz)
-#
-    #A = dot2(Lx, Lz.transpose())
-    #print(A.shape)
-    #print(shortstr(A))
-
     # ---------------------------------------------------
     # Remove excess logops.
 
     print("remove_dependent")
 
-    LxHx = numpy.concatenate((Lx, Hx), axis=0)
-    LxHx = remove_dependent(LxHx)
-    assert rank(LxHx) == len(LxHx)
-    assert len(LxHx) >= mx
-    assert eq2(LxHx[-len(Hx):], Hx)
-    Lx = LxHx[:-mx]
+    # -------- Lx
 
-    LzHz = numpy.concatenate((Lz, Hz), axis=0)
-    LzHz = remove_dependent(LzHz)
-    assert rank(LzHz) == len(LzHz)
-    assert len(LzHz) >= mz
-    assert eq2(LzHz[-len(Hz):], Hz)
-    Lz = LzHz[:-mz]
+    Lx, Lx1 = mk_logops(Lx, Hx)
+
+    # -------- Lz
+
+    Lz, Lz1 = mk_logops(Lz, Hz)
+
+    #LzHz = numpy.concatenate((Lz, Hz), axis=0)
+    #LzHz = remove_dependent(LzHz)
+    #assert rank(LzHz) == len(LzHz)
+    #assert len(LzHz) >= mz
+    #assert eq2(LzHz[-len(Hz):], Hz)
+    #Lz = LzHz[:-mz]
+
+    # ---------------------------------------------------
+    # 
 
     k = len(Lx)
     assert k == len(Lz)
@@ -203,10 +302,42 @@ def hypergraph_product(C, D, check=False):
     #assert eq2(dot2(Lz, Lxt), identity2(k))
     assert mx + mz + k == n
 
+    print("mx = %d, mz = %d, k = %d" % (mx, mz, k))
+
+    # ---------------------------------------------------
+    # 
+
+    op = zeros2(n)
+    for lx in Lx:
+      for lz in Lz:
+        lxz = lx*lz
+        #print(lxz)
+        #print(op.shape, lxz.shape)
+        op += lxz
+
+    for lx in Lx1:
+      for lz in Lz1:
+        lxz = lx*lz
+        #print(lxz)
+        #print(op.shape, lxz.shape)
+        op += lxz
+
+    idxs = numpy.where(op)[0]
+    print("correctable region size = %d" % len(idxs))
+    #print(op)
+    #print(idxs)
+
+    good = is_correctable(n, idxs, Lx, Lz)
+    assert good
+
+    # ---------------------------------------------------
+    # 
+
     if argv.code:
         print("code = CSSCode()")
         code = CSSCode(Hx=Hx, Hz=Hz, Lx=Lx, Lz=Lz, check=True, verbose=False, build=True)
         print(code)
+        #print(code.weightstr())
     
         if check:
             U = solve(Lx.transpose(), code.Lx.transpose())
@@ -224,6 +355,7 @@ def hypergraph_product(C, D, check=False):
 
 
 
+
 def main():
 
     if argv.ldpc:
@@ -235,9 +367,14 @@ def main():
         d = argv.get("d", 1) # distance
         C = make_gallagher(r, n, l, m, d)
         #print(shortstr(C))
-        D = make_gallagher(r, n, l, m, d)
-        assert rank(C) == len(C)
-        assert rank(D) == len(D)
+        if argv.same:
+            D = C
+        else:
+            D = make_gallagher(r, n, l, m, d)
+            assert rank(C) == len(C)
+            assert rank(D) == len(D)
+        print("rank(C)", rank(C), "kernel(C)", len(find_kernel(C)))
+        print("rank(D)", rank(D), "kernel(D)", len(find_kernel(D)))
 
     elif argv.torus:
         # Torus
@@ -272,9 +409,50 @@ def main():
     #hypergraph_product(D, C)
 
 
+def latex(A):
+    rows, cols = A.shape
+    lines = []
+    lines.append(r"\begin{array}{%s}" % ('c'*cols,))
+    for row in A:
+        line = [str(x) for x in row]
+        line = ' & '.join(line) + r"\\"
+        lines.append(line)
+    lines.append(r"\end{array}")
+    s = '\n'.join(lines)
+    s = s.replace(" 0 ", " . ")
+    return s
+    
+
+
+def test():
+    H = parse("""
+     1001011
+     0101110
+     0010111
+    """)
+    print(latex(H))
+    G = parse("""
+     1101000
+     0110100
+     1110010
+     1010001
+    """)
+    print(latex(G))
+    print(dot2(G, H.transpose()))
+
+
 if __name__ == "__main__":
 
-    main()
+    _seed = argv.get("seed")
+    if _seed is not None:
+        seed(_seed)
+        ra.seed(_seed)
+
+    while 1:
+        main()
+        #test()
+        if not argv.forever:
+            break
 
 
 
