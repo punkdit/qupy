@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from random import randint, seed
+from random import randint, seed, random
 
 import numpy
 import numpy.random as ra
@@ -13,6 +13,85 @@ from qupy.ldpc.solve import shortstr, zeros2, array2, dot2, parse, identity2, ra
 from qupy.ldpc.solve import find_kernel, cokernel, eq2, get_reductor
 from qupy.ldpc.solve import linear_independent, solve, row_reduce
 from qupy.ldpc.gallagher import make_gallagher, classical_distance
+
+
+from huygens.front import *
+
+
+class Draw(object):
+    def __init__(self, c0, c1, d0, d1):
+        cvs = canvas.canvas()
+        self.dx = 0.7
+        self.dy = self.dx
+        self.r = 0.10
+
+        self.st_qubit = [color.rgb.grey]
+        self.st_bar = [color.rgb.black]
+
+        self.cvs = cvs
+        self.shape = (c0, c1, d0, d1)
+
+        # horizontal edges --------
+        for row in range(c1):
+          for col in range(d0):
+            self.h_mark(row, col)
+
+        # vertical edges --------
+        for row in range(c0):
+          for col in range(d1):
+            self.v_mark(row, col)
+
+    def h_mark(self, row, col, st_bar=None, st_qubit=None):
+        (c0, c1, d0, d1) = self.shape
+        assert 0<=row<c1
+        assert 0<=col<d0
+        st_qubit = st_qubit or self.st_qubit
+        st_bar = st_bar or self.st_bar
+        dx, dy, r = self.dx, self.dy, self.r
+        cvs = self.cvs
+        x, y = dx*col, dy*row
+        cvs.stroke(path.line(x-0.4*dx, y, x+0.4*dx, y), st_bar)
+        cvs.fill(path.circle(x, y, r), st_qubit)
+
+    def v_mark(self, row, col, st_bar=None, st_qubit=None):
+        (c0, c1, d0, d1) = self.shape
+        assert 0<=row<c0
+        assert 0<=col<d1
+        st_qubit = st_qubit or self.st_qubit
+        st_bar = st_bar or self.st_bar
+        dx, dy, r = self.dx, self.dy, self.r
+        cvs = self.cvs
+        x, y = dx*(col+0.5), dy*(row+0.5)
+        cvs.stroke(path.line(x, y-0.4*dy, x, y+0.4*dy), st_bar)
+        cvs.fill(path.circle(x, y, r), st_qubit)
+
+    def mark(self, i, *args, **kw):
+        (c0, c1, d0, d1) = self.shape
+        #print("mark", i)
+        if i < c1*d0:
+            col = i%d0
+            row = i//c1
+            assert i == col + row*c1
+            self.h_mark(row, col, *args, **kw)
+        else:
+            i -= c1*d0
+            assert i < c0*d1
+            row = i%d1
+            col = i//c0
+            assert i == row + col*c0
+            self.v_mark(row, col, *args, **kw)
+
+    def mark_op(self, op, *args, **kw):
+        (c0, c1, d0, d1) = self.shape
+        n = len(op)
+        assert n == c1*d0 + c0*d1
+        for i in range(n):
+            if op[i]:
+                self.mark(i, *args, **kw)
+
+    def save(self, name):
+        self.cvs.writePDFfile(name+".pdf")
+        self.cvs.writeSVGfile(name+".svg")
 
 
 def find_cokernel(H):
@@ -113,7 +192,7 @@ def is_correctable(n, idxs, Lx, Lz):
 
 
 
-def mk_logops(L, H):
+def mk_disjoint_logops(L, H):
     m = len(H)
     #print("L:", len(L))
 
@@ -155,8 +234,10 @@ def mk_logops(L, H):
     A = numpy.dot(L, L1.transpose())
     #assert A.sum() == 0, "found overlap"
     if A.sum():
+        print("*"*79)
         print("WARNING: A.sum() =", A.sum())
         print("failed to find disjoint logops")
+        print("*"*79)
 
     return L, L1
 
@@ -167,6 +248,9 @@ def hypergraph_product(C, D, check=False):
 
     c0, c1 = C.shape
     d0, d1 = D.shape
+
+    draw = Draw(c0, c1, d0, d1)
+
     E1 = identity2(c0)
     E2 = identity2(d0)
     M1 = identity2(c1)
@@ -280,11 +364,11 @@ def hypergraph_product(C, D, check=False):
 
     # -------- Lx
 
-    Lx, Lx1 = mk_logops(Lx, Hx)
+    Lx, Lx1 = mk_disjoint_logops(Lx, Hx)
 
     # -------- Lz
 
-    Lz, Lz1 = mk_logops(Lz, Hz)
+    Lz, Lz1 = mk_disjoint_logops(Lz, Hz)
 
     #LzHz = numpy.concatenate((Lz, Hz), axis=0)
     #LzHz = remove_dependent(LzHz)
@@ -292,6 +376,16 @@ def hypergraph_product(C, D, check=False):
     #assert len(LzHz) >= mz
     #assert eq2(LzHz[-len(Hz):], Hz)
     #Lz = LzHz[:-mz]
+
+    st = [color.rgb(0.2, 0.7, 0.2), style.linewidth.THick]
+    st_qubit = [color.rgb(0.2, 0.7, 0.2, 0.8)]
+    for op in Lx:
+        cl = color.rgb(0.2*random(), 0.2*random(), random(), 0.5)
+        draw.mark_op(op, st_qubit=[cl])
+
+    for op in Lz:
+        cl = color.rgb(0.2*random(), random(), 0.2*random(), 0.5)
+        draw.mark_op(op, st_qubit=[cl])
 
     # ---------------------------------------------------
     # 
@@ -302,7 +396,7 @@ def hypergraph_product(C, D, check=False):
     #assert eq2(dot2(Lz, Lxt), identity2(k))
     assert mx + mz + k == n
 
-    print("mx = %d, mz = %d, k = %d" % (mx, mz, k))
+    print("mx = %d, mz = %d, k = %d : n = %d" % (mx, mz, k, n))
 
     # ---------------------------------------------------
     # 
@@ -326,6 +420,8 @@ def hypergraph_product(C, D, check=False):
     print("correctable region size = %d" % len(idxs))
     #print(op)
     #print(idxs)
+
+    draw.save("output")
 
     good = is_correctable(n, idxs, Lx, Lz)
     assert good
@@ -366,15 +462,15 @@ def main():
         r = argv.get("r", n*l//m) # rows
         d = argv.get("d", 1) # distance
         C = make_gallagher(r, n, l, m, d)
-        #print(shortstr(C))
+        print(shortstr(C))
+        print("rank(C)", rank(C), "kernel(C)", len(find_kernel(C)))
         if argv.same:
             D = C
         else:
             D = make_gallagher(r, n, l, m, d)
             assert rank(C) == len(C)
             assert rank(D) == len(D)
-        print("rank(C)", rank(C), "kernel(C)", len(find_kernel(C)))
-        print("rank(D)", rank(D), "kernel(D)", len(find_kernel(D)))
+            print("rank(D)", rank(D), "kernel(D)", len(find_kernel(D)))
 
     elif argv.torus:
         # Torus
@@ -392,7 +488,7 @@ def main():
         1.1.1.1
         """)
         D = C
-    else:
+    elif argv.surf or argv.surface:
         # Surface
         C = parse("""
         11..
@@ -400,6 +496,8 @@ def main():
         ..11
         """)
         D = C
+    else:
+        return
 
     Ct = C.transpose()
     Dt = D.transpose()
