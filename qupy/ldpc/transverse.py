@@ -10,18 +10,25 @@ from qupy.argv import argv
 from qupy.tool import write, choose
 from qupy.ldpc.css import CSSCode, randcss
 from qupy.ldpc.solve import shortstr, zeros2, array2, dot2, parse, identity2, rank
-from qupy.ldpc.solve import find_kernel, cokernel, eq2, get_reductor
-from qupy.ldpc.solve import linear_independent, solve, row_reduce
+from qupy.ldpc.solve import find_kernel, cokernel, eq2, get_reductor, intersect
+from qupy.ldpc.solve import linear_independent, solve, row_reduce, rand2
 from qupy.ldpc.gallagher import make_gallagher, classical_distance
 
 
 from huygens.front import *
+from huygens.box import *
+
+red = color.rgb(0.7, 0.2, 0.2)
+green = color.rgb(0.2, 0.7, 0.2)
+blue = color.rgb(0.2, 0.2, 0.7)
+
+st_thick = [style.linewidth.Thick]
 
 
 class Draw(object):
     def __init__(self, c0, c1, d0, d1):
         cvs = canvas.canvas()
-        self.dx = 0.7
+        self.dx = 0.4
         self.dy = self.dx
         self.r = 0.10
 
@@ -34,51 +41,73 @@ class Draw(object):
         # horizontal edges --------
         for row in range(c1):
           for col in range(d0):
-            self.h_mark(row, col)
+            self.h_mark(row, col, fill=True)
 
         # vertical edges --------
         for row in range(c0):
           for col in range(d1):
-            self.v_mark(row, col)
+            self.v_mark(row, col, fill=True)
 
-    def h_mark(self, row, col, st_bar=None, st_qubit=None):
+    def h_mark(self, row, col, st_bar=None, st_qubit=None, 
+            r=None, stroke=False, fill=False):
         (c0, c1, d0, d1) = self.shape
         assert 0<=row<c1
         assert 0<=col<d0
         st_qubit = st_qubit or self.st_qubit
         st_bar = st_bar or self.st_bar
-        dx, dy, r = self.dx, self.dy, self.r
+        dx, dy, r = self.dx, self.dy, (r or self.r)
         cvs = self.cvs
         x, y = dx*col, dy*row
         cvs.stroke(path.line(x-0.4*dx, y, x+0.4*dx, y), st_bar)
-        cvs.fill(path.circle(x, y, r), st_qubit)
+        if fill:
+            cvs.fill(path.circle(x, y, r), st_qubit)
+        if stroke:
+            cvs.stroke(path.circle(x, y, r), st_qubit)
 
-    def v_mark(self, row, col, st_bar=None, st_qubit=None):
+    def v_mark(self, row, col, st_bar=None, st_qubit=None, 
+            r=None, stroke=False, fill=False):
         (c0, c1, d0, d1) = self.shape
         assert 0<=row<c0
         assert 0<=col<d1
         st_qubit = st_qubit or self.st_qubit
         st_bar = st_bar or self.st_bar
-        dx, dy, r = self.dx, self.dy, self.r
+        dx, dy, r = self.dx, self.dy, (r or self.r)
         cvs = self.cvs
         x, y = dx*(col+0.5), dy*(row+0.5)
         cvs.stroke(path.line(x, y-0.4*dy, x, y+0.4*dy), st_bar)
-        cvs.fill(path.circle(x, y, r), st_qubit)
+        if fill:
+            cvs.fill(path.circle(x, y, r), st_qubit)
+        if stroke:
+            cvs.stroke(path.circle(x, y, r), st_qubit)
+
+    def get_hidx(self, row, col):
+        (c0, c1, d0, d1) = self.shape
+        idx = row*c1 + col
+        assert 0 <= idx < c1*d0
+        return idx
+
+    def get_vidx(self, row, col):
+        (c0, c1, d0, d1) = self.shape
+        idx = c1*d0 + col*c0 + row
+        assert c1*d0 <= idx < c1*d0 + c0*d1
+        return idx
 
     def mark(self, i, *args, **kw):
         (c0, c1, d0, d1) = self.shape
         #print("mark", i)
         if i < c1*d0:
+            # horizontal
             col = i%d0
             row = i//c1
             assert i == col + row*c1
             self.h_mark(row, col, *args, **kw)
         else:
+            # vertical ... may be row/col transposed ...
             i -= c1*d0
             assert i < c0*d1
             row = i%d1
             col = i//c0
-            assert i == row + col*c0
+            assert i == row + col*c0 # ?
             self.v_mark(row, col, *args, **kw)
 
     def mark_op(self, op, *args, **kw):
@@ -88,6 +117,13 @@ class Draw(object):
         for i in range(n):
             if op[i]:
                 self.mark(i, *args, **kw)
+
+    def mark_xop(self, op):
+        self.mark_op(op, st_qubit=[blue]+st_thick, r=0.06, stroke=True)
+    def mark_zop(self, op):
+        self.mark_op(op, st_qubit=[green]+st_thick, r=0.12, stroke=True)
+    def mark_idx(self, idx):
+        self.mark(idx, st_qubit=[red]+st_thick, r=0.16, stroke=True)
 
     def save(self, name):
         self.cvs.writePDFfile(name+".pdf")
@@ -192,7 +228,7 @@ def is_correctable(n, idxs, Lx, Lz):
 
 
 
-def mk_disjoint_logops(L, H):
+def independent_logops(L, H):
     m = len(H)
     #print("L:", len(L))
 
@@ -211,35 +247,198 @@ def mk_disjoint_logops(L, H):
     L = LH[:-m]
     #print("L:", len(L))
 
-    # find disjoint set of L ops
-    keep = set([idx for idx in keep if idx<len(L0)])
-    assert len(keep) == len(L)
+    return L
 
-    idxs = list(range(len(L0)))
-    idxs.sort(key = lambda idx: -int(idx in keep))
-    assert idxs[0] in keep
-    L1 = L0[idxs]
-    assert L1.shape == L0.shape
 
-    LH = numpy.concatenate((L1, H), axis=0)
-    LH = remove_dependent(LH)
-    L1 = LH[:-m]
-    assert len(L) == len(L1), (L.shape, L1.shape)
+def get_k(L, H):
+    return len(independent_logops(L, H))
 
-    #print(shortstr(L))
-    #print("--")
-    #print(shortstr(L1))
 
-    #print("--")
-    A = numpy.dot(L, L1.transpose())
-    #assert A.sum() == 0, "found overlap"
-    if A.sum():
-        print("*"*79)
-        print("WARNING: A.sum() =", A.sum())
-        print("failed to find disjoint logops")
-        print("*"*79)
+if 0:
+    def mk_disjoint_logops(L, H):
+        m = len(H)
+        #print("L:", len(L))
+    
+        L0 = L # save this
+        LH = numpy.concatenate((L, H), axis=0)
+    
+        #LH = remove_dependent(LH)
+        keep, remove = dependent_rows(LH)
+        #print("dependent_rows:", len(keep), len(remove))
+    
+        LH = LH[keep]
+    
+        assert rank(LH) == len(LH)
+        assert len(LH) >= m
+        assert eq2(LH[-len(H):], H)
+        L = LH[:-m]
+        #print("L:", len(L))
+    
+        # find disjoint set of L ops
+        keep = set([idx for idx in keep if idx<len(L0)])
+        assert len(keep) == len(L)
+    
+        idxs = list(range(len(L0)))
+        idxs.sort(key = lambda idx: -int(idx in keep))
+        assert idxs[0] in keep
+        L1 = L0[idxs]
+        assert L1.shape == L0.shape
+    
+        LH = numpy.concatenate((L1, H), axis=0)
+        LH = remove_dependent(LH)
+        L1 = LH[:-m]
+        assert len(L) == len(L1), (L.shape, L1.shape)
+    
+        #print(shortstr(L))
+        #print("--")
+        #print(shortstr(L1))
+    
+        #print("--")
+        A = numpy.dot(L, L1.transpose())
+        #assert A.sum() == 0, "found overlap"
+        if A.sum():
+            print("*"*79)
+            print("WARNING: A.sum() =", A.sum())
+            print("failed to find disjoint logops")
+            print("*"*79)
+            return L, None
+    
+        return L, L1
 
-    return L, L1
+
+def mk_disjoint_logops(L, H):
+
+    k = get_k(L, H)
+    assert 2*k >= len(L), "no room"
+
+    left, right = [[], []]
+
+    remain = list(range(len(L)))
+
+
+
+def in_support(H, keep_idxs):
+    # find span of H contained within idxs support
+    n = H.shape[1]
+    remove_idxs = [i for i in range(n) if i not in keep_idxs]
+    A = identity2(n)
+    A = A[remove_idxs]
+    #print("in_support", remove_idxs)
+    P = get_reductor(A)
+    PH = dot2(H, P.transpose())
+    PH = row_reduce(PH)
+    #print(shortstr(PH))
+    return PH
+
+
+def rand_span(H):
+    op = dot2(rand2(1, len(H)), H)[0]
+    return op
+
+
+def do_draw(c0, c1, d0, d1, Lx, Lz, Hx, Hz, idxs, LxHx, LzHz, **kw):
+
+    draw = Draw(c0, c1, d0, d1)
+
+
+    mark_xop = draw.mark_xop
+    mark_zop = draw.mark_zop
+    mark_idx = draw.mark_idx
+
+    m, n = LxHx.shape
+
+    assert rank(LxHx) == len(LxHx)
+    assert rank(Hx) == len(Hx)
+    assert rank(Lx) == len(Lx)
+    #print(rank(LxHx))
+    #print(rank(Hx))
+    #print(rank(Lx))
+    assert rank(Lx)+rank(Hx) == len(LxHx)+1
+
+    if 0:
+        w = n
+        best = None
+        for i in range(10000):
+            v = rand2(1, m)
+            lop = dot2(v, LxHx)[0]
+            #print(lop)
+            if lop.sum() < w:
+                best = lop
+                w = lop.sum()
+                print(w)
+    
+        mark_xop(best)
+
+    all_idxs = list(range(c1*d0 + c0*d1))
+    h_idxs, v_idxs = all_idxs[:c1*d0], all_idxs[c1*d0:]
+    if 0:
+        # find Hx stabilizers with horizontal support
+        #for idx in h_idxs:
+        #    mark_idx(idx)
+        PHx = in_support(Hx, h_idxs)
+        op = rand_span(PHx)
+        mark_xop(op)
+        # plenty...
+
+    if 0:
+        left = [ draw.get_hidx(row, 0) for row in range(d0) ]
+        right = [ draw.get_hidx(row, 5) for row in range(d0) ]
+        for idx in left + right:
+            mark_idx(idx)
+        PLx = in_support(LxHx, left+right)
+        lop = rand_span(PLx)
+        mark_xop(lop)
+
+        PLx_left = in_support(LxHx, left)
+        PLx_right = in_support(LxHx, right)
+
+        PLx = numpy.concatenate((PLx_left, PLx_right))
+        assert rank(PLx) == rank(PLx_left) + rank(PLx_right)
+
+        U = solve(PLx.transpose(), lop)
+        assert U is not None
+        #print(U)
+
+        draw.save("output.logop")
+    
+        return
+
+    for op in Lx:
+        #cl = color.rgb(0.2*random(), 0.2*random(), random(), 0.5)
+        draw.mark_op(op, st_qubit=[blue]+st_thick, r=0.06, stroke=True)
+
+    for op in Lz:
+        #cl = color.rgb(0.2*random(), random(), 0.2*random(), 0.5)
+        draw.mark_op(op, st_qubit=[green]+st_thick, r=0.12, stroke=True)
+
+    for idx in idxs:
+        draw.mark(idx, st_qubit=[red]+st_thick, r=0.16, stroke=True)
+
+    correctable = draw.cvs
+    #draw.save("output")
+
+    rows = [[], []]
+
+    margin = 0.2
+    mkbox = lambda cvs : MarginBox(cvs, margin, 2*margin)
+    for op in Lx:
+        draw = Draw(c0, c1, d0, d1)
+        draw.mark_op(op, st_qubit=[blue]+st_thick, r=0.06, stroke=True)
+        rows[0].append(mkbox(draw.cvs))
+
+    for op in Lz:
+        draw = Draw(c0, c1, d0, d1)
+        draw.mark_op(op, st_qubit=[green]+st_thick, r=0.12, stroke=True)
+        rows[1].append(mkbox(draw.cvs))
+
+    row = [None]*len(Lx)
+    row[0] = correctable
+    rows.append(row)
+
+    box = TableBox(rows)
+    cvs = box.render()
+    cvs.writePDFfile("output.pdf")
+
 
 
 def hypergraph_product(C, D, check=False):
@@ -248,8 +447,6 @@ def hypergraph_product(C, D, check=False):
 
     c0, c1 = C.shape
     d0, d1 = D.shape
-
-    draw = Draw(c0, c1, d0, d1)
 
     E1 = identity2(c0)
     E2 = identity2(d0)
@@ -271,12 +468,14 @@ def hypergraph_product(C, D, check=False):
     # ---------------------------------------------------
     # Build Lx 
 
-    Kt = find_kernel(C)
-    #Kt = min_span(Kt) # does not seem to matter... ??
-    assert Kt.shape[1] == c1
-    K = Kt.transpose()
-    #E = unit2(d0)
+    KerC = find_kernel(C)
+    #KerC = min_span(KerC) # does not seem to matter... ??
+    assert KerC.shape[1] == c1
+    K = KerC.transpose()
     E = identity2(d0)
+
+    print(shortstr(KerC))
+    print()
 
     Lxt0 = kron(K, E), zeros2(c0*d1, K.shape[1]*d0)
     Lxt0 = numpy.concatenate(Lxt0, axis=0)
@@ -284,27 +483,55 @@ def hypergraph_product(C, D, check=False):
 
     K = find_kernel(D).transpose()
     assert K.shape[0] == d1
-    #E = unit2(c0)
     E = identity2(c0)
 
     Lxt1 = zeros2(c1*d0, K.shape[1]*c0), kron(E, K)
     Lxt1 = numpy.concatenate(Lxt1, axis=0)
     assert dot2(Hz, Lxt1).sum() == 0
 
-    #print("Lxt0", Lxt0.shape)
-    #print("Lxt1", Lxt1.shape)
     Lxt = numpy.concatenate((Lxt0, Lxt1), axis=1) # horizontal concatenate
     Lx = Lxt.transpose()
 
     assert dot2(Hz, Lxt).sum() == 0
 
-    #print("Lx:", Lx.shape)
-    #print(shortstr(Lx))
+    # These are linearly dependent, but 
+    # once we add stabilizers it will be reduced:
+    assert rank(Lx) == len(Lx)
+
 
     if 0:
-        P = get_reductor(Hx)
-        Lx = dot2(Lx, P.transpose())
-        Lx = linear_independent(Lx)
+        # ---------------------------------------------------
+
+        print(shortstr(Lx))
+        k = get_k(Lx, Hx)
+        print("k =", k)
+    
+        left, right = [], []
+    
+        draw = Draw(c0, c1, d0, d1)
+        cols = []
+        for j in range(d0): # col
+            col = []
+            for i in range(len(KerC)): # logical
+                op = Lx[i*d0 + j]
+                col.append(op)
+                if j==i:
+                    draw.mark_xop(op)
+                if j < d0/2:
+                    left.append(op)
+                else:
+                    right.append(op)
+            cols.append(col)
+    
+        draw.save("output.2")
+    
+        left = array2(left)
+        right = array2(right)
+        
+        print(get_k(left, Hx))
+        print(get_k(right, Hx))
+    
+        return
 
     # ---------------------------------------------------
     # Build Lz 
@@ -329,21 +556,6 @@ def hypergraph_product(C, D, check=False):
 
     assert dot2(Lz, Hx.transpose()).sum() == 0
 
-
-    if 0:
-        print("Hx:", Hx.shape)
-        print(shortstr(Hx))
-        print("Hz:", Hz.shape)
-        print(shortstr(Hz))
-        print("Lx:", Lx.shape)
-        print(shortstr(Lx))
-        print("Lz:", Lz.shape)
-        print(shortstr(Lz))
-    
-        print("dot2(Lz, Lxt):")
-        A = dot2(Lz, Lxt)
-        print(shortstr(A))
-
     overlap = 0
     for lx in Lx:
       for lz in Lz:
@@ -358,40 +570,88 @@ def hypergraph_product(C, D, check=False):
     mz = len(Hz)
 
     # ---------------------------------------------------
+
+    Lxs = []
+    for op in Lx:
+        op = (op + Hx)%2
+        Lxs.append(op)
+    LxHx = numpy.concatenate(Lxs)
+    LxHx = row_reduce(LxHx)
+    print("LxHx:", len(LxHx))
+    assert LxHx.shape[1] == n
+    print( len(intersect(LxHx, Hx)), mx)
+    assert len(intersect(LxHx, Hx)) == mx
+
+    Lzs = []
+    for op in Lz:
+        op = (op + Hz)%2
+        Lzs.append(op)
+    LzHz = numpy.concatenate(Lzs)
+    LzHz = row_reduce(LzHz)
+    print("LzHz:", len(LzHz))
+    assert LzHz.shape[1] == n
+
+    # ---------------------------------------------------
     # Remove excess logops.
 
-    print("remove_dependent")
+#    print("remove_dependent")
+#
+#    # -------- Lx
+#
+#    Lx, Lx1 = mk_disjoint_logops(Lx, Hx)
+#
+#    # -------- Lz
+#
+#    Lz, Lz1 = mk_disjoint_logops(Lz, Hz)
 
-    # -------- Lx
+    # --------------------------------
+    # independent_logops for Lx
 
-    Lx, Lx1 = mk_disjoint_logops(Lx, Hx)
+    k = get_k(Lx, Hx)
 
-    # -------- Lz
+    idxs0, idxs1 = [], []
 
-    Lz, Lz1 = mk_disjoint_logops(Lz, Hz)
+    for j in range(d0): # col
+      for i in range(c1):
+        idx = j + i*d0
+        if j < d0//2:
+            idxs0.append(idx)
+        else:
+            idxs1.append(idx)
 
-    #LzHz = numpy.concatenate((Lz, Hz), axis=0)
-    #LzHz = remove_dependent(LzHz)
-    #assert rank(LzHz) == len(LzHz)
-    #assert len(LzHz) >= mz
-    #assert eq2(LzHz[-len(Hz):], Hz)
-    #Lz = LzHz[:-mz]
+    Lx0 = in_support(LxHx, idxs0)
+    Lx0 = independent_logops(Lx0, Hx)
+    k0 = (len(Lx0))
 
-    st = [color.rgb(0.2, 0.7, 0.2), style.linewidth.THick]
-    st_qubit = [color.rgb(0.2, 0.7, 0.2, 0.8)]
-    for op in Lx:
-        cl = color.rgb(0.2*random(), 0.2*random(), random(), 0.5)
-        draw.mark_op(op, st_qubit=[cl])
+    Lx1 = in_support(LxHx, idxs1)
+    Lx1 = independent_logops(Lx1, Hx)
+    k1 = (len(Lx1))
+    assert k0 == k1 == k, (k0, k1, k)
 
-    for op in Lz:
-        cl = color.rgb(0.2*random(), random(), 0.2*random(), 0.5)
-        draw.mark_op(op, st_qubit=[cl])
+    # --------------------------------
+    # independent_logops for Lz
+
+    idxs0, idxs1 = [], []
+
+    for j in range(d0): # col
+      for i in range(c1):
+        idx = j + i*d0
+        if i < c1//2:
+            idxs0.append(idx)
+        else:
+            idxs1.append(idx)
+
+    Lz0 = in_support(LzHz, idxs0)
+    Lz0 = independent_logops(Lz0, Hz)
+    k0 = (len(Lz0))
+
+    Lz1 = in_support(LzHz, idxs1)
+    Lz1 = independent_logops(Lz1, Hz)
+    k1 = (len(Lz1))
+    assert k0 == k1 == k, (k0, k1, k)
 
     # ---------------------------------------------------
     # 
-
-    k = len(Lx)
-    assert k == len(Lz)
 
     #assert eq2(dot2(Lz, Lxt), identity2(k))
     assert mx + mz + k == n
@@ -401,9 +661,18 @@ def hypergraph_product(C, D, check=False):
     # ---------------------------------------------------
     # 
 
+#    if Lx1 is None:
+#        return
+#
+#    if Lz1 is None:
+#        return
+
+    # ---------------------------------------------------
+    # 
+
     op = zeros2(n)
-    for lx in Lx:
-      for lz in Lz:
+    for lx in Lx0:
+      for lz in Lz0:
         lxz = lx*lz
         #print(lxz)
         #print(op.shape, lxz.shape)
@@ -421,10 +690,31 @@ def hypergraph_product(C, D, check=False):
     #print(op)
     #print(idxs)
 
-    draw.save("output")
+    Lx, Lz = Lx0, Lz0
 
-    good = is_correctable(n, idxs, Lx, Lz)
+    Lxs = []
+    for op in Lx:
+        op = (op + Hx)%2
+        Lxs.append(op)
+    LxHx = numpy.concatenate(Lxs)
+    LxHx = row_reduce(LxHx)
+    assert LxHx.shape[1] == n
+
+    Lzs = []
+    for op in Lz:
+        op = (op + Hz)%2
+        Lzs.append(op)
+    LzHz = numpy.concatenate(Lzs)
+    LzHz = row_reduce(LzHz)
+    assert LzHz.shape[1] == n
+
+    if argv.draw:
+        do_draw(**locals())
+
+    good = is_correctable(n, idxs, LxHx, LzHz)
     assert good
+
+    print("good")
 
     # ---------------------------------------------------
     # 

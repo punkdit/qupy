@@ -1226,6 +1226,15 @@ def rank(H):
     return H.shape[0]
 
 
+def intersect(W1, W2): # from bruhat.gelim
+    "find maximal subspace within rowspace W1 & rowspace W2"
+    W = numpy.concatenate((W1, W2))
+    K = find_kernel(W.transpose())
+    W = dot2(K[:, :len(W1)], W1)
+    W = row_reduce(W)
+    return W
+
+
 def projector(A, check=False):
 
     """
@@ -1234,12 +1243,11 @@ def projector(A, check=False):
         QQ=Q and QA=0, then there exists R st. Q=RP.
     """
 
-    """
-        Alternatively
-        Find universal projector that preserves the columns of A,
-        ie. PP=P and PA=A, st. given any other Q with
-        QQ=Q and QA=A, then there exists R st. P=RQ.
-    """
+    # ??? what is this comment ???
+    # Alternatively
+    # Find universal projector that preserves the columns of A,
+    # ie. PP=P and PA=A, st. given any other Q with
+    # QQ=Q and QA=A, then there exists R st. P=RQ.
 
     m, n = A.shape
 
@@ -1998,6 +2006,28 @@ def test_colimits():
         assert eq2(compose2(J, P), compose2(K, P))
 
 
+def test_intersect():
+    W1 = parse("""
+    11.
+    .11
+    """)
+
+    W2 = parse("""
+    111
+    """)
+
+    W = intersect(W1, W2)
+    assert len(W) == 0
+
+    W1 = rand2(3,4)
+    W2 = rand2(3,4)
+    W = intersect(W1, W2)
+
+    #print(W1)
+    #print(W2)
+    #print(W)
+    assert solve(W2.transpose(), W.transpose()) is not None
+    assert solve(W1.transpose(), W.transpose()) is not None
 
 
 if __name__=="__main__":
@@ -2026,6 +2056,7 @@ if __name__=="__main__":
         test_reductor()
         test_kernel()
         test_colimits()
+        test_intersect()
     
         print("OK")
 
