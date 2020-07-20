@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+general disaster area...
+see cleaned up version
+in homological.py
+"""
 
 from random import randint, seed, random
 
@@ -152,7 +157,7 @@ def kron(A, B):
 
 
 def dependent_rows(H):
-    "remove dependent rows of H, first to last"
+    "find dependent rows of H, first to last"
     idxs = set(range(len(H)))
     #print(H)
     K = find_kernel(H.transpose())
@@ -230,22 +235,14 @@ def is_correctable(n, idxs, Lx, Lz):
 
 def independent_logops(L, H):
     m = len(H)
-    #print("L:", len(L))
-
-    L0 = L # save this
     LH = numpy.concatenate((L, H), axis=0)
-
-    #LH = remove_dependent(LH)
     keep, remove = dependent_rows(LH)
-    #print("dependent_rows:", len(keep), len(remove))
-
     LH = LH[keep]
 
     assert rank(LH) == len(LH)
     assert len(LH) >= m
     assert eq2(LH[-len(H):], H)
     L = LH[:-m]
-    #print("L:", len(L))
 
     return L
 
