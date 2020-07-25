@@ -5,6 +5,7 @@ from previous version: transverse.py
 
 """
 
+import sys
 from random import randint, seed, random, shuffle
 
 import numpy
@@ -17,6 +18,7 @@ from qupy.ldpc.css import CSSCode, randcss
 from qupy.ldpc.solve import shortstr, zeros2, array2, dot2, parse, identity2, rank
 from qupy.ldpc.solve import find_kernel, cokernel, eq2, get_reductor, intersect
 from qupy.ldpc.solve import linear_independent, solve, row_reduce, rand2
+from qupy.ldpc.solve import remove_dependent, dependent_rows
 from qupy.ldpc.gallagher import make_gallagher, classical_distance
 
 
@@ -53,47 +55,59 @@ class Draw(object):
           for col in range(d1):
             self.v_mark(row, col, fill=True)
 
+        print(self)
+
+        rows = max(c0, c1)
+        cols = max(d0, d1)
+        dx, dy = self.dx, self.dy
+        p = path.rect(-dx, -dy, cols*dy+2*dy, rows*dx+dx)
+        p = path.rect(-0.5*dx, -0.5*dy, cols*dy+0.0*dy, rows*dx+0.0*dx)
+        cvs.stroke(p, [color.rgb.grey])
+
+    def __str__(self):
+        return "Draw%s"%((self.shape,))
+
     def h_mark(self, row, col, st_bar=None, st_qubit=None, 
             r=None, stroke=False, fill=False):
         (c0, c1, d0, d1) = self.shape
-        assert 0<=row<c1
-        assert 0<=col<d0
+        #assert 0<=row<c1
+        #assert 0<=col<d0
         st_qubit = st_qubit or self.st_qubit
         st_bar = st_bar or self.st_bar
         dx, dy, r = self.dx, self.dy, (r or self.r)
         cvs = self.cvs
         x, y = dx*col, dy*row
-        cvs.stroke(path.line(x-0.4*dx, y, x+0.4*dx, y), st_bar)
         if fill:
             cvs.fill(path.circle(x, y, r), st_qubit)
         if stroke:
             cvs.stroke(path.circle(x, y, r), st_qubit)
+        cvs.stroke(path.line(x-0.4*dx, y, x+0.4*dx, y), st_bar)
 
     def v_mark(self, row, col, st_bar=None, st_qubit=None, 
             r=None, stroke=False, fill=False):
         (c0, c1, d0, d1) = self.shape
-        assert 0<=row<c0
-        assert 0<=col<d1
+        #assert 0<=row<c0
+        #assert 0<=col<d1
         st_qubit = st_qubit or self.st_qubit
         st_bar = st_bar or self.st_bar
         dx, dy, r = self.dx, self.dy, (r or self.r)
         cvs = self.cvs
         x, y = dx*(col+0.5), dy*(row+0.5)
-        cvs.stroke(path.line(x, y-0.4*dy, x, y+0.4*dy), st_bar)
         if fill:
             cvs.fill(path.circle(x, y, r), st_qubit)
         if stroke:
             cvs.stroke(path.circle(x, y, r), st_qubit)
+        cvs.stroke(path.line(x, y-0.4*dy, x, y+0.4*dy), st_bar)
 
     def get_hidx(self, row, col):
         (c0, c1, d0, d1) = self.shape
-        idx = row*c1 + col
+        idx = row*d0 + col
         assert 0 <= idx < c1*d0
         return idx
 
     def get_vidx(self, row, col):
         (c0, c1, d0, d1) = self.shape
-        idx = c1*d0 + col*c0 + row
+        idx = c1*d0 + col*c0 + row # ???
         assert c1*d0 <= idx < c1*d0 + c0*d1
         return idx
 
@@ -103,16 +117,16 @@ class Draw(object):
         if i < c1*d0:
             # horizontal
             col = i%d0
-            row = i//c1
-            assert i == col + row*c1
+            row = i//d0
+            assert i == col + row*d0
             self.h_mark(row, col, *args, **kw)
         else:
             # vertical ... may be row/col transposed ...
             i -= c1*d0
             assert i < c0*d1
-            row = i%d1
-            col = i//c0
-            assert i == row + col*c0 # ?
+            col = i%d1
+            row = i//d1
+            assert i == col + row*d1
             self.v_mark(row, col, *args, **kw)
 
     def mark_op(self, op, *args, **kw):
@@ -125,8 +139,10 @@ class Draw(object):
 
     def mark_xop(self, op):
         self.mark_op(op, st_qubit=[blue]+st_thick, r=0.06, stroke=True)
+
     def mark_zop(self, op):
         self.mark_op(op, st_qubit=[green]+st_thick, r=0.12, stroke=True)
+
     def mark_idx(self, idx):
         self.mark(idx, st_qubit=[red]+st_thick, r=0.16, stroke=True)
 
@@ -156,36 +172,36 @@ def kron(A, B):
     return C
 
 
-def dependent_rows(H):
-    "find dependent rows of H, first to last"
-    idxs = set(range(len(H)))
-    #print(H)
-    K = find_kernel(H.transpose())
-    #print("K:")
-    #print(K)
-    K = row_reduce(K, truncate=True)
-    #print("K:")
-    #print(K)
-    assert dot2(K, H).sum() == 0
-    deps = []
-    for row in K:
-        #print(row)
-        idx = numpy.where(row!=0)[0][0]
-        deps.append(idx)
-        idxs.remove(idx)
-    assert len(set(deps)) == len(K)
-    idxs = list(idxs)
-    idxs.sort()
-    deps.sort()
-    return idxs, deps
-
-
-def remove_dependent(H):
-    "remove dependent rows of H, first to last"
-    if len(H) <2:
-        return H
-    idxs, deps = dependent_rows(H)
-    return H[idxs]
+#def dependent_rows(H):
+#    "find dependent rows of H, first to last"
+#    idxs = set(range(len(H)))
+#    #print(H)
+#    K = find_kernel(H.transpose())
+#    #print("K:")
+#    #print(K)
+#    K = row_reduce(K, truncate=True)
+#    #print("K:")
+#    #print(K)
+#    assert dot2(K, H).sum() == 0
+#    deps = []
+#    for row in K:
+#        #print(row)
+#        idx = numpy.where(row!=0)[0][0]
+#        deps.append(idx)
+#        idxs.remove(idx)
+#    assert len(set(deps)) == len(K)
+#    idxs = list(idxs)
+#    idxs.sort()
+#    deps.sort()
+#    return idxs, deps
+#
+#
+#def remove_dependent(H):
+#    "remove dependent rows of H, first to last"
+#    if len(H) <2:
+#        return H
+#    idxs, deps = dependent_rows(H)
+#    return H[idxs]
 
 
 
@@ -207,9 +223,45 @@ def get_k(L, H):
     return len(independent_logops(L, H))
     
 
+def min_span(K):
+    "find minimum weight span"
+    Kt = K.transpose()
+    dist = {}
+    for u in numpy.ndindex((2,)*K.shape[0]):
+        v = dot2(Kt, u)
+        if v.sum()==0:
+            continue
+        weight = v.sum()
+        #dist[weight] = dist.get(weight, 0) + 1
+        dist.setdefault(weight, []).append(v)
+    keys = list(dist.keys())
+    keys.sort(reverse=True)
+    rows = []
+    for k in keys:
+        #print("%s:%s" % (k, len(dist[k])), end=" ")
+        rows.extend(dist[k])
+    #print()
+    A = array2(rows)
+    #print(A.shape)
+    A = remove_dependent(A)
+    #print(shortstr(A))
+    return A
+
+
+def rand_span(A):
+    while 1:
+        m, n = A.shape
+        v = rand2(m, m)
+        A1 = dot2(v, A)
+        assert A1.shape == A.shape
+        if rank(A) == rank(A1):
+            break
+    assert rank(intersect(A, A1)) == rank(A)
+    return A1
+
 
 def hypergraph_product(C, D, check=False):
-    print("hypergraph_product:", C.shape, D.shape)
+    print("hypergraph_product: C=%s, D=%s"%(C.shape, D.shape))
     print("distance:", classical_distance(C))
 
     c0, c1 = C.shape
@@ -237,8 +289,13 @@ def hypergraph_product(C, D, check=False):
 
     KerC = find_kernel(C)
     #KerC = min_span(KerC) # does not seem to matter... ??
+    KerC = rand_span(KerC) # ??
+    KerC = row_reduce(KerC)
+
     assert KerC.shape[1] == c1
     K = KerC.transpose()
+    #K = min_span(K)
+    #K = rand_span(K)
     E = identity2(d0)
 
     #print(shortstr(KerC))
@@ -261,7 +318,7 @@ def hypergraph_product(C, D, check=False):
 
     assert dot2(Hz, Lxt).sum() == 0
 
-    # These are linearly dependent, but 
+    # These are linearly independent among themselves, but 
     # once we add stabilizers it will be reduced:
     assert rank(Lx) == len(Lx)
 
@@ -271,10 +328,18 @@ def hypergraph_product(C, D, check=False):
 
     counit = lambda n : unit2(n).transpose()
 
-    K = find_cokernel(D) # matrix of row vectors
+    CokerD = find_cokernel(D) # matrix of row vectors
+    print("CokerD")
+    print(CokerD)
+    #CokerD = min_span(CokerD)
+    CokerD = rand_span(CokerD)
+    print("CokerD")
+    print(CokerD)
+    #print(shortstr(CokerD))
+
     #E = counit(c1)
     E = identity2(c1)
-    Lz0 = kron(E, K), zeros2(K.shape[0]*c1, c0*d1)
+    Lz0 = kron(E, CokerD), zeros2(CokerD.shape[0]*c1, c0*d1)
     Lz0 = numpy.concatenate(Lz0, axis=1) # horizontal concatenate
 
     assert dot2(Lz0, Hx.transpose()).sum() == 0
@@ -288,6 +353,11 @@ def hypergraph_product(C, D, check=False):
     Lz = numpy.concatenate((Lz0, Lz1), axis=0)
 
     assert dot2(Lz, Hx.transpose()).sum() == 0
+
+    #print(shortstr(Lz))
+
+    # ---------------------------------------------------
+    # 
 
     overlap = 0
     for lx in Lx:
@@ -306,68 +376,105 @@ def hypergraph_product(C, D, check=False):
     # ---------------------------------------------------
     # 
 
-    while 1:
-    
-        Lxi = independent_logops(Lx, Hx)
-        Lzi = independent_logops(Lz, Hz)
-    
-        k = len(Lxi)
-        assert len(Lzi) == k
-        assert mx + mz + k == n
-    
-        LxiHx = numpy.concatenate((Lxi, Hx))
-        assert rank(LxiHx) == k+mx
-        LziHz = numpy.concatenate((Lzi, Hz))
-        assert rank(LziHz) == k+mz
-    
-        op = zeros2(n)
-        for lx in Lxi:
-          for lz in Lzi:
-            lxz = lx*lz
-            #print(lxz)
-            #print(op.shape, lxz.shape)
-            op += lxz
-    
-        idxs = numpy.where(op)[0]
-    
-        draw = Draw(c0, c1, d0, d1)
-        for idx in idxs:
-            draw.mark_idx(idx)
-    
-        #Ax = in_support(LxiHx, idxs)
-        #print(Ax.shape)
-    
-        assert dot2(LxiHx, Hz.transpose()).sum() == 0
-    
-        A = identity2(n)[idxs]
-        Ax = intersect(LxiHx, A)
-        Az = intersect(LziHz, A)
-    
-        assert dot2(Ax, Hz.transpose()).sum() == 0
-        assert dot2(Az, Hx.transpose()).sum() == 0
-    
-        print("Ax:")
-        print(shortstr(Ax))
-        print("Az:")
-        print(shortstr(Az))
-    
-        for z in Az:
-            draw.mark_zop(z)
-            break
-    
-        if dot2(Ax, Lz.transpose()).sum() == 0 and dot2(Az, Lx.transpose()).sum() == 0:
-            break
+    # This makes len(idxs) much bigger, because we
+    # end up with logops from many different rows/cols:
+    #Lx = shuff2(Lx)
+    #Lz = shuff2(Lz)
 
-        draw.save("output.2")
+    Lxi = independent_logops(Lx, Hx)
+    Lzi = independent_logops(Lz, Hz)
 
-        Lx = shuff2(Lx)
-        Lz = shuff2(Lz)
-    
+    k = len(Lxi)
+    assert len(Lzi) == k
+    assert mx + mz + k == n
+
+    LxiHx = numpy.concatenate((Lxi, Hx))
+    assert rank(LxiHx) == k+mx
+    LziHz = numpy.concatenate((Lzi, Hz))
+    assert rank(LziHz) == k+mz
+
+    op = zeros2(n)
+    for lx in Lxi:
+      for lz in Lzi:
+        lxz = lx*lz
+        #print(lxz)
+        #print(op.shape, lxz.shape)
+        op += lxz
+
+    idxs = numpy.where(op)[0]
+
+    draw = Draw(c0, c1, d0, d1)
+    for idx in idxs:
+        draw.mark_idx(idx)
+
+    draw.mark_xop(Lx[0])
+    print(KerC)
+    for j, op in enumerate(KerC):
+      for i in range(c1):
+        row = i
+        col = -j-1
+        if op[i]:
+            draw.h_mark(row, col, st_qubit=[blue], stroke=True)
+        else:
+            draw.h_mark(row, col)
+
+    print(CokerD.shape)
+    print(CokerD)
+    draw.mark_zop(Lz[0])
+    for j, op in enumerate(CokerD):
+      print(op)
+      for i in range(d0):
+        col = i
+        row = -j-1
+        if op[i]:
+            draw.h_mark(row, col, st_qubit=[green], stroke=True)
+        else:
+            draw.h_mark(row, col)
+
+
+    draw.save("output.2")
+
+    print("len(idxs) =", len(idxs))
+
+    #Ax = in_support(LxiHx, idxs)
+    #print(Ax.shape)
+
+    assert dot2(LxiHx, Hz.transpose()).sum() == 0
+
+    A = identity2(n)[idxs]
+    Ax = intersect(LxiHx, A)
+    Az = intersect(LziHz, A)
+
+    assert dot2(Ax, Hz.transpose()).sum() == 0
+    assert dot2(Az, Hx.transpose()).sum() == 0
+
+    if dot2(Ax, Lz.transpose()).sum() == 0 and dot2(Az, Lx.transpose()).sum() == 0:
+        return True
+
+    #draw.mark_zop(Az[0])
+    print("Ax:")
+    print(shortstr(Ax))
+    print("Az:")
+    print(shortstr(Az))
+
+    return False
+
 
 def shuff2(A):
     idxs = list(range(len(A)))
     shuffle(idxs)
     A = A[idxs]
+    return A
+    
+
+def shuff22(A):
+    m, n = A.shape
+    idxs = list(range(m))
+    shuffle(idxs)
+    A = A[idxs]
+    idxs = list(range(n))
+    shuffle(idxs)
+    A = A[:, idxs]
     return A
     
 
@@ -380,9 +487,12 @@ def main():
         n = argv.get("n", 8) # cols
         r = argv.get("r", n*l//m) # rows
         d = argv.get("d", 1) # distance
+        print("make_gallagher%s"%((r, n, l, m, d),))
         C = make_gallagher(r, n, l, m, d)
         print(shortstr(C))
-        print("rank(C)", rank(C), "kernel(C)", len(find_kernel(C)))
+        print()
+        print(shortstr(C))
+        print("rank(C) = ", rank(C), "kernel(C) = ", len(find_kernel(C)))
         if argv.same:
             D = C
         else:
@@ -390,6 +500,11 @@ def main():
             assert rank(C) == len(C)
             assert rank(D) == len(D)
             print("rank(D)", rank(D), "kernel(D)", len(find_kernel(D)))
+
+    elif argv.pair:
+        #C = make_gallagher(9, 12, 3, 4, 4) # big
+        C = make_gallagher(15, 20, 3, 4, 4) # big
+        D = make_gallagher(6, 8, 3, 4, 1) # small
 
     elif argv.torus:
         # Torus
@@ -405,22 +520,49 @@ def main():
         ...1111
         .11..11
         1.1.1.1
+        111....
         """)
         D = C
     elif argv.surf or argv.surface:
         # Surface
         C = parse("""
+        11....
+        .11...
+        ..11..
+        ...11.
+        ....11
+        """)
+        D = parse("""
         11..
         .11.
         ..11
         """)
-        D = C
+    elif argv.small:
+        C = parse("""1111""")
+        D = parse("""1111""")
     else:
         return
 
     Ct = C.transpose()
     Dt = D.transpose()
-    hypergraph_product(C, Dt)
+
+    if argv.dual:
+        C, Ct = Ct, C
+        D, Dt = Dt, D
+
+    while 1:
+        success = hypergraph_product(C, Dt)
+        print("success:", success)
+        if success:
+            break
+        #else:
+        #    sys.exit(0)
+        C = shuff22(C)
+        if argv.same:
+            D = C
+            Dt = D.transpose()
+        else:
+            Dt = shuff22(Dt)
 
 
 

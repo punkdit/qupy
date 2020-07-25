@@ -1235,6 +1235,38 @@ def intersect(W1, W2): # from bruhat.gelim
     return W
 
 
+def dependent_rows(H):
+    "find dependent rows of H, first to last"
+    idxs = set(range(len(H)))
+    #print(H)
+    K = find_kernel(H.transpose())
+    #print("K:")
+    #print(K)
+    K = row_reduce(K, truncate=True)
+    #print("K:")
+    #print(K)
+    assert dot2(K, H).sum() == 0
+    deps = []
+    for row in K:
+        #print(row)
+        idx = numpy.where(row!=0)[0][0]
+        deps.append(idx)
+        idxs.remove(idx)
+    assert len(set(deps)) == len(K)
+    idxs = list(idxs)
+    idxs.sort()
+    deps.sort()
+    return idxs, deps
+
+
+def remove_dependent(H):
+    "remove dependent rows of H, first to last"
+    if len(H) <2:
+        return H
+    idxs, deps = dependent_rows(H)
+    return H[idxs]
+
+
 def projector(A, check=False):
 
     """
