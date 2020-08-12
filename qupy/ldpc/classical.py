@@ -52,20 +52,42 @@ def min_weight(G):
 
 
 
-def test(n, k, verbose=False):
+def test(n, k, dist=2, verbose=False):
     assert n > k
 
-    while 1:
+    if argv.rand:
+      while 1:
         G = rand2(k, n)
         if rank(G) < k:
             continue
-        dist = min_weight(G)
-        if dist > 1:
+        weight = min_weight(G)
+        if weight >= dist:
             break
+    else:
+        G = zeros2(k, n)
+        jdx = 0
+        for idx in range(k):
+          for kdx in range(dist):
+            G[idx,jdx+kdx] = 1
+          jdx += dist-1
+
+        weight = min_weight(G) if n < 20 else None
+        assert weight is None or weight == dist
+
+
+
+    #print(".", flush=True, end="")
 
     if verbose:
+        print("G =")
         print(shortstr(G))
-        print("dist =", dist)
+        print("weight =", weight)
+        print()
+
+        H = find_kernel(G)
+        H = row_reduce(H)
+        print("H =")
+        print(shortstr(H))
         print()
 
     while 1:
@@ -106,13 +128,21 @@ def test(n, k, verbose=False):
 def main():
 
     n = argv.get("n", 10)
-    k = argv.get("k", 5)
+    k = argv.get("k", 4)
+    dist = argv.get("dist", 2)
+    verbose = argv.verbose
 
     while 1:
-        test(n, k)
-        c = choice("/\\")
-        print(c, flush=True, end="")
+        test(n, k, dist, verbose)
 
+        if not verbose:
+            c = choice("/\\")
+            print(c, flush=True, end="")
+        else:
+            break
+
+        if not argv.rand:
+            break
 
 
 if __name__ == "__main__":

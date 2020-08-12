@@ -313,7 +313,6 @@ def mk_disjoint_logops(L, H):
     remain = list(range(len(L)))
 
 
-
 def in_support(H, keep_idxs):
     # find span of H contained within idxs support
     n = H.shape[1]
