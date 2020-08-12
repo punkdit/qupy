@@ -3,6 +3,8 @@
 """
 from previous version: transverse.py
 
+see also: classical.py
+
 """
 
 import sys
@@ -329,12 +331,12 @@ def hypergraph_product(C, D, check=False):
     counit = lambda n : unit2(n).transpose()
 
     CokerD = find_cokernel(D) # matrix of row vectors
-    print("CokerD")
-    print(CokerD)
+    #print("CokerD")
+    #print(CokerD)
     #CokerD = min_span(CokerD)
     CokerD = rand_span(CokerD)
-    print("CokerD")
-    print(CokerD)
+    #print("CokerD")
+    #print(CokerD)
     #print(shortstr(CokerD))
 
     #E = counit(c1)
@@ -367,10 +369,21 @@ def hypergraph_product(C, D, check=False):
     assert overlap <= 1, overlap
     #print("max overlap:", overlap)
 
-    assert rank(Hx) == len(Hx)
-    assert rank(Hz) == len(Hz)
-    mx = len(Hx)
-    mz = len(Hz)
+    if 0:
+        # here we assume that Hx/Hz are full rank
+        Hxi = Hx
+        Hzi = Hz
+        assert rank(Hx) == len(Hx)
+        assert rank(Hz) == len(Hz)
+        mx = len(Hx)
+        mz = len(Hz)
+    else:
+        Hxi = remove_dependent(Hx)
+        Hzi = remove_dependent(Hz)
+        mx = rank(Hx)
+        mz = rank(Hz)
+        assert len(Hxi) == mx
+        assert len(Hzi) == mz
 
 
     # ---------------------------------------------------
@@ -381,16 +394,19 @@ def hypergraph_product(C, D, check=False):
     #Lx = shuff2(Lx)
     #Lz = shuff2(Lz)
 
-    Lxi = independent_logops(Lx, Hx)
-    Lzi = independent_logops(Lz, Hz)
+    Lxi = independent_logops(Lx, Hxi)
+    Lzi = independent_logops(Lz, Hzi)
+
+    print("Lxi:", len(Lxi))
+    print("Lzi:", len(Lzi))
 
     k = len(Lxi)
     assert len(Lzi) == k
     assert mx + mz + k == n
 
-    LxiHx = numpy.concatenate((Lxi, Hx))
+    LxiHx = numpy.concatenate((Lxi, Hxi))
     assert rank(LxiHx) == k+mx
-    LziHz = numpy.concatenate((Lzi, Hz))
+    LziHz = numpy.concatenate((Lzi, Hzi))
     assert rank(LziHz) == k+mz
 
     op = zeros2(n)
@@ -478,6 +494,25 @@ def shuff22(A):
     return A
     
 
+def random_code(n, _rank, deps, distance=1):
+    d = 0
+    while d<distance:
+        H = rand2(_rank, n)
+        if rank(H) < _rank:
+            continue
+        d = classical_distance(H, distance)
+
+    while deps>0:
+        R = rand2(deps, _rank)
+        J = dot2(R, H)
+        K = numpy.concatenate((H, J))
+        if rank(K) == _rank:
+            H = K
+            break
+
+    return H
+
+
 def main():
 
     if argv.ldpc:
@@ -501,6 +536,17 @@ def main():
             assert rank(D) == len(D)
             print("rank(D)", rank(D), "kernel(D)", len(find_kernel(D)))
 
+    elif argv.rand:
+        # make some vertical logops from rank degenerate parity check matrices
+        C = random_code(20, 15, 5, 3)
+        D = random_code(8, 6, 2, 3)
+        #dC = classical_distance(C)
+        #dD = classical_distance(D)
+        print("C", C.shape, rank(C))
+        print(shortstr(C))
+        print("D", D.shape, rank(D))
+        print(shortstr(D))
+
     elif argv.pair:
         #C = make_gallagher(9, 12, 3, 4, 4) # big
         C = make_gallagher(15, 20, 3, 4, 4) # big
@@ -515,6 +561,7 @@ def main():
         1..1
         """)
         D = C
+
     elif argv.hamming:
         C = parse("""
         ...1111
@@ -523,6 +570,7 @@ def main():
         111....
         """)
         D = C
+
     elif argv.surf or argv.surface:
         # Surface
         C = parse("""
@@ -537,9 +585,11 @@ def main():
         .11.
         ..11
         """)
+
     elif argv.small:
         C = parse("""1111""")
         D = parse("""1111""")
+
     else:
         return
 
