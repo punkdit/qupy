@@ -38,7 +38,7 @@ st_thick = [style.linewidth.Thick]
 
 
 class Draw(object):
-    def __init__(self, c0, c1, d0, d1, hspace=5):
+    def __init__(self, c0, c1, d0, d1, hspace=7):
         cvs = canvas.canvas()
         self.dx = 0.4
         self.dy = self.dx
@@ -55,7 +55,6 @@ class Draw(object):
 
         rows, cols = c1, d0
         dx, dy = self.dx, self.dy
-        p = path.rect(-dx, -dy, cols*dy+2*dy, rows*dx+dx)
         p = path.rect(-0.5*dx, -0.5*dy, cols*dy+0.0*dy, rows*dx+0.0*dx)
         cvs.fill(p, [color.rgb.grey])
         cvs.stroke(p, [color.rgb.black])
@@ -250,15 +249,15 @@ def hypergraph_product(C, D, check=False):
     c0, c1 = C.shape
     d0, d1 = D.shape
 
-    E1 = identity2(c0)
-    E2 = identity2(d0)
-    M1 = identity2(c1)
-    M2 = identity2(d1)
+    Ic0 = identity2(c0)
+    Id0 = identity2(d0)
+    Ic1 = identity2(c1)
+    Id1 = identity2(d1)
 
-    Hz0 = kron(M1, D.transpose()), kron(C.transpose(), M2)
+    Hz0 = kron(Ic1, D.transpose()), kron(C.transpose(), Id1)
     Hz = numpy.concatenate(Hz0, axis=1) # horizontal concatenate
 
-    Hx0 = kron(C, E2), kron(E1, D)
+    Hx0 = kron(C, Id0), kron(Ic0, D)
     #print("Hx0:", Hx0[0].shape, Hx0[1].shape)
     Hx = numpy.concatenate(Hx0, axis=1) # horizontal concatenate
 
@@ -279,21 +278,19 @@ def hypergraph_product(C, D, check=False):
     K = KerC.transpose()
     #K = min_span(K)
     #K = rand_span(K)
-    E = identity2(d0)
+    #E = identity2(d0)
 
-    #print(shortstr(KerC))
-    #print()
+    #print("c0,c1,d0,d1=", c0, c1, d0, d1)
 
-    Lzt0 = kron(K, E), zeros2(c0*d1, K.shape[1]*d0)
+    Lzt0 = kron(K, Id0), zeros2(c0*d1, K.shape[1]*d0)
     Lzt0 = numpy.concatenate(Lzt0, axis=0)
     assert dot2(Hx, Lzt0).sum() == 0
 
     KerD = find_kernel(D)
     K = KerD.transpose()
     assert K.shape[0] == d1
-    E = identity2(c0)
 
-    Lzt1 = zeros2(c1*d0, K.shape[1]*c0), kron(E, K)
+    Lzt1 = zeros2(c1*d0, K.shape[1]*c0), kron(Ic0, K)
     Lzt1 = numpy.concatenate(Lzt1, axis=0)
     assert dot2(Hx, Lzt1).sum() == 0
 
@@ -311,33 +308,22 @@ def hypergraph_product(C, D, check=False):
 
     counit = lambda n : unit2(n).transpose()
 
-    CokerD = find_cokernel(D) # matriz of row vectors
-    #print("CokerD")
-    #print(CokerD)
+    CokerD = find_cokernel(D) # matrix of row vectors
     #CokerD = min_span(CokerD)
     CokerD = rand_span(CokerD)
-    #print("CokerD")
-    #print(CokerD)
-    #print(shortstr(CokerD))
 
-    #E = counit(c1)
-    E = identity2(c1)
-    Lx0 = kron(E, CokerD), zeros2(CokerD.shape[0]*c1, c0*d1)
+    Lx0 = kron(Ic1, CokerD), zeros2(CokerD.shape[0]*c1, c0*d1)
     Lx0 = numpy.concatenate(Lx0, axis=1) # horizontal concatenate
 
     assert dot2(Lx0, Hz.transpose()).sum() == 0
 
     CokerC = find_cokernel(C)
-    #E = counit(d1)
-    E = identity2(d1)
-    Lx1 = zeros2(CokerC.shape[0]*d1, c1*d0), kron(CokerC, E)
+    Lx1 = zeros2(CokerC.shape[0]*d1, c1*d0), kron(CokerC, Id1)
     Lx1 = numpy.concatenate(Lx1, axis=1) # horizontal concatenate
 
     Lx = numpy.concatenate((Lx0, Lx1), axis=0)
 
     assert dot2(Lx, Hz.transpose()).sum() == 0
-
-    #print(shortstr(Lx))
 
     # ---------------------------------------------------
     # 
@@ -487,6 +473,7 @@ def test_code(Hxi, Hzi, Hx, Lx, Lz, Lx0, Lx1, LxiHx, **kw):
 
 def test_overlap(n, mx, mz, k, c0, c1, d0, d1, 
         Hx, Hz, Lx, Lz, Lxi, Lzi, LxiHx, LziHz, 
+        Ic0, Ic1, Id0, Id1,
         C, D, KerC, CokerD, KerD, CokerC, **kw):
 
     if 0:
@@ -496,23 +483,63 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
         Lz = shuff2(Lz)
 
 
-    idxs, jdxs = get_bipuncture(C)
-    print(idxs, jdxs)
-    idxs, jdxs = get_bipuncture(C.transpose())
-    print(idxs, jdxs)
-    idxs, jdxs = get_bipuncture(D)
-    print(idxs, jdxs)
-    idxs, jdxs = get_bipuncture(D.transpose())
-    print(idxs, jdxs)
+    l_C,  r_C  = get_bipuncture(C)
+    l_Ct, r_Ct = get_bipuncture(C.transpose())
+    l_D,  r_D  = get_bipuncture(D)
+    l_Dt, r_Dt = get_bipuncture(D.transpose())
 
+    def get_logops(idxs_C, idxs_Ct, idxs_D, idxs_Dt):
+    
+        # Lx --------------------------------------------------------------
+    
+        Ic1 = identity2(c1)[idxs_C, :]
+        Lx_h = kron(Ic1, CokerD), zeros2(len(idxs_C)*CokerD.shape[0], c0*d1)
+        Lx_h = numpy.concatenate(Lx_h, axis=1)
+        assert dot2(Lx_h, Hz.transpose()).sum() == 0
+    
+        Id1 = identity2(d1)[idxs_D, :]
+        Lx_v = zeros2(CokerC.shape[0]*len(idxs_D), c1*d0), kron(CokerC, Id1)
+        Lx_v = numpy.concatenate(Lx_v, axis=1)
+        Lxi = numpy.concatenate((Lx_h, Lx_v), axis=0)
+    
+        # Lz --------------------------------------------------------------
+    
+        KerCt = KerC.transpose()
+        Id0 = identity2(d0)[:, idxs_Dt]
+        Lzt_h = kron(KerCt, Id0), zeros2(c0*d1, KerCt.shape[1]*len(idxs_Dt))
+        Lzt_h = numpy.concatenate(Lzt_h, axis=0)
+        assert dot2(Hx, Lzt_h).sum() == 0
+    
+        KerDt = KerD.transpose()
+        assert KerDt.shape[0] == d1
+        Ic0 = identity2(c0)[:, idxs_Ct]
+        Lzt_v = zeros2(c1*d0, len(idxs_Ct)*KerDt.shape[1]), kron(Ic0, KerDt)
+        Lzt_v = numpy.concatenate(Lzt_v, axis=0)
+        assert dot2(Hx, Lzt_v).sum() == 0
+    
+        Lzti = numpy.concatenate((Lzt_h, Lzt_v), axis=1)
+        Lzi = Lzti.transpose()
+        assert dot2(Hx, Lzti).sum() == 0
 
-    op = zeros2(n)
+        return Lxi, Lzi
+
+    Lxi, Lzi = get_logops(l_C, l_Ct, l_D, l_Dt)
+    l_op = zeros2(n)
     for lx in Lxi:
       for lz in Lzi:
         lxz = lx*lz
-        #print(lxz)
-        #print(op.shape, lxz.shape)
-        op += lxz
+        l_op += lxz
+
+    Lxi, Lzi = get_logops(r_C, r_Ct, r_D, r_Dt)
+    r_op = zeros2(n)
+    for lx in Lxi:
+      for lz in Lzi:
+        lxz = lx*lz
+        r_op += lxz
+
+    assert (l_op * r_op).sum() == 0
+    op = l_op + r_op
+    #op = l_op
 
     idxs = numpy.where(op)[0]
 
@@ -520,15 +547,16 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
     for idx in idxs:
         draw.mark_idx(idx)
 
-    #draw.mark_xop(Lx[0])
-    for xop in Lxi:
-        draw.mark_xop(xop)
+    if 0:
+        #draw.mark_xop(Lx[0])
+        for xop in Lxi:
+            draw.mark_xop(xop)
+    
+        #draw.mark_zop(Lz[0])
+        for zop in Lzi:
+            draw.mark_zop(zop)
 
-    #draw.mark_zop(Lz[0])
-    for zop in Lzi:
-        draw.mark_zop(zop)
-
-    #print(KerC)
+    # h_mark
     assert KerC.shape[1] == c1
     for j, op in enumerate(KerC):
       for i in range(c1):
@@ -539,8 +567,6 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
         else:
             draw.h_mark(row, col)
 
-    #print(CokerD.shape)
-    #print(CokerD)
     assert CokerD.shape[1] == d0
     for j, op in enumerate(CokerD):
       #print(op)
@@ -596,11 +622,12 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
     if dot2(Ax, Lz.transpose()).sum() == 0 and dot2(Az, Lx.transpose()).sum() == 0:
         return True
 
-    #draw.mark_zop(Az[0])
-    print("Ax:")
-    print(shortstr(Ax))
-    print("Az:")
-    print(shortstr(Az))
+    if 0:
+        #draw.mark_zop(Az[0])
+        print("Ax:")
+        print(shortstr(Ax))
+        print("Az:")
+        print(shortstr(Az))
 
     return False
 
@@ -680,15 +707,6 @@ def get_bipuncture(H):
 
     return idxs, jdxs
 
-
-ex = """
-a.1...1.1111
-.a..11...111
-..a11..11.1.
-...a...1.111
-.....a.1111.
-......a.11..
-"""
 
 def get_pivots(H):
     m, n = H.shape
@@ -778,11 +796,11 @@ def main():
     elif argv.rand:
         # make some vertical logops from rank degenerate parity check matrices
         #C = random_code(20, 5, 3, 3)
-        C = random_code(15, 4, 3, 3)
-        D = random_code(8,  3, 2, 3)
+        C = random_code(16, 8, 8, 3)
+        D = random_code(8,  4, 4, 3)
 
     elif argv.samerand:
-        C = random_code(12, 6, 6, 4)
+        C = random_code(12, 3, 3, 4)
         D = C
 
     elif argv.smallrand:
