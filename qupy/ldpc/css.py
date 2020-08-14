@@ -77,7 +77,7 @@ class CSSCode(object):
             Hz=None, Tx=None, # XXX swap these two args?
             Gx=None, Gz=None, 
             build=True,
-            check=True, verbose=True, logops_only=False):
+            check=True, verbose=False, logops_only=False):
 
         if Hx is None and Hz is not None:
             # This is a classical code

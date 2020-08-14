@@ -17,11 +17,14 @@ from numpy.linalg import lstsq
 from qupy.argv import argv
 from qupy.tool import write, choose
 from qupy.ldpc.css import CSSCode, randcss
-from qupy.ldpc.solve import shortstr, zeros2, array2, dot2, parse, identity2, rank
+from qupy.ldpc.solve import shortstrx, zeros2, array2, dot2, parse, identity2, rank
 from qupy.ldpc.solve import find_kernel, cokernel, eq2, get_reductor, intersect
 from qupy.ldpc.solve import linear_independent, solve, row_reduce, rand2
 from qupy.ldpc.solve import remove_dependent, dependent_rows
 from qupy.ldpc.gallagher import make_gallagher, classical_distance
+from qupy.ldpc.main import get_decoder
+
+shortstr = shortstrx
 
 
 from huygens.front import *
@@ -59,8 +62,8 @@ class Draw(object):
 
         print(self)
 
-        rows = max(c0, c1)
-        cols = max(d0, d1)
+        #rows, cols = max(c0, c1), max(d0, d1)
+        rows, cols = c1, d0
         dx, dy = self.dx, self.dy
         p = path.rect(-dx, -dy, cols*dy+2*dy, rows*dx+dx)
         p = path.rect(-0.5*dx, -0.5*dy, cols*dy+0.0*dy, rows*dx+0.0*dx)
@@ -94,7 +97,12 @@ class Draw(object):
         st_bar = st_bar or self.st_bar
         dx, dy, r = self.dx, self.dy, (r or self.r)
         cvs = self.cvs
-        x, y = dx*(col+0.5), dy*(row+0.5)
+        if 0:
+            x, y = dx*(col+0.5), dy*(row+0.5)
+        else:
+            row1 = row # - c0
+            col1 = col + d0 + 3 # space
+            x, y = dx*(col1+0.0), dy*(row1+0.0)
         if fill:
             cvs.fill(path.circle(x, y, r), st_qubit)
         if stroke:
@@ -174,39 +182,6 @@ def kron(A, B):
     return C
 
 
-#def dependent_rows(H):
-#    "find dependent rows of H, first to last"
-#    idxs = set(range(len(H)))
-#    #print(H)
-#    K = find_kernel(H.transpose())
-#    #print("K:")
-#    #print(K)
-#    K = row_reduce(K, truncate=True)
-#    #print("K:")
-#    #print(K)
-#    assert dot2(K, H).sum() == 0
-#    deps = []
-#    for row in K:
-#        #print(row)
-#        idx = numpy.where(row!=0)[0][0]
-#        deps.append(idx)
-#        idxs.remove(idx)
-#    assert len(set(deps)) == len(K)
-#    idxs = list(idxs)
-#    idxs.sort()
-#    deps.sort()
-#    return idxs, deps
-#
-#
-#def remove_dependent(H):
-#    "remove dependent rows of H, first to last"
-#    if len(H) <2:
-#        return H
-#    idxs, deps = dependent_rows(H)
-#    return H[idxs]
-
-
-
 def independent_logops(L, H):
     m = len(H)
     LH = numpy.concatenate((L, H), axis=0)
@@ -264,7 +239,6 @@ def rand_span(A):
 
 def hypergraph_product(C, D, check=False):
     print("hypergraph_product: C=%s, D=%s"%(C.shape, D.shape))
-    print("distance:", classical_distance(C))
 
     c0, c1 = C.shape
     d0, d1 = D.shape
@@ -323,7 +297,6 @@ def hypergraph_product(C, D, check=False):
     # These are linearly independent among themselves, but 
     # once we add stabilizers it will be reduced:
     assert rank(Lx) == len(Lx)
-
 
     # ---------------------------------------------------
     # Build Lz 
@@ -389,10 +362,7 @@ def hypergraph_product(C, D, check=False):
     # ---------------------------------------------------
     # 
 
-    # This makes len(idxs) much bigger, because we
-    # end up with logops from many different rows/cols:
-    #Lx = shuff2(Lx)
-    #Lz = shuff2(Lz)
+    Lx0, Lx1 = Lxt0.transpose(), Lxt1.transpose()
 
     Lxi = independent_logops(Lx, Hxi)
     Lzi = independent_logops(Lz, Hzi)
@@ -409,6 +379,113 @@ def hypergraph_product(C, D, check=False):
     LziHz = numpy.concatenate((Lzi, Hzi))
     assert rank(LziHz) == k+mz
 
+    return locals()
+
+
+def test_indep(Lx0, Lx1, Hxi, Hx, **kw):
+
+    if argv.verbose:
+        print("Lx0:", Lx0.shape)
+        print(shortstr(Lx0))
+        print("Lx1:", Lx1.shape)
+        print(shortstr(Lx1))
+        print("Hxi:", Hxi.shape)
+        print(shortstr(Hxi))
+
+    Lx0 = independent_logops(Lx0, Hxi)
+    Lx1 = independent_logops(Lx1, Hxi)
+
+    i0, i1, i2 = len(Lx0), len(Lx1), len(Hxi)
+    J = numpy.concatenate((Lx0, Lx1, Hxi))
+    K = find_cokernel(J)
+    print("K:", K.shape)
+    print(shortstrx(K[:,:i0], K[:, i0:i0+i1], K[:, i0+i1:i0+i1+i2]))
+    assert dot2(K, J).sum() == 0
+
+
+def test_code(Hxi, Hzi, Hx, Lx, Lz, Lx0, Lx1, LxiHx, **kw):
+    code = CSSCode(Hx=Hxi, Hz=Hzi)
+    print(code)
+
+    assert rank(intersect(Lx, code.Lx)) == code.k
+    assert rank(intersect(Lz, code.Lz)) == code.k
+
+    verbose = argv.verbose
+    decoder = get_decoder(argv, argv.decode, code)
+    
+    if decoder is None:
+        return
+
+    p = argv.get("p", 0.01)
+    N = argv.get("N", 0)
+
+    distance = code.n
+    count = 0
+    failcount = 0
+    nonuniq = 0
+
+    logops = []
+
+    for i in range(N):
+        err_op = ra.binomial(1, p, (code.n,))
+        err_op = err_op.astype(numpy.int32)
+        op = decoder.decode(p, err_op, verbose=verbose, argv=argv)
+    
+        c = 'F'
+        success = False
+        if op is not None:
+            op = (op+err_op)%2
+            # Should be a codeword of Hz (kernel of Hz)
+            assert dot2(code.Hz, op).sum() == 0
+            write("%d:"%op.sum())
+        
+            # Are we in the image of Hx ? If so, then success.
+            success = dot2(code.Lz, op).sum()==0
+        
+            if success and op.sum():
+                nonuniq += 1
+        
+            c = '.' if success else 'x'
+
+            if op.sum() and not success:
+                distance = min(distance, op.sum())
+                write("L")
+                logops.append(op.copy())
+
+        else:
+            failcount += 1
+        write(c+' ')
+        count += success
+
+    if N:
+        print()
+        print(argv)
+        print("error rate = %.8f" % (1. - 1.*count / (i+1)))
+        print("fail rate = %.8f" % (1.*failcount / (i+1)))
+        print("nonuniq = %d" % nonuniq)
+        print("distance <= %d" % distance)
+
+    mx0, mx1 = len(Lx0), len(Lx1)
+    LxHx = numpy.concatenate((Lx0, Lx1, Hx))
+    for op in logops:
+        print(op.sum())
+        #print(shortstr(op))
+        #print(op.shape)
+        #print(op)
+        K = solve(LxHx.transpose(), op)
+        K.shape = (1, len(K))
+        print(shortstrx(K[:, :mx0], K[:, mx0:mx0+mx1], K[:, mx0+mx1:]))
+
+
+def test_overlap(n, mx, mz, k, c0, c1, d0, d1, 
+        Hx, Hz, Lx, Lz, Lxi, Lzi, LxiHx, LziHz, KerC, CokerD, **kw):
+
+    if 0:
+        # This makes len(idxs) much bigger, because we
+        # end up with logops from many different rows/cols:
+        Lx = shuff2(Lx)
+        Lz = shuff2(Lz)
+
     op = zeros2(n)
     for lx in Lxi:
       for lz in Lzi:
@@ -423,8 +500,11 @@ def hypergraph_product(C, D, check=False):
     for idx in idxs:
         draw.mark_idx(idx)
 
-    draw.mark_xop(Lx[0])
-    print(KerC)
+    #draw.mark_xop(Lx[0])
+    for xop in Lxi:
+        draw.mark_xop(xop)
+
+    #print(KerC)
     for j, op in enumerate(KerC):
       for i in range(c1):
         row = i
@@ -434,14 +514,18 @@ def hypergraph_product(C, D, check=False):
         else:
             draw.h_mark(row, col)
 
-    print(CokerD.shape)
-    print(CokerD)
-    draw.mark_zop(Lz[0])
+    #draw.mark_zop(Lz[0])
+    for zop in Lzi:
+        draw.mark_zop(zop)
+
+    #print(CokerD.shape)
+    #print(CokerD)
     for j, op in enumerate(CokerD):
-      print(op)
+      #print(op)
       for i in range(d0):
         col = i
-        row = -j-1
+        #row = -j-1
+        row = c1+j
         if op[i]:
             draw.h_mark(row, col, st_qubit=[green], stroke=True)
         else:
@@ -494,23 +578,133 @@ def shuff22(A):
     return A
     
 
-def random_code(n, _rank, deps, distance=1):
+def in_support(H, keep_idxs, check=False): # copied from classical.py
+    # find span of H contained within idxs support
+    n = H.shape[1]
+    remove_idxs = [i for i in range(n) if i not in keep_idxs]
+    A = identity2(n)
+    A = A[keep_idxs]
+    H1 = intersect(A, H)
+
+    if check:
+        lhs = set(str(x) for x in span(A))
+        rhs = set(str(x) for x in span(H))
+        meet = lhs.intersection(rhs)
+        assert meet == set(str(x) for x in span(H1))
+
+    return H1
+
+
+def get_bipuncture(H):
+    n = H.shape[1]
+    G = find_kernel(H)
+    k = len(G)
+
+    while 1: # copied from classical.py
+        idxs = set()
+        while len(idxs) < k:
+            idx = randint(0, n-1)
+            idxs.add(idx)
+        idxs = list(idxs)
+        idxs.sort()
+
+        G1 = in_support(G, idxs)
+        if len(G1):
+            continue
+
+        jdxs = set()
+        while len(jdxs) < k:
+            jdx = randint(0, n-1)
+            if jdx not in idxs:
+                jdxs.add(jdx)
+        jdxs = list(jdxs)
+        jdxs.sort()
+
+        G2 = in_support(G, jdxs)
+        if len(G2) == 0:
+            break
+    
+    if 0:
+        v = zeros2(1, n)
+        v[:, idxs] = 1
+        print(shortstr(v))
+    
+        v = zeros2(1, n)
+        v[:, jdxs] = 1
+        print(shortstr(v))
+
+    return idxs, jdxs
+
+
+ex = """
+a.1...1.1111
+.a..11...111
+..a11..11.1.
+...a...1.111
+.....a.1111.
+......a.11..
+"""
+
+def get_pivots(H):
+    m, n = H.shape
+    i = j = 0
+    items = []
+    while i < m:
+        while H[i, j] == 0:
+            j += 1
+            assert j<n
+        items.append((i, j))
+        i += 1
+    return items
+
+
+def test_puncture(H):
+    print("\ntest_puncture --------")
+    n = H.shape[1]
+
+    G = find_kernel(H)
+    k = len(G)
+    print("n = %d, k = %d" %(n, k))
+    print("G =")
+    print(shortstr(G))
+
+    R = row_reduce(H)
+    print("R =")
+    print(shortstr(R))
+
+    pivots = get_pivots(R)
+    rows = [i for (i, j) in pivots]
+    cols = [j for (i, j) in pivots]
+    print("pivots:", pivots)
+    A = cols[:k]
+    remain = [j for j in range(n) if j not in A]
+    S = R[:, remain]
+    S = row_reduce(S)
+    print(rank(S))
+    print(shortstr(S))
+
+
+
+def random_code(n, k, kt, distance=1):
+    "code length n, dimension k, transpose dimension kt"
     d = 0
     while d<distance:
-        H = rand2(_rank, n)
-        if rank(H) < _rank:
+        H = rand2(n-k, n)
+        if rank(H) < n-k:
             continue
         d = classical_distance(H, distance)
 
-    while deps>0:
-        R = rand2(deps, _rank)
+    K = H
+    dt = 0
+    while dt<distance:
+        R = rand2(kt, n-k)
         J = dot2(R, H)
         K = numpy.concatenate((H, J))
-        if rank(K) == _rank:
-            H = K
-            break
+        if rank(K) < n-k:
+            continue
+        dt = classical_distance(K.transpose())
 
-    return H
+    return K
 
 
 def main():
@@ -538,14 +732,36 @@ def main():
 
     elif argv.rand:
         # make some vertical logops from rank degenerate parity check matrices
-        C = random_code(20, 15, 5, 3)
-        D = random_code(8, 6, 2, 3)
-        #dC = classical_distance(C)
-        #dD = classical_distance(D)
-        print("C", C.shape, rank(C))
-        print(shortstr(C))
-        print("D", D.shape, rank(D))
-        print(shortstr(D))
+        #C = random_code(20, 5, 3, 3)
+        C = random_code(15, 4, 4, 3)
+        D = random_code(8,  3, 3, 3)
+
+    elif argv.samerand:
+        C = random_code(12, 6, 6, 4)
+        D = C
+
+    elif argv.smallrand:
+        # make some vertical logops from rank degenerate parity check matrices
+        C = random_code(8, 3, 3, 3)
+        D = random_code(5, 2, 2, 2)
+
+    elif argv.cookup:
+        # [12,6,4] example that has no k-bipuncture
+        C = parse("""
+.11..1.11..1
+11...1111...
+1....1.11111
+..1.1111..1.
+111....1.11.
+1111.11...11
+.1.1.1....1.
+1111111.1111
+....1..111..
+.1..1.111.11
+11.11......1
+11..1111.1..
+        """)
+        D = C
 
     elif argv.pair:
         #C = make_gallagher(9, 12, 3, 4, 4) # big
@@ -593,6 +809,12 @@ def main():
     else:
         return
 
+    print("C: shape=%s, rank=%d, dist=%d"%(C.shape, rank(C), classical_distance(C)))
+    print("C.t: dist=%d"%(classical_distance(C.transpose()),))
+    print(shortstr(C))
+    print("D: shape=%s, rank=%d, dist=%d"%(D.shape, rank(D), classical_distance(D)))
+    print("D.t: dist=%d"%(classical_distance(D.transpose()),))
+    print(shortstr(D))
     Ct = C.transpose()
     Dt = D.transpose()
 
@@ -600,8 +822,26 @@ def main():
         C, Ct = Ct, C
         D, Dt = Dt, D
 
-    while 1:
-        success = hypergraph_product(C, Dt)
+    if argv.test_puncture:
+        test_puncture(C)
+        return # <--------- return
+
+    if argv.test_indep:
+        kw = hypergraph_product(C, Dt)
+        test_indep(**kw)
+        return # <--------- return
+
+    if argv.test_code:
+        kw = hypergraph_product(C, Dt)
+        test_code(**kw)
+        return # <--------- return
+
+    if argv.test_overlap:
+
+      while 1:
+        kw = hypergraph_product(C, Dt)
+        success = test_overlap(**kw)
+
         print("success:", success)
         if success:
             break
