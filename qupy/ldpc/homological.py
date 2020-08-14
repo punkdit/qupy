@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 """
-from previous version: transverse.py
+Previous version: transverse.py
+This version is now deprecated, X/Z operators
+are reveres. Go to punture.py for current version.
 
 see also: classical.py
 
