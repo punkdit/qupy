@@ -471,6 +471,97 @@ def test_code(Hxi, Hzi, Hx, Lx, Lz, Lx0, Lx1, LxiHx, **kw):
         print(shortstrx(K[:, :mx0], K[:, mx0:mx0+mx1], K[:, mx0+mx1:]))
 
 
+def in_support(H, keep_idxs, check=False): # copied from classical.py
+    # find span of H contained within idxs support
+    n = H.shape[1]
+    remove_idxs = [i for i in range(n) if i not in keep_idxs]
+    A = identity2(n)
+    A = A[keep_idxs]
+    H1 = intersect(A, H)
+
+    if check:
+        lhs = set(str(x) for x in span(A))
+        rhs = set(str(x) for x in span(H))
+        meet = lhs.intersection(rhs)
+        assert meet == set(str(x) for x in span(H1))
+
+    return H1
+
+
+def get_bipuncture(H):
+    n = H.shape[1]
+    G = find_kernel(H)
+    k = len(G)
+
+    while 1: # copied from classical.py
+        idxs = set()
+        while len(idxs) < k:
+            idx = randint(0, n-1)
+            idxs.add(idx)
+        idxs = list(idxs)
+        idxs.sort()
+
+        G1 = in_support(G, idxs)
+        if len(G1):
+            continue
+
+        jdxs = set()
+        while len(jdxs) < k:
+            jdx = randint(0, n-1)
+            if jdx not in idxs:
+                jdxs.add(jdx)
+        jdxs = list(jdxs)
+        jdxs.sort()
+
+        G2 = in_support(G, jdxs)
+        if len(G2) == 0:
+            break
+    
+    if 0:
+        v = zeros2(1, n)
+        v[:, idxs] = 1
+        print(shortstr(v))
+    
+        v = zeros2(1, n)
+        v[:, jdxs] = 1
+        print(shortstr(v))
+
+    return idxs, jdxs
+
+
+def is_correctable(idxs, n, LxiHx, LziHz, Hx, Hz, Lx, Lz, **kw):
+    #print("len(idxs) =", len(idxs))
+    #Ax = in_support(LxiHx, idxs)
+    #print(Ax.shape)
+
+    A = identity2(n)[idxs]
+    Ax = intersect(LxiHx, A)
+    Az = intersect(LziHz, A)
+
+    assert dot2(Ax, Hz.transpose()).sum() == 0
+    assert dot2(Az, Hx.transpose()).sum() == 0
+
+    if dot2(Ax, Lz.transpose()).sum() == 0 and dot2(Az, Lx.transpose()).sum() == 0:
+        return True
+
+    if 0:
+        #draw.mark_zop(Az[0])
+        print("Ax:")
+        print(shortstr(Ax))
+        print("Az:")
+        print(shortstr(Az))
+
+    return False
+
+
+def eq_span(A, B):
+    u = solve(A.transpose(), B.transpose())
+    if u is None:
+        return False
+    u = solve(B.transpose(), A.transpose())
+    return u is not None
+
+
 def test_overlap(n, mx, mz, k, c0, c1, d0, d1, 
         Hx, Hz, Lx, Lz, Lxi, Lzi, LxiHx, LziHz, 
         Ic0, Ic1, Id0, Id1,
@@ -482,11 +573,17 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
         Lx = shuff2(Lx)
         Lz = shuff2(Lz)
 
+    assert dot2(LxiHx, Hz.transpose()).sum() == 0
 
+    print("get_bipuncture(C)")
     l_C,  r_C  = get_bipuncture(C)
+    print("get_bipuncture(Ct)")
     l_Ct, r_Ct = get_bipuncture(C.transpose())
+    print("get_bipuncture(D)")
     l_D,  r_D  = get_bipuncture(D)
+    print("get_bipuncture(Dt)")
     l_Dt, r_Dt = get_bipuncture(D.transpose())
+    print("done.")
 
     def get_logops(idxs_C, idxs_Ct, idxs_D, idxs_Dt):
     
@@ -521,19 +618,39 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
         Lzi = Lzti.transpose()
         assert dot2(Hx, Lzti).sum() == 0
 
+        assert rank(Lxi) == len(Lxi) # full rank
+        assert rank(Lzi) == len(Lzi) # full rank
+
+        assert eq_span(numpy.concatenate((Lxi, Hx)), LxiHx)
+        assert eq_span(numpy.concatenate((Lzi, Hz)), LziHz)
+
         return Lxi, Lzi
 
-    Lxi, Lzi = get_logops(l_C, l_Ct, l_D, l_Dt)
+
+    left_Lxi, left_Lzi = get_logops(l_C, l_Ct, l_D, l_Dt)
+    right_Lxi, right_Lzi = get_logops(r_C, r_Ct, r_D, r_Dt)
+
+    randvec = lambda U : dot2(rand2(1, len(U)), U)
+
+    while 1:
+    #for trial in range(1000):
+        l_op = randvec(left_Lxi)*randvec(right_Lzi)
+        r_op = randvec(right_Lxi)*randvec(left_Lzi)
+        assert (l_op * r_op).sum() == 0
+        op = l_op + r_op
+        idxs = numpy.where(op)[0]
+        print("(%.2f)"%(len(idxs)/n), end="", flush=True)
+        assert is_correctable(**locals())
+
     l_op = zeros2(n)
-    for lx in Lxi:
-      for lz in Lzi:
+    for lx in left_Lxi:
+      for lz in right_Lzi:
         lxz = lx*lz
         l_op += lxz
 
-    Lxi, Lzi = get_logops(r_C, r_Ct, r_D, r_Dt)
     r_op = zeros2(n)
-    for lx in Lxi:
-      for lz in Lzi:
+    for lx in right_Lxi:
+      for lz in left_Lzi:
         lxz = lx*lz
         r_op += lxz
 
@@ -542,6 +659,9 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
     #op = l_op
 
     idxs = numpy.where(op)[0]
+    print("--> (%.2f)"%(len(idxs)/n), end="", flush=True)
+
+    #assert is_correctable(**locals())
 
     draw = Draw(c0, c1, d0, d1)
     for idx in idxs:
@@ -605,31 +725,7 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
 
     draw.save("output.2")
 
-    print("len(idxs) =", len(idxs))
-
-    #Ax = in_support(LxiHx, idxs)
-    #print(Ax.shape)
-
-    assert dot2(LxiHx, Hz.transpose()).sum() == 0
-
-    A = identity2(n)[idxs]
-    Ax = intersect(LxiHx, A)
-    Az = intersect(LziHz, A)
-
-    assert dot2(Ax, Hz.transpose()).sum() == 0
-    assert dot2(Az, Hx.transpose()).sum() == 0
-
-    if dot2(Ax, Lz.transpose()).sum() == 0 and dot2(Az, Lx.transpose()).sum() == 0:
-        return True
-
-    if 0:
-        #draw.mark_zop(Az[0])
-        print("Ax:")
-        print(shortstr(Ax))
-        print("Az:")
-        print(shortstr(Az))
-
-    return False
+    return is_correctable(**locals())
 
 
 def shuff2(A):
@@ -649,65 +745,6 @@ def shuff22(A):
     A = A[:, idxs]
     return A
     
-
-def in_support(H, keep_idxs, check=False): # copied from classical.py
-    # find span of H contained within idxs support
-    n = H.shape[1]
-    remove_idxs = [i for i in range(n) if i not in keep_idxs]
-    A = identity2(n)
-    A = A[keep_idxs]
-    H1 = intersect(A, H)
-
-    if check:
-        lhs = set(str(x) for x in span(A))
-        rhs = set(str(x) for x in span(H))
-        meet = lhs.intersection(rhs)
-        assert meet == set(str(x) for x in span(H1))
-
-    return H1
-
-
-def get_bipuncture(H):
-    n = H.shape[1]
-    G = find_kernel(H)
-    k = len(G)
-
-    while 1: # copied from classical.py
-        idxs = set()
-        while len(idxs) < k:
-            idx = randint(0, n-1)
-            idxs.add(idx)
-        idxs = list(idxs)
-        idxs.sort()
-
-        G1 = in_support(G, idxs)
-        if len(G1):
-            continue
-
-        jdxs = set()
-        while len(jdxs) < k:
-            jdx = randint(0, n-1)
-            if jdx not in idxs:
-                jdxs.add(jdx)
-        jdxs = list(jdxs)
-        jdxs.sort()
-
-        G2 = in_support(G, jdxs)
-        if len(G2) == 0:
-            break
-    
-    if 0:
-        v = zeros2(1, n)
-        v[:, idxs] = 1
-        print(shortstr(v))
-    
-        v = zeros2(1, n)
-        v[:, jdxs] = 1
-        print(shortstr(v))
-
-    return idxs, jdxs
-
-
 def get_pivots(H):
     m, n = H.shape
     i = j = 0
@@ -742,8 +779,14 @@ def test_puncture(H):
     A = cols[:k]
     remain = [j for j in range(n) if j not in A]
     S = R[:, remain]
+    print("S =")
+    print(shortstr(S))
+    G1 = find_kernel(S)
+    print("G1 =")
+    G1 = row_reduce(G1)
+    print(G1)
     S = row_reduce(S)
-    print(rank(S))
+    print("S: rank = ", rank(S))
     print(shortstr(S))
 
 
@@ -793,36 +836,52 @@ def main():
             assert rank(D) == len(D)
             print("rank(D)", rank(D), "kernel(D)", len(find_kernel(D)))
 
-    elif argv.rand:
-        # make some vertical logops from rank degenerate parity check matrices
-        #C = random_code(20, 5, 3, 3)
+    elif argv.hrand:
+        C = random_code(16, 8, 0, 3)
+        D = random_code(8,  4, 0, 3)
+
+    elif argv.hvrand:
         C = random_code(16, 8, 8, 3)
         D = random_code(8,  4, 4, 3)
 
     elif argv.samerand:
-        C = random_code(12, 3, 3, 4)
+        C = random_code(12, 6, 0, 4)
         D = C
 
     elif argv.smallrand:
         # make some vertical logops from rank degenerate parity check matrices
-        C = random_code(8, 3, 3, 3)
-        D = random_code(5, 2, 2, 2)
+        C = random_code(8, 4, 0, 3)
+        D = random_code(6, 3, 0, 2)
 
     elif argv.cookup:
         # [12,6,4] example that has no k-bipuncture
         C = parse("""
-.11..1.11..1
-11...1111...
-1....1.11111
-..1.1111..1.
-111....1.11.
-1111.11...11
-.1.1.1....1.
-1111111.1111
-....1..111..
-.1..1.111.11
-11.11......1
-11..1111.1..
+        .1..1111....
+        111.11111111
+        11.111...11.
+        1..11...1.11
+        .11...1...11
+        ..11.11.111.
+        """)
+        D = C
+        R = row_reduce(C)
+        print(shortstr(R))
+
+    elif argv.cookup2:
+        # [12,6,4] example that has no k-bipuncture
+        C = parse("""
+        .11..1.11..1
+        11...1111...
+        1....1.11111
+        ..1.1111..1.
+        111....1.11.
+        1111.11...11
+        .1.1.1....1.
+        1111111.1111
+        ....1..111..
+        .1..1.111.11
+        11.11......1
+        11..1111.1..
         """)
         D = C
 
@@ -901,13 +960,17 @@ def main():
 
     if argv.test_overlap:
 
-      while 1:
+      #while 1:
         kw = hypergraph_product(C, Dt)
         success = test_overlap(**kw)
 
         print("success:", success)
-        if success:
-            break
+        if argv.success:
+            assert success
+
+        #if success:
+        #    break
+
         #else:
         #    sys.exit(0)
         C = shuff22(C)
