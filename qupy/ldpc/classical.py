@@ -20,6 +20,7 @@ from qupy.ldpc.solve import find_kernel, cokernel, eq2, get_reductor, intersect
 from qupy.ldpc.solve import linear_independent, solve, row_reduce, rand2
 from qupy.ldpc.solve import remove_dependent, dependent_rows, span
 from qupy.ldpc.gallagher import make_gallagher, classical_distance
+from qupy.ldpc.clifford import all_codes
 
 
 
@@ -40,7 +41,7 @@ def in_support(H, keep_idxs, check=False):
     return H1
 
 
-def min_weight(G):
+def min_weight(G, max_dist=0):
     k, n = G.shape
     dist = n
     Gt = G.transpose()
@@ -48,49 +49,25 @@ def min_weight(G):
         v = dot2(Gt, u)
         if 0 < v.sum() < dist:
             dist = v.sum()
+        #if dist<=max_dist:
+        #    break
     return dist
 
 
 
-def test(n, k, dist=2, verbose=False):
-    assert n > k
+def search(G, H, max_tries=None):
 
-    if argv.rand:
-      while 1:
-        G = rand2(k, n)
-        if rank(G) < k:
-            continue
-        weight = min_weight(G)
-        if weight >= dist:
-            break
-    else:
-        G = zeros2(k, n)
-        jdx = 0
-        for idx in range(k):
-          for kdx in range(dist):
-            G[idx,jdx+kdx] = 1
-          jdx += dist-1
+    m, n = H.shape
+    k, n1 = G.shape
+    assert n==n1
+    assert m+k==n
 
-        weight = min_weight(G) if n < 20 else None
-        assert weight is None or weight == dist
-
-
-
-    #print(".", flush=True, end="")
-
-    if verbose:
-        print("G =")
-        print(shortstr(G))
-        print("weight =", weight)
-        print()
-
-        H = find_kernel(G)
-        H = row_reduce(H)
-        print("H =")
-        print(shortstr(H))
-        print()
-
+    count = 0
     while 1:
+        count += 1
+        if max_tries is not None and count>max_tries:
+            return False
+
         idxs = set()
         while len(idxs) < k:
             idx = randint(0, n-1)
@@ -98,8 +75,12 @@ def test(n, k, dist=2, verbose=False):
         idxs = list(idxs)
         idxs.sort()
 
-        G1 = in_support(G, idxs)
-        if len(G1):
+        if len(in_support(G, idxs)):
+            #print("1", end="", flush=True)
+            continue
+
+        if len(in_support(H, idxs)):
+            #print("2", end="", flush=True)
             continue
 
         jdxs = set()
@@ -110,12 +91,19 @@ def test(n, k, dist=2, verbose=False):
         jdxs = list(jdxs)
         jdxs.sort()
 
-        G2 = in_support(G, jdxs)
-        if len(G2) == 0:
-            break
+        if len(in_support(G, jdxs)):
+            #print("3", end="", flush=True)
+            continue
 
+        if len(in_support(H, jdxs)):
+            #print("4", end="", flush=True)
+            continue
 
-    if verbose:
+        break
+
+    #print()
+
+    if argv.verbose:
         v = zeros2(1, n)
         v[:, idxs] = 1
         print(shortstr(v))
@@ -124,25 +112,106 @@ def test(n, k, dist=2, verbose=False):
         v[:, jdxs] = 1
         print(shortstr(v))
 
+    return True
+
+
+def test(n, k, dist=2, verbose=False):
+    assert n > k
+
+    if argv.rand:
+        while 1:
+            G = rand2(k, n)
+            if rank(G) < k:
+                continue
+            dG = min_weight(G)
+            if dG < dist:
+                continue
+
+            H = find_kernel(G)
+            dH = min_weight(H)
+            if dH < dist:
+                continue
+
+            break
+
+    else:
+        G = zeros2(k, n)
+        jdx = 0
+        for idx in range(k):
+          for kdx in range(dist):
+            G[idx,jdx+kdx] = 1
+          jdx += dist-1
+
+        dG = min_weight(G) if n < 20 else None
+        assert dG is None or dG == dist
+
+        H = find_kernel(G)
+
+    #print(".", flush=True, end="")
+    H = row_reduce(H)
+
+    search(G, H)
+
+    if verbose:
+        print("G =")
+        print(shortstr(G))
+        print("weight =", dG)
+        print()
+
+        print("H =")
+        print(shortstr(H))
+        print()
+
 
 def main():
 
     n = argv.get("n", 10)
     k = argv.get("k", 4)
     dist = argv.get("dist", 2)
+    max_tries = argv.get("max_tries", 1000)
     verbose = argv.verbose
 
-    while 1:
-        test(n, k, dist, verbose)
+    count = 0
+    fails = 0
 
-        if not verbose:
-            c = choice("/\\")
-            print(c, flush=True, end="")
+    for G in all_codes(k, n):
+        assert rank(G) == k
+        dG = min_weight(G, dist)
+        if dG < dist:
+            #print(".", end="", flush=True)
+            continue
+
+        H = find_kernel(G)
+        dH = min_weight(H, dist)
+        if dH < dist:
+            print("*", end="", flush=True)
+            continue
+
+        print("G =")
+        print(shortstr(G))
+        print("H =")
+        print(shortstr(H))
+        result = search(G, H, max_tries)
+        count += 1
+        if result:
+            print("\n")
         else:
-            break
+            print("XXXXXXXXXXXXXXXXXXX FAIL\n")
+            fails += 1
 
-        if not argv.rand:
-            break
+    print("codes found: %d, fails %d"%(count, fails))
+
+#
+#    while 1:
+#        test(n, k, dist, verbose)
+#
+#        if not verbose:
+#            c = choice("/\\")
+#            print(c, flush=True, end="")
+#
+#        if not argv.forever:
+#            break
+
 
 
 if __name__ == "__main__":
