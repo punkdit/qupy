@@ -526,6 +526,8 @@ def get_bipuncture(H):
         v[:, jdxs] = 1
         print(shortstr(v))
 
+    print("in_support(H):", in_support(H, idxs), in_support(H, jdxs))
+
     return idxs, jdxs
 
 
@@ -575,16 +577,6 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
 
     assert dot2(LxiHx, Hz.transpose()).sum() == 0
 
-    print("get_bipuncture(C)")
-    l_C,  r_C  = get_bipuncture(C)
-    print("get_bipuncture(Ct)")
-    l_Ct, r_Ct = get_bipuncture(C.transpose())
-    print("get_bipuncture(D)")
-    l_D,  r_D  = get_bipuncture(D)
-    print("get_bipuncture(Dt)")
-    l_Dt, r_Dt = get_bipuncture(D.transpose())
-    print("done.")
-
     def get_logops(idxs_C, idxs_Ct, idxs_D, idxs_Dt):
     
         # Lx --------------------------------------------------------------
@@ -616,6 +608,9 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
     
         Lzti = numpy.concatenate((Lzt_h, Lzt_v), axis=1)
         Lzi = Lzti.transpose()
+
+        # checking ---------------------------------------------------------
+
         assert dot2(Hx, Lzti).sum() == 0
 
         assert rank(Lxi) == len(Lxi) # full rank
@@ -627,20 +622,31 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
         return Lxi, Lzi
 
 
+    print("get_bipuncture(C)")
+    l_C,  r_C  = get_bipuncture(C)
+    print("get_bipuncture(Ct)")
+    l_Ct, r_Ct = get_bipuncture(C.transpose())
+    print("get_bipuncture(D)")
+    l_D,  r_D  = get_bipuncture(D)
+    print("get_bipuncture(Dt)")
+    l_Dt, r_Dt = get_bipuncture(D.transpose())
+    print("done.")
+
     left_Lxi, left_Lzi = get_logops(l_C, l_Ct, l_D, l_Dt)
     right_Lxi, right_Lzi = get_logops(r_C, r_Ct, r_D, r_Dt)
 
     randvec = lambda U : dot2(rand2(1, len(U)), U)
 
-    while 1:
-    #for trial in range(1000):
+    #while 1:
+    for trial in range(100):
         l_op = randvec(left_Lxi)*randvec(right_Lzi)
         r_op = randvec(right_Lxi)*randvec(left_Lzi)
         assert (l_op * r_op).sum() == 0
         op = l_op + r_op
         idxs = numpy.where(op)[0]
-        print("(%.2f)"%(len(idxs)/n), end="", flush=True)
+        #print("(%.2f)"%(len(idxs)/n), end="", flush=True)
         assert is_correctable(**locals())
+    #print()
 
     l_op = zeros2(n)
     for lx in left_Lxi:
@@ -929,6 +935,7 @@ def main():
         D = parse("""1111""")
 
     else:
+        print("please specify a code")
         return
 
     print("C: shape=%s, rank=%d, dist=%d"%(C.shape, rank(C), classical_distance(C)))

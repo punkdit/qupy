@@ -2,22 +2,6 @@
 10/2/20
 =======
 
-134321.89user 57.25system 37:20:09elapsed 99%CPU (0avgtext+0avgdata 48444maxresident)k
-0inputs+0outputs (0major+11723792minor)pagefaults 0swaps
-./shear.py li=13 lj=25 N=1000000 p=0.06 si=6
-error rate = 0.06456400
-fail rate = 0.00000000
-nonuniq = 935046
-distance <= 21
-logop errors = [0.005269, 0.06201]
-137435.90user 42.64system 38:12:05elapsed 99%CPU (0avgtext+0avgdata 48500maxresident)k
-0inputs+0outputs (0major+10792694minor)pagefaults 0swaps
-./shear.py li=13 lj=25 N=1000000 p=0.06 si=4
-error rate = 0.06449600
-fail rate = 0.00000000
-nonuniq = 935148
-distance <= 19
-logop errors = [0.00522, 0.061704]
 133680.61user 28.66system 37:08:31elapsed 99%CPU (0avgtext+0avgdata 48584maxresident)k
 0inputs+0outputs (0major+12386754minor)pagefaults 0swaps
 ./shear.py li=13 lj=25 N=1000000 p=0.06 si=0
@@ -27,6 +11,41 @@ nonuniq = 929765
 distance <= 19
 logop errors = [0.006092, 0.066517]
 
+138808.40user 25.57system 38:33:56elapsed 99%CPU (0avgtext+0avgdata 48344maxresident)k
+5512inputs+0outputs (0major+11383655minor)pagefaults 0swaps
+./shear.py li=13 lj=25 N=1000000 p=0.06 si=1
+error rate = 0.06493100
+fail rate = 0.00000000
+nonuniq = 934722
+distance <= 15
+logop errors = [0.005879, 0.062465]
+
+135316.95user 46.91system 37:36:34elapsed 99%CPU (0avgtext+0avgdata 48404maxresident)k
+0inputs+0outputs (0major+13985904minor)pagefaults 0swaps
+./shear.py li=13 lj=25 N=1000000 p=0.06 si=2
+error rate = 0.06485300
+fail rate = 0.00000000
+nonuniq = 934784
+distance <= 19
+logop errors = [0.005579, 0.061659]
+
+136266.16user 49.05system 37:52:50elapsed 99%CPU (0avgtext+0avgdata 48492maxresident)k
+480inputs+0outputs (4major+13299981minor)pagefaults 0swaps
+./shear.py li=13 lj=25 N=1000000 p=0.06 si=3
+error rate = 0.06474300
+fail rate = 0.00000000
+nonuniq = 934880
+distance <= 17
+logop errors = [0.005486, 0.062234]
+
+137435.90user 42.64system 38:12:05elapsed 99%CPU (0avgtext+0avgdata 48500maxresident)k
+0inputs+0outputs (0major+10792694minor)pagefaults 0swaps
+./shear.py li=13 lj=25 N=1000000 p=0.06 si=4
+error rate = 0.06449600
+fail rate = 0.00000000
+nonuniq = 935148
+distance <= 19
+logop errors = [0.00522, 0.061704]
 
 135204.51user 61.30system 37:35:18elapsed 99%CPU (0avgtext+0avgdata 48476maxresident)k
 0inputs+0outputs (0major+12179751minor)pagefaults 0swaps
@@ -36,22 +55,26 @@ fail rate = 0.00000000
 nonuniq = 935535
 distance <= 21
 logop errors = [0.00524, 0.061565]
-136266.16user 49.05system 37:52:50elapsed 99%CPU (0avgtext+0avgdata 48492maxresident)k
-480inputs+0outputs (4major+13299981minor)pagefaults 0swaps
-./shear.py li=13 lj=25 N=1000000 p=0.06 si=3
-error rate = 0.06474300
+
+134321.89user 57.25system 37:20:09elapsed 99%CPU (0avgtext+0avgdata 48444maxresident)k
+0inputs+0outputs (0major+11723792minor)pagefaults 0swaps
+./shear.py li=13 lj=25 N=1000000 p=0.06 si=6
+error rate = 0.06456400
 fail rate = 0.00000000
-nonuniq = 934880
-distance <= 17
-logop errors = [0.005486, 0.062234]
-138808.40user 25.57system 38:33:56elapsed 99%CPU (0avgtext+0avgdata 48344maxresident)k
-5512inputs+0outputs (0major+11383655minor)pagefaults 0swaps
-./shear.py li=13 lj=25 N=1000000 p=0.06 si=1
-error rate = 0.06493100
+nonuniq = 935046
+distance <= 21
+logop errors = [0.005269, 0.06201]
+
+
+130623.33user 44.29system 36:18:31elapsed 99%CPU (0avgtext+0avgdata 48168maxresident)k
+0inputs+0outputs (0major+12718543minor)pagefaults 0swaps
+./shear.py li=13 lj=25 N=1000000 p=0.06 si=10
+error rate = 0.06749600
 fail rate = 0.00000000
-nonuniq = 934722
-distance <= 15
-logop errors = [0.005879, 0.062465]
+nonuniq = 932117
+distance <= 21
+logop errors = [0.006161, 0.064749]
+
 
 
 5/2/20

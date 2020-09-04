@@ -2,8 +2,11 @@
 
 """
 Previous version: transverse.py
-This version is now deprecated, X/Z operators
-are reveres. Go to punture.py for current version.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    This version is now deprecated, X/Z operators
+    are reversed. Go to puncture.py for current version.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 see also: classical.py
 
@@ -305,6 +308,9 @@ def hypergraph_product(C, D, check=False):
 
     counit = lambda n : unit2(n).transpose()
 
+    print("D =")
+    print(shortstr(D))
+
     CokerD = find_cokernel(D) # matrix of row vectors
     #print("CokerD")
     #print(CokerD)
@@ -332,6 +338,12 @@ def hypergraph_product(C, D, check=False):
     assert dot2(Lz, Hx.transpose()).sum() == 0
 
     #print(shortstr(Lz))
+
+    print("KerC:")
+    print(shortstr(KerC))
+    print("CokerD:")
+    print(shortstr(CokerD))
+    print()
 
     # ---------------------------------------------------
     # 
@@ -785,7 +797,15 @@ def main():
         ...1111
         .11..11
         1.1.1.1
-        111....
+        """)
+        D = C
+
+    elif argv.ehamming:
+        C = parse("""
+        ....1111
+        ..11..11
+        .1.1.1.1
+        11111111
         """)
         D = C
 
