@@ -644,9 +644,9 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
         assert (l_op * r_op).sum() == 0
         op = l_op + r_op
         idxs = numpy.where(op)[0]
-        #print("(%.2f)"%(len(idxs)/n), end="", flush=True)
+        print("(%.2f)"%(len(idxs)/n), end="", flush=True)
         assert is_correctable(**locals())
-    #print()
+    print()
 
     l_op = zeros2(n)
     for lx in left_Lxi:
@@ -665,7 +665,7 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
     #op = l_op
 
     idxs = numpy.where(op)[0]
-    print("--> (%.2f)"%(len(idxs)/n), end="", flush=True)
+    print("--> (%.2f)\n"%(len(idxs)/n), end="", flush=True)
 
     #assert is_correctable(**locals())
 

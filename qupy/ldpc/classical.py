@@ -55,17 +55,21 @@ def min_weight(G, max_dist=0):
 
 
 
-def search(G, H, max_tries=None):
+def search(G, H, max_tries=None, debug=False):
 
     m, n = H.shape
     k, n1 = G.shape
     assert n==n1
     assert m+k==n
 
+    check = shortstr(H)+shortstr(G)
+
     count = 0
     while 1:
+        assert check == shortstr(H)+shortstr(G)
         count += 1
         if max_tries is not None and count>max_tries:
+            print("/\n")
             return False
 
         idxs = set()
@@ -75,12 +79,15 @@ def search(G, H, max_tries=None):
         idxs = list(idxs)
         idxs.sort()
 
+        #print(in_support(G, idxs))
+        #print(in_support(H, idxs))
+
         if len(in_support(G, idxs)):
-            #print("1", end="", flush=True)
+            if debug: print("1", end="", flush=True)
             continue
 
         if len(in_support(H, idxs)):
-            #print("2", end="", flush=True)
+            if debug: print("2", end="", flush=True)
             continue
 
         jdxs = set()
@@ -91,17 +98,20 @@ def search(G, H, max_tries=None):
         jdxs = list(jdxs)
         jdxs.sort()
 
+        #print(in_support(G, jdxs))
+        #print(in_support(H, jdxs))
+
         if len(in_support(G, jdxs)):
-            #print("3", end="", flush=True)
+            if debug: print("3", end="", flush=True)
             continue
 
         if len(in_support(H, jdxs)):
-            #print("4", end="", flush=True)
+            if debug: print("4", end="", flush=True)
             continue
 
         break
 
-    #print()
+    print("+\n")
 
     if argv.verbose:
         v = zeros2(1, n)
@@ -163,28 +173,35 @@ def test(n, k, dist=2, verbose=False):
         print()
 
 
-def main():
+def oldmain():
 
     n = argv.get("n", 10)
     k = argv.get("k", 4)
     dist = argv.get("dist", 2)
     max_tries = argv.get("max_tries", 1000)
     verbose = argv.verbose
+    trials = argv.get("trials", 1000)
 
     count = 0
     fails = 0
 
-    for G in all_codes(k, n):
+    if argv.all_codes:
+        gen = all_codes(k, n)
+    else:
+        gen = (rand2(k, n) for _ in range(trials))
+    
+
+    for G in gen:
         assert rank(G) == k
         dG = min_weight(G, dist)
         if dG < dist:
-            #print(".", end="", flush=True)
+            print("[dG]", end="", flush=True)
             continue
 
         H = find_kernel(G)
         dH = min_weight(H, dist)
         if dH < dist:
-            print("*", end="", flush=True)
+            print("[dH]", end="", flush=True)
             continue
 
         print("G =")
@@ -197,21 +214,65 @@ def main():
             print("\n")
         else:
             print("XXXXXXXXXXXXXXXXXXX FAIL\n")
+            if not argv.noassert:
+                assert 0
             fails += 1
 
     print("codes found: %d, fails %d"%(count, fails))
 
-#
-#    while 1:
-#        test(n, k, dist, verbose)
-#
-#        if not verbose:
-#            c = choice("/\\")
-#            print(c, flush=True, end="")
-#
-#        if not argv.forever:
-#            break
 
+
+def main():
+
+    n = argv.get("n", 10)
+    k = argv.get("k", 4)
+    assert 2*k<=n
+    m = n-k
+
+    dist = argv.get("dist", 2)
+    max_tries = argv.get("max_tries", 1000)
+    verbose = argv.verbose
+    trials = argv.get("trials", 1000)
+
+    count = 0
+    fails = 0
+
+    if argv.all_codes:
+        gen = all_codes(m, n)
+    else:
+        gen = (rand2(m, n) for _ in range(trials))
+    
+
+    for H in gen:
+
+        print("H =")
+        print(shortstr(H))
+        assert rank(H) == m
+        dH = min_weight(H, dist)
+        if dH < dist:
+            print("[dH=%d]"%dH, end="", flush=True)
+            continue
+
+        G = find_kernel(H)
+        dG = min_weight(G, dist)
+        if dG < dist:
+            print("[dG]", end="", flush=True)
+            continue
+
+        print("G =")
+        print(shortstr(G))
+
+        result = search(G, H, max_tries)
+        count += 1
+        if result:
+            print("\n")
+        else:
+            print("XXXXXXXXXXXXXXXXXXX FAIL\n")
+            if not argv.noassert:
+                assert 0
+            fails += 1
+
+    print("codes found: %d, fails %d"%(count, fails))
 
 
 if __name__ == "__main__":
