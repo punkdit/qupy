@@ -1,5 +1,92 @@
+
+16/9/20
+=======
+
+time python3 ./classical.py n=10 k=5 dist=3  Hdist=2 trials=100000
+after manual row reduction:
+    print(shortstr(H))
+    1....111..
+    .1.......1
+    ..1..1.111
+    ...1.11.11
+    ....1....1
+    print(shortstr(G))
+    1.11.1....
+    1..1..1...
+    1.1....1..
+    ..11....1.
+    .1111....1
+    in_support(H, [1,4])
+    array([[0, 1, 0, 0, 1, 0, 0, 0, 0, 0]], dtype=int32)
+    
+
+
+7/9/20
+======
+
+time python3 ./classical.py n=10 k=5 dist=3  Hdist=2 trials=100000
+H =
+111.1111..
+.11.11..11
+..11.1.1.1
+.1.1..1..1
+..111..1.1
+G =
+.111......
+111.111...
+1...11.1..
+1.1.11..1.
+11..11...1
+/
+
+time python3 ./classical.py n=10 k=5 dist=4  Hdist=2 trials=10000000 max_tries=100000
+codes found: 8337, fails 0
+
+time python3 ./classical.py n=20 k=5 dist=4  Hdist=2 trials=1000 max_tries=100000
+codes found: 508, fails 0
+
+
 5/9/20
 ======
+
+time ./classical.py n=6 k=3 dist=3
+G =
+1..111
+.1.11.
+..11.1
+H =
+1111..
+11..1.
+1.1..1
+codes found: 30, fails 0
+
+
+time ./classical.py n=7 k=3 dist=3
+G =
+1..111.
+.1.11.1
+..11.11
+H =
+1111...
+11..1..
+1.1..1.
+.11...1
+codes found: 30, fails 0
+
+
+time ./classical.py n=8 k=4 dist=3 
+G =
+1...1111
+.1..111.
+..1.11.1
+...11.11
+H =
+11111...
+111..1..
+11.1..1.
+1.11...1
+codes found: 6750, fails 0
+
 
 
 time python3 ./classical.py n=10 k=4 dist=3
@@ -36,6 +123,9 @@ H =
 .1..1..1..
 11111...1.
 111......1
+
+time python3 ./classical.py n=10 k=3 dist=3
+codes found: 0, fails 0
 
 
 

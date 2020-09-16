@@ -221,6 +221,14 @@ def oldmain():
     print("codes found: %d, fails %d"%(count, fails))
 
 
+def rand_codes(m, n, trials=1000):
+    count = 0
+    while count < trials:
+        H = rand2(m, n)
+        if rank(H) == m:
+            yield H
+            count += 1
+
 
 def main():
 
@@ -230,6 +238,7 @@ def main():
     m = n-k
 
     dist = argv.get("dist", 2)
+    Hdist = argv.get("Hdist", dist)
     max_tries = argv.get("max_tries", 1000)
     verbose = argv.verbose
     trials = argv.get("trials", 1000)
@@ -240,25 +249,26 @@ def main():
     if argv.all_codes:
         gen = all_codes(m, n)
     else:
-        gen = (rand2(m, n) for _ in range(trials))
+        gen = rand_codes(m, n, trials)
     
+    #assert Hdist == 2
 
     for H in gen:
 
-        print("H =")
-        print(shortstr(H))
         assert rank(H) == m
-        dH = min_weight(H, dist)
-        if dH < dist:
-            print("[dH=%d]"%dH, end="", flush=True)
+        dH = min_weight(H)
+        if dH < Hdist:
+            #print("[dH=%d]"%dH, end="", flush=True)
             continue
 
         G = find_kernel(H)
-        dG = min_weight(G, dist)
+        dG = min_weight(G)
         if dG < dist:
-            print("[dG]", end="", flush=True)
+            #print("[dG]", end="", flush=True)
             continue
 
+        print("H =")
+        print(shortstr(H))
         print("G =")
         print(shortstr(G))
 
