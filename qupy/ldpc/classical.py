@@ -25,7 +25,7 @@ from qupy.ldpc.clifford import all_codes
 
 
 def in_support(H, keep_idxs, check=False):
-    # find span of H contained within idxs support
+    # find span of H _contained within idxs support
     n = H.shape[1]
     remove_idxs = [i for i in range(n) if i not in keep_idxs]
     A = identity2(n)
@@ -55,7 +55,7 @@ def min_weight(G, max_dist=0):
 
 
 
-def search(G, H, max_tries=None, debug=False):
+def search(G, H, max_tries=None, size=None, debug=False):
 
     m, n = H.shape
     k, n1 = G.shape
@@ -64,16 +64,18 @@ def search(G, H, max_tries=None, debug=False):
 
     check = shortstr(H)+shortstr(G)
 
+    size = size or k
+
     count = 0
     while 1:
         assert check == shortstr(H)+shortstr(G)
         count += 1
         if max_tries is not None and count>max_tries:
-            print("/\n")
+            #print("/\n")
             return False
 
         idxs = set()
-        while len(idxs) < k:
+        while len(idxs) < size:
             idx = randint(0, n-1)
             idxs.add(idx)
         idxs = list(idxs)
@@ -91,7 +93,7 @@ def search(G, H, max_tries=None, debug=False):
             continue
 
         jdxs = set()
-        while len(jdxs) < k:
+        while len(jdxs) < size:
             jdx = randint(0, n-1)
             if jdx not in idxs:
                 jdxs.add(jdx)
@@ -111,7 +113,7 @@ def search(G, H, max_tries=None, debug=False):
 
         break
 
-    print("+\n")
+    #print("+\n")
 
     if argv.verbose:
         v = zeros2(1, n)
@@ -173,55 +175,55 @@ def test(n, k, dist=2, verbose=False):
         print()
 
 
-def oldmain():
+#def oldmain():
+#
+#    n = argv.get("n", 10)
+#    k = argv.get("k", 4)
+#    dist = argv.get("dist", 2)
+#    max_tries = argv.get("max_tries", 1000)
+#    verbose = argv.verbose
+#    trials = argv.get("trials", 1000)
+#
+#    count = 0
+#    fails = 0
+#
+#    if argv.all_codes:
+#        gen = all_codes(k, n)
+#    else:
+#        gen = (rand2(k, n) for _ in range(trials))
+#    
+#
+#    for G in gen:
+#        assert rank(G) == k
+#        dG = min_weight(G, dist)
+#        if dG < dist:
+#            print("[dG]", end="", flush=True)
+#            continue
+#
+#        H = find_kernel(G)
+#        dH = min_weight(H, dist)
+#        if dH < dist:
+#            print("[dH]", end="", flush=True)
+#            continue
+#
+#        print("G =")
+#        print(shortstr(G))
+#        print("H =")
+#        print(shortstr(H))
+#        result = search(G, H, max_tries)
+#        count += 1
+#        if result:
+#            print("\n")
+#        else:
+#            print("XXXXXXXXXXXXXXXXXXX FAIL\n")
+#            if not argv.noassert:
+#                assert 0
+#            fails += 1
+#
+#    print("codes found: %d, fails %d"%(count, fails))
+#
 
-    n = argv.get("n", 10)
-    k = argv.get("k", 4)
-    dist = argv.get("dist", 2)
-    max_tries = argv.get("max_tries", 1000)
-    verbose = argv.verbose
-    trials = argv.get("trials", 1000)
-
-    count = 0
-    fails = 0
-
-    if argv.all_codes:
-        gen = all_codes(k, n)
-    else:
-        gen = (rand2(k, n) for _ in range(trials))
-    
-
-    for G in gen:
-        assert rank(G) == k
-        dG = min_weight(G, dist)
-        if dG < dist:
-            print("[dG]", end="", flush=True)
-            continue
-
-        H = find_kernel(G)
-        dH = min_weight(H, dist)
-        if dH < dist:
-            print("[dH]", end="", flush=True)
-            continue
-
-        print("G =")
-        print(shortstr(G))
-        print("H =")
-        print(shortstr(H))
-        result = search(G, H, max_tries)
-        count += 1
-        if result:
-            print("\n")
-        else:
-            print("XXXXXXXXXXXXXXXXXXX FAIL\n")
-            if not argv.noassert:
-                assert 0
-            fails += 1
-
-    print("codes found: %d, fails %d"%(count, fails))
-
-
-def rand_codes(m, n, trials=1000):
+def rand_codes(m, n, trials=10000):
     count = 0
     while count < trials:
         H = rand2(m, n)
@@ -230,9 +232,39 @@ def rand_codes(m, n, trials=1000):
             count += 1
 
 
+def weight_dist(H):
+    m, n = H.shape
+    counts = {i:0 for i in range(n+1)}
+    #print(m, n, counts)
+    for u in numpy.ndindex((2,)*m):
+        v = numpy.dot(u, H) % 2
+        d = v.sum()
+        #print(u, v, d)
+        counts[d] += 1
+    return [counts[i] for i in range(n)]
+
+A = array2([[1,1,0],[0,1,1]])
+assert weight_dist(A) == [1, 0, 3]
+
+
+def get_codes(m, n):
+    while 1:
+        H = rand2(m, n)
+        #H[0:2, :] = 0
+        H[:, 0] = 0
+        H[0, 0] = 1
+        #H[0:2, 0:3] = A
+        #print(shortstr(H))
+        #print()
+        if rank(H) < m:
+            continue
+        yield H
+
+
+
 def main():
 
-    n = argv.get("n", 10)
+    n = argv.get("n", 8)
     k = argv.get("k", 4)
     assert 2*k<=n
     m = n-k
@@ -248,6 +280,46 @@ def main():
 
     if argv.all_codes:
         gen = all_codes(m, n)
+    elif argv.get_codes:
+        gen = get_codes(m, n)
+    elif argv.gallagher:
+        cw = argv.get("cw", 3) # column weight
+        rw = argv.get("rw", 4) # row weight
+        n = argv.get("n", 12) # cols
+        m = argv.get("m", n*cw//rw) # rows
+        def gen(trials=1000):
+            for _ in range(trials):
+                H = make_gallagher(m, n, cw, rw, dist)
+                #if rank(H) < m:
+                #    continue
+                #print(shortstr(H))
+                yield H
+        gen = gen(trials)
+
+    elif argv.wedge:
+        H = zeros2(m, n)
+        H[0, :k+1] = 1
+        H[:, k-1] = 1
+        for i in range(m):
+            H[i, i+k] = 1
+        gen = [H]
+        #print(shortstr(H))
+        #print()
+
+    elif argv.cookup:
+        # fail
+        gen = [parse("""
+1111........
+..1.1.......
+..1..1......
+..1...1.....
+..1....1....
+..1.....1...
+..1......1..
+..1.......1.
+..1........1
+        """)]
+
     else:
         gen = rand_codes(m, n, trials)
     
@@ -255,34 +327,114 @@ def main():
 
     for H in gen:
 
-        assert rank(H) == m
+        #assert rank(H) == m
         dH = min_weight(H)
         if dH < Hdist:
             #print("[dH=%d]"%dH, end="", flush=True)
             continue
 
         G = find_kernel(H)
+        #print(shortstr(G))
         dG = min_weight(G)
         if dG < dist:
-            #print("[dG]", end="", flush=True)
+            #print("[dG=%d]"%dG, end="", flush=True)
             continue
-
-        print("H =")
-        print(shortstr(H))
-        print("G =")
-        print(shortstr(G))
 
         result = search(G, H, max_tries)
         count += 1
         if result:
-            print("\n")
-        else:
-            print("XXXXXXXXXXXXXXXXXXX FAIL\n")
-            if not argv.noassert:
-                assert 0
-            fails += 1
+            print(".", end="", flush=True)
+            continue
+        print()
 
+        for size in range(2, k):
+            result = search(G, H, max_tries, size=size)
+            print("result(size=%d)"%size, result)
+
+        process(G, H)
+
+        #print("XXXXXXXXXXXXXXXXXXX FAIL\n")
+        if not argv.noassert:
+            assert 0, "FAIL"
+        fails += 1
+
+    print()
     print("codes found: %d, fails %d"%(count, fails))
+
+
+
+
+def swap_row(A, j, k):
+    row = A[j, :].copy()
+    A[j, :] = A[k, :]
+    A[k, :] = row
+
+def swap_col(A, j, k):
+    col = A[:, j].copy()
+    A[:, j] = A[:, k]
+    A[:, k] = col
+
+
+def echelon(A, row, col):
+    #A = A.copy()
+    m, n = A.shape
+    assert A[row, col] != 0
+    for i in range(m):
+        if i==row:
+            continue
+        if A[i, col]:
+            A[i, :] += A[row, :]
+            A %= 2
+            assert A[i, col] == 0
+    return A
+
+
+def process(G, H):
+
+    #print("H =")
+    #print(shortstr(H))
+    #print("G =")
+    #print(shortstr(G))
+
+    m, n = G.shape
+    row = 0
+    while row < m:
+
+        col = 0
+        while G[row, col] == 0:
+            col += 1
+        assert col >= row
+        swap_col(G, row, col)
+        swap_col(H, row, col)
+        echelon(G, row, row)
+
+        row += 1
+
+    col = row
+    row = 0
+    m, n = H.shape
+    while row < m:
+        j = col
+        while H[row, j] == 0:
+            j += 1
+        swap_col(G, col, j)
+        swap_col(H, col, j)
+        echelon(H, row, col)
+
+        row += 1
+        col += 1
+
+
+    print("G =")
+    print(shortstr(G))
+    print("H =")
+    print(shortstr(H))
+
+    print("H:", weight_dist(H))
+    print("G:", weight_dist(G))
+    #print("Ht:", weight_dist(H.transpose()))
+    #print("Gt:", weight_dist(G.transpose()))
+    print()
 
 
 if __name__ == "__main__":
