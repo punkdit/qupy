@@ -493,6 +493,8 @@ def get_bipuncture(H):
     G = find_kernel(H)
     k = len(G)
 
+    print(shortstrx(G, H))
+
     while 1: # copied from classical.py
         idxs = set()
         while len(idxs) < k:
@@ -847,7 +849,8 @@ def main():
         D = random_code(8,  4, 0, 3)
 
     elif argv.hvrand:
-        C = random_code(16, 8, 8, 3)
+        #C = random_code(16, 8, 8, 3)
+        C = random_code(8,  4, 4, 3)
         D = random_code(8,  4, 4, 3)
 
     elif argv.samerand:
