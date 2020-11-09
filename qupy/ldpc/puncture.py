@@ -488,12 +488,14 @@ def in_support(H, keep_idxs, check=False): # copied from classical.py
     return H1
 
 
-def get_bipuncture(H):
+def get_bipuncture(H, G=None, verbose=True):
     n = H.shape[1]
-    G = find_kernel(H)
+    if G is None:
+        G = find_kernel(H)
     k = len(G)
 
-    print(shortstrx(G, H))
+    if verbose:
+        print(shortstrx(G, H))
 
     while 1: # copied from classical.py
         idxs = set()
@@ -528,7 +530,8 @@ def get_bipuncture(H):
         v[:, jdxs] = 1
         print(shortstr(v))
 
-    print("in_support(H):", in_support(H, idxs), in_support(H, jdxs))
+    if verbose:
+        print("in_support(H):", in_support(H, idxs), in_support(H, jdxs))
 
     return idxs, jdxs
 
@@ -639,12 +642,13 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
 
     randvec = lambda U : dot2(rand2(1, len(U)), U)
 
-    #while 1:
-    for trial in range(100):
-        l_op = randvec(left_Lxi)*randvec(right_Lzi)
-        r_op = randvec(right_Lxi)*randvec(left_Lzi)
+    print("shapes:", left_Lxi.shape, right_Lzi.shape, left_Lzi.shape, right_Lxi.shape)
+    while 1:
+    #for trial in range(100):
+        l_op = randvec(left_Lxi)*randvec(right_Lzi) # intersection
+        r_op = randvec(right_Lxi)*randvec(left_Lzi) # intersection
         assert (l_op * r_op).sum() == 0
-        op = l_op + r_op
+        op = l_op + r_op # union
         idxs = numpy.where(op)[0]
         print("(%.2f)"%(len(idxs)/n), end="", flush=True)
         assert is_correctable(**locals())
@@ -853,6 +857,11 @@ def main():
         C = random_code(8,  4, 4, 3)
         D = random_code(8,  4, 4, 3)
 
+    elif argv.hvrandsmall:
+        #C = random_code(16, 8, 8, 3)
+        C = random_code(7,  1, 1, 2) # n, k, kt, d
+        D = random_code(7,  1, 1, 2)
+
     elif argv.samerand:
         C = random_code(12, 6, 0, 4)
         D = C
@@ -991,6 +1000,143 @@ def main():
             Dt = shuff22(Dt)
 
 
+def randremove(items, k):
+    # remove k elements from items
+    #items = list(items)
+    assert len(items)>=k
+    found = []
+    while len(found) < k:
+        idx = randint(0, len(items)-1)
+        found.append(items.pop(idx))
+    found.sort()
+    return found
+
+
+def is_robust(H, G, trials=1000):
+    m, n = H.shape
+    k = len(G)
+    assert G.shape == (k, n)
+    assert m+k == n
+
+    for trial in range(trials):
+        remain = list(range(n))
+        idxs = randremove(remain, k)
+        if len(in_support(G, idxs)):
+            continue
+        if len(in_support(H, idxs)):
+            continue
+
+        jdxs = randremove(remain, k)
+        if len(in_support(G, jdxs)):
+            continue
+        if len(in_support(H, jdxs)):
+            continue
+
+        break
+    else:
+        return None
+    
+    return idxs, jdxs
+
+
+def echelon1(A, row, col):
+    "Use A[row, col]!=0 to kill all other nonzeros in that col"
+    A = A.copy()
+    m, n = A.shape
+    assert A[row, col] != 0
+    for i in range(m):
+        if i==row:
+            continue
+        if A[i, col]:
+            A[i, :] += A[row, :]
+            A %= 2
+            assert A[i, col] == 0
+    return A
+
+
+def has_property(G, trials=1000):
+    k, n = G.shape
+
+#    print("has_property")
+    Ik = identity2(k)
+    for trial in range(trials):
+#        print("G =")
+#        print(shortstrx(G))
+        pivots = []
+        remain = list(range(n))
+        shuffle(remain)
+        G1 = G
+        for row in range(k):
+          for col in list(remain):
+            if G1[row, col] == 0:
+                continue
+            G1 = echelon1(G1, row, col)
+            pivots.append(col)
+            remain.remove(col)
+            break
+        if len(pivots) < k:
+            continue
+            
+        J = G1[:, remain]
+#        print("J:")
+#        print(shortstrx(J))
+        if rank(J)==k:
+            break
+
+    else:
+        return False
+
+    if 0:
+        print("has_property")
+        print(G)
+        print(G1)
+        print(R)
+        print()
+    return True
+
+fails = """
+.1.1.11 11111..
+.11.... 1..1.1.
+11.11.. 1..1..1
+1111...
+
+111.1.. 11111..
+...11.. 1.1..1.
+.1.1... 1.1...1
+1..1.11
+
+"""
+
+
+def equiv():
+    # test that robustness is equiv. to full-rank property
+
+    while 1:
+        H = random_code(8,  4, 0, 1) # n, k, kt, d
+        #H = random_code(6,  3, 0, 1) # n, k, kt, d
+        G = find_kernel(H)
+        #if classical_distance(G)==1:
+        #    continue
+
+        print()
+        print("__"*20)
+        print(shortstrx(H, G))
+
+        result = is_robust(H, G)
+        lhs = result is not None
+        if lhs:
+            idxs, jdxs = result
+            print(idxs, jdxs)
+#        else:
+#            print("FAIL")
+
+        rhs = has_property(G, 1000)
+        assert lhs==rhs, (lhs, rhs)
+        assert not rhs or lhs # rhs ==> lhs
+        print(lhs)
+
+        print()
+
 
 if __name__ == "__main__":
 
@@ -999,11 +1145,16 @@ if __name__ == "__main__":
         seed(_seed)
         ra.seed(_seed)
 
-    while 1:
-        main()
-        #test()
-        if not argv.forever:
-            break
+    if argv.equiv:
+        equiv()
+
+    else:
+
+        while 1:
+            main()
+            #test()
+            if not argv.forever:
+                break
 
 
 
