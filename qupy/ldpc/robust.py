@@ -4,7 +4,7 @@
 Characterize "robust" property of classical codes.
 """
 
-from random import randint, shuffle
+from random import randint, shuffle, seed
 
 import numpy
 
@@ -13,7 +13,7 @@ from qupy.ldpc.solve import find_kernel, cokernel, eq2, get_reductor, intersect
 from qupy.ldpc.solve import linear_independent, solve, row_reduce, rand2
 from qupy.ldpc.solve import remove_dependent, dependent_rows
 from qupy.ldpc.gallagher import make_gallagher, classical_distance
-
+from qupy.argv import argv
 
 
 def in_support(H, keep_idxs, check=False): # copied from classical.py
@@ -56,11 +56,8 @@ def random_code(n, k, kt, distance=1): # copied from puncture.py
     return K
 
 
-
-
 def randremove(items, k):
     # remove k elements from items
-    #items = list(items)
     assert len(items)>=k
     found = []
     while len(found) < k:
@@ -70,7 +67,7 @@ def randremove(items, k):
     return found
 
 
-def is_robust(H, G, trials=1000):
+def get_bipuncture(G, H, trials=1000):
     m, n = H.shape
     k = len(G)
     assert G.shape == (k, n)
@@ -112,14 +109,48 @@ def echelon1(A, row, col):
     return A
 
 
+def build_echelon(G, H, idxs, jdxs):
+    k, n = G.shape
+    m, n = H.shape
+    assert len(idxs)==len(jdxs)==k
+    print("build_echelon")
+
+    G0 = G # save 
+    pivots = []
+    for col in idxs:
+        #print("col:", col)
+        #print(shortstrx(G))
+        for row in range(k):
+            if G[row, col]:
+                pivots.append((row, col))
+                G = echelon1(G, row, col)
+                break
+        else:
+            assert 0
+    for row, col in pivots:
+        assert G[row, col]
+
+    H0 = H # save 
+    pivots = []
+    for col in jdxs:
+        #print("col:", col)
+        #print(shortstrx(H))
+        for row in range(k):
+            if H[row, col]:
+                pivots.append((row, col))
+                H = echelon1(H, row, col)
+                break
+        else:
+            assert 0
+    for row, col in pivots:
+        assert H[row, col]
+
+
+
 def has_property(G, trials=1000):
     k, n = G.shape
 
-#    print("has_property")
-    Ik = identity2(k)
     for trial in range(trials):
-#        print("G =")
-#        print(shortstrx(G))
         pivots = []
         remain = list(range(n))
         shuffle(remain)
@@ -134,71 +165,49 @@ def has_property(G, trials=1000):
             break
         if len(pivots) < k:
             continue
-            
         J = G1[:, remain]
-#        print("J:")
-#        print(shortstrx(J))
         if rank(J)==k:
             break
-
     else:
         return False
-
-    if 0:
-        print("has_property")
-        print(G)
-        print(G1)
-        print(R)
-        print()
     return True
 
-fails = """
-.1.1.11 11111..
-.11.... 1..1.1.
-11.11.. 1..1..1
-1111...
 
-111.1.. 11111..
-...11.. 1.1..1.
-.1.1... 1.1...1
-1..1.11
-
-"""
-
-
-def equiv():
+def main():
     # test that robustness is equiv. to full-rank property
 
+    n, k, kt, d = 8, 4, 0, 1
     while 1:
-        H = random_code(8,  4, 0, 1) # n, k, kt, d
-        #H = random_code(6,  3, 0, 1) # n, k, kt, d
+        H = random_code(n, k, kt, d)
         G = find_kernel(H)
-        #if classical_distance(G)==1:
-        #    continue
 
         print()
         print("__"*20)
-        print(shortstrx(H, G))
+        print("G:%sH:"%(' '*(n-1),))
+        print(shortstrx(G, H))
 
-        result = is_robust(H, G)
+        result = get_bipuncture(G, H)
         lhs = result is not None
         if lhs:
             idxs, jdxs = result
             print(idxs, jdxs)
-#        else:
-#            print("FAIL")
+            build_echelon(G, H, idxs, jdxs)
 
         rhs = has_property(G, 1000)
         assert lhs==rhs, (lhs, rhs)
-        assert not rhs or lhs # rhs ==> lhs
-        print(lhs)
+        #assert not rhs or lhs # rhs ==> lhs
+        #print(lhs)
 
         print()
 
 
 
 if __name__ == "__main__":
+    _seed = argv.get("seed")
+    if _seed is not None:
+        seed(_seed)
+        numpy.random.seed(_seed)
 
-    equiv()
+    main()
 
 

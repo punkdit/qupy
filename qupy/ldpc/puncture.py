@@ -1000,144 +1000,6 @@ def main():
             Dt = shuff22(Dt)
 
 
-def randremove(items, k):
-    # remove k elements from items
-    #items = list(items)
-    assert len(items)>=k
-    found = []
-    while len(found) < k:
-        idx = randint(0, len(items)-1)
-        found.append(items.pop(idx))
-    found.sort()
-    return found
-
-
-def is_robust(H, G, trials=1000):
-    m, n = H.shape
-    k = len(G)
-    assert G.shape == (k, n)
-    assert m+k == n
-
-    for trial in range(trials):
-        remain = list(range(n))
-        idxs = randremove(remain, k)
-        if len(in_support(G, idxs)):
-            continue
-        if len(in_support(H, idxs)):
-            continue
-
-        jdxs = randremove(remain, k)
-        if len(in_support(G, jdxs)):
-            continue
-        if len(in_support(H, jdxs)):
-            continue
-
-        break
-    else:
-        return None
-    
-    return idxs, jdxs
-
-
-def echelon1(A, row, col):
-    "Use A[row, col]!=0 to kill all other nonzeros in that col"
-    A = A.copy()
-    m, n = A.shape
-    assert A[row, col] != 0
-    for i in range(m):
-        if i==row:
-            continue
-        if A[i, col]:
-            A[i, :] += A[row, :]
-            A %= 2
-            assert A[i, col] == 0
-    return A
-
-
-def has_property(G, trials=1000):
-    k, n = G.shape
-
-#    print("has_property")
-    Ik = identity2(k)
-    for trial in range(trials):
-#        print("G =")
-#        print(shortstrx(G))
-        pivots = []
-        remain = list(range(n))
-        shuffle(remain)
-        G1 = G
-        for row in range(k):
-          for col in list(remain):
-            if G1[row, col] == 0:
-                continue
-            G1 = echelon1(G1, row, col)
-            pivots.append(col)
-            remain.remove(col)
-            break
-        if len(pivots) < k:
-            continue
-            
-        J = G1[:, remain]
-#        print("J:")
-#        print(shortstrx(J))
-        if rank(J)==k:
-            break
-
-    else:
-        return False
-
-    if 0:
-        print("has_property")
-        print(G)
-        print(G1)
-        print(R)
-        print()
-    return True
-
-fails = """
-.1.1.11 11111..
-.11.... 1..1.1.
-11.11.. 1..1..1
-1111...
-
-111.1.. 11111..
-...11.. 1.1..1.
-.1.1... 1.1...1
-1..1.11
-
-"""
-
-
-def equiv():
-    # test that robustness is equiv. to full-rank property
-
-    while 1:
-        H = random_code(8,  4, 0, 1) # n, k, kt, d
-        #H = random_code(6,  3, 0, 1) # n, k, kt, d
-        G = find_kernel(H)
-        #if classical_distance(G)==1:
-        #    continue
-
-        print()
-        print("__"*20)
-        print(shortstrx(H, G))
-
-        result = is_robust(H, G)
-        lhs = result is not None
-        if lhs:
-            idxs, jdxs = result
-            print(idxs, jdxs)
-#        else:
-#            print("FAIL")
-
-        rhs = has_property(G, 1000)
-        assert lhs==rhs, (lhs, rhs)
-        assert not rhs or lhs # rhs ==> lhs
-        print(lhs)
-
-        print()
-
-
 if __name__ == "__main__":
 
     _seed = argv.get("seed")
@@ -1145,18 +1007,10 @@ if __name__ == "__main__":
         seed(_seed)
         ra.seed(_seed)
 
-    if argv.equiv:
-        equiv()
-
-    else:
-
-        while 1:
-            main()
-            #test()
-            if not argv.forever:
-                break
-
-
-
+    while 1:
+        main()
+        #test()
+        if not argv.forever:
+            break
 
 
