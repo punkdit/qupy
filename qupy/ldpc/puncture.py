@@ -643,8 +643,8 @@ def test_overlap(n, mx, mz, k, c0, c1, d0, d1,
     randvec = lambda U : dot2(rand2(1, len(U)), U)
 
     print("shapes:", left_Lxi.shape, right_Lzi.shape, left_Lzi.shape, right_Lxi.shape)
-    while 1:
-    #for trial in range(100):
+    #while 1:
+    for trial in range(100):
         l_op = randvec(left_Lxi)*randvec(right_Lzi) # intersection
         r_op = randvec(right_Lxi)*randvec(left_Lzi) # intersection
         assert (l_op * r_op).sum() == 0
@@ -849,8 +849,9 @@ def main():
             print("rank(D)", rank(D), "kernel(D)", len(find_kernel(D)))
 
     elif argv.hrand:
-        C = random_code(16, 8, 0, 3)
-        D = random_code(8,  4, 0, 3)
+        #C = random_code(16, 8, 0, 3)
+        C = random_code(8, 4, 0, 3)
+        D = random_code(8, 4, 1, 3)
 
     elif argv.hvrand:
         #C = random_code(16, 8, 8, 3)
