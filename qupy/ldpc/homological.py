@@ -69,32 +69,9 @@ def get_k(L, H):
     return len(independent_logops(L, H))
     
 
-def min_span(K):
-    "find minimum weight span"
-    Kt = K.transpose()
-    dist = {}
-    for u in numpy.ndindex((2,)*K.shape[0]):
-        v = dot2(Kt, u)
-        if v.sum()==0:
-            continue
-        weight = v.sum()
-        #dist[weight] = dist.get(weight, 0) + 1
-        dist.setdefault(weight, []).append(v)
-    keys = list(dist.keys())
-    keys.sort(reverse=True)
-    rows = []
-    for k in keys:
-        #print("%s:%s" % (k, len(dist[k])), end=" ")
-        rows.extend(dist[k])
-    #print()
-    A = array2(rows)
-    #print(A.shape)
-    A = remove_dependent(A)
-    #print(shortstr(A))
-    return A
 
 
-def rand_span(A): # rowspan !
+def rand_rowspan(A): # rowspan !
     while 1:
         m, n = A.shape
         v = rand2(m, m)
@@ -133,15 +110,13 @@ def hypergraph_product(A, B, check=False):
     # Build Lz 
 
     KerA = find_kernel(A)
-    #KerA = min_span(KerA) # does not seem to matter... ??
-    KerA = rand_span(KerA) # ??
+    #KerA = rand_rowspan(KerA) # ??
     KerA = row_reduce(KerA)
     ka = len(KerA)
 
     assert KerA.shape[1] == na
     K = KerA.transpose()
-    #K = min_span(K)
-    #K = rand_span(K)
+    #K = rand_rowspan(K)
     #E = identity2(mb)
 
     #print("ma,na,mb,nb=", ma, na, mb, nb)
@@ -166,7 +141,7 @@ def hypergraph_product(A, B, check=False):
     assert dot2(Hx, Lzt).sum() == 0
 
     # These are linearly independent among themselves, but 
-    # once we add stabilixers it will be reduced:
+    # once we add stabilizers it will be reduced:
     assert rank(Lz) == len(Lz)
 
     # ---------------------------------------------------
@@ -175,8 +150,7 @@ def hypergraph_product(A, B, check=False):
     counit = lambda n : unit2(n).transpose()
 
     CokerB = find_cokernel(B) # matrix of row vectors
-    #CokerB = min_span(CokerB)
-    CokerB = rand_span(CokerB)
+    #CokerB = rand_rowspan(CokerB)
     assert rank(CokerB)==len(CokerB)
     kbt = len(CokerB)
 
@@ -249,17 +223,28 @@ def hypergraph_product(A, B, check=False):
     return locals()
 
 
-def test(A, B, ma, na, mb, nb, Ina, Ima, Inb, Imb, ka, kb, kat, kbt, 
+def test(A, B, ma, na, mb, nb, Ina, Ima, Inb, Imb, ka, kb, kat, kbt, k,
     KerA, KerB, CokerA, CokerB,
+    Lzi, Lxi, Hzi, Hxi,
     **kw):
 
-    print("ka=%s, kat=%s, kb=%s, kbt=%s"%(ka, kat, kb, kbt))
+    #print("ka=%s, kat=%s, kb=%s, kbt=%s"%(ka, kat, kb, kbt))
+    assert k == ka*kbt + kat*kb == len(Lzi) == len(Lxi)
+
+    KerA = KerA.transpose() # use convention in paper
+    KerB = KerB.transpose() # use convention in paper
+    CokerA = CokerA.transpose() # use convention in paper
+    CokerB = CokerB.transpose() # use convention in paper
 
     blocks = [
-        [kron(KerA.transpose(), Imb), zeros2(na*mb, ma*kb), kron(Ina, B)],
-        [zeros2(ma*nb, ka*mb), kron(Ima, KerB.transpose()), kron(A,Inb)],
+        [kron(KerA, Imb), zeros2(na*mb, ma*kb), kron(Ina, B)],
+        [zeros2(ma*nb, ka*mb), kron(Ima, KerB), kron(A,Inb)],
     ]
     print("blocks:", [[X.shape for X in row] for row in blocks])
+
+    #print(shortstrx(*blocks[0]))
+    #print()
+    #print(shortstrx(*blocks[1]))
 
     Hzt = cat((blocks[0][2], blocks[1][2]), axis=0)
     K = find_kernel(Hzt)
@@ -267,11 +252,58 @@ def test(A, B, ma, na, mb, nb, Ina, Ima, Inb, Imb, ka, kb, kat, kbt,
 
     Lzv = cat((blocks[0][0], blocks[1][0])).transpose()
     Lzh = cat((blocks[0][1], blocks[1][1])).transpose()
+    assert dot2(Hxi, Lzv.transpose()).sum() == 0
 
-    Hz = Hzt.transpose()
-    Hzi = linear_independent(Hz)
-    Lzhi = independent_logops(Lzh, Hzi, verbose=True)
-    print("Lzhi:", Lzhi.shape)
+#    Hz = Hzt.transpose()
+#    Hzi = linear_independent(Hz)
+#    Lzhi = independent_logops(Lzh, Hzi, verbose=True)
+#    print("Lzhi:", Lzhi.shape)
+
+    # --------------------------------------------------------
+    # basis for all logops, including stabilizers
+    lz = find_kernel(Hxi) # returns transpose of kernel
+    #lz = rand_rowspan(lz)
+    #print("lz:", lz.shape)
+    assert len(lz) == k+len(Hzi)
+
+    # vertical qubits
+    Iv = cat((identity2(na*mb), zeros2(ma*nb, na*mb)), axis=0).transpose()
+    # horizontal qubits
+    Ih = cat((zeros2(na*mb, ma*nb), identity2(ma*nb)), axis=0).transpose()
+    assert len(intersect(Iv, Ih))==0 # sanity check
+
+    # now restrict these logops to vertical qubits
+    #print("Iv:", Iv.shape)
+    lzv = intersect(Iv, lz)
+    #print("lzv:", lzv.shape)
+
+    J = intersect(lzv, Lzv)
+    assert len(J) == len(lzv)
+
+    # --------------------------------------------------------
+    # now we manually build _lz supported on vertical qubits
+    x = rand2(ka*mb, ka*nb)
+    y = kron(KerA, Inb)
+    assert eq2(dot2(blocks[0][2], y), kron(KerA, B))
+    v = (dot2(blocks[0][0], x) + dot2(blocks[0][2], y)) % 2
+    h = zeros2(ma*nb, v.shape[1])
+    _lzt = cat((v, h))
+    assert dot2(Hxi, _lzt).sum() == 0
+    #print(shortstr(_lzt))
+    _lz = _lzt.transpose()
+    _lz = linear_independent(_lz)
+
+    #print("*"*(na*mb))
+    #print(shortstr(_lz))
+    assert len(intersect(_lz, Ih)) == 0
+    assert len(intersect(_lz, Iv)) == len(_lz)
+
+    J = intersect(_lz, lz)
+    assert len(J) == len(_lz)
+
+    J = intersect(_lz, Lzv)
+    #print(J.shape, _lz.shape, Lzv.shape)
+    assert len(J) == len(_lz)
 
     if 0:
         V = cat(blocks[0][:2], axis=1)
@@ -292,12 +324,144 @@ def test(A, B, ma, na, mb, nb, Ina, Ima, Inb, Imb, ka, kb, kat, kbt,
         print("J:", J.shape)
     
 
-def eq_span(A, B):
-    u = solve(A.transpose(), B.transpose())
+def get_puncture(M, k):
+    "k-puncture the rowspace of M"
+    m, n = M.shape
+
+    assert 0<=k<=n
+    mask = [1]*k + [0]*(n-k)
+
+    while 1:
+        shuffle(mask)
+        a = array2(mask)
+        a.shape = (n, 1)
+        u = solve(M.transpose(), a)
+        if u is None:
+            break
+    idxs = [i for i in range(n) if mask[i]]
+    return idxs
+
+
+def test_puncture(A, B, ma, na, mb, nb, Ina, Ima, Inb, Imb, ka, kb, kat, kbt, k,
+    KerA, KerB, CokerA, CokerB,
+    Lzi, Lxi, Hzi, Hxi,
+    **kw):
+
+    I = identity2
+
+    assert ka - na + ma -kat == 0 
+    assert kb - nb + mb -kbt == 0 
+
+    #print("ka=%s, kat=%s, kb=%s, kbt=%s"%(ka, kat, kb, kbt))
+    assert k == ka*kbt + kat*kb == len(Lzi) == len(Lxi)
+
+    kernel = lambda X : find_kernel(X).transpose() # use convention in paper
+    KerA = KerA.transpose() # use convention in paper
+    KerB = KerB.transpose() # use convention in paper
+    #CokerA = CokerA.transpose() # use convention in paper
+    #CokerB = CokerB.transpose() # use convention in paper
+
+    assert CokerA.shape == (kat, ma)
+    assert CokerB.shape == (kbt, mb)
+
+    blocks = [
+        [kron(KerA, Imb), zeros2(na*mb, ma*kb), kron(Ina, B)],
+        [zeros2(ma*nb, ka*mb), kron(Ima, KerB), kron(A,Inb)],
+    ]
+    print("blocks:", [[X.shape for X in row] for row in blocks])
+
+    #print(shortstrx(*blocks[0]))
+    #print()
+    #print(shortstrx(*blocks[1]))
+
+    Mv = cat((blocks[0][0], blocks[0][2]), axis=1)
+    Mh = cat((blocks[1][0], blocks[1][2]), axis=1)
+    M = cat((Mv, Mh), axis=0)
+    KM = kernel(M)
+
+    Mv = cat(blocks[0], axis=1)
+    Mh = cat(blocks[1], axis=1)
+    M = cat((Mv, Mh), axis=0)
+
+    x = kron(I(ka), B)
+    dot2(blocks[0][0], x)
+
+    y = zeros2(blocks[0][1].shape[1], x.shape[1])
+    dot2(blocks[0][1], y)
+
+    z = kron(KerA, I(nb))
+    dot2(blocks[0][2], z)
+
+    #print(shortstr(x)+'\n')
+    #print(shortstr(y)+'\n')
+    #print(shortstr(z)+'\n')
+
+    xz = cat((x, z), axis=0)
+    xyz = cat((x, y, z), axis=0)
+    assert dot2(M, xyz).sum() == 0
+    #print(shortstr(xyz))
+    print("xyz:", xyz.shape)
+    assert len(find_kernel(xyz))==0
+
+    assert rowspan_eq(KM.transpose(), xz.transpose())
+
+    print("kernel(M):", kernel(M).shape)
+
+    Hzt = cat((blocks[0][2], blocks[1][2]), axis=0)
+    print("kernel(Hzt):", kernel(Hzt).shape)
+    Hx = cat((kron(A, I(mb)), kron(I(ma), B)), axis=1)
+
+    #print("CokerB")
+    #print(shortstr(CokerB))
+
+    #R = CokerB
+    #R = rand2(CokerB.shape[0], CokerB.shape[1])
+    #R = rand2(mb, 1)
+    #R = CokerB[:, 0:1]
+
+    if 1:
+        idxs = get_puncture(B, kbt)
+        R = zeros2(mb, 1)
+        R[idxs] = 1
+    else:
+        R = B[:, :1]
+
+    #R = rand2(mb, 100)
+    #R = I(mb)
+    lzt = cat((kron(KerA, R), zeros2(ma*nb, KerA.shape[1]*R.shape[1])), axis=0)
+
+    assert dot2(Hx, lzt).sum()==0
+
+    lz = lzt.transpose()
+    Hz = Hzt.transpose()
+    print(rank(lz), rank(Hz), rank(intersect(lz, Hz)))
+
+    print(rowspan_le(lzt.transpose(), Hzt.transpose())) # FAIL
+    #assert rowspan_le(lzt.transpose(), Hzt.transpose()) # FAIL
+
+    print("OK")
+
+
+def rowspan_le(A, B):
+    u = solve(B.transpose(), A.transpose())
     if u is None:
         return False
-    u = solve(B.transpose(), A.transpose())
-    return u is not None
+    return True
+
+
+def rowspan_eq(A, B):
+    return rowspan_le(A, B) and rowspan_le(B, A)
+
+
+def unit_test():
+    A = array2([[1,1,1]])
+    B = array2([[1,1,0],[0,0,1]])
+    C = array2([[0,1,0]])
+    assert rowspan_le(A, B)
+    assert not rowspan_le(B, A)
+    assert not rowspan_le(A, C)
+    assert not rowspan_le(B, C)
+unit_test()
 
 
 def shuff2(A):
@@ -332,7 +496,7 @@ def get_pivots(H):
 
 
 def random_code(n, k, kt, distance=1):
-    "code length n, dimension k, transpose dimension kt"
+    "return parity check for code of length n, dimension k, transpose dimension kt"
     d = 0
     while d<distance:
         H = rand2(n-k, n)
@@ -350,113 +514,57 @@ def random_code(n, k, kt, distance=1):
             continue
         dt = classical_distance(K.transpose())
 
+    m = len(K)
+    assert k - n + m - kt == 0 
+
     return K
 
 
 def main():
 
-    if argv.ldpc:
-        # LDPC
-        l = argv.get("l", 3) # column weight
-        m = argv.get("m", 4) # row weight
-        n = argv.get("n", 8) # cols
-        r = argv.get("r", n*l//m) # rows
-        d = argv.get("d", 1) # distance
-        print("make_gallagher%s"%((r, n, l, m, d),))
-        A = make_gallagher(r, n, l, m, d)
-        print(shortstr(A))
-        print()
-        print(shortstr(A))
-        print("rank(A) = ", rank(A), "kernel(A) = ", len(find_kernel(A)))
-        if argv.same:
-            B = A
-        else:
-            B = make_gallagher(r, n, l, m, d)
-            assert rank(A) == len(A)
-            assert rank(B) == len(B)
-            print("rank(B)", rank(B), "kernel(B)", len(find_kernel(B)))
+    n = argv.get("n", 8)
+    k = argv.get("k", 4)
+    kt = argv.get("kt", 4)
+    d = argv.get("d", 1) # distance
+    na = argv.get("na", n)
+    nb = argv.get("nb", n)
+    ka = argv.get("ka", k)
+    kat = argv.get("kat", kt)
+    kb = argv.get("kb", k)
+    kbt = argv.get("kbt", kt)
+    A = random_code(na, ka, kat, d)
+    B = random_code(nb, kb, kbt, d)
+    #assert A.shape == (na-ka, na), (A.shape,)
+    #assert B.shape == (nb-kb, nb), (B.shape,)
 
-    elif argv.rand:
-        # restrict to the vertical sector
-        na = argv.get("na", 8)
-        nb = argv.get("nb", 8)
-        ka = argv.get("ka", 4)
-        kat = argv.get("kat", 4)
-        kb = argv.get("kb", 4)
-        kbt = argv.get("kbt", 4)
-        A = random_code(na, ka, kat, 3)
-        B = random_code(nb, kbt, kb, 3)
+    print("A, B:")
+    print(shortstrx(A, B))
 
-    elif argv.vrand:
-        A = random_code(16, 8, 1, 3)
-        B = random_code(8,  4, 1, 3)
-
-    elif argv.hvrand:
-        #A = random_code(16, 8, 8, 3)
-        A = random_code(8,  4, 4, 3)
-        B = random_code(8,  4, 4, 3)
-
-    elif argv.pair:
-        #A = make_gallagher(9, 12, 3, 4, 4) # big
-        A = make_gallagher(15, 20, 3, 4, 4) # big
-        B = make_gallagher(6, 8, 3, 4, 1) # small
-
-    elif argv.torus:
-        # Torus
-        A = parse("""
-        11..
-        .11.
-        ..11
-        1..1
-        """)
-        B = A
-
-    elif argv.hamming:
-        A = parse("""
-        ...1111
-        .11..11
-        1.1.1.1
-        111....
-        """)
-        B = A
-
-    elif argv.surf or argv.surface:
-        # Surface
-        A = parse("""
-        11....
-        .11...
-        ..11..
-        ...11.
-        ....11
-        """)
-        B = parse("""
-        11..
-        .11.
-        ..11
-        """)
-
-    elif argv.small:
-        A = parse("""1111""")
-        B = parse("""1111""")
+    if 1:
+        # A tensor B
+        kw = hypergraph_product(A, B)
+        test_puncture(**kw)
 
     else:
-        print("please specify a code")
-        return
-
-    print("A: shape=%s, rank=%d, dist=%d"%(A.shape, rank(A), classical_distance(A)))
-    print("A.t: dist=%d"%(classical_distance(A.transpose()),))
-    print(shortstr(A))
-    print("B: shape=%s, rank=%d, dist=%d"%(B.shape, rank(B), classical_distance(B)))
-    print("B.t: dist=%d"%(classical_distance(B.transpose()),))
-    print(shortstr(B))
-    At = A.transpose()
-    Bt = B.transpose()
-
-    # A tensor Bt
-    kw = hypergraph_product(A, Bt)
-
-    test(**kw)
-
+        # --------------------------------------
+        #B, Bt = Bt, B
+    
+        KerA = find_kernel(A).transpose()
+        ma = na-ka
+        mb = nb-kb
+    
+        print("KerA:")
+        print(shortstrx(KerA))
+        print()
+    #    print(shortstrx(kron(KerA, identity2(mb))))
+    
+        
+        print(shortstrx(
+            kron(identity2(mb), KerA), 
+            kron(B, identity2(na))))
+    
+    
+    
 
 if __name__ == "__main__":
 

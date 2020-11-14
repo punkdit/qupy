@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 """
-from previous version: homological.py (and transverse.py)
 
 see also: classical.py
+newer (& different) version: homological.py 
 
 """
 
