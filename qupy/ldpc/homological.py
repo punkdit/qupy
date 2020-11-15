@@ -324,19 +324,38 @@ def test(A, B, ma, na, mb, nb, Ina, Ima, Inb, Imb, ka, kb, kat, kbt, k,
         print("J:", J.shape)
     
 
+#def get_puncture(M, k):
+#    "k-puncture the rowspace of M"
+#    m, n = M.shape
+#
+#    assert 0<=k<=n
+#    mask = [1]*k + [0]*(n-k)
+#
+#    while 1:
+#        shuffle(mask)
+#        a = array2(mask)
+#        a.shape = (n, 1)
+#        u = solve(M.transpose(), a)
+#        if u is None:
+#            break
+#    idxs = [i for i in range(n) if mask[i]]
+#    return idxs
+
+
 def get_puncture(M, k):
     "k-puncture the rowspace of M"
     m, n = M.shape
 
     assert 0<=k<=n
     mask = [1]*k + [0]*(n-k)
+    I = identity2(n)
 
     while 1:
         shuffle(mask)
-        a = array2(mask)
-        a.shape = (n, 1)
-        u = solve(M.transpose(), a)
-        if u is None:
+        A = I[list(idx for idx in range(n) if mask[idx])]
+        assert A.shape == (k, n)
+        AM = intersect(A, M)
+        if len(AM) == 0:
             break
     idxs = [i for i in range(n) if mask[i]]
     return idxs
@@ -408,7 +427,8 @@ def test_puncture(A, B, ma, na, mb, nb, Ina, Ima, Inb, Imb, ka, kb, kat, kbt, k,
     print("kernel(M):", kernel(M).shape)
 
     Hzt = cat((blocks[0][2], blocks[1][2]), axis=0)
-    print("kernel(Hzt):", kernel(Hzt).shape)
+    #print("kernel(Hzt):", kernel(Hzt).shape)
+    assert kernel(Hzt).shape[1] == 0
     Hx = cat((kron(A, I(mb)), kron(I(ma), B)), axis=1)
 
     #print("CokerB")
@@ -419,16 +439,25 @@ def test_puncture(A, B, ma, na, mb, nb, Ina, Ima, Inb, Imb, ka, kb, kat, kbt, k,
     #R = rand2(mb, 1)
     #R = CokerB[:, 0:1]
 
-    if 1:
-        idxs = get_puncture(B, kbt)
+    if argv.puncture and 1:
+        idxs = get_puncture(B.transpose(), kbt)
+        R = zeros2(mb, len(idxs))
+        for i, idx in enumerate(idxs):
+            R[idx, i] = 1
+    elif argv.puncture:
+        idxs = get_puncture(B.transpose(), kbt)
         R = zeros2(mb, 1)
         R[idxs] = 1
+    elif argv.identity2:
+        R = I(mb)
     else:
         R = B[:, :1]
 
     #R = rand2(mb, 100)
-    #R = I(mb)
+    print(R)
     lzt = cat((kron(KerA, R), zeros2(ma*nb, KerA.shape[1]*R.shape[1])), axis=0)
+    print("lzt:", lzt.shape)
+    print("Hzt:", Hzt.shape)
 
     assert dot2(Hx, lzt).sum()==0
 
@@ -436,8 +465,11 @@ def test_puncture(A, B, ma, na, mb, nb, Ina, Ima, Inb, Imb, ka, kb, kat, kbt, k,
     Hz = Hzt.transpose()
     print(rank(lz), rank(Hz), rank(intersect(lz, Hz)))
 
-    print(rowspan_le(lzt.transpose(), Hzt.transpose())) # FAIL
-    #assert rowspan_le(lzt.transpose(), Hzt.transpose()) # FAIL
+    result = rowspan_le(lzt.transpose(), Hzt.transpose())
+    print("lzt <= Hzt:", result)
+    if argv.puncture:
+        assert not result
+        assert not rank(intersect(lz, Hz))
 
     print("OK")
 
