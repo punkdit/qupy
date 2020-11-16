@@ -15,6 +15,67 @@ from qupy.ldpc.solve import remove_dependent, dependent_rows
 from qupy.ldpc.gallagher import make_gallagher, classical_distance
 from qupy.argv import argv
 
+#from gallagher import make_gallagher
+
+
+def classical_distance(H, max_dist=0):
+    if max_dist==0:
+        return max_dist
+    n = H.shape[1]
+    dist = n
+    K = find_kernel(H)
+    K = numpy.array(K)
+    Kt = K.transpose()
+    for u in numpy.ndindex((2,)*K.shape[0]):
+        v = dot2(Kt, u)
+        if 0 < v.sum() < dist:
+            dist = v.sum()
+            #if dist<=max_dist:
+            #    break
+    return dist
+
+
+def make_gallagher(r, n, l, m, distance=0, verbose=False):
+    assert r%l == 0
+    assert n%m == 0
+    assert r*m == n*l
+    if verbose:
+        print("make_gallagher", r, n, l, m, distance)
+    H = zeros2(r, n)
+    H1 = zeros2(r//l, n)
+    H11 = identity2(r//l)
+    #print(H1)
+    #print(H11)
+    for i in range(m):
+        H1[:, (n//m)*i:(n//m)*(i+1)] = H11
+    #print(shortstrx(H1))
+
+    while 1:
+        H2 = H1.copy()
+        idxs = list(range(n))
+        for i in range(l):
+            H[(r//l)*i:(r//l)*(i+1), :] = H2
+            shuffle(idxs)
+            H2 = H2[:, idxs]
+        #print(H.shape)
+        Hli = linear_independent(H)
+        k = Hli.shape[0] - Hli.shape[1]
+        assert k <= 24, "ummm, too big? k = %d" % k
+        if distance is None:
+            break
+        if verbose:
+            write("/")
+        dist = classical_distance(Hli, distance)
+        if dist >= distance:
+            break
+        if verbose:
+            write(".")
+    if verbose:
+        write("\n")
+    return Hli
+
+
+
 
 def in_support(H, keep_idxs, check=False): # copied from classical.py
     # find span of H contained within idxs support
@@ -176,29 +237,50 @@ def has_property(G, trials=1000):
 def main():
     # test that robustness is equiv. to full-rank property
 
-    n, k, kt, d = 8, 4, 0, 1
+    #n, k, kt, d = 8, 4, 0, 1
+
+    cw = argv.get("cw", 3) # column weight
+    rw = argv.get("rw", 4) # row weight
+    n = argv.get("n", 8) # cols
+    m = argv.get("m", n*cw//rw) # rows
+    d = argv.get("d", 1) # distance
+    rank = argv.get("rank", 0)
+
+    print("m =", m)
+
+    trials = argv.get("trials", 1000)
+
     while 1:
-        H = random_code(n, k, kt, d)
+        #H = random_code(n, k, kt, d)
+        H = make_gallagher(m, n, cw, rw, d)
+
+        if len(H) < rank:
+            continue
+
         G = find_kernel(H)
 
         print()
         print("__"*20)
         print("G:%sH:"%(' '*(n-1),))
         print(shortstrx(G, H))
+        print(G.shape, H.shape)
 
-        result = get_bipuncture(G, H)
-        lhs = result is not None
-        if lhs:
+        result = get_bipuncture(G, H, trials)
+        print("get_bipuncture:", result)
+        robust = result is not None
+        if robust:
             idxs, jdxs = result
-            print(idxs, jdxs)
             build_echelon(G, H, idxs, jdxs)
 
-        rhs = has_property(G, 1000)
-        assert lhs==rhs, (lhs, rhs)
-        #assert not rhs or lhs # rhs ==> lhs
-        #print(lhs)
+        rhs = has_property(G, trials)
+        assert robust==rhs, (robust, rhs)
+        #assert not rhs or robust # rhs ==> robust
+        #print(robust)
 
         print()
+
+        if argv.robust:
+            assert robust
 
 
 
