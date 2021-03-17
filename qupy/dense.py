@@ -847,7 +847,8 @@ class Gate(Qu):
 
         H = H.v 
         A = -1.j*t*H
-        U = scipy.linalg.expm(A, order)
+        #U = scipy.linalg.expm(A, order)
+        U = scipy.linalg.expm(A)
         return Gate(H.shape, U)
     get_U = evolution_operator
 

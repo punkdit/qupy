@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-import collections
+from collections.abc import Callable
 
 # ----------------------------------------------------------------------------
 # driver for the tests
@@ -22,7 +22,7 @@ def harvest(*modules):
     funcs = []
     for module in modules:
         for name, value in list(module.__dict__.items()):
-            if name.startswith('test') and isinstance(value, collections.Callable) and match in name:
+            if name.startswith('test') and isinstance(value, Callable) and match in name:
                 funcs.append(value)
     funcs.sort(key = lambda f : (f.__module__, f.__code__.co_firstlineno))
     for func in funcs:

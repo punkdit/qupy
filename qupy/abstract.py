@@ -223,7 +223,7 @@ class LazyMulQu(AbstractQu):
 class LazyDagQu(AbstractQu):
     def __init__(self, child):
         shape = child.shape
-        valence = ''.join('u' if v is 'd' else 'd' for v in child.valence)
+        valence = ''.join('u' if v == 'd' else 'd' for v in child.valence)
         AbstractQu.__init__(self, shape, valence)
 
     def dag(self):
