@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+"""
+Construct transversal S gate on a folded surface code.
+See: https://arxiv.org/abs/1603.02286
+"""
+
 import math
 from functools import reduce
 from operator import mul, matmul
