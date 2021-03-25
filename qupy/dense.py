@@ -360,6 +360,7 @@ class Qu(AbstractQu):
     def dag(A):
         space = ~A.space
         v = A.v.conj()
+        assert v.dtype == A.v.dtype
         box = Qu(space.shape, space.valence, v, nocopy=True)
         return box
     __invert__ = dag
@@ -453,7 +454,7 @@ class Qu(AbstractQu):
         return w
 
     def __imul__(A, r):
-        A.v *= r
+        A.v *= r # XXX only works for scalar r
         return A
 
     def __div__(A, r):
@@ -905,7 +906,7 @@ def build():
     Gate.dyads = (Ket(v0)@Bra(v0), Ket(v1)@Bra(v1))
     # make a method ??
 
-    if scalar == numpy.complex128:
+    if scalar == numpy.complex128 or scalar == numpy.complex64:
         Y = Gate((2, 2))
         Y[0, 1] = -1.j
         Y[1, 0] = 1.j
@@ -913,11 +914,11 @@ def build():
         Gate.Y = Y
 
         # The S gate, A.K.A. the P gate
-        Gate.S = bitvec(0) @ ~bitvec(0) + 1.j*bitvec(1)@~bitvec(1)
+        Gate.S = bitvec(0) @ ~bitvec(0) + 1.j*bitvec(1) @ ~bitvec(1)
     
         # The T gate
         r = numpy.exp(1.j*numpy.pi/4)
-        Gate.T = bitvec(0) @ ~bitvec(0) + r*bitvec(1)@~bitvec(1)
+        Gate.T = bitvec(0) @ ~bitvec(0) + r*bitvec(1) @ ~bitvec(1)
 
 
 build()
