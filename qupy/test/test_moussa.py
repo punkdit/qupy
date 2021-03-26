@@ -129,6 +129,8 @@ def main():
 
     idxs = lattice.get_idxs([(0,0,0), (0,1,0), (0,2,0)])
     v1 = lattice.make_state(idxs)
+    #print(v1.shortstr())
+    #return
 
     make_op = lattice.make_op
     get_idxs = lattice.get_idxs
