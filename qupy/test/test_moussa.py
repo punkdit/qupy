@@ -7,7 +7,7 @@ See: https://arxiv.org/abs/1603.02286
 
 import math
 from functools import reduce
-from operator import mul, matmul
+from operator import mul, matmul, add
 
 import numpy
 
@@ -16,18 +16,17 @@ if argv.complex64:
     from qupy import scalar
     scalar.scalar = numpy.complex64
     scalar.EPSILON = 1e-6
-else:
-    assert 0
 from qupy.abstract import Space
 from qupy.dense import Qu, Gate, Vector, EPSILON
 from qupy.dense import genidx, bits, is_close, on, off, scalar
-from qupy.dense import commutator, anticommutator
+from qupy.tool import cross
 from qupy.test import test
+from qupy.util import mulclose
 
 r2 = math.sqrt(2)
 
 
-I, X, Z, S, T = Gate.I, Gate.X, Gate.Z, Gate.S, Gate.T
+I, X, Z, Y, S, T = Gate.I, Gate.X, Gate.Z, Gate.Y, Gate.S, Gate.T
 
 assert X*X == I
 assert Z*Z == I
@@ -90,8 +89,71 @@ class Lattice(object):
 #            if row==0 and j%2==0
             
 
-
 def main():
+
+    "Moussa transverse S gate on 5-qubit surface code"
+
+    def parse(decl):
+        ops = [getattr(Gate, op) for op in decl]
+        op = reduce(matmul, ops)
+        return op
+
+    n = 5
+    basis = {}
+    for decl in cross(["IXZY"]*n):
+        decl = ''.join(decl)
+        op = parse(decl)
+        basis[decl] = op
+    assert len(basis)==4**n
+
+    ops = "ZZZII IIZZZ XIXXI IXXIX".split()
+    gen = [parse(decl) for decl in ops]
+    G = mulclose(gen)
+    assert len(G) == 2**len(gen)
+
+    G = list(G)
+    P = reduce(add, G)
+    print(P.shape)
+    print(P*P == 2**len(gen)*P)
+
+    def opstr(P):
+        items = []
+        for k,v in basis.items():
+            r = (v*P).trace()
+            if abs(r)<EPSILON:
+                continue
+            if abs(r.real - r)<EPSILON:
+                r = r.real
+                if abs(int(round(r)) - r)<EPSILON:
+                    r = int(round(r))
+            items.append("%s*%s"%(r, k))
+        s = "+".join(items) or "0"
+        s = s.replace("+-", "-")
+        return s
+
+    print(opstr(P))
+
+    A = (S @ I @ ~S @ I @ S) * (Z.control(3, 1, rank=n))
+
+    #print(opstr(A))
+
+    P1 = A*P*~A
+    print(P1 == P)
+
+    for a in gen:
+      for b in gen:
+        print(int(a*A==A*b), end=" ")
+      print()
+
+    for a in gen:
+        if a*A == A*a:
+            continue
+        print(opstr(A*a*~A))
+
+
+def main_13():
+
+    assert scalar == numpy.complex64
 
     d = 2
 

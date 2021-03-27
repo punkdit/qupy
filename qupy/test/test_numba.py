@@ -66,7 +66,7 @@ class Operator(object):
             u[i] = 1.
             lhs1 = lhs(u1)
             rhs1 = rhs(u1)
-            if not numpy.allclose(lhs1, rhs1):
+            if not numpy.allclose(lhs1, rhs1, 1e-4): # 1e-4 ?????????
                 return False
             u[i] = 0.
         return True
@@ -304,10 +304,31 @@ class Operator(object):
         code.dedent()
         code.dedent()
         
-        print("make_control:")
-        print('\n'.join(code.lines))
+        #print("make_control:")
+        #print('\n'.join(code.lines))
         func = code.mkfunc()
         return Numop(n, func)
+
+    @classmethod
+    def make_swap(cls, n, tgt, src):
+        N = 2**n
+        d = 2
+        code = Code()
+        code.append("def func(v, u):").indent()
+        code.append("for j in range(%d):"%N).indent()
+        code.append("i = j")
+        code.append("if (j&%d==0) != (i&%d==0):"%(2**src, 2**tgt)).indent()
+        code.append("i ^= %d # flip bit"%(2**tgt)).dedent()
+        code.append("if (j&%d==0) != (i&%d==0):"%(2**tgt, 2**src)).indent()
+        code.append("i ^= %d # flip bit"%(2**src)).dedent()
+        code.append("u[i] = v[j]")
+        code.dedent()
+        #print("make_swap:")
+        #print('\n'.join(code.lines))
+        #print()
+        func = code.mkfunc()
+        return Numop(n, func)
+
 
 
 class Code(object):
@@ -518,6 +539,14 @@ def test_op():
             assert u[idx] == +1
 
 
+    n, src, tgt = 5, 1, 2
+    CN1 = Operator.make_control(n, Gate.X, src, tgt)
+    CN2 = Operator.make_control(n, Gate.X, tgt, src)
+    swap = Operator.make_swap(n, src, tgt)
+    assert swap == CN1*CN2*CN1
+    assert swap != Operator.make_I(n)
+    assert swap*swap == Operator.make_I(n)
+
 
 
 
@@ -596,10 +625,16 @@ def main():
         if len(idxs)>=3:
             xops.append(idxs)
 
+    if argv.dual:
+        zops, xops = xops, zops
+
     v0 = lattice.make_state()
     v0[0] = 1
 
-    idxs = lattice.get_idxs([(0,0,0), (0,1,0), (0,2,0)])
+    if argv.dual:
+        idxs = lattice.get_idxs([(0,0,0), (1,0,0), (2,0,0)])
+    else:
+        idxs = lattice.get_idxs([(0,0,0), (0,1,0), (0,2,0)])
     v1 = lattice.make_state(idxs)
 
     get_idxs = lattice.get_idxs
@@ -646,13 +681,49 @@ def main():
     #print("v0 =", v0.shortstr())
     #print("v1 =", v1.shortstr())
 
-    geti = lambda idx : lattice.get_idxs([tuple(int(i) for i in idx)])[0]
+    geti = lambda desc : lattice.get_idxs([tuple(int(i) for i in desc)])[0]
 
-    A =   Operator.make_control(n, Z, geti('100'), geti('010'))
-    assert A == Operator.make_control(n, Z, geti('010'), geti('100'))
-    A = A*Operator.make_control(n, Z, geti('200'), geti('020'))
-    A = A*Operator.make_control(n, Z, geti('101'), geti('011'))
-    A = A*Operator.make_control(n, Z, geti('210'), geti('120'))
+    H = Operator.make_I(n)
+    for desc in "000 001 110 111 220".split():
+        H *= Operator.make_tensor1(n, Gate.H, geti(desc))
+
+    def make_h2(idx, jdx):
+        HH =  Operator.make_swap(n, idx, jdx)
+        HH *= Operator.make_tensor1(n, Gate.H, idx)
+        HH *= Operator.make_tensor1(n, Gate.H, jdx)
+        return HH
+    swap =  make_h2(geti('010'), geti('100'))
+    swap *= make_h2(geti('101'), geti('011'))
+    swap *= make_h2(geti('200'), geti('020'))
+    swap *= make_h2(geti('210'), geti('120'))
+    H *= swap
+
+    #H = Operator.make_I(n)
+    #for i in range(n):
+    #    H *= Operator.make_tensor1(n, Gate.H, i)
+    #assert H*H == Operator.make_I(n)
+
+    if argv.H:
+        print("H:")
+        for a in stabs:
+            b = H*a*H
+            for c in stabs:
+                print(int(b==c), end=" ", flush=True)
+            print()
+
+    assert eq((1./r2)*(v0+v1), H(v0))
+    assert eq((1./r2)*(v0-v1), H(v1))
+
+    if argv.slow:
+        assert H*H == Operator.make_I(n)
+
+    #return
+
+    Sgate =   Operator.make_control(n, Z, geti('100'), geti('010'))
+    assert Sgate == Operator.make_control(n, Z, geti('010'), geti('100'))
+    Sgate = Sgate*Operator.make_control(n, Z, geti('200'), geti('020'))
+    Sgate = Sgate*Operator.make_control(n, Z, geti('101'), geti('011'))
+    Sgate = Sgate*Operator.make_control(n, Z, geti('210'), geti('120'))
 
     op = [I] * n
     op[geti("000")] = S
@@ -660,25 +731,23 @@ def main():
     op[geti("110")] = S
     op[geti("111")] = Sd
     op[geti("220")] = S
-    A = A*Operator.make_tensor(op)
+    Sgate = Sgate*Operator.make_tensor(op)
 
     # check we have a logical S gate
-    assert eq(v0, A*v0)
-    assert eq(1.j*v1, A*v1)
+    assert eq(v0, Sgate*v0)
+    assert eq(1.j*v1, Sgate*v1)
 
-    print(".")
     if argv.slow:
-        B = A*A*A*A
+        B = Sgate*Sgate*Sgate*Sgate
         assert B == Operator.make_I(n)
 
-    for opi in xops:
-        B = Operator.make_xop(n, opi)
-        assert A*B == B*A
-
-    for opi in zops:
-        B = Operator.make_zop(n, opi)
-        assert A*B == B*A
-        print(".")
+    print("Sgate:")
+    for a in stabs:
+        lhs = Sgate*a
+        for b in stabs:
+            rhs = b*Sgate
+            print(int(lhs==rhs), end=" ", flush=True)
+        print()
 
 
 

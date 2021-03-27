@@ -288,6 +288,14 @@ def main():
     Ki = H*Si
     assert K*Ki == I
 
+    print("S conjugation:")
+    for src in [X, Z, Y]:
+        print(src, "-->", S*src*Si)
+    print("T conjugation:")
+    for src in [X, Z, Y]:
+        print(src, "-->", T*src*Ti)
+    return
+
     if argv.hamiltonian:
         P = get_hamiltonian(pauli)
     else:
@@ -309,7 +317,6 @@ def main():
 
     if gate == "X":
         A = B = reduce(matmul, [X]*n)
-        print("go:")
         Q = Xn*P*Xn
     elif gate == "S": # clifford
         A = reduce(matmul, [S]*n)
