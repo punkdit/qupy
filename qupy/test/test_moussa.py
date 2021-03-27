@@ -88,15 +88,15 @@ class Lattice(object):
 #          for j in range(col0, col1):
 #            if row==0 and j%2==0
             
+def parse(decl):
+    ops = [getattr(Gate, op) for op in decl]
+    op = reduce(matmul, ops)
+    return op
 
-def main():
+
+def main_5():
 
     "Moussa transverse S gate on 5-qubit surface code"
-
-    def parse(decl):
-        ops = [getattr(Gate, op) for op in decl]
-        op = reduce(matmul, ops)
-        return op
 
     n = 5
     basis = {}
@@ -108,6 +108,9 @@ def main():
 
     ops = "ZZZII IIZZZ XIXXI IXXIX".split()
     gen = [parse(decl) for decl in ops]
+    for a in gen:
+      for b in gen:
+        assert a*b==b*a
     G = mulclose(gen)
     assert len(G) == 2**len(gen)
 
@@ -134,6 +137,72 @@ def main():
     print(opstr(P))
 
     A = (S @ I @ ~S @ I @ S) * (Z.control(3, 1, rank=n))
+
+    #print(opstr(A))
+
+    P1 = A*P*~A
+    print(P1 == P)
+
+    for a in gen:
+      for b in gen:
+        print(int(a*A==A*b), end=" ")
+      print()
+
+    for a in gen:
+        if a*A == A*a:
+            continue
+        print(opstr(A*a*~A))
+
+
+def main_8():
+
+    "Moussa transverse S gate on 8-qubit toric code"
+
+    n = 8
+
+    def get_basis(n):
+        count = 0
+        for decl in cross(["IXZY"]*n):
+            decl = ''.join(decl)
+            op = parse(decl)
+            yield decl, op
+            count += 1
+        assert count==4**n
+
+    ops = "ZIZZZIII IZZZIZII ZIIIZIZZ XXXIIIXI XXIXIIIX IIXIXXXI".split()
+    gen = [parse(decl) for decl in ops]
+    for i,a in enumerate(gen):
+      for j,b in enumerate(gen):
+        assert a*b==b*a, (i,j)
+    G = mulclose(gen)
+    assert len(G) == 2**len(gen)
+
+    G = list(G)
+    P = reduce(add, G)
+    print(P.shape)
+    print(P*P == 2**len(gen)*P)
+
+    def opstr(P):
+        items = []
+        for k,v in get_basis(n):
+            r = (v*P).trace()
+            if abs(r)<EPSILON:
+                continue
+            if abs(r.real - r)<EPSILON:
+                r = r.real
+                if abs(int(round(r)) - r)<EPSILON:
+                    r = int(round(r))
+            items.append("%s*%s"%(r, k))
+        s = "+".join(items) or "0"
+        s = s.replace("+-", "-")
+        return s
+
+    #print(opstr(P))
+
+    CZ = lambda i,j : Z.control(i, j, rank=n)
+    #A = (S @ I @ ~S @ I @ S) * (Z.control(3, 1, rank=n))
+    A = (I @ S @ I @ ~S @ S @ I @ ~S @ I)
+    A = A*CZ(0,5)*CZ(2,7)
 
     #print(opstr(A))
 
@@ -258,7 +327,9 @@ def main_13():
 
 if __name__ == "__main__":
 
-    main()
+    fn = argv.next() or "main"
+    fn = eval(fn)
+    fn()
 
     print("OK")
 
