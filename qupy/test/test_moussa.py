@@ -138,14 +138,18 @@ class Code(Space):
         if type(logops) is str:
             logops = [parse(decl) for decl in logops.split()]
         self.stabs = stabs
+        self.logops = logops
+
+    def build(self):
+        if "G" in self.__dict__:
+            return
+        stabs = self.stabs
         G = mulclose(stabs)
         assert len(G) == 2**len(stabs)
         P = reduce(add, G)
         assert(P*P == 2**len(stabs)*P)
         self.G = G
         self.P = P
-        self.logops = logops
-        self.LG = mulclose(self.logops)
 
     def check(self):
         stabs = self.stabs
@@ -157,6 +161,7 @@ class Code(Space):
                 assert a*b == b*a
 
     def get_encoded(self):
+        self.build()
         n = self.n
         v = Qu((self.d,)*n, 'u'*n)
         v[(0,)*n] = 1.
@@ -245,60 +250,44 @@ def main_8():
     #assert(P1 == code.P)
 
     vs = [v0, v1, v2, v3]
+    op = []
     for u in vs:
         u = A*u
+        row = []
         for v in vs:
             r = u.dag() * v
-            print("%.2f+%.2fj"%(r.real, r.imag), end=" ")
-        print()
+            row.append(r)
+            #print("%.2f+%.2fj"%(r.real, r.imag), end=" ")
+        #print()
+        op.append(row)
+
+    op = numpy.array(op)
+    op.shape = (2,2,2,2)
+    print(op)
 
 
 
+def main_10():
 
-def main_8_X():
+    "Moussa transverse T gate on Vasmer code"
 
-    "Moussa transverse S gate on 8-qubit toric code"
+    n = 10
+    stabs = ("XXIXXIIXII IXXXIXIIXI IIIXXXXIIX" 
+        "ZZIIIIIIZI IIIZZIIIZI IZIZIIIIIZ IIZIIZIIIZ IIIZIZIZII IIIIZIZZII")
+    logops = []
+    code = Code(n, stabs, logops)
+    code.check()
+    return
 
-    n = 8
+    #vs = list(code.get_encoded())
+    v0 = code.get_encoded()
+    #v1 = code.logops[0] * v0
 
-    def get_basis(n):
-        count = 0
-        for decl in cross(["IXZY"]*n):
-            decl = ''.join(decl)
-            op = parse(decl)
-            yield decl, op
-            count += 1
-        assert count==4**n
+    for stab in code.stabs:
+        assert stab*v0 == v0
+        #assert stab*v1 == v1
 
-    ops = "ZIZZZIII IZZZIZII ZIIIZIZZ XXXIIIXI XXIXIIIX IIXIXXXI".split()
-    gen = [parse(decl) for decl in ops]
-    for i,a in enumerate(gen):
-      for j,b in enumerate(gen):
-        assert a*b==b*a, (i,j)
-    G = mulclose(gen)
-    assert len(G) == 2**len(gen)
-
-    G = list(G)
-    P = reduce(add, G)
-    print(P.shape)
-    print(P*P == 2**len(gen)*P)
-
-    def opstr(P):
-        items = []
-        for k,v in get_basis(n):
-            r = (v*P).trace()
-            if abs(r)<EPSILON:
-                continue
-            if abs(r.real - r)<EPSILON:
-                r = r.real
-                if abs(int(round(r)) - r)<EPSILON:
-                    r = int(round(r))
-            items.append("%s*%s"%(r, k))
-        s = "+".join(items) or "0"
-        s = s.replace("+-", "-")
-        return s
-
-    #print(opstr(P))
+    return 
 
     CZ = lambda i,j : Z.control(i, j, rank=n)
     #A = (S @ I @ ~S @ I @ S) * (Z.control(3, 1, rank=n))
@@ -307,18 +296,28 @@ def main_8_X():
 
     #print(opstr(A))
 
-    P1 = A*P*~A
-    print(P1 == P)
+    P1 = A*code.P*~A
+    #assert(P1 == code.P)
 
-    for a in gen:
-      for b in gen:
-        print(int(a*A==A*b), end=" ")
-      print()
+    vs = [v0, v1, v2, v3]
+    op = []
+    for u in vs:
+        u = A*u
+        row = []
+        for v in vs:
+            r = u.dag() * v
+            row.append(r)
+            #print("%.2f+%.2fj"%(r.real, r.imag), end=" ")
+        #print()
+        op.append(row)
 
-    for a in gen:
-        if a*A == A*a:
-            continue
-        print(opstr(A*a*~A))
+    op = numpy.array(op)
+    op.shape = (2,2,2,2)
+    print(op)
+
+
+
+
 
 
 def main_13():

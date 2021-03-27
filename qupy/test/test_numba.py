@@ -57,7 +57,6 @@ class Operator(object):
     DEBUG_EQ = False
     def __eq_slow__(lhs, rhs):
         assert lhs.n == rhs.n
-        #return numpy.allclose(lhs.todense(), rhs.todense())
         n = lhs.n
         N = 2**n
         u = numpy.zeros(N, dtype=scalar)
@@ -76,7 +75,7 @@ class Operator(object):
             print()
         return True
 
-    def __eq__(lhs, rhs):
+    def __eq_fast__(lhs, rhs):
         assert lhs.n == rhs.n
         #return numpy.allclose(lhs.todense(), rhs.todense())
         n = lhs.n
@@ -88,6 +87,9 @@ class Operator(object):
         if not numpy.allclose(lhs, rhs):
             return False
         return True
+
+    #__eq__ = __eq_slow__
+    __eq__ = __eq_fast__
 
     def __ne__(lhs, rhs):
         return not lhs.__eq__(rhs)
@@ -162,6 +164,20 @@ class Operator(object):
         return Numop(n, func)
 
     @classmethod    
+    def make_ccz(cls, n, i, j, k):
+        if DEBUG:print("make_ccz", n, i, j, k)
+        stmt = """
+        def func(v, u):
+            sign = 1.
+            for src in range(%d):
+                if (src & %d) and (src & %d) and (src & %d):
+                    sign = -1
+            u[src] = sign*v[src]
+        """ % (2**n, 2**i, 2**j, 2**k)
+        func = mkfunc(stmt)
+        return Numop(n, func)
+
+    @classmethod    
     def make_phase_op(cls, n, idxs, phase):
         if DEBUG:print("make_phase_op", n, idxs, phase)
         stmt = """
@@ -205,8 +221,8 @@ class Operator(object):
         return op
 
     @classmethod    
-    def make_cz(cls, n):
-        if DEBUG:print("make_cz", n)
+    def make_cnz(cls, n):
+        if DEBUG:print("make_cnz", n)
         stmt = """
         def func(v, u):
             u[:] = v[:]
@@ -502,7 +518,7 @@ def test_op(spec):
         u[idx] = 0.
 
 
-def test_op():
+def test():
 
     make_op = Operator.make_op
 
@@ -552,12 +568,12 @@ def test_op():
     #B = Operator.make_tensor(ops)
     #assert B == A
 
-    A = Operator.make_cz(2)
+    A = Operator.make_cnz(2)
     B = Operator.make_control(2, Gate.Z, 0, 1)
     assert A == B
 
     n = 5
-    A = Operator.make_cz(n)
+    A = Operator.make_cnz(n)
     v = numpy.zeros((2,)*n, dtype=scalar)
     v[:] = 1
     u = A(v)
@@ -693,14 +709,11 @@ def main():
         A = Operator.make_zop(n, opi)
         assert eq(A*v1, v1)
 
-    if argv.slow:
-        In = Operator.make_I(n)
-        for A in stabs:
-            assert A*A == In
-            for B in stabs:
-                assert A*B == B*A
-                print("/", end="", flush=True)
-        print()
+    In = Operator.make_I(n)
+    for A in stabs:
+        assert A*A == In
+        for B in stabs:
+            assert A*B == B*A
 
     v0 /= numpy.linalg.norm(v0)
     v1 /= numpy.linalg.norm(v1)
@@ -744,8 +757,7 @@ def main():
     assert eq((1./r2)*(v0+v1), H(v0))
     assert eq((1./r2)*(v0-v1), H(v1))
 
-    if argv.slow:
-        assert H*H == Operator.make_I(n)
+    assert H*H == Operator.make_I(n)
 
     #return
 
@@ -775,18 +787,53 @@ def main():
 
     assert(Sgate*P == P*Sgate)
 
-    if argv.slow:
-        B = Sgate*Sgate*Sgate*Sgate
-        assert B == Operator.make_I(n)
+    B = Sgate*Sgate*Sgate*Sgate
+    assert B == Operator.make_I(n)
 
+
+def main_vasmer():
+
+    make_op = Operator.make_op
+    make_I = Operator.make_I
+
+    n = 10
+    I = make_I(n)
+    stabs = ("XXIXXIIXII IXXXIXIIXI IIIXXXXIIX " 
+        "ZZIIIIIIZI IIIZZIIIZI IZIZIIIIIZ IIZIIZIIIZ IIIZIZIZII IIIIZIZZII")
+    stabs = [make_op(decl) for decl in stabs.split()]
+
+    for a in stabs:
+        for b in stabs:
+            assert a*b == b*a
+        #print("/", end="", flush=True)
+
+    P = None
+    for ops in cross([(None, op) for op in stabs]):
+        ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
+        op = reduce(mul, ops)
+        P = op if P is None else op+P
+
+    #assert P*P == (2**len(stabs))*P
+
+    T  = Operator.make_tensor1(n,  Gate.T, 0)
+    T *= Operator.make_tensor1(n, ~Gate.T, 1)
+    T *= Operator.make_tensor1(n,  Gate.T, 2)
+    T *= Operator.make_tensor1(n,  Gate.T, 3)
+    T *= Operator.make_tensor1(n, ~Gate.T, 4)
+    T *= Operator.make_tensor1(n, ~Gate.T, 5)
+    T *= Operator.make_tensor1(n,  Gate.T, 6)
+
+    CCZ = Operator.make_ccz(n, 7, 8, 9)
+    T *= CCZ
+
+    assert T*P == P*T
 
 
 if __name__ == "__main__":
 
-    if argv.test:
-        test_op()
-    else:
-        main()
+    fn = argv.next() or "test"
+    fn = eval(fn)
+    fn()
 
     print("OK")
 
