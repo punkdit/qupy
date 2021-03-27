@@ -21,7 +21,7 @@ from qupy.abstract import Space
 from qupy.dense import Qu, Gate, Vector, EPSILON, scalar
 from qupy.dense import genidx, bits, is_close, on, off, scalar
 from qupy.dense import commutator, anticommutator
-from qupy.test import test
+from qupy.tool import cross
 
 r2 = math.sqrt(2)
 
@@ -54,7 +54,8 @@ class Operator(object):
         u = v.copy()
         return u
 
-    def __eq__(lhs, rhs):
+    DEBUG_EQ = False
+    def __eq_slow__(lhs, rhs):
         assert lhs.n == rhs.n
         #return numpy.allclose(lhs.todense(), rhs.todense())
         n = lhs.n
@@ -66,9 +67,26 @@ class Operator(object):
             u[i] = 1.
             lhs1 = lhs(u1)
             rhs1 = rhs(u1)
-            if not numpy.allclose(lhs1, rhs1, 1e-4): # 1e-4 ?????????
+            if not numpy.allclose(lhs1, rhs1):
                 return False
             u[i] = 0.
+            if Operator.DEBUG_EQ:
+                print(".", end="", flush=True)
+        if Operator.DEBUG_EQ:
+            print()
+        return True
+
+    def __eq__(lhs, rhs):
+        assert lhs.n == rhs.n
+        #return numpy.allclose(lhs.todense(), rhs.todense())
+        n = lhs.n
+        N = 2**n
+        u = numpy.random.normal(size=(N,))
+        u = u.astype(scalar)
+        lhs = lhs(u)
+        rhs = rhs(u)
+        if not numpy.allclose(lhs, rhs):
+            return False
         return True
 
     def __ne__(lhs, rhs):
@@ -394,20 +412,32 @@ class Numop(Operator):
         return v
 
 
-class AddOp(Operator):
+class BinOp(Operator):
     def __init__(self, lhs, rhs):
         assert lhs.n == rhs.n
         Operator.__init__(self, lhs.n)
         self.lhs = lhs
         self.rhs = rhs
 
+class AddOp(Operator):
+    def __init__(self, *_items):
+        items = []
+        for item in _items:
+            if isinstance(item, AddOp):
+                items += item.items
+            else:
+                items.append(item)
+        Operator.__init__(self, items[0].n)
+        self.items = items
+
     def __call__(self, u):
-        lhs = self.lhs(u)
-        rhs = self.rhs(u)
-        return lhs + rhs
+        v = 0
+        for item in self.items:
+            v = v + item(u)
+        return v
 
 
-class SubOp(AddOp):
+class SubOp(BinOp):
     def __call__(self, u):
         lhs = self.lhs(u)
         rhs = self.rhs(u)
@@ -415,7 +445,7 @@ class SubOp(AddOp):
 
 
 
-class MulOp(AddOp):
+class MulOp(BinOp):
     def __call__(self, u):
         u = self.rhs(u)
         u = self.lhs(u)
@@ -719,6 +749,12 @@ def main():
 
     #return
 
+    P = None
+    for ops in cross([(None, op) for op in stabs]):
+        ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
+        op = reduce(mul, ops)
+        P = op if P is None else op+P
+
     Sgate =   Operator.make_control(n, Z, geti('100'), geti('010'))
     assert Sgate == Operator.make_control(n, Z, geti('010'), geti('100'))
     Sgate = Sgate*Operator.make_control(n, Z, geti('200'), geti('020'))
@@ -737,17 +773,11 @@ def main():
     assert eq(v0, Sgate*v0)
     assert eq(1.j*v1, Sgate*v1)
 
+    assert(Sgate*P == P*Sgate)
+
     if argv.slow:
         B = Sgate*Sgate*Sgate*Sgate
         assert B == Operator.make_I(n)
-
-    print("Sgate:")
-    for a in stabs:
-        lhs = Sgate*a
-        for b in stabs:
-            rhs = b*Sgate
-            print(int(lhs==rhs), end=" ", flush=True)
-        print()
 
 
 

@@ -94,67 +94,168 @@ def parse(decl):
     return op
 
 
-def main_5():
+class Space(object):
+    def __init__(self, n):
+        self.n = n
 
-    "Moussa transverse S gate on 5-qubit surface code"
+    def get_basis(self):
+        count = 0
+        for decl in cross(["IXZY"]*self.n):
+            decl = ''.join(decl)
+            op = parse(decl)
+            yield decl, op
+            count += 1
+        assert count==4**self.n
 
-    n = 5
-    basis = {}
-    for decl in cross(["IXZY"]*n):
-        decl = ''.join(decl)
-        op = parse(decl)
-        basis[decl] = op
-    assert len(basis)==4**n
-
-    ops = "ZZZII IIZZZ XIXXI IXXIX".split()
-    gen = [parse(decl) for decl in ops]
-    for a in gen:
-      for b in gen:
-        assert a*b==b*a
-    G = mulclose(gen)
-    assert len(G) == 2**len(gen)
-
-    G = list(G)
-    P = reduce(add, G)
-    print(P.shape)
-    print(P*P == 2**len(gen)*P)
-
-    def opstr(P):
+    def opstr(self, P):
         items = []
-        for k,v in basis.items():
-            r = (v*P).trace()
+        N = 2**self.n
+        for k,v in self.get_basis():
+            r = (~v*P).trace() / N # <---- pure magic
             if abs(r)<EPSILON:
                 continue
             if abs(r.real - r)<EPSILON:
                 r = r.real
                 if abs(int(round(r)) - r)<EPSILON:
                     r = int(round(r))
-            items.append("%s*%s"%(r, k))
+            if r==1:
+                items.append("%s"%(k,))
+            elif r==-1:
+                items.append("-%s"%(k,))
+            else:
+                items.append("%s*%s"%(r, k))
         s = "+".join(items) or "0"
         s = s.replace("+-", "-")
         return s
 
-    print(opstr(P))
+
+class Code(Space):
+    def __init__(self, n, stabs, logops):
+        Space.__init__(self, n)
+        self.d = 2
+        if type(stabs) is str:
+            stabs = [parse(decl) for decl in stabs.split()]
+        if type(logops) is str:
+            logops = [parse(decl) for decl in logops.split()]
+        self.stabs = stabs
+        G = mulclose(stabs)
+        assert len(G) == 2**len(stabs)
+        P = reduce(add, G)
+        assert(P*P == 2**len(stabs)*P)
+        self.G = G
+        self.P = P
+        self.logops = logops
+        self.LG = mulclose(self.logops)
+
+    def check(self):
+        stabs = self.stabs
+        logops = self.logops
+        for a in stabs:
+            for b in stabs:
+                assert a*b == b*a
+            for b in logops:
+                assert a*b == b*a
+
+    def get_encoded(self):
+        n = self.n
+        v = Qu((self.d,)*n, 'u'*n)
+        v[(0,)*n] = 1.
+        v = self.P * v
+        #for op in self.LG:
+        #    yield op*v
+        v /= v.norm()
+        return v
+
+
+def main_5():
+
+    "Moussa transverse S gate on 5-qubit surface code"
+
+    n = 5
+
+    code = Code(n, "ZZZII IIZZZ XIXXI IXXIX", "XXIII ZIIZI")
+    code.check()
+
+    #vs = list(code.get_encoded())
+    v0 = code.get_encoded()
+    v1 = code.logops[0] * v0
+
+    for stab in code.stabs:
+        assert stab*v0 == v0
+        assert stab*v1 == v1
+
+    assert v0 != v1
+
+    #for op in code.stabs:
+    #    print(code.opstr(op))
+    #print(code.opstr(code.P))
 
     A = (S @ I @ ~S @ I @ S) * (Z.control(3, 1, rank=n))
-
     #print(opstr(A))
+    P1 = A*code.P*~A
+    assert(P1 == code.P)
 
-    P1 = A*P*~A
-    print(P1 == P)
+    assert(A*v0 == v0)
+    assert(A*v1 == 1j*v1)
 
-    for a in gen:
-      for b in gen:
+    for a in code.stabs:
+      for b in code.stabs:
         print(int(a*A==A*b), end=" ")
       print()
 
-    for a in gen:
+    for a in code.stabs:
         if a*A == A*a:
             continue
-        print(opstr(A*a*~A))
+        print(code.opstr(A*a*~A))
+
 
 
 def main_8():
+
+    "Moussa transverse S gate on 8-qubit toric code"
+
+    n = 8
+    stabs = "ZIZZZIII IZZZIZII ZIIIZIZZ XXXIIIXI XXIXIIIX IIXIXXXI"
+    logops = "IIXXIIII XIIIXIII ZZIIIIII IIZIIIZI"
+    code = Code(n, stabs, logops)
+    code.check()
+
+    #vs = list(code.get_encoded())
+    v0 = code.get_encoded()
+    v1 = code.logops[0] * v0
+    v2 = code.logops[1] * v0
+    v3 = code.logops[1] * v1
+
+    for stab in code.stabs:
+        assert stab*v0 == v0
+        assert stab*v1 == v1
+        assert stab*v2 == v2
+        assert stab*v3 == v3
+
+    assert v0 != v1
+
+    CZ = lambda i,j : Z.control(i, j, rank=n)
+    #A = (S @ I @ ~S @ I @ S) * (Z.control(3, 1, rank=n))
+    A = (I @ S @ I @ ~S @ S @ I @ ~S @ I)
+    A = A*CZ(0,5)*CZ(2,7)
+
+    #print(opstr(A))
+
+    P1 = A*code.P*~A
+    #assert(P1 == code.P)
+
+    vs = [v0, v1, v2, v3]
+    for u in vs:
+        u = A*u
+        for v in vs:
+            r = u.dag() * v
+            print("%.2f+%.2fj"%(r.real, r.imag), end=" ")
+        print()
+
+
+
+
+def main_8_X():
 
     "Moussa transverse S gate on 8-qubit toric code"
 
@@ -311,7 +412,7 @@ def main_13():
     A = A*make_op(Sd, get_idxs([(1,1,1)]))
     A = A*make_op(S,  get_idxs([(2,2,0)]))
 
-    # check we have a logical S gate
+    # check we have a _logical S gate
     assert(v0 == A*v0)
     assert(1.j*v1 == A*v1)
 
