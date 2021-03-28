@@ -239,15 +239,18 @@ def main_8():
 
     assert v0 != v1
 
-    CZ = lambda i,j : Z.control(i, j, rank=n)
-    #A = (S @ I @ ~S @ I @ S) * (Z.control(3, 1, rank=n))
-    A = (I @ S @ I @ ~S @ S @ I @ ~S @ I)
-    A = A*CZ(0,5)*CZ(2,7)
+    CZ = lambda i,j : Z.control(i-1, j-1, rank=n)
+
+    if 0:
+        A = (I @ S @ I @ ~S @ S @ I @ ~S @ I)
+        A = A*CZ(1,6)*CZ(3,8)
+    else:
+        A = CZ(1,3)*CZ(4,5)*CZ(6,8)*CZ(2,7)
 
     #print(opstr(A))
 
     P1 = A*code.P*~A
-    #assert(P1 == code.P)
+    assert(P1 == code.P)
 
     vs = [v0, v1, v2, v3]
     op = []
@@ -262,12 +265,14 @@ def main_8():
         op.append(row)
 
     op = numpy.array(op)
-    op.shape = (2,2,2,2)
+    #op.shape = (2,2,2,2)
     print(op)
 
 
 
 def main_10():
+
+    assert 0, "not enough memory"
 
     "Moussa transverse T gate on Vasmer code"
 
@@ -277,43 +282,6 @@ def main_10():
     logops = []
     code = Code(n, stabs, logops)
     code.check()
-    return
-
-    #vs = list(code.get_encoded())
-    v0 = code.get_encoded()
-    #v1 = code.logops[0] * v0
-
-    for stab in code.stabs:
-        assert stab*v0 == v0
-        #assert stab*v1 == v1
-
-    return 
-
-    CZ = lambda i,j : Z.control(i, j, rank=n)
-    #A = (S @ I @ ~S @ I @ S) * (Z.control(3, 1, rank=n))
-    A = (I @ S @ I @ ~S @ S @ I @ ~S @ I)
-    A = A*CZ(0,5)*CZ(2,7)
-
-    #print(opstr(A))
-
-    P1 = A*code.P*~A
-    #assert(P1 == code.P)
-
-    vs = [v0, v1, v2, v3]
-    op = []
-    for u in vs:
-        u = A*u
-        row = []
-        for v in vs:
-            r = u.dag() * v
-            row.append(r)
-            #print("%.2f+%.2fj"%(r.real, r.imag), end=" ")
-        #print()
-        op.append(row)
-
-    op = numpy.array(op)
-    op.shape = (2,2,2,2)
-    print(op)
 
 
 

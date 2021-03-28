@@ -813,7 +813,7 @@ def main_vasmer():
         op = reduce(mul, ops)
         P = op if P is None else op+P
 
-    #assert P*P == (2**len(stabs))*P
+    assert P*P == (2**len(stabs))*P
 
     T  = Operator.make_tensor1(n,  Gate.T, 0)
     T *= Operator.make_tensor1(n, ~Gate.T, 1)
