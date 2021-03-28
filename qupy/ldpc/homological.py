@@ -84,7 +84,7 @@ def rand_rowspan(A): # rowspan !
 
 
 def hypergraph_product(A, B, check=False):
-    print("hypergraph_product: A=%s, B=%s"%(A.shape, B.shape))
+    #print("hypergraph_product: A=%s, B=%s"%(A.shape, B.shape))
 
     ma, na = A.shape
     mb, nb = B.shape
@@ -208,8 +208,8 @@ def hypergraph_product(A, B, check=False):
     Lzi = independent_logops(Lz, Hzi)
     Lxi = independent_logops(Lx, Hxi)
 
-    print("Lzi:", len(Lzi))
-    print("Lxi:", len(Lxi))
+    #print("Lzi:", len(Lzi))
+    #print("Lxi:", len(Lxi))
 
     k = len(Lzi)
     assert len(Lxi) == k

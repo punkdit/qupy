@@ -1420,6 +1420,18 @@ def coequalizer(J, K, J1=None, K1=None):
     return P, R
 
 
+def kron(A, B):
+    if 0 in A.shape or 0 in B.shape:
+        C = zeros2(A.shape[0]*B.shape[0], A.shape[1]*B.shape[1])
+    else: 
+        #print("kron", A.shape, B.shape)
+        C = numpy.kron(A, B)
+        #print("\t", C.shape)
+    return C
+
+
+
+
 # _________________________________________________________ #
 #                                                           #
 #                       test code                           #

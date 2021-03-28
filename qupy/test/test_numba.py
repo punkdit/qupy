@@ -17,7 +17,6 @@ if argv.complex64:
     from qupy import scalar
     scalar.scalar = numpy.complex64
     scalar.EPSILON = 1e-6
-from qupy.abstract import Space
 from qupy.dense import Qu, Gate, Vector, EPSILON, scalar
 from qupy.dense import genidx, bits, is_close, on, off, scalar
 from qupy.dense import commutator, anticommutator
@@ -237,7 +236,7 @@ class Operator(object):
         n = len(ops)
         N = 2**n
         d = 2
-        code = Code()
+        code = Source()
         code.append("def func(v, u):").indent()
         code.append("for j in range(%d):"%N).indent()
         bit = 1
@@ -263,7 +262,7 @@ class Operator(object):
         N = 2**n
         d = 2
         assert A.shape == (2,2)
-        code = Code()
+        code = Source()
         code.append("def func(v, u):").indent()
         code.append("for j in range(%d):"%N).indent()
         code.append("if j & %d == 0:"%(2**idx)).indent()
@@ -311,7 +310,7 @@ class Operator(object):
         N = 2**n
         d = 2
         assert A.shape == (2,2)
-        code = Code()
+        code = Source()
         code.append("def func(v, u):").indent()
         code.append("for j in range(%d):"%N).indent()
         code.append("if j & %d == 0:"%(2**src)).indent()
@@ -347,7 +346,7 @@ class Operator(object):
     def make_swap(cls, n, tgt, src):
         N = 2**n
         d = 2
-        code = Code()
+        code = Source()
         code.append("def func(v, u):").indent()
         code.append("for j in range(%d):"%N).indent()
         code.append("i = j")
@@ -365,7 +364,7 @@ class Operator(object):
 
 
 
-class Code(object):
+class Source(object):
     INDENT = "    "
     def __init__(self):
         self._indent = 0
@@ -620,7 +619,7 @@ class Lattice(object):
         return idxs
 
     def make_state(self, idxs=None):
-        "computational basis state"
+        "computational basis _state"
         n = self.n
         v = numpy.zeros(self.d**n, dtype=scalar)
         if idxs is not None:
@@ -638,10 +637,10 @@ class Lattice(object):
 #            if row==0 and j%2==0
             
 
+eq = numpy.allclose
 
-def main():
 
-    eq = numpy.allclose
+def main_13():
 
     keys = [
         (0,0,0), (0,1,0), (0,2,0), 
@@ -761,11 +760,21 @@ def main():
 
     #return
 
-    P = None
-    for ops in cross([(None, op) for op in stabs]):
-        ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
-        op = reduce(mul, ops)
-        P = op if P is None else op+P
+    if 0:
+        P = None
+        for ops in cross([(None, op) for op in stabs]):
+            ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
+            op = reduce(mul, ops)
+            P = op if P is None else op+P
+        print(len(P.items))
+    else:
+        P = None
+        In = Operator.make_I(n)
+        for op in stabs:
+            A = (In + op)
+            P = A if P is None else A*P
+
+    assert P*P == (2**len(stabs))*P
 
     Sgate =   Operator.make_control(n, Z, geti('100'), geti('010'))
     assert Sgate == Operator.make_control(n, Z, geti('010'), geti('100'))
@@ -827,6 +836,243 @@ def main_vasmer():
     T *= CCZ
 
     assert T*P == P*T
+
+
+class Space(object):
+    def __init__(self, n):
+        self.n = n
+        self.I = Operator.make_I(n)
+
+    def make_tensor1(self, A, idx):
+        n = self.n
+        assert 0<=idx<n
+        op = Operator.make_tensor1(n, A, idx)
+        return op
+
+    def make_xop(self, idxs):
+        n = self.n
+        for idx in idxs:
+            assert 0<=idx<n
+        op = Operator.make_xop(n, idxs)
+        return op
+
+    def make_zop(self, idxs):
+        n = self.n
+        for idx in idxs:
+            assert 0<=idx<n
+        op = Operator.make_zop(n, idxs)
+        return op
+
+    def make_control(self, A, i, j):
+        n = self.n
+        assert 0<=i<n
+        assert 0<=j<n
+        assert i!=j
+        op = Operator.make_control(n, A, i, j)
+        return op
+    
+
+
+from qupy.ldpc.solve import (
+        identity2, kron, dot2, rank, int_scalar, 
+        parse, remove_dependent, zeros2, rand2, shortstr)
+
+
+class Code(object):
+    def __init__(self, Hz, Hx, **kw):
+        self.__dict__.update(kw)
+        mz, n = Hz.shape
+        mx, nx = Hx.shape
+        assert n==nx
+        assert rank(Hz)==mz
+        assert rank(Hx)==mx
+        stabs = []
+        xstabs = []
+        zstabs = []
+        space = Space(n)
+        for i in range(mz):
+            idxs = [j for j in range(n) if Hz[i, j]]
+            op = space.make_zop(idxs)
+            stabs.append(op)
+            zstabs.append(op)
+        for i in range(mx):
+            idxs = [j for j in range(n) if Hx[i, j]]
+            op = space.make_xop(idxs)
+            stabs.append(op)
+            xstabs.append(op)
+
+        # code projector:
+        P = None
+        for op in stabs:
+            A = (space.I + op)
+            P = A if P is None else A*P
+
+        self.stabs = stabs
+        self.xstabs = xstabs
+        self.zstabs = zstabs
+        self.space = space
+        self.mx = mx
+        self.mz = mz
+        self.n = n
+        self.k = n-mx-mz
+        assert self.k >= 0
+        self.P = P
+        #self.check()
+
+    def __str__(self):
+        return "Code(n=%d, mx=%d, mz=%d, k=%d)"%(self.n, self.mx, self.mz, self.k)
+
+    def check(self):
+        stabs = self.stabs
+        for a in stabs:
+          for b in stabs:
+            assert a*b==b*a
+        P = self.P
+        assert P*P == (2**len(stabs))*P
+
+
+
+def hypergraph_product(A, B):
+    #print("hypergraph_product: A=%s, B=%s"%(A.shape, B.shape))
+
+    ma, na = A.shape
+    mb, nb = B.shape
+
+    Ima = identity2(ma)
+    Imb = identity2(mb)
+    Ina = identity2(na)
+    Inb = identity2(nb)
+
+    Hz0 = kron(Ina, B.transpose()), kron(A.transpose(), Inb)
+    Hz = numpy.concatenate(Hz0, axis=1) # horizontal concatenate
+
+    Hx0 = kron(A, Imb), kron(Ima, B)
+    #print("Hx0:", Hx0[0].shape, Hx0[1].shape)
+    Hx = numpy.concatenate(Hx0, axis=1) # horizontal concatenate
+
+    assert dot2(Hx, Hz.transpose()).sum() == 0
+
+    n = Hz.shape[1]
+    assert Hx.shape[1] == n
+
+    Hzi = remove_dependent(Hz)
+    Hxi = remove_dependent(Hx)
+
+    code = Code(Hzi, Hxi)
+    return code
+
+
+def get_swap(n):
+    swap = {}
+    for i in range(n):
+      for j in range(n):
+        k0 = i + j*n
+        k1 = j + i*n
+        swap[k0] = k1
+    return swap
+
+def schur(H):
+    m, n = H.shape
+    Ht = H.transpose()
+
+    In = identity2(n)
+    Im = identity2(m)
+    Hz0 = kron(In, H), kron(Ht, Im)
+    Hz = numpy.concatenate(Hz0, axis=1) # horizontal concatenate
+
+    Hx0 = kron(H, In), kron(Im, Ht)
+    #print("Hx0:", Hx0[0].shape, Hx0[1].shape)
+    Hx = numpy.concatenate(Hx0, axis=1) # horizontal concatenate
+
+    assert dot2(Hx, Hz.transpose()).sum() == 0
+    assert Hx.shape[1] == Hz.shape[1]
+
+    swap = get_swap(n)
+    for (i,j) in get_swap(m).items():
+        swap[i+n*n] = j+n*n
+    vfix = set()
+    hfix = set()
+    lx = zeros2(n*n + m*m)
+    for i in range(n):
+        k = i + i*n
+        lx[k] = 1
+        assert swap[k] == k
+        vfix.add(k)
+    for i in range(m):
+        k = n*n + i + i*m
+        lx[k] = 1
+        assert swap[k] == k
+        hfix.add(k)
+    lx.shape = n*n+m*m, 1
+    #print(dot2(Hz, lx))
+    assert dot2(Hz, lx).sum() == 0
+    print("lx:")
+    print(lx.transpose())
+
+    #return
+
+    Hzi = remove_dependent(Hz)
+    Hxi = remove_dependent(Hx)
+
+    code = Code(Hzi, Hxi)
+    print(code)
+
+    space = code.space
+
+    A = None
+    for i in range(n*n + m*m):
+        j = swap[i]
+        #if n*n+m*m-1 in [i,j]:
+        #    break
+        if j < i:
+            continue
+        if i==j:
+            if i in vfix:
+                B = space.make_tensor1(Gate.S, i)
+            else:
+                assert i in hfix
+                B = space.make_tensor1(~Gate.S, i)
+        else:
+            B = space.make_control(Z, i, j)
+        A = B if A is None else B*A
+
+    assert(A*code.P == code.P*A)
+
+    return code
+
+
+
+def main_product():
+    "homological product codes"
+
+    m = argv.get("m", 2)
+    n = argv.get("n", 3)
+
+    while 1:
+
+        if argv.surface:
+            H = parse("11. .11")
+        elif argv.toric:
+            H = parse("11. .11 1.1")
+        elif argv.rand:
+            H = rand2(m, n)
+        else:
+            H = parse("111 111")
+        print("H:")
+        print(shortstr(H))
+    
+        #code1 = hypergraph_product(H, H.transpose())
+        #print(code1)
+    
+        code = schur(H)
+        #assert code1.P == code.P
+    
+        if argv.check:
+            code.check()
+
+        if not argv.forever:
+            break
+
 
 
 if __name__ == "__main__":
