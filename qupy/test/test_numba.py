@@ -879,40 +879,66 @@ from qupy.ldpc.solve import (
 
 
 class Code(object):
-    def __init__(self, Hz, Hx, **kw):
+    def __init__(self, Hz, Hx, Lz=None, Lx=None, **kw):
         self.__dict__.update(kw)
         mz, n = Hz.shape
         mx, nx = Hx.shape
         assert n==nx
         assert rank(Hz)==mz
         assert rank(Hx)==mx
-        stabs = []
         xstabs = []
         zstabs = []
         space = Space(n)
+
         for i in range(mz):
             idxs = [j for j in range(n) if Hz[i, j]]
             op = space.make_zop(idxs)
-            stabs.append(op)
             zstabs.append(op)
+
         for i in range(mx):
             idxs = [j for j in range(n) if Hx[i, j]]
             op = space.make_xop(idxs)
-            stabs.append(op)
             xstabs.append(op)
 
         # code projector:
         P = None
-        for op in stabs:
+        for op in zstabs + xstabs:
             A = (space.I + op)
             P = A if P is None else A*P
 
-        self.stabs = stabs
-        self.xstabs = xstabs
+        if Lz is not None:
+            assert Lx is not None
+            assert len(Lz)==len(Lx)
+            k = len(Lz)
+            assert k==n-mx-mz
+            assert dot2(Lz, Hx.transpose()).sum() == 0
+            assert dot2(Lx, Hz.transpose()).sum() == 0
+            #print(shortstr(dot2(Lz, Lx.transpose())))
+
+            zlogops = []
+            xlogops = []
+
+            for i in range(k):
+                idxs = [j for j in range(n) if Lz[i, j]]
+                op = space.make_zop(idxs)
+                zlogops.append(op)
+                
+                idxs = [j for j in range(n) if Lx[i, j]]
+                op = space.make_xop(idxs)
+                xlogops.append(op)
+    
+        else:
+            zlogops = None
+            xlogops = None
+
         self.zstabs = zstabs
+        self.xstabs = xstabs
+        self.stabs = zstabs + xstabs
+        self.zlogops = zlogops
+        self.xlogops = xlogops
         self.space = space
-        self.mx = mx
         self.mz = mz
+        self.mx = mx
         self.n = n
         self.k = n-mx-mz
         assert self.k >= 0
@@ -929,6 +955,33 @@ class Code(object):
             assert a*b==b*a
         P = self.P
         assert P*P == (2**len(stabs))*P
+        xlogops, zlogops = self.xlogops, self.zlogops
+        if xlogops is not None:
+            for i, a in enumerate(stabs):
+                for j, op in enumerate(zlogops):
+                    assert a*op == op*a, (i, j)
+                for j, op in enumerate(xlogops):
+                    assert a*op == op*a, (i, j)
+                    #print( a*op == op*a, (i, j) , end=" ")
+                #print()
+    
+        #print("Code.check(): OK")
+
+    def get_encoded(self, idx=0):
+        k = self.k
+        n = self.n
+        assert 0<=idx<2**k
+        v = numpy.zeros((2**n,), dtype=scalar)
+        v[0] = 1
+        v = self.P*v
+        for i in range(k):
+            #print(i, len(self.xlogops))
+            if idx & (2**i):
+                v = self.xlogops[i] * v
+        r = numpy.linalg.norm(v)
+        assert r>EPSILON
+        v /= r
+        return v
 
 
 
@@ -1006,8 +1059,8 @@ def schur(H):
     lx.shape = n*n+m*m, 1
     #print(dot2(Hz, lx))
     assert dot2(Hz, lx).sum() == 0
-    print("lx:")
-    print(lx.transpose())
+    #print("lx:")
+    #print(lx.transpose())
 
     #return
 
@@ -1073,6 +1126,63 @@ def main_product():
         if not argv.forever:
             break
 
+
+def main_8T():
+    """
+    Transversal T gate on the [[8,3,2]] colour code.
+    https://earltcampbell.com/2016/09/26/the-smallest-interesting-colour-code
+    https://arxiv.org/abs/1706.02717
+    """
+
+    Hz = parse("1111.... 11..11.. 1.1.1.1. 11111111")
+    Hx = parse("11111111")
+    Lz = parse("1...1... 1.1..... 11......")
+    Lx = parse("1111.... 11..11.. 1.1.1.1.")
+
+    code = Code(Hz, Hx, Lz, Lx)
+    code.check()
+    space = code.space
+
+    T, Td = Gate.T, ~Gate.T
+    A = None
+    for i, B in enumerate([T, Td, Td, T, Td, T, T, Td]):
+        B = space.make_tensor1(B, i)
+        A = B if A is None else B*A
+
+    assert A*code.P == code.P*A
+
+    basis = []
+    for idx in range(2**3):
+        v = code.get_encoded(idx)
+        basis.append(v)
+
+    P = (1./2**len(code.stabs))*code.P
+    assert P*P == P
+    for u in basis:
+        assert eq(P*u, u)
+
+#    for u in basis:
+#        for v in basis:
+#            r = numpy.dot(v.conj(), u)
+#            if abs(r.imag)<EPSILON:
+#                r = r.real
+#            print("%.2f"%r, end=" ")
+#        print()
+#    print()
+
+
+    # encoded CCZ
+    for i, u in enumerate(basis):
+        u = A*u
+        for j, v in enumerate(basis):
+            r = numpy.dot(v.conj(), u)
+            if i==j < 7:
+                assert abs(r-1.) < EPSILON
+            elif i==j==7:
+                assert abs(r+1.) < EPSILON
+            else:
+                assert abs(r) < EPSILON
+        
 
 
 if __name__ == "__main__":
