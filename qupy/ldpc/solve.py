@@ -12,6 +12,7 @@ from numpy import dot, concatenate
 int_scalar = numpy.int32
 
 from qupy.smap import SMap
+from qupy.tool import cross
 
 
 def array2(items=[], shape=None):
@@ -1429,6 +1430,49 @@ def kron(A, B):
         #print("\t", C.shape)
     return C
 
+
+
+def get_cell(row, col):
+    """
+        return all matrices in bruhat cell at (row, col)
+        These have shape (col, col+row).
+    """
+
+    if col == 0:
+        yield zeros2(0, row)
+        return
+
+    if row == 0:
+        yield identity2(col)
+        return
+
+    # recursive steps:
+    m, n = col, col+row
+    for left in get_cell(row, col-1):
+        A = zeros2(m, n)
+        A[:m-1, :n-1] = left
+        A[m-1, n-1] = 1
+        yield A
+
+    els = [0, 1]
+    vecs = list(cross((els,)*m))
+    for right in get_cell(row-1, col):
+        for v in vecs:
+            A = zeros2(m, n)
+            A[:, :n-1] = right
+            A[:, n-1] = v
+            yield A
+
+
+def all_codes(m, n):
+    """
+        All full-rank generator matrices of shape (m, n)
+    """
+    assert m<=n
+    col = m
+    row = n-m
+    return get_cell(row, col)
+    
 
 
 

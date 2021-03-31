@@ -6,6 +6,7 @@ See: https://arxiv.org/abs/1603.02286
 """
 
 import math
+from random import shuffle, seed
 from functools import reduce
 from operator import mul, matmul
 
@@ -875,7 +876,7 @@ class Space(object):
 
 from qupy.ldpc.solve import (
         identity2, kron, dot2, rank, int_scalar, 
-        parse, remove_dependent, zeros2, rand2, shortstr)
+        parse, remove_dependent, zeros2, rand2, shortstr, all_codes)
 
 
 class Code(object):
@@ -931,6 +932,8 @@ class Code(object):
             zlogops = None
             xlogops = None
 
+        self.Hz = Hz
+        self.Hx = Hx
         self.zstabs = zstabs
         self.xstabs = xstabs
         self.stabs = zstabs + xstabs
@@ -967,6 +970,20 @@ class Code(object):
     
         #print("Code.check(): OK")
 
+    def __add__(self, other):
+        Hz0 = numpy.concatenate((self.Hz, zeros2(self.mz, other.n)), axis=1)
+        Hx0 = numpy.concatenate((self.Hx, zeros2(self.mx, other.n)), axis=1)
+        Hz1 = numpy.concatenate((zeros2(other.mz, self.n), other.Hz), axis=1)
+        Hx1 = numpy.concatenate((zeros2(other.mx, self.n), other.Hx), axis=1)
+        Hz = numpy.concatenate((Hz0, Hz1))
+        Hx = numpy.concatenate((Hx0, Hx1))
+        return Code(Hz, Hx)
+
+    def longstr(self):
+        s = '\n'.join([
+            str(self), "Hz:", shortstr(self.Hz), "Hx:", shortstr(self.Hx) ])
+        return s
+
     def get_encoded(self, idx=0):
         k = self.k
         n = self.n
@@ -983,6 +1000,11 @@ class Code(object):
         v /= r
         return v
 
+    def __getattr__(self, name):
+        meth = getattr(self.space, name, None)
+        if meth is None:
+            raise AttributeError("Code object has no attribute %r"%name)
+        return meth
 
 
 def hypergraph_product(A, B):
@@ -1070,8 +1092,6 @@ def schur(H):
     code = Code(Hzi, Hxi)
     print(code)
 
-    space = code.space
-
     A = None
     for i in range(n*n + m*m):
         j = swap[i]
@@ -1081,12 +1101,12 @@ def schur(H):
             continue
         if i==j:
             if i in vfix:
-                B = space.make_tensor1(Gate.S, i)
+                B = code.make_tensor1(Gate.S, i)
             else:
                 assert i in hfix
-                B = space.make_tensor1(~Gate.S, i)
+                B = code.make_tensor1(~Gate.S, i)
         else:
-            B = space.make_control(Z, i, j)
+            B = code.make_control(Z, i, j)
         A = B if A is None else B*A
 
     assert(A*code.P == code.P*A)
@@ -1100,6 +1120,7 @@ def main_product():
 
     m = argv.get("m", 2)
     n = argv.get("n", 3)
+    assert m and n
 
     while 1:
 
@@ -1108,7 +1129,10 @@ def main_product():
         elif argv.toric:
             H = parse("11. .11 1.1")
         elif argv.rand:
-            H = rand2(m, n)
+            while 1:
+                H = rand2(m, n)
+                if H.sum():
+                    break
         else:
             H = parse("111 111")
         print("H:")
@@ -1141,12 +1165,11 @@ def main_8T():
 
     code = Code(Hz, Hx, Lz, Lx)
     code.check()
-    space = code.space
 
     T, Td = Gate.T, ~Gate.T
     A = None
     for i, B in enumerate([T, Td, Td, T, Td, T, T, Td]):
-        B = space.make_tensor1(B, i)
+        B = code.make_tensor1(B, i)
         A = B if A is None else B*A
 
     assert A*code.P == code.P*A
@@ -1184,12 +1207,132 @@ def main_8T():
                 assert abs(r) < EPSILON
         
 
+def weakly_self_dual_codes(m, n, minfixed=2, trials=100):
+    for Hz in all_codes(m, n):
+        rows = Hz.sum(0)
+        if 0 in rows:
+            continue
+        for trial in range(trials):
+            while 1:
+                perm = list(range(n))
+                shuffle(perm)
+                fixed = [i for (i,j) in enumerate(perm) if i==j]
+                if len(fixed)>=minfixed:
+                    break
+            Hx = Hz[:, perm]
+
+            if dot2(Hz, Hx.transpose()).sum() == 0:
+                #print("Hx:")
+                #print(shortstr(Hz))
+                #print("Hz:")
+                #print(shortstr(Hx))
+                #print("found")
+                yield (Hz, Hx, perm)
+                break
+
+
+def main_self_dual():
+    m = argv.get("m", 2)
+    n = argv.get("n", 4)
+
+    for Hz, Hx, perm in weakly_self_dual_codes(m, n):
+    
+        code = Code(Hz, Hx)
+        print(code)
+    
+        print("Hx:")
+        print(shortstr(Hz))
+        print("Hz:")
+        print(shortstr(Hx))
+        print(perm)
+    
+        #code.check()
+    
+        n = code.n
+        A = None
+        fixed = [i for i, j in enumerate(perm) if i==j]
+        print("fixed:", fixed)
+        for ss in cross([(Gate.S, ~Gate.S)]*len(fixed)):
+            assert len(ss) == len(fixed)
+            for i, j in enumerate(perm):
+                #print("%d -> %d" % (i, j))
+                if j<i:
+                    continue
+                if i==j:
+                    op = ss[fixed.index(i)]
+                    #print(op.shortstr())
+                    B = code.make_tensor1(op, i)
+                else:
+                    B = code.make_control(Z, i, j)
+                A = B if A is None else B*A
+            print(".", end="")
+            if A*code.P == code.P*A:
+                break
+        else:
+            assert 0
+        print()
+    
+
+def main_pair():
+    m = argv.get("m", 3)
+    n = argv.get("n", 7)
+
+    from bruhat.action import Perm, Group
+
+    for Hz, Hx, perm in weakly_self_dual_codes(m, n):
+
+        g = Perm({i:j for (i,j) in enumerate(perm)}, list(range(n)))
+        r = g.order()
+        print(".", end="", flush=True)
+        if r not in [2, 4, 8]:
+            continue
+        #if r != 8:
+        #    continue
+        print()
+        print("order:", r)
+        #if r==4:
+        #    print("g --> g*g")
+        #    g = g*g
+        #    assert g.order() == 2
+        #    perm = [g[i] for i in range(n)]
+    
+        code = Code(Hz, Hx)
+        print(code)
+        print(code.longstr())
+        #print(perm)
+        code2 = code + code
+
+        perm2 = list(perm)
+        for (i, j) in enumerate(perm):
+            perm2.append(n+j)
+        #print(code2.longstr())
+        #print(perm2)
+
+        Hx = code2.Hz[:, perm2]
+        assert eq(Hx, code2.Hx)
+
+        A = None
+        for i, j in enumerate(perm):
+            B = code2.make_control(Z, i, n+j)
+            A = B if A is None else B*A
+        if A*code2.P == code2.P*A:
+            print("SUCC")
+            print()
+        else:
+            print("FAIL")
+            print()
+    
 
 if __name__ == "__main__":
 
-    fn = argv.next() or "test"
-    fn = eval(fn)
+    _seed = argv.get("seed")
+    if _seed is not None:
+        seed(_seed)
+        numpy.random.seed(_seed)
+
+    name = argv.next() or "test"
+    fn = eval(name)
     fn()
 
-    print("OK")
+    print("%s(): OK"%name)
 
