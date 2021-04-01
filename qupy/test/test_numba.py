@@ -107,6 +107,22 @@ class Operator(object):
             u[idx] = 0.
         return A
 
+    def trace(self):
+        N = 2**self.n
+        #if self.n <= 8:
+        #    A = self.todense()
+        #    A.shape = (N, N)
+        #    r = numpy.trace(A)
+        #    return r
+        u = numpy.zeros(N, dtype=scalar)
+        r = 0.
+        for i in range(N):
+            u[i] = 1
+            v = self(u)
+            r += v[i]
+            u[i] = 0
+        return r
+
     def __add__(self, other):
         return AddOp(self, other)
 
@@ -150,6 +166,8 @@ class Operator(object):
     @classmethod    
     def make_zop(cls, n, idxs):
         if DEBUG:print("make_zop", n, idxs)
+        if not idxs:
+            return cls.make_I(n)
         stmt = """
         def func(v, u):
           for src in range(%d):
@@ -195,6 +213,8 @@ class Operator(object):
     @classmethod    
     def make_xop(cls, n, idxs):
         if DEBUG:print("make_xop", n, idxs)
+        if not idxs:
+            return cls.make_I(n)
         stmt = """
         def func(v, u):
           for src in range(%d):
@@ -840,6 +860,8 @@ def main_vasmer():
 
 
 class Space(object):
+
+    cache = {}
     def __init__(self, n):
         self.n = n
         self.I = Operator.make_I(n)
@@ -852,17 +874,39 @@ class Space(object):
 
     def make_xop(self, idxs):
         n = self.n
+        key = "make_xop", n, tuple(idxs)
+        if key in self.cache:
+            #print("+", end="", flush=True)
+            return self.cache[key]
         for idx in idxs:
             assert 0<=idx<n
         op = Operator.make_xop(n, idxs)
+        self.cache[key] = op
         return op
 
     def make_zop(self, idxs):
         n = self.n
+        key = "make_zop", n, tuple(idxs)
+        if key in self.cache:
+            #print("+", end="", flush=True)
+            return self.cache[key]
         for idx in idxs:
             assert 0<=idx<n
         op = Operator.make_zop(n, idxs)
+        self.cache[key] = op
         return op
+
+    def make_op(self, decl):
+        n = self.n
+        assert len(decl) == n
+        #print("make_op", decl)
+        zidxs = [i for i in range(n) if decl[i] in 'ZY']
+        xidxs = [i for i in range(n) if decl[i] in 'XY']
+        zop = self.make_zop(zidxs)
+        xop = self.make_xop(xidxs)
+        lhs = zop * xop
+        # XXX missing factor of 1j for Y XXX
+        return lhs
 
     def make_control(self, A, i, j):
         n = self.n
@@ -872,12 +916,55 @@ class Space(object):
         op = Operator.make_control(n, A, i, j)
         return op
     
+    def get_basis(self):
+        count = 0
+        for decl in cross(["IXZY"]*self.n):
+            decl = ''.join(decl)
+            op = self.make_op(decl)
+            yield decl, op
+            count += 1
+            #print(".", end="", flush=True)
+        #print()
+        assert count==4**self.n
+
+    def opstr(self, P):
+        items = []
+        N = 2**self.n
+        for k,v in self.get_basis():
+            # XXX should be ~v XXX
+            r = (v*P).trace() / N # <---- pure magic
+            if abs(r)<EPSILON:
+                #print("0", end="",)
+                continue
+            if abs(r.real - r)<EPSILON:
+                r = r.real
+                if abs(int(round(r)) - r)<EPSILON:
+                    r = int(round(r))
+            if r==1:
+                items.append("%s"%(k,))
+            elif r==-1:
+                items.append("-%s"%(k,))
+            else:
+                items.append("%s*%s"%(r, k))
+            print("[%s]"%k, end="", flush=True)
+        s = "+".join(items) or "0"
+        s = s.replace("+-", "-")
+        return s
+
 
 
 from qupy.ldpc.solve import (
         identity2, kron, dot2, rank, int_scalar, 
-        parse, remove_dependent, zeros2, rand2, shortstr, all_codes)
+        parse, remove_dependent, zeros2, rand2, shortstr, all_codes,
+        find_kernel )
 
+
+def all_nonzero_codes(m, n):
+    for H in all_codes(m, n):
+        rows = H.sum(0)
+        if 0 in rows:
+            continue
+        yield H
 
 class Code(object):
     def __init__(self, Hz, Hx, Lz=None, Lx=None, **kw):
@@ -1153,7 +1240,7 @@ def main_product():
 
 def main_8T():
     """
-    Transversal T gate on the [[8,3,2]] colour code.
+    _Transversal T gate on the [[8,3,2]] colour code.
     https://earltcampbell.com/2016/09/26/the-smallest-interesting-colour-code
     https://arxiv.org/abs/1706.02717
     """
@@ -1208,10 +1295,7 @@ def main_8T():
         
 
 def weakly_self_dual_codes(m, n, minfixed=2, trials=100):
-    for Hz in all_codes(m, n):
-        rows = Hz.sum(0)
-        if 0 in rows:
-            continue
+    for Hz in all_nonzero_codes(m, n):
         for trial in range(trials):
             while 1:
                 perm = list(range(n))
@@ -1322,6 +1406,102 @@ def main_pair():
             print("FAIL")
             print()
     
+
+
+def weakly_T_dual_codes(m, n, minfixed=2, trials=100):
+    assert 2*m==n, (m, n)
+    Hx = zeros2(1, n)
+    Hx[:] = 1
+    for Hz in all_nonzero_codes(m, n):
+        if dot2(Hz, Hx.transpose()).sum() != 0:
+            continue
+        Hz1 = find_kernel(Hz)
+        rows = Hz1.sum(0)
+        if 0 in rows:
+            continue
+        if Hz.sum() != Hz1.sum():
+            continue
+
+        for trial in range(trials):
+            cols = list(range(n))
+            shuffle(cols)
+            rows = list(range(m))
+            shuffle(rows)
+            fixed = [i for (i,j) in enumerate(cols) if i==j]
+            #if len(fixed)>=minfixed:
+            #    break
+            Hz2 = Hz[:, cols]
+            Hz2 = Hz2[rows, :]
+            assert Hz.shape == Hz2.shape
+            if eq(Hz1, Hz2):
+                yield (Hz, Hz1, Hx, cols)
+                break
+
+
+def main_T_dual():
+    assert 0, "this is not going to work..."
+
+    n = argv.get("n", 6)
+    assert n%2==0
+    m = n//2
+
+    n = 8
+    #Hz = parse("1111.... 11..11.. 1.1.1.1. 11111111")
+    #Hz1 = Hz
+    #cols = list(range(n))
+
+    Hz = parse("1...1.11 .1...1..  ..1.111.  ...1111.")
+    cols = [5, 0, 6, 4, 3, 7, 2, 1]
+
+
+    Hz1 = Hz[:, cols]
+    Hx = parse("1"*n)
+
+    #for (Hz, Hz1, Hx, cols) in weakly_T_dual_codes(m, n):
+    if 1:
+        print("Hz:")
+        print(shortstr(Hz))
+        print("Hz1:")
+        print(shortstr(Hz1))
+        print(cols)
+        print("fixed:", [i for (i,j) in enumerate(cols) if i==j])
+        print()
+
+        code0 = Code(Hz, Hx)
+        #code0.check()
+        print(code0)
+        #print(code0.opstr(code0.P))
+
+        code1 = Code(Hz1, Hx)
+        #code1.check()
+
+        gates = [Gate.T, ~Gate.T]
+        opis = [(0, 1)]*n
+        count = 0
+        for idxs in cross(opis):
+            A = None
+            for i in range(n):
+                B = code0.make_tensor1(gates[idxs[i]], i)
+                A = B if A is None else B*A
+            Ad = None
+            for i in range(n):
+                B = code0.make_tensor1(gates[1-idxs[i]], i)
+                Ad = B if Ad is None else B*Ad
+            assert A*Ad == code0.I
+
+            #print(code0.P == A*code0.P*Ad )
+            print(code0.opstr( A*code0.P*Ad ))
+    
+            result =( A*code0.P == code1.P*A )
+            print(int(result), end="", flush=True)
+#            if result:
+#                print(" SUCC!", count)
+#                break
+            count += 1
+            #print( A*code0.P == code1.P*A )
+        else:
+            print(" FAIL!")
+
 
 if __name__ == "__main__":
 
