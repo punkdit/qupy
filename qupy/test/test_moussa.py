@@ -172,6 +172,69 @@ class Code(Space):
         return v
 
 
+def main_action():
+
+    def show(space, action):
+        for decl, op in space.get_basis():
+            op1 = action(op)
+            print(decl, "-->", space.opstr(op1))
+    
+    n = 1
+    space = Space(n)
+
+    if argv.S:
+        print("S =", space.opstr(S))
+        show(space, lambda op : ~S * op * S )
+
+    if argv.T:
+        print("T =", space.opstr(T))
+        show(space, lambda op : ~T * op * T )
+
+    n = 2
+    space = Space(n)
+    CZ = Z.control(1, 0)
+    assert CZ == Z.control(0, 1)
+    if argv.CZ:
+        print("CZ =", space.opstr(CZ))
+        show(space, lambda op : CZ * op * ~CZ )
+
+    CS = S.control(1, 0)
+    assert CS == S.control(0, 1)
+    if argv.CS:
+        print("CS =", space.opstr(CS))
+        show(space, lambda op : CS * op * ~CS )
+    TT = T @ T
+    if argv.TT:
+        show(space, lambda op : TT * op * ~TT)
+
+    n = 3
+    space = Space(n)
+    CCZ = Z.control(2, 0, 1)
+    assert CCZ == Z.control(0, 1, 2)
+
+    act = lambda op : CCZ * op * ~CCZ
+
+    lhs = act(I@I@X) 
+    rhs = 0.5*I@I@X+0.5*I@Z@X+0.5*Z@I@X-0.5*Z@Z@X
+    #print(lhs.shortstr())
+    #print(rhs.shortstr())
+    assert(lhs == rhs)
+
+    if argv.CCZ:
+        print("CCZ =", space.opstr(CCZ))
+        show(space, act)
+
+
+def main_pauli():
+    n = 1
+    space = Space(1)
+    for decl1, op1 in space.get_basis():
+      for decl2, op2 in space.get_basis():
+        print("%s*%s=%s" % (decl1, decl2, space.opstr(op1*op2)), end=" ")
+    print()
+    
+
+
 def main_5():
 
     "Moussa transverse S gate on 5-qubit surface code"

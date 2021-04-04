@@ -64,7 +64,7 @@ class Algebra(object):
     def __getattr__(self, attr):
         if attr in self.names:
             return self.parse(attr)
-        raise AttributeError
+        raise AttributeError(attr)
 
     def get_zero(self, grade):
         op = Tensor({}, grade, self)

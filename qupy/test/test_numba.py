@@ -915,6 +915,16 @@ class Space(object):
         assert i!=j
         op = Operator.make_control(n, A, i, j)
         return op
+
+    def make_ccz(self, i, j, k):
+        n = self.n
+        assert 0<=i<n
+        assert 0<=j<n
+        assert 0<=k<n
+        assert i!=j!=k
+        assert i!=k
+        op = Operator.make_ccz(n, i, j, k)
+        return op
     
     def get_basis(self):
         count = 0
@@ -1280,7 +1290,6 @@ def main_8T():
 #        print()
 #    print()
 
-
     # encoded CCZ
     for i, u in enumerate(basis):
         u = A*u
@@ -1292,7 +1301,65 @@ def main_8T():
                 assert abs(r+1.) < EPSILON
             else:
                 assert abs(r) < EPSILON
+
+    n = code.n
+    code = code + code + code
+    print(code)
         
+    A = None
+    for i in range(n):
+        B = code.make_ccz(i, i+n, i+2*n)
+        A = B if A is None else B*A
+
+    print( A*code.P == code.P*A )
+
+
+def main_mobius():
+    """
+    """
+
+    Hx = """
+    1  1  .  1  .  1  .  .  .   
+    .  1  1  .  .  .  1  .  1     
+    .  .  .  .  1  1  1  1  .    
+    """.replace(" ", "")
+    Hz = """
+    1  .  .  1  .  .  .  .  . 
+    .  1  .  1  1  .  1  .  . 
+    1  .  1  .  .  1  1  .  .
+    .  .  .  .  1  .  .  1  .
+    .  1  .  .  .  1  .  1  1
+    """.replace(" ", "")
+
+    Hz = parse(Hz)
+    Hx = parse(Hx)
+
+    code = Code(Hz, Hx)
+    print(code)
+    code.check()
+
+    P = (1./2**len(code.stabs))*code.P
+    assert P*P == P
+
+    n = code.n
+    gates = [Gate.S, ~Gate.S]
+    opis = [(0, 1)]*n
+    count = 0
+    for idxs in cross(opis):
+        A = None
+        for i in range(n):
+            B = code.make_tensor1(gates[idxs[i]], i)
+            A = B if A is None else B*A
+        Ad = None
+        for i in range(n):
+            B = code.make_tensor1(gates[1-idxs[i]], i)
+            Ad = B if Ad is None else B*Ad
+        assert A*Ad == code.I
+
+        print(int(code.P*A == A*code.P) or '.', end="", flush=True)
+        #print(code.opstr( A*code.P*Ad ))
+    print()
+    
 
 def weakly_self_dual_codes(m, n, minfixed=2, trials=100):
     for Hz in all_nonzero_codes(m, n):

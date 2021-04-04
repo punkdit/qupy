@@ -451,20 +451,28 @@ def build_algebra(names, rel):
 
     eqs = rel.split()
     for eq in eqs:
+        #print("eq:", eq)
         lhs, rhs = eq.split("=")
+        assert lhs.count("*") == 1, repr(lhs)
         A, B = lhs.split("*")
         i = names.index(A)
         j = names.index(B)
         rhs, C = rhs[:-1], rhs[-1]
+        #print("rhs:", rhs)
         k = names.index(C)
         val = None
         if not rhs:
             val = ONE
         elif rhs == "-":
             val = -ONE
+        elif rhs == "1j*":
+            val = 1j
+        elif rhs == "-1j*":
+            val = -1j
         else:
             assert 0, repr(eq)
-        assert coefs.get((i, j, k)) is None
+        oldval = coefs.get((i, j, k))
+        assert oldval is None or oldval==val
         coefs[i, j, k] = val 
 
     algebra = Algebra(dim, names, coefs)
