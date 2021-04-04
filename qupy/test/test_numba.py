@@ -1311,7 +1311,7 @@ def main_8T():
         B = code.make_ccz(i, i+n, i+2*n)
         A = B if A is None else B*A
 
-    print( A*code.P == code.P*A )
+    print( A*code.P == code.P*A ) # False ...
 
 
 def main_mobius():
