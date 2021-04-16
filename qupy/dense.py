@@ -365,6 +365,14 @@ class Qu(AbstractQu):
         return box
     __invert__ = dag
 
+    def inverse(A):
+        space = A.space
+        assert len(space.shape)==2, space
+        space = ~space
+        v = numpy.linalg.inv(A.v)
+        box = Qu(space.shape, space.valence, v, nocopy=True)
+        return box
+
     def __str__(self):
         s = "%s(%s, %s, %s)"%(self.__class__.__name__, self.shape, self.valence, self.v)
         s = s.replace('\n', ' ')

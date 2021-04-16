@@ -9,7 +9,7 @@ Use numba accelerated operators.
 """
 
 import math
-from random import shuffle, seed
+from random import shuffle, seed, choice
 from functools import reduce
 from operator import mul, matmul
 
@@ -25,6 +25,7 @@ from qupy.dense import Qu, Gate, Vector, EPSILON, scalar
 from qupy.dense import genidx, bits, is_close, on, off, scalar
 from qupy.dense import commutator, anticommutator
 from qupy.tool import cross
+from qupy.util import mulclose
 
 r2 = math.sqrt(2)
 
@@ -43,12 +44,18 @@ assert S*Sd == I
 
 
 class Operator(object):
-    def __init__(self, n, d=2):
+    def __init__(self, n, d=2, inverse=None, self_inverse=False):
         self.n = n
         self.N = d**n
         self.d = d
         self.shape = (d,)*n
         self.dtype = scalar
+        if self_inverse:
+            inverse = self
+        self.inverse = inverse
+
+#    @property
+#    def inverse(self):
 
     def __str__(self):
         return "%s(%d)"%(self.__class__.__name__, self.n)
@@ -145,10 +152,8 @@ class Operator(object):
 
     @classmethod    
     def make_I(cls, n):
-        return Operator(n)
-        #def func(v, u):
-        #    u[:] = v
-        #return Numop(n, func)
+        I = Operator(n, self_inverse=True)
+        return I
 
 #    @classmethod    
 #    def make_zop(cls, n, idxs):
@@ -182,7 +187,7 @@ class Operator(object):
         """ % (2**n, [2**i for i in idxs])
 
         func = mkfunc(stmt)
-        return Numop(n, func)
+        return Numop(n, func, self_inverse=True)
 
     @classmethod    
     def make_ccz(cls, n, i, j, k):
@@ -193,13 +198,14 @@ class Operator(object):
             for src in range(%d):
                 if (src & %d) and (src & %d) and (src & %d):
                     sign = -1
-            u[src] = sign*v[src]
+                u[src] = sign*v[src]
         """ % (2**n, 2**i, 2**j, 2**k)
+        #print(stmt)
         func = mkfunc(stmt)
-        return Numop(n, func)
+        return Numop(n, func, self_inverse=True)
 
     @classmethod    
-    def make_phase_op(cls, n, idxs, phase):
+    def make_phase_op(cls, n, idxs, phase, inverse=None):
         if DEBUG:print("make_phase_op", n, idxs, phase)
         stmt = """
         def func(v, u):
@@ -211,7 +217,11 @@ class Operator(object):
             u[src] = phase*v[src]
         """ % (2**n, [2**i for i in idxs], phase)
         func = mkfunc(stmt)
-        return Numop(n, func)
+        op = Numop(n, func, inverse=inverse)
+        if inverse is None:
+            assert abs(phase)>EPSILON
+            op.inverse = cls.make_phase_op(n, idxs, 1./phase, op)
+        return op
 
     @classmethod    
     def make_xop(cls, n, idxs):
@@ -228,19 +238,23 @@ class Operator(object):
         """ % (2**n, [2**i for i in idxs])
 
         func = mkfunc(stmt)
-        return Numop(n, func)
+        return Numop(n, func, self_inverse=True)
 
     @classmethod
     def make_op(cls, spec):
         n = len(spec)
         zidxs = [i for i in range(n) if spec[i]=='Z']
         xidxs = [i for i in range(n) if spec[i]=='X']
-        op = Operator(n)
+        assert 'Y' not in spec
+        op = Operator(n, self_inverse=True)
         if zidxs:
             op = Operator.make_zop(n, zidxs)
+            assert op.inverse is op
         if xidxs:
             xop = Operator.make_xop(n, xidxs)
+            assert xop.inverse is xop
             op = op * xop
+            assert op.inverse is not None, type(op)
         return op
 
     @classmethod    
@@ -252,37 +266,37 @@ class Operator(object):
             u[%d] = -v[%d]
         """ % (2**n-1, 2**n-1)
         func = mkfunc(stmt)
-        return Numop(n, func)
+        return Numop(n, func, self_inverse=True)
+
+#    @classmethod
+#    def XXX_make_tensor(cls, ops):
+#        assert 0, "FAIL"
+#        n = len(ops)
+#        N = 2**n
+#        d = 2
+#        code = Source()
+#        code.append("def func(v, u):").indent()
+#        code.append("for j in range(%d):"%N).indent()
+#        bit = 1
+#        for op in ops:
+#            assert op.shape == (2, 2)
+#            for i in range(N):
+#                code.append("if j & %d == 0:"%bit).indent()
+#                code.dedent()
+#                code.append("else:").indent()
+#                code.dedent()
+#                code.append("u[%d] = r"%i)
+#            bit *= 2
+#    
+#        #code.append("u[j] = v[j]").indent()
+#        
+#        print("make_tensor:")
+#        print('\n'.join(code.lines))
+#        func = code.mkfunc()
+#        return Numop(n, func)
 
     @classmethod
-    def XXX_make_tensor(cls, ops):
-        assert 0, "FAIL"
-        n = len(ops)
-        N = 2**n
-        d = 2
-        code = Source()
-        code.append("def func(v, u):").indent()
-        code.append("for j in range(%d):"%N).indent()
-        bit = 1
-        for op in ops:
-            assert op.shape == (2, 2)
-            for i in range(N):
-                code.append("if j & %d == 0:"%bit).indent()
-                code.dedent()
-                code.append("else:").indent()
-                code.dedent()
-                code.append("u[%d] = r"%i)
-            bit *= 2
-    
-        #code.append("u[j] = v[j]").indent()
-        
-        print("make_tensor:")
-        print('\n'.join(code.lines))
-        func = code.mkfunc()
-        return Numop(n, func)
-
-    @classmethod
-    def make_tensor1(cls, n, A, idx):
+    def make_tensor1(cls, n, A, idx, inverse=None):
         N = 2**n
         d = 2
         assert A.shape == (2,2)
@@ -311,7 +325,11 @@ class Operator(object):
         #print("make_tensor:")
         #print('\n'.join(code.lines))
         func = code.mkfunc()
-        return Numop(n, func)
+        op = Numop(n, func, inverse=inverse)
+        if inverse is None:
+            Ai = A.inverse()
+            op.inverse = cls.make_tensor1(n, Ai, idx, inverse=op)
+        return op
 
     @classmethod
     def make_tensor(cls, ops):
@@ -330,7 +348,7 @@ class Operator(object):
         return A
 
     @classmethod
-    def make_control(cls, n, A, tgt, src):
+    def make_control(cls, n, A, tgt, src, inverse=None):
         N = 2**n
         d = 2
         assert A.shape == (2,2)
@@ -364,7 +382,11 @@ class Operator(object):
         #print("make_control:")
         #print('\n'.join(code.lines))
         func = code.mkfunc()
-        return Numop(n, func)
+        op = Numop(n, func, inverse=inverse)
+        if inverse is None:
+            Ai = A.inverse()
+            op.inverse = cls.make_control(n, Ai, tgt, src, inverse=op)
+        return op
 
     @classmethod
     def make_swap(cls, n, tgt, src):
@@ -384,7 +406,7 @@ class Operator(object):
         #print('\n'.join(code.lines))
         #print()
         func = code.mkfunc()
-        return Numop(n, func)
+        return Numop(n, func, self_inverse=True)
 
 
 
@@ -426,8 +448,8 @@ def mkfunc(stmt):
 
 
 class Numop(Operator):
-    def __init__(self, n, func, d=2):
-        Operator.__init__(self, n, d)
+    def __init__(self, n, func, d=2, **kw):
+        Operator.__init__(self, n, d, **kw)
         #s = ','.join("n"*n)
         #desc = "(%s)->(%s)"%(s, s)
         desc = "(n)->(n)"
@@ -452,21 +474,21 @@ class Numop(Operator):
 
 
 class BinOp(Operator):
-    def __init__(self, lhs, rhs):
+    def __init__(self, lhs, rhs, inverse=None):
         assert lhs.n == rhs.n
-        Operator.__init__(self, lhs.n)
+        Operator.__init__(self, lhs.n, inverse=inverse)
         self.lhs = lhs
         self.rhs = rhs
 
 class AddOp(Operator):
-    def __init__(self, *_items):
+    def __init__(self, *_items, **kw):
         items = []
         for item in _items:
             if isinstance(item, AddOp):
                 items += item.items
             else:
                 items.append(item)
-        Operator.__init__(self, items[0].n)
+        Operator.__init__(self, items[0].n, **kw)
         self.items = items
 
     def __call__(self, u):
@@ -483,62 +505,148 @@ class SubOp(BinOp):
         return lhs - rhs
 
 
-
 class MulOp(BinOp):
+    def __init__(self, lhs, rhs, inverse=None):
+        if inverse is None and lhs.inverse is not None and rhs.inverse is not None:
+            inverse = MulOp(rhs.inverse, lhs.inverse, self)
+        #elif inverse is None:
+        #    print("MulOp: missing inverse")
+        #    assert 0, (type(lhs), type(rhs))
+        BinOp.__init__(self, lhs, rhs, inverse)
+
     def __call__(self, u):
         u = self.rhs(u)
         u = self.lhs(u)
         return u
 
+
 class RMulOp(Operator):
-    def __init__(self, lhs, r):
-        Operator.__init__(self, lhs.n)
+    def __init__(self, lhs, r, inverse=None):
+        if inverse is None and abs(r)>EPSILON and lhs.inverse is not None:
+            inverse = RMulOp(lhs.inverse, 1./r, self)
+        Operator.__init__(self, lhs.n, inverse=inverse)
         self.lhs = lhs
         self.r = r
 
     def __call__(self, u):
+        #print("RMulOp.__call__", u)
         u = self.lhs(u)
         u = self.r * u
+        #print("\t\t", u)
         return u
 
 
 
+class Space(object):
 
+    cache = {}
+    def __init__(self, n):
+        self.n = n
+        self.I = Operator.make_I(n)
 
-def test_op(spec):
-    n = len(spec)
-    zidxs = [i for i in range(n) if spec[i]=='Z']
-    xidxs = [i for i in range(n) if spec[i]=='X']
-    zop = Operator.make_zop(n, zidxs)
-    xop = Operator.make_xop(n, xidxs)
-    lhs = zop * xop
-    print("lhs:")
-    print(lhs.todense())
+    def make_tensor1(self, A, idx):
+        n = self.n
+        assert 0<=idx<n
+        op = Operator.make_tensor1(n, A, idx)
+        return op
 
-    rhs = [I]*n
-    for i in zidxs:
-        rhs[i] = Z
-    for i in xidxs:
-        rhs[i] = X
-    #rhs = list(reversed(rhs))
-    rhs = reduce(matmul, rhs)
-    print(rhs.v)
+    def make_xop(self, idxs):
+        n = self.n
+        key = "make_xop", n, tuple(idxs)
+        if key in self.cache:
+            #print("+", end="", flush=True)
+            return self.cache[key]
+        for idx in idxs:
+            assert 0<=idx<n
+        op = Operator.make_xop(n, idxs)
+        self.cache[key] = op
+        return op
 
-    #assert numpy.allclose(lhs.todense(), rhs.v)
-    #return
+    def make_zop(self, idxs):
+        n = self.n
+        key = "make_zop", n, tuple(idxs)
+        if key in self.cache:
+            #print("+", end="", flush=True)
+            return self.cache[key]
+        for idx in idxs:
+            assert 0<=idx<n
+        op = Operator.make_zop(n, idxs)
+        self.cache[key] = op
+        return op
+
+    def make_op(self, decl):
+        n = self.n
+        assert len(decl) == n
+        #print("make_op", decl)
+        zidxs = [i for i in range(n) if decl[i] in 'ZY']
+        xidxs = [i for i in range(n) if decl[i] in 'XY']
+        #print("make_op", decl, zidxs, xidxs)
+        zop = self.make_zop(zidxs)
+        xop = self.make_xop(xidxs)
+        lhs = zop * xop
+        if decl.count('Y') % 2:
+            lhs = 1j * lhs
+            #print(lhs, lhs.r)
+            #print(lhs.inverse, lhs.inverse.r)
+        return lhs
+
+    def make_control(self, A, i, j):
+        n = self.n
+        assert 0<=i<n
+        assert 0<=j<n
+        assert i!=j
+        op = Operator.make_control(n, A, i, j)
+        return op
+
+    def make_cz(self, i, j):
+        return self.make_control(Z, i, j)
+
+    def make_ccz(self, i, j, k):
+        n = self.n
+        assert 0<=i<n
+        assert 0<=j<n
+        assert 0<=k<n
+        assert i!=j!=k
+        assert i!=k
+        op = Operator.make_ccz(n, i, j, k)
+        return op
     
-    shape = (2,)*n
-    qu = Qu(shape, 'u'*n)
-    #u = numpy.zeros(shape, dtype=scalar)
-    u = qu.v
-    for idx in numpy.ndindex(shape):
-        u[idx] = 1.
-        v_lhs = lhs(u)
-        v_rhs = rhs*qu
-        print(v_lhs)
-        print(v_rhs.v)
-        assert numpy.allclose(v_lhs, v_rhs.v)
-        u[idx] = 0.
+    def get_basis(self):
+        count = 0
+        for decl in cross(["IXZY"]*self.n):
+            decl = ''.join(decl)
+            op = self.make_op(decl)
+            yield decl, op
+            count += 1
+            #print(".", end="", flush=True)
+        #print()
+        assert count==4**self.n
+
+    def opstr(self, P):
+        items = []
+        N = 2**self.n
+        for k,v in self.get_basis():
+            #assert v*v == self.I
+            #assert v.inverse == v # yes...
+            r = (v.inverse*P).trace() / N 
+            if abs(r)<EPSILON:
+                #print("0", end="",)
+                continue
+            if abs(r.real - r)<EPSILON:
+                r = r.real
+                if abs(int(round(r)) - r)<EPSILON:
+                    r = int(round(r))
+            if r==1:
+                items.append("%s"%(k,))
+            elif r==-1:
+                items.append("-%s"%(k,))
+            else:
+                items.append("%s*%s"%(r, k))
+            #print("[%s]"%k, end="", flush=True)
+        s = "+".join(items) or "0"
+        s = s.replace("+-", "-")
+        return s
+
 
 
 def test():
@@ -569,17 +677,21 @@ def test():
     for op in [ZI, IZ, XI, IX, ZZ, XX]:
         assert op*op == II
         assert op - 2*op == -op
+        assert op.inverse is not None
+        assert op*op.inverse == II
     assert ZI*XI != XI*ZI
     assert ZI*XI == -(XI*ZI) 
 
     assert II == Operator.make_tensor1(2, Gate.I, 1)
     assert XI == Operator.make_tensor1(2, Gate.X, 0)
+    assert XI == Operator.make_tensor1(2, Gate.X, 0).inverse
     assert make_op("IIZII") == Operator.make_tensor1(5, Gate.Z, 2)
 
     SI = Operator.make_phase_op(2, [0], 1.j)
     assert SI != II
     assert SI != ZI
     assert SI*SI == ZI
+    assert SI * SI.inverse == II
 
     assert Operator.make_tensor1(2, Gate.S, 0) == SI
 
@@ -616,6 +728,25 @@ def test():
     assert swap != Operator.make_I(n)
     assert swap*swap == Operator.make_I(n)
 
+    CCZ = Operator.make_ccz(3, 0, 1, 2)
+    CCZ = CCZ.todense().reshape((8, 8))
+    lhs = numpy.identity(8)
+    lhs[7, 7] = -1
+    assert numpy.allclose(CCZ, lhs)
+
+    n = 1
+    space = Space(n)
+
+    for k, op in space.get_basis():
+        assert op * op.inverse == space.I
+        assert space.opstr(op) == k
+
+    n = 3
+    space = Space(n)
+
+    for k, op in space.get_basis():
+        assert op * op.inverse == space.I
+        assert space.opstr(op) == k
 
 
 
@@ -860,113 +991,6 @@ def main_vasmer():
     T *= CCZ
 
     assert T*P == P*T
-
-
-class Space(object):
-
-    cache = {}
-    def __init__(self, n):
-        self.n = n
-        self.I = Operator.make_I(n)
-
-    def make_tensor1(self, A, idx):
-        n = self.n
-        assert 0<=idx<n
-        op = Operator.make_tensor1(n, A, idx)
-        return op
-
-    def make_xop(self, idxs):
-        n = self.n
-        key = "make_xop", n, tuple(idxs)
-        if key in self.cache:
-            #print("+", end="", flush=True)
-            return self.cache[key]
-        for idx in idxs:
-            assert 0<=idx<n
-        op = Operator.make_xop(n, idxs)
-        self.cache[key] = op
-        return op
-
-    def make_zop(self, idxs):
-        n = self.n
-        key = "make_zop", n, tuple(idxs)
-        if key in self.cache:
-            #print("+", end="", flush=True)
-            return self.cache[key]
-        for idx in idxs:
-            assert 0<=idx<n
-        op = Operator.make_zop(n, idxs)
-        self.cache[key] = op
-        return op
-
-    def make_op(self, decl):
-        n = self.n
-        assert len(decl) == n
-        #print("make_op", decl)
-        zidxs = [i for i in range(n) if decl[i] in 'ZY']
-        xidxs = [i for i in range(n) if decl[i] in 'XY']
-        zop = self.make_zop(zidxs)
-        xop = self.make_xop(xidxs)
-        lhs = zop * xop
-        # XXX missing factor of 1j for Y XXX
-        return lhs
-
-    def make_control(self, A, i, j):
-        n = self.n
-        assert 0<=i<n
-        assert 0<=j<n
-        assert i!=j
-        op = Operator.make_control(n, A, i, j)
-        return op
-
-    def make_cz(self, i, j):
-        return self.make_control(Z, i, j)
-
-    def make_ccz(self, i, j, k):
-        n = self.n
-        assert 0<=i<n
-        assert 0<=j<n
-        assert 0<=k<n
-        assert i!=j!=k
-        assert i!=k
-        op = Operator.make_ccz(n, i, j, k)
-        return op
-    
-    def get_basis(self):
-        count = 0
-        for decl in cross(["IXZY"]*self.n):
-            decl = ''.join(decl)
-            op = self.make_op(decl)
-            yield decl, op
-            count += 1
-            #print(".", end="", flush=True)
-        #print()
-        assert count==4**self.n
-
-    def opstr(self, P):
-        items = []
-        N = 2**self.n
-        for k,v in self.get_basis():
-            # XXX should be ~v XXX
-            r = (v*P).trace() / N # <---- pure magic
-            if abs(r)<EPSILON:
-                #print("0", end="",)
-                continue
-            if abs(r.real - r)<EPSILON:
-                r = r.real
-                if abs(int(round(r)) - r)<EPSILON:
-                    r = int(round(r))
-            if r==1:
-                items.append("%s"%(k,))
-            elif r==-1:
-                items.append("-%s"%(k,))
-            else:
-                items.append("%s*%s"%(r, k))
-            #print("[%s]"%k, end="", flush=True)
-        s = "+".join(items) or "0"
-        s = s.replace("+-", "-")
-        return s
-
 
 
 from qupy.ldpc.solve import (
@@ -1308,16 +1332,17 @@ def main_8T():
             else:
                 assert abs(r) < EPSILON
 
-    n = code.n
-    code = code + code + code
-    print(code)
-        
-    A = None
-    for i in range(n):
-        B = code.make_ccz(i, i+n, i+2*n)
-        A = B if A is None else B*A
-
-    print( A*code.P == code.P*A ) # False ...
+    if 0:
+        n = code.n
+        code = code + code + code
+        print(code)
+            
+        A = None
+        for i in range(n):
+            B = code.make_ccz(i, i+n, i+2*n)
+            A = B if A is None else B*A
+    
+        print( A*code.P == code.P*A ) # False ...
 
 
 def main_mobius():
@@ -1576,10 +1601,148 @@ def main_T_dual():
             print(" FAIL!")
 
 
-def main_identities():
+def main_clifford():
 
     n = 3
     space = Space(n)
+
+    pauli = []
+    for name, op in space.get_basis():
+        pauli.append(op)
+        pauli.append(1j*op)
+        pauli.append(-op)
+        pauli.append(-1j*op)
+
+    def is_clifford(U):
+        for g in pauli:
+            lhs = U * g * U.inverse * g.inverse
+            for h in pauli:
+                if lhs==h:
+                    break
+            else:
+                return False
+        return True
+
+    def is_clifford2(U):
+        result = True
+        for g in pauli:
+            lhs = U * g * U.inverse * g.inverse
+            if not is_clifford(lhs):
+                result = False
+                print("X", end="", flush=True)
+            else:
+                print(".", end="", flush=True)
+        return result
+
+    for trial in range(5):
+        op = choice(pauli)
+        assert is_clifford(op)
+
+    make_tensor1 = space.make_tensor1
+    for op in [
+        make_tensor1(Gate.H, 0) * make_tensor1(Gate.H, 1),
+        space.make_cz(0, 1),
+        make_tensor1(Gate.S, 0) * make_tensor1(Gate.H, 1) * make_tensor1(Gate.Z, 2),
+    ]:
+        assert is_clifford(op)
+
+
+    CCZ = space.make_ccz(0, 1, 2)
+    assert not is_clifford(CCZ)
+    assert is_clifford2(CCZ)
+
+
+def test_clifford():
+    n = 1
+    space = Space(n)
+    clifford = mulclose([Gate.S, Gate.H])
+    assert len(clifford) == 192
+    clifford = [space.make_tensor1(A, 0) for A in clifford]
+    # ?
+
+
+def main_identities():
+
+    n = 1
+    space = Space(n)
+
+    I = space.I
+    X = space.make_xop([0])
+    Z = space.make_zop([0])
+    T = space.make_tensor1(Gate.T, 0)
+    S = space.make_tensor1(Gate.S, 0)
+    H = space.make_tensor1(Gate.H, 0)
+    ops = {"S":S, "H":H, "Z":Z, "X":X, "Si":S.inverse}
+    assert H*H==I
+    keys = list(ops.keys())
+
+    lhs = T * X * T.inverse
+    #print(lhs.todense())
+    #print(space.opstr(lhs))
+
+    words = []
+    found = []
+    for N in range(1, 7):
+      for name in cross([keys]*N):
+        op = reduce(mul, [ops[c] for c in name])
+        words.append((name, op))
+        if op == lhs:
+            print(".".join(name))
+            #return
+        #if op not in found:
+        #    found.append(op)
+        #    print(len(found))
+
+    return
+
+    n = 2
+    space = Space(n)
+    CZ = space.make_control(Gate.Z, 0, 1)
+    CS = space.make_control(Gate.S, 0, 1)
+    assert CS == space.make_control(Gate.S, 1, 0)
+    assert CS.inverse != CS
+    assert CS * CS.inverse == space.I
+    SI = space.make_tensor1(Gate.S, 0)
+    IS = space.make_tensor1(Gate.S, 1)
+
+    ops = {
+        "I": space.I,
+        "XI" : space.make_xop([0]), 
+        "IX" : space.make_xop([1]), 
+        "XX" : space.make_xop([0,1]), 
+        "CZ" : space.make_cz(0, 1), 
+        "SI" : SI,
+        "IS" : IS,
+    }
+
+    lhs = CZ * ops["IX"] * CZ.inverse
+    for name, op0 in space.get_basis():
+        for op in [op0, 1j*op0, -op0, -1j*op0]:
+            if op == lhs:
+                print(name)
+
+    keys = list(ops.keys())
+    keys.sort()
+
+    words = []
+    for (a, b, c) in cross([keys]*3):
+        if a==b or b==c:
+            continue
+        name = (a, b, c)
+        op = ops[a]*ops[b]*ops[c]
+        words.append((name, op))
+
+    lhs = CS * ops["IX"] * CS.inverse
+
+    for name, op in words:
+        if op == lhs:
+            print(name)
+
+    return
+
+    n = 3
+    space = Space(n)
+
     ccz = space.make_ccz(0, 1, 2)
 
     ops = {
