@@ -3,6 +3,9 @@
 """
 Construct transversal S gate on a folded surface code.
 See: https://arxiv.org/abs/1603.02286
+
+Use numba accelerated operators.
+
 """
 
 import math
@@ -916,6 +919,9 @@ class Space(object):
         op = Operator.make_control(n, A, i, j)
         return op
 
+    def make_cz(self, i, j):
+        return self.make_control(Z, i, j)
+
     def make_ccz(self, i, j, k):
         n = self.n
         assert 0<=i<n
@@ -956,7 +962,7 @@ class Space(object):
                 items.append("-%s"%(k,))
             else:
                 items.append("%s*%s"%(r, k))
-            print("[%s]"%k, end="", flush=True)
+            #print("[%s]"%k, end="", flush=True)
         s = "+".join(items) or "0"
         s = s.replace("+-", "-")
         return s
@@ -1568,6 +1574,61 @@ def main_T_dual():
             #print( A*code0.P == code1.P*A )
         else:
             print(" FAIL!")
+
+
+def main_identities():
+
+    n = 3
+    space = Space(n)
+    ccz = space.make_ccz(0, 1, 2)
+
+    ops = {
+        "I": space.I,
+        "X0" : space.make_xop([0]), 
+        "X1" : space.make_xop([1]), 
+        "X2" : space.make_xop([2]), 
+        "X01" : space.make_xop([0,1]), 
+        "X12" : space.make_xop([1,2]), 
+        "X02" : space.make_xop([0,2]), 
+        "X012" : space.make_xop([0,1,2]), 
+        "CZ01" : space.make_cz(0, 1), 
+        "CZ02" : space.make_cz(0, 2), 
+        "CZ12" : space.make_cz(1, 2), 
+        "CCZ" : ccz,
+    }
+
+    keys = list(ops.keys())
+    keys.sort()
+
+    words = []
+    for (a, b, c) in cross([keys]*3):
+        if a==b or b==c:
+            continue
+        name = (a, b, c)
+        op = ops[a]*ops[b]*ops[c]
+        words.append((name, op))
+
+    N = len(words)
+    print("words:", N)
+
+    for i in range(N):
+      for j in range(N):
+        if i==j:
+            continue
+        lname, lop = words[i]
+        rname, rop = words[j]
+        if lname[0] == rname[0]:
+            continue
+        if lname[2] == rname[2]:
+            continue
+        if (lname+rname).count("I")>1:
+            continue
+        lhs, rhs = ("*".join(lname), "*".join(rname))
+        if lname[0] == "CCZ" and lname[2]=="CCZ":
+            #print(lhs, "?=", rhs)
+            if lop == rop:
+                print(lhs, "==", rhs)
+    
 
 
 if __name__ == "__main__":

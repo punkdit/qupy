@@ -3,6 +3,10 @@
 """
 Construct transversal S gate on a folded surface code.
 See: https://arxiv.org/abs/1603.02286
+
+Use dense numpy arrays for operators.
+See also: test_numba.py
+
 """
 
 import math
