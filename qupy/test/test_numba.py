@@ -1655,6 +1655,22 @@ def main_clifford():
 def test_clifford():
     n = 1
     space = Space(n)
+    G = mulclose([Gate.Z, Gate.H])
+    assert len(G) == 16
+    op = Gate.I
+    while 1:
+        op = op*Gate.Z
+        #print("Z", end="")
+        if op==Gate.I:
+            break
+        op = op*Gate.H
+        #print("H", end="")
+        if op==Gate.I:
+            break
+    #print()
+
+    #return
+
     clifford = mulclose([Gate.S, Gate.H])
     assert len(clifford) == 192
     clifford = [space.make_tensor1(A, 0) for A in clifford]
