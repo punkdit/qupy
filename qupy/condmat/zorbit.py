@@ -1015,7 +1015,7 @@ def slepc(Gx, Gz, Hx, Hz, Rx, Rz, Pxt, Qx, Pz, Tx, **kw):
     GzRxt = dot2(Gz, Rx.transpose())
     for i, v in enumerate(genidx((2,)*r)):
         v = array2(v)
-        lookup[v.tostring()] = i
+        lookup[v.tobytes()] = i
         syndrome = dot2(GzRxt, v)
         value = gz - 2*syndrome.sum()
         xdata.append(value)
@@ -1075,7 +1075,7 @@ def slepc(Gx, Gz, Hx, Hz, Rx, Rz, Pxt, Qx, Pz, Tx, **kw):
         v = dot2(gx, PxtQx)
         syndrome = dot2(GzRxt, v)
         x = gz - 2*syndrome.sum()
-        i = lookup[v.tostring()]
+        i = lookup[v.tobytes()]
         #print syndrome, syndrome.sum(), vec0[i]
         y = (1./my)*yfunc(vec0[i]) + 0.5*dy
         #y = 0.5*dy + log2(abs(vec0[i]))
@@ -1551,7 +1551,7 @@ def main():
         if v0 is not None:
             v = (v+v0)%2
             v = dot2(Px, v)
-        lookup[v.tostring()] = i
+        lookup[v.tobytes()] = i
         verts.append(v)
     print("span:", len(verts))
     assert len(lookup) == len(verts)
@@ -1586,7 +1586,7 @@ def main():
             for g in Gx:
                 v1 = (g+v)%2
                 v1 = dot2(Px, v1)
-                j = lookup[v1.tostring()]
+                j = lookup[v1.tobytes()]
                 H[i, j] += 1
     
         if argv.showham:
@@ -1629,7 +1629,7 @@ def main():
             for g in Gx:
                 v1 = (g+v)%2
                 v1 = dot2(Px, v1)
-                j = lookup[v1.tostring()]
+                j = lookup[v1.tobytes()]
                 A[i, j] = A.get((i, j), 0) + 1
     
         print("\nnnz:", len(A))
@@ -1662,7 +1662,7 @@ def main():
             for g in Gx:
                 v1 = (g+v)%2
                 v1 = dot2(Px, v1)
-                j = lookup[v1.tostring()]
+                j = lookup[v1.tobytes()]
                 H[i, j] += 1
     
         if argv.showham:
