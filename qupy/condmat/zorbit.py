@@ -16,9 +16,12 @@ from qupy.ldpc.solve import find_errors, find_stabilizers, check_commute
 #from qupy.ldpc.solve import minweightall
 from qupy.argv import argv
 
-#from isomorph import Tanner, search, from_sparse_ham, search_recursive, Backtrack, from_ham
+from isomorph import Tanner, search, from_sparse_ham, search_recursive, Backtrack, from_ham
 #from lanczos import write, show_eigs
 #from code import lstr2
+
+def write(*args):
+    print(*args, end="", flush=True)
 
 
 def genidx(shape):

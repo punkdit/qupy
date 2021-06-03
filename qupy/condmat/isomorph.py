@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 #from heapq import heappush, heappop, heapify
@@ -8,10 +8,11 @@ try:
     import numpy
     #import scipy.sparse.linalg as la
 except ImportError:
-    print "numpy not found"
+    print("numpy not found")
 
 
-from util import write
+def write(*args):
+    print(*args, end="", flush=True)
 
 
 class Point(object):
@@ -111,9 +112,9 @@ class Graph(object):
 
     def join(self, pi, pj):
         points = self.points
-        if type(pi) in [int, long]:
+        if type(pi) in [int, int]:
             pi = points[pi]
-        if type(pj) in [int, long]:
+        if type(pj) in [int, int]:
             pj = points[pj]
         if pi not in pj.nbd:
             pj.nbd.append(pi)
@@ -259,7 +260,7 @@ def from_sparse_ham(n, H):
     for i in range(n):
         p = Point('(%s)'%H[i, i], i)
         points.append(p)
-    for i, j in H.keys():
+    for i, j in list(H.keys()):
         if i!=j:
             points[i].nbd.append(points[j])
     bag = Graph(points)
@@ -344,8 +345,8 @@ def search_recursive(bag0, bag1, fn=None, depth=1):
     if len(orbits0) != len(orbits1):
         return
 
-    keys0 = orbits0.keys()
-    keys1 = orbits1.keys()
+    keys0 = list(orbits0.keys())
+    keys1 = list(orbits1.keys())
     keys0.sort()
     keys1.sort()
     if keys0 != keys1:
@@ -402,8 +403,8 @@ class State(object):
         if len(orbits0) != len(orbits1):
             raise Backtrack() # <-------------- raise
     
-        keys0 = orbits0.keys()
-        keys1 = orbits1.keys()
+        keys0 = list(orbits0.keys())
+        keys1 = list(orbits1.keys())
         keys0.sort()
         keys1.sort()
         if keys0 != keys1:
@@ -433,7 +434,7 @@ class State(object):
     def choose_best(self):
         XXX
         orbits0 = self.orbitss[0]
-        items = orbits0.items()
+        items = list(orbits0.items())
         items.sort(key = lambda item : len(item[1]))
         p = items[0][1][0] # first guy in smallest orbit
         self.choose(p.idx)
@@ -492,12 +493,12 @@ def search(bag0, bag1, depth=1, fn=None, verbose=False):
     if fn is None:
         fn = {}
 
-    remain = range(len(bag0))
+    remain = list(range(len(bag0)))
 
     orbits = bag0.get_orbits(depth)
     bag1.get_orbits()
 
-    keys = orbits.keys()
+    keys = list(orbits.keys())
     keys.sort(key = lambda key : len(orbits[key]))
     remain = []
     for key in keys:
@@ -530,7 +531,7 @@ def search(bag0, bag1, depth=1, fn=None, verbose=False):
     while stack:
 
         if verbose:
-            print "SEARCH", len(stack)
+            print("SEARCH", len(stack))
 
         for idx in remain:
             assert fn.get(idx) is None
@@ -543,11 +544,11 @@ def search(bag0, bag1, depth=1, fn=None, verbose=False):
         assert len(remain)+len(fn)==len(bag0)
 
         if verbose:
-            print fn
+            print(fn)
 
         if len(fn) == len(bag0):
             if verbose:
-                print "FOUND"
+                print("FOUND")
             yield dict(fn)
 
         else:
@@ -561,12 +562,12 @@ def search(bag0, bag1, depth=1, fn=None, verbose=False):
                 #remain.remove(idx)
                 stack.append(_state)
                 if verbose: 
-                    print "PUSH"
+                    print("PUSH")
                 continue
     
             except Backtrack:
                 if verbose: 
-                    print "BACK"
+                    print("BACK")
                 # the above do() doesn't work
                 pass
 
@@ -574,18 +575,18 @@ def search(bag0, bag1, depth=1, fn=None, verbose=False):
         while stack:
             state = stack[-1]
             if verbose:
-                print "UNDO"
+                print("UNDO")
             assert len(remain)+len(fn)==len(bag0)
             state.undo(fn)
             assert len(remain)+len(fn)+1==len(bag0)
             try:
                 if verbose:
-                    print "NEXT"
+                    print("NEXT")
                 state.next()
                 break # ok, finished backtracking
             except Backtrack:
                 if verbose:
-                    print "POP"
+                    print("POP")
                 state = stack.pop() # discard this guy
                 #remain.append(state.idx0)
                 remain.insert(0, state.idx0)
@@ -740,12 +741,11 @@ def test():
     assert len(list(search(bag0, bag1))) == 5
 
 
-from argv import Argv 
-argv = Argv()
-seed(0)
-
 
 if __name__ == "__main__":
+    from qupy.argv import argv 
+    seed(0)
+
 
     if argv.profile:
         import cProfile as profile
@@ -754,7 +754,7 @@ if __name__ == "__main__":
     else:
         test()
 
-    print "OK"
+    print("OK")
 
 
 

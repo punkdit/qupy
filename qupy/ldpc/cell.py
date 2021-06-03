@@ -296,7 +296,7 @@ class Complex(object):
                 A[row, col] = (A[row, col] + 1)%2
         return A
 
-    def get_code(self, grade=1):
+    def get_parity_checks(self, grade=1):
         verts = self.get_cells(grade-1)
         edges = self.get_cells(grade)
         faces = self.get_cells(grade+1)
@@ -307,7 +307,10 @@ class Complex(object):
 
         Hx = self.get_bdymap(grade)
         Hx = Hx.todense(verts, edges)
+        return Hz, Hx
 
+    def get_code(self, grade=1):
+        Hz, Hx = self.get_parity_checks(grade)
         code = CSSCode(Hx=Hx, Hz=Hz)
         return code
         
