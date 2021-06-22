@@ -61,8 +61,12 @@ class Operator(object):
         return "%s(%d)"%(self.__class__.__name__, self.n)
 
     def __call__(self, v, u=None):
-        u = v.copy()
-        return u
+        try:
+            u = v.copy()
+            return u
+        except:
+            print("%s.__call__(%s, %s)"%(self, v, u))
+            raise
 
     DEBUG_EQ = False
     def __eq_slow__(lhs, rhs):
@@ -125,12 +129,14 @@ class Operator(object):
         #    r = numpy.trace(A)
         #    return r
         u = numpy.zeros(N, dtype=scalar)
-        r = 0.
+        r = 0j
         for i in range(N):
             u[i] = 1
             v = self(u)
             r += v[i]
             u[i] = 0
+        if abs(r.imag)<EPSILON:
+            r = r.real
         return r
 
     def __add__(self, other):
@@ -322,7 +328,7 @@ class Operator(object):
                 code.append("u[%s] += %s*v[j]"%(index, r))
         code.dedent()
         
-        #print("make_tensor:")
+        #print("make_tensor1:")
         #print('\n'.join(code.lines))
         func = code.mkfunc()
         op = Numop(n, func, inverse=inverse)
@@ -464,7 +470,7 @@ class Numop(Operator):
         if reshape:
             u = u.view()
             u.shape = shape
-        assert u.shape == (self.N,)
+        assert u.shape == (self.N,), "%s != (%s,)"%(u.shape, self.N)
         if v is None:
             v = numpy.zeros(shape, dtype=self.dtype)
         self.func(u, v)
@@ -544,10 +550,10 @@ class Space(object):
         self.n = n
         self.I = Operator.make_I(n)
 
-    def make_tensor1(self, A, idx):
+    def make_tensor1(self, A, idx, **kw):
         n = self.n
         assert 0<=idx<n
-        op = Operator.make_tensor1(n, A, idx)
+        op = Operator.make_tensor1(n, A, idx, **kw)
         return op
 
     def make_xop(self, idxs):
@@ -1006,7 +1012,129 @@ def all_nonzero_codes(m, n):
             continue
         yield H
 
+
 class Code(object):
+    def __init__(self, Hs, **kw):
+        self.__dict__.update(kw)
+        if type(Hs) is str:
+            Hs = Hs.split()
+        n = None
+        for H in Hs:
+            assert n is None or len(H)==n
+            n = len(H)
+            assert H.count("I") + H.count("Z") + H.count("X") == n, "%s wtf?"%H
+        m = len(Hs)
+        space = Space(n)
+
+        stabs = []
+        for i in range(m):
+            idxs = [j for j in range(n) if Hs[i][j]=='Z']
+            zop = space.make_zop(idxs)
+            idxs = [j for j in range(n) if Hs[i][j]=='X']
+            xop = space.make_xop(idxs)
+            op = zop*xop
+            stabs.append(op)
+
+        # code projector:
+        P = None
+        for op in stabs:
+            A = (space.I + op)
+            P = A if P is None else A*P
+        P = 1./(2**len(stabs)) * P
+
+        self.Hs = Hs
+        self.stabs = stabs
+        self.space = space
+        self.P = P
+        self.m = m
+        self.n = n
+
+    def __getattr__(self, name):
+        meth = getattr(self.space, name, None)
+        if meth is None:
+            raise AttributeError("Code object has no attribute %r"%name)
+        return meth
+
+    def __str__(self):
+        return "Code(n=%d, m=%d)"%(self.n, self.m)
+
+    def check(self):
+        stabs = self.stabs
+        for a in stabs:
+          for b in stabs:
+            assert a*b==b*a
+        P = self.P
+        #assert P*P == (2**len(stabs))*P
+        assert P*P == P
+
+
+def test_weight_enums():
+
+    # https://arxiv.org/pdf/quant-ph/9610040.pdf
+
+    # five qubit code
+    Hs = "XZZXI IXZZX XIXZZ ZXIXZ"
+    code = Code(Hs)
+    code.check()
+    print(code)
+
+    P = code.P
+    #print(code.opstr(code.P))
+    # P = IIIII+IXZZX-IZYYZ-IYXXY+XIXZZ-XXYIY+XZZXI
+    # -XYIYX-ZIZYY+ZXIXZ+ZZXIX-ZYYZI-YIYXX-YXXYI-YZIZY-YYZIZ
+
+    weights = dict((w, []) for w in range(code.n+1))
+    #print(weights)
+    get_weight = lambda decl : len(decl)-decl.count("I")
+    for decl,op in code.get_basis():
+        weights[get_weight(decl)].append(op)
+
+    Ptr = P.trace()
+
+    if 0:
+        U = Gate.random_unitary(2)
+        #U = U.v
+        #print(U)
+        #Ui = U.transpose().conj()
+        #print(numpy.dot(U, Ui))
+        idx = 0
+        U = Operator.make_tensor1(code.n, U, idx)
+        #U = code.make_tensor1(U, idx, inverse=~U)
+
+    else:
+
+        Us = [Gate.random_unitary(2) for idx in range(code.n)]
+        U = Operator.make_tensor(Us)
+
+
+    def write(x):
+        if abs(x)<EPSILON:
+            x = 0.
+        if abs(x - round(x)) < EPSILON:
+            x = int(round(x))
+        print(x, end=" ", flush=True)
+
+    P = U * P * U.inverse
+
+    for d in range(code.n+1):
+        Ad = 0.
+        for op in weights[d]:
+            val = (op*P).trace() * (op.inverse * P).trace()
+            Ad += val / (Ptr**2)
+        write(Ad)
+    print()
+    
+    for d in range(code.n+1):
+        Bd = 0.
+        for op in weights[d]:
+            val = (op*P*op.inverse * P).trace()
+            Bd += val / Ptr
+        write(Bd)
+    print()
+    
+
+
+class CSSCode(object):
     def __init__(self, Hz, Hx, Lz=None, Lx=None, **kw):
         self.__dict__.update(kw)
         mz, n = Hz.shape
@@ -1076,7 +1204,7 @@ class Code(object):
         #self.check()
 
     def __str__(self):
-        return "Code(n=%d, mx=%d, mz=%d, k=%d)"%(self.n, self.mx, self.mz, self.k)
+        return "CSSCode(n=%d, mx=%d, mz=%d, k=%d)"%(self.n, self.mx, self.mz, self.k)
 
     def check(self):
         stabs = self.stabs
@@ -1095,7 +1223,7 @@ class Code(object):
                     #print( a*op == op*a, (i, j) , end=" ")
                 #print()
     
-        #print("Code.check(): OK")
+        #print("CSSCode.check(): OK")
 
     def __add__(self, other):
         Hz0 = numpy.concatenate((self.Hz, zeros2(self.mz, other.n)), axis=1)
@@ -1104,7 +1232,7 @@ class Code(object):
         Hx1 = numpy.concatenate((zeros2(other.mx, self.n), other.Hx), axis=1)
         Hz = numpy.concatenate((Hz0, Hz1))
         Hx = numpy.concatenate((Hx0, Hx1))
-        return Code(Hz, Hx)
+        return CSSCode(Hz, Hx)
 
     def longstr(self):
         s = '\n'.join([
@@ -1130,7 +1258,7 @@ class Code(object):
     def __getattr__(self, name):
         meth = getattr(self.space, name, None)
         if meth is None:
-            raise AttributeError("Code object has no attribute %r"%name)
+            raise AttributeError("CSSCode object has no attribute %r"%name)
         return meth
 
 
@@ -1160,7 +1288,7 @@ def hypergraph_product(A, B):
     Hzi = remove_dependent(Hz)
     Hxi = remove_dependent(Hx)
 
-    code = Code(Hzi, Hxi)
+    code = CSSCode(Hzi, Hxi)
     return code
 
 
@@ -1216,7 +1344,7 @@ def schur(H):
     Hzi = remove_dependent(Hz)
     Hxi = remove_dependent(Hx)
 
-    code = Code(Hzi, Hxi)
+    code = CSSCode(Hzi, Hxi)
     print(code)
 
     A = None
@@ -1290,7 +1418,7 @@ def main_8T():
     Lz = parse("1...1... 1.1..... 11......")
     Lx = parse("1111.... 11..11.. 1.1.1.1.")
 
-    code = Code(Hz, Hx, Lz, Lx)
+    code = CSSCode(Hz, Hx, Lz, Lx)
     code.check()
 
     T, Td = Gate.T, ~Gate.T
@@ -1365,7 +1493,7 @@ def main_mobius():
     Hz = parse(Hz)
     Hx = parse(Hx)
 
-    code = Code(Hz, Hx)
+    code = CSSCode(Hz, Hx)
     print(code)
     code.check()
 
@@ -1419,7 +1547,7 @@ def main_self_dual():
 
     for Hz, Hx, perm in weakly_self_dual_codes(m, n):
     
-        code = Code(Hz, Hx)
+        code = CSSCode(Hz, Hx)
         print(code)
     
         print("Hx:")
@@ -1478,7 +1606,7 @@ def main_pair():
         #    assert g.order() == 2
         #    perm = [g[i] for i in range(n)]
     
-        code = Code(Hz, Hx)
+        code = CSSCode(Hz, Hx)
         print(code)
         print(code.longstr())
         #print(perm)
@@ -1565,12 +1693,12 @@ def main_T_dual():
         print("fixed:", [i for (i,j) in enumerate(cols) if i==j])
         print()
 
-        code0 = Code(Hz, Hx)
+        code0 = CSSCode(Hz, Hx)
         #code0.check()
         print(code0)
         #print(code0.opstr(code0.P))
 
-        code1 = Code(Hz1, Hx)
+        code1 = CSSCode(Hz1, Hx)
         #code1.check()
 
         gates = [Gate.T, ~Gate.T]

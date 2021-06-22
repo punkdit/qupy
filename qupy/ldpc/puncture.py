@@ -163,6 +163,7 @@ class Draw(object):
         self.mark(idx, st_qubit=[red]+st_thick, r=0.16, stroke=True)
 
     def save(self, name):
+        print("save", name)
         self.cvs.writePDFfile(name+".pdf")
         self.cvs.writeSVGfile(name+".svg")
 
