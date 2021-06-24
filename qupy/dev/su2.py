@@ -26,7 +26,7 @@ from qupy.argv import argv
 from qupy.dev.comm import Poly
 from qupy.dev import groups
 from qupy.dev.linalg import row_reduce
-from qupy.dev.assoc import AssocAlg
+from qupy.dev._assoc import AssocAlg # avoid polluting namespace for assert's
 
 
 if argv.fast:
@@ -1913,6 +1913,51 @@ def find_commutative_invariants():
                 abelian = False
         if abelian:
             print(op)
+
+
+def test_five():
+
+    pauli = build_algebra("IXZY",
+        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    I = pauli.I
+    X = pauli.X
+    Z = pauli.Z
+    Y = pauli.Y
+
+
+    def mkop(I, X, Z, Y): # 0, 1, w, w^2
+        op = (I@I@I@I@I+I@X@Z@Z@X-I@Z@Y@Y@Z-I@Y@X@X@Y
+            +X@I@X@Z@Z-X@X@Y@I@Y+X@Z@Z@X@I-X@Y@I@Y@X
+            -Z@I@Z@Y@Y+Z@X@I@X@Z+Z@Z@X@I@X-Z@Y@Y@Z@I
+            -Y@I@Y@X@X-Y@X@X@Y@I-Y@Z@I@Z@Y-Y@Y@Z@I@Z)
+        return op
+
+    P = mkop(I, X, Z, Y)
+    #code = StabilizerCode(pauli, "XZZXI IXZZX XIXZZ ZXIXZ")
+    #assert P == code.get_projector()
+
+    def get_wenum(P):
+        wenum = {}
+        for idxs in P.get_keys():
+            n = len(idxs)
+            w = n - idxs.count(0)
+            wenum[w] = wenum.get(w, 0) + 1
+        return wenum
+
+    print(P)
+    print(get_wenum(P))
+    print(P.get_terms())
+    for k in P.get_keys():
+        print(k, P[k])
+
+    # https://www.sciencedirect.com/science/article/pii/0097316578900213
+    w, x, y, z = I, X, Z, Y
+    Q0 = P.subs({"I":w+x+y+z, "X":w-x+y-z, "Z":w+x-y-z, "Y":w-x-y+z})
+    Q = mkop(w+x+y+z, w-x+y-z, w+x-y-z, w-x-y+z)
+    assert Q0==Q
+    print(Q)
+    print(get_wenum(Q))
 
 
 def main():

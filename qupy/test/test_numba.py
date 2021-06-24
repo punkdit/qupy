@@ -1091,6 +1091,8 @@ def test_weight_enums():
 
     Ptr = P.trace()
 
+    U = None
+
     if 0:
         U = Gate.random_unitary(2)
         #U = U.v
@@ -1101,7 +1103,7 @@ def test_weight_enums():
         U = Operator.make_tensor1(code.n, U, idx)
         #U = code.make_tensor1(U, idx, inverse=~U)
 
-    else:
+    elif 0:
 
         Us = [Gate.random_unitary(2) for idx in range(code.n)]
         U = Operator.make_tensor(Us)
@@ -1114,7 +1116,8 @@ def test_weight_enums():
             x = int(round(x))
         print(x, end=" ", flush=True)
 
-    P = U * P * U.inverse
+    if U is not None:
+        P = U * P * U.inverse
 
     for d in range(code.n+1):
         Ad = 0.
