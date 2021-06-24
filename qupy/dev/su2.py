@@ -1497,7 +1497,7 @@ def allperms(items):
             yield (items[i],) + rest
 
 
-def to_dense(op):
+def to_dense_real(op):
     I = Qu((2, 2), 'ud', [[1, 0], [0, 1]])
     X = Qu((2, 2), 'ud', [[0, 1], [1, 0]])
     Z = Qu((2, 2), 'ud', [[1, 0], [0, -1]])
@@ -1505,6 +1505,16 @@ def to_dense(op):
     # which Y to use?
     #Y = Qu((2, 2), 'ud', [[0, 1.j], [-1.j, 0]]) 
     Y = X*Z
+
+    op = op.subs({"I":I, "X":X, "Z":Z, "Y":Y})
+    return op
+
+        
+def to_dense_complex(op):
+    I = Qu((2, 2), 'ud', [[1, 0], [0, 1]])
+    X = Qu((2, 2), 'ud', [[0, 1], [1, 0]])
+    Z = Qu((2, 2), 'ud', [[1, 0], [0, -1]])
+    Y = Qu((2, 2), 'ud', [[0, 1.j], [-1.j, 0]]) 
 
     op = op.subs({"I":I, "X":X, "Z":Z, "Y":Y})
     return op
@@ -1662,7 +1672,7 @@ def test_internal_series_fast():
             opis.remove(opj)
 
         if argv.show_spec:
-            A = to_dense(Q)
+            A = to_dense_real(Q)
             show_spec(A)
 
         if is_abelian(Q):
@@ -1763,7 +1773,7 @@ def test_internal_series_fast():
             P = P1
     
         print("spec:", end=" ")
-        show_spec(to_dense(P))
+        show_spec(to_dense_real(P))
     
         for idx in range(degree):
             for error in "XZ":
@@ -1860,7 +1870,7 @@ def test_internal_series_fast():
         if abs(err) > EPSILON:
             print("error:", err)
         Ps.append(P)
-        #P = to_dense(P)
+        #P = to_dense_real(P)
         #show_spec(P)
 
 
@@ -1917,47 +1927,95 @@ def find_commutative_invariants():
 
 def test_five():
 
+    #real_pauli = build_algebra("IXZY",
+    #    "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+    #pauli = build_algebra("IXZY", 
+    #    "X*X=I Z*Z=I Y*Y=I X*Z=-iY Z*X=iY X*Y=iZ Y*X=-iZ Z*Y=-iX Y*Z=iX")
+
     pauli = build_algebra("IXZY",
-        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+        "I*I=I I*X=X I*Z=Z I*Y=Y X*I=X X*X=I X*Z=-1i*Y"
+        " X*Y=1i*Z Z*I=Z Z*X=1i*Y Z*Z=I Z*Y=-1i*X Y*I=Y Y*X=-1i*Z Y*Z=1i*X Y*Y=I")
 
     I = pauli.I
     X = pauli.X
     Z = pauli.Z
     Y = pauli.Y
 
-
     def mkop(I, X, Z, Y): # 0, 1, w, w^2
-        op = (I@I@I@I@I+I@X@Z@Z@X-I@Z@Y@Y@Z-I@Y@X@X@Y
-            +X@I@X@Z@Z-X@X@Y@I@Y+X@Z@Z@X@I-X@Y@I@Y@X
-            -Z@I@Z@Y@Y+Z@X@I@X@Z+Z@Z@X@I@X-Z@Y@Y@Z@I
-            -Y@I@Y@X@X-Y@X@X@Y@I-Y@Z@I@Z@Y-Y@Y@Z@I@Z)
+        op = (I@I@I@I@I+I@X@Z@Z@X+I@Z@Y@Y@Z+I@Y@X@X@Y
+            +X@I@X@Z@Z+X@X@Y@I@Y+X@Z@Z@X@I+X@Y@I@Y@X
+            +Z@I@Z@Y@Y+Z@X@I@X@Z+Z@Z@X@I@X+Z@Y@Y@Z@I
+            +Y@I@Y@X@X+Y@X@X@Y@I+Y@Z@I@Z@Y+Y@Y@Z@I@Z)
         return op
 
     P = mkop(I, X, Z, Y)
-    #code = StabilizerCode(pauli, "XZZXI IXZZX XIXZZ ZXIXZ")
-    #assert P == code.get_projector()
+    code = StabilizerCode(pauli, "XZZXI IXZZX XIXZZ ZXIXZ")
+    P1 = code.get_projector()
+    assert P == P1
 
-    def get_wenum(P):
-        wenum = {}
+    def get_wenum(P, n=5):
+        wenum = [0]*(n+1)
         for idxs in P.get_keys():
+            val = P[idxs]
             n = len(idxs)
             w = n - idxs.count(0)
-            wenum[w] = wenum.get(w, 0) + 1
+            val = complex(val)
+            if val.imag == 0:
+                val = val.real
+                if val == round(val):
+                    val = int(round(val))
+            wenum[w] += val
         return wenum
 
     print(P)
     print(get_wenum(P))
-    print(P.get_terms())
-    for k in P.get_keys():
-        print(k, P[k])
+    #print(P.get_terms())
+    #for k in P.get_keys():
+    #    print(k, P[k])
+
+    Q = P.subs({"I":I, "X":X, "Z":X, "Y":X})
+    print(Q)
+    print(get_wenum(Q))
 
     # https://www.sciencedirect.com/science/article/pii/0097316578900213
     w, x, y, z = I, X, Z, Y
-    Q0 = P.subs({"I":w+x+y+z, "X":w-x+y-z, "Z":w+x-y-z, "Y":w-x-y+z})
-    Q = mkop(w+x+y+z, w-x+y-z, w+x-y-z, w-x-y+z)
-    assert Q0==Q
+    half = 0.5
+    Q = 2*mkop(half*(w+x+y+z), half*(w-x+y-z), half*(w+x-y-z), half*(w-x-y+z))
+    #Q0 = P.subs({"I":w+x+y+z, "X":w-x+y-z, "Z":w+x-y-z, "Y":w-x-y+z})
+    #assert Q0==Q
     print(Q)
     print(get_wenum(Q))
+
+    #QQ = (Q*Q)
+
+    Pf = P.subs({"I":I, "X":X, "Z":Y, "Y":Z})
+    Qf = Q.subs({"I":I, "X":X, "Z":Y, "Y":Z})
+    R = Qf-P
+    print(R)
+    assert R*P == P*R # why ?
+
+
+    def show_spec(R):
+        A = to_dense_complex(R)
+        items = A.eigs()
+        neg, pos, zero = 0, 0, 0
+        for val, vec in items:
+            if abs(val.imag)<EPSILON:
+                val = val.real
+            print("\t", val)
+            if val < -EPSILON:
+                neg += 1
+            elif val > EPSILON:
+                pos += 1
+            else:
+                zero += 1
+        print("neg=%d, pos=%d, zero=%d"%(neg, pos, zero))
+
+    print("show_spec(P):")
+    show_spec(P)
+    #print("show_spec(R):")
+    #show_spec(R)
+
 
 
 def main():

@@ -65,8 +65,8 @@ def test_real_pauli():
 def test_complex_pauli():
     #algebra = Algebra("IXYZ")
     pauli = build_algebra("IXZY",
-        "I*I=I I*X=X I*Z=Z I*Y=Y X*I=X X*X=I X*Z=-1j*Y"
-        " X*Y=1j*Z Z*I=Z Z*X=1j*Y Z*Z=I Z*Y=-1j*X Y*I=Y Y*X=-1j*Z Y*Z=1j*X Y*Y=I")
+        "I*I=I I*X=X I*Z=Z I*Y=Y X*I=X X*X=I X*Z=-1i*Y"
+        " X*Y=1i*Z Z*I=Z Z*X=1i*Y Z*Z=I Z*Y=-1i*X Y*I=Y Y*X=-1i*Z Y*Z=1i*X Y*Y=I")
 
     I = pauli.I
     X = pauli.X

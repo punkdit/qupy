@@ -463,11 +463,13 @@ def build_algebra(names, rel):
         val = None
         if not rhs:
             val = ONE
+        elif rhs == "+":
+            val = ONE
         elif rhs == "-":
             val = -ONE
-        elif rhs == "1j*":
+        elif rhs == "1i*":
             val = 1j
-        elif rhs == "-1j*":
+        elif rhs == "-1i*":
             val = -1j
         else:
             assert 0, repr(eq)

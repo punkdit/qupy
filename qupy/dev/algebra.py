@@ -98,13 +98,14 @@ def build_algebra(names, rel):
             val = scalar.one
         elif rhs == "-":
             val = -scalar.one
-        elif rhs == "i":
+        elif rhs == "i" or rhs == "1i*":
             val = 1.j*scalar.one
-        elif rhs == "-i":
+        elif rhs == "-i" or rhs == "-1i*":
             val = -1.j*scalar.one
         else:
-            assert 0, "Parse error: %s"%repr(eq)
-        assert struct.get((i, j, k)) is None
+            assert 0, "Parse error: eq=%r, rhs=%r"%(eq, rhs)
+        prev = struct.get((i, j, k))
+        assert prev == val or prev is None
         struct[i, j, k] = val
 
     A = numpy.zeros((dim, dim, dim), dtype=scalar.dtype)
