@@ -836,28 +836,24 @@ def build_code(pauli, name=None):
     if name is None:
         name = argv.next()
 
+    op = None
     if name=="two":
         code = StabilizerCode(pauli, "XX ZZ")
-        op = code.get_projector()
     elif name=="four":
         code = StabilizerCode(pauli, "XXII ZZII IIXX IIZZ")
-        op = code.get_projector()
     elif name=="five":
         code = StabilizerCode(pauli, "XZZXI IXZZX XIXZZ ZXIXZ")
-        op = (I@I@I@I@I+I@X@Z@Z@X-I@Z@Y@Y@Z-I@Y@X@X@Y
-            +X@I@X@Z@Z-X@X@Y@I@Y+X@Z@Z@X@I-X@Y@I@Y@X
-            -Z@I@Z@Y@Y+Z@X@I@X@Z+Z@Z@X@I@X-Z@Y@Y@Z@I
-            -Y@I@Y@X@X-Y@X@X@Y@I-Y@Z@I@Z@Y-Y@Y@Z@I@Z)
-        assert op == code.get_projector()
+    elif name=="surface":
+        code = StabilizerCode(pauli, "ZZZII IIZZZ XIXXI IXXIX")
     elif name=="seven":
         code = StabilizerCode(pauli, "XZZXIII IXZZXII IIXZZXI IIIXZZX XIIIXZZ ZXIIIXZ ZZXIIIX")
-        op = code.get_projector()
     elif name=="steane":
         code = StabilizerCode(pauli, "XXXXIII XXIIXXI XIXIXIX ZZZZIII ZZIIZZI ZIZIZIZ")
-        op = code.get_projector()
+    elif name=="color832":
+        # https://earltcampbell.com/2016/09/26/the-smallest-interesting-colour-code/
+        code = StabilizerCode(pauli, "ZZZZIIII ZZIIZZII ZIZIZIZI ZZZZZZZZ XXXXXXXX")
     elif name=="rm":
         code = build_rm(pauli)
-        op = code.get_projector()
     elif name=="toric":
         s = """
         XX.XX...  
@@ -868,11 +864,12 @@ def build_code(pauli, name=None):
         .Z..ZZZ.
         """.replace(".", "I")
         code = StabilizerCode(pauli, s)
-        op = code.get_projector()
     else:
         op = argv.op
         if op:
             op = eval(op, locals())
+    if op is None:
+        op = code.get_projector()
     return op
 
 
@@ -1925,16 +1922,38 @@ def find_commutative_invariants():
             print(op)
 
 
-def test_five():
+def test_macwilliams():
 
-    #real_pauli = build_algebra("IXZY",
-    #    "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
-    #pauli = build_algebra("IXZY", 
-    #    "X*X=I Z*Z=I Y*Y=I X*Z=-iY Z*X=iY X*Y=iZ Y*X=-iZ Z*Y=-iX Y*Z=iX")
+    pauli_name = argv.get("pauli", "complex")
 
-    pauli = build_algebra("IXZY",
-        "I*I=I I*X=X I*Z=Z I*Y=Y X*I=X X*X=I X*Z=-1i*Y"
-        " X*Y=1i*Z Z*I=Z Z*X=1i*Y Z*Z=I Z*Y=-1i*X Y*I=Y Y*X=-1i*Z Y*Z=1i*X Y*Y=I")
+    def show_spec(R):
+        if pauli_name == "complex":
+            A = to_dense_complex(R)
+        else:
+            A = to_dense_real(R)
+        items = A.eigs()
+        neg, pos, zero = 0, 0, 0
+        for val, vec in items:
+            if abs(val.imag)<EPSILON:
+                val = val.real
+            if abs(val)>EPSILON:
+                print("\t%.6f ....**2 = %.6f"%(val, val**2))
+            if val < -EPSILON:
+                neg += 1
+            elif val > EPSILON:
+                pos += 1
+            else:
+                zero += 1
+        print("neg=%d, pos=%d, zero=%d"%(neg, pos, zero))
+
+
+    if pauli_name=="real":
+        pauli = build_algebra("IXZY",
+            "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+    else:
+        pauli = build_algebra("IXZY",
+            "I*I=I I*X=X I*Z=Z I*Y=Y X*I=X X*X=I X*Z=-1i*Y"
+            " X*Y=1i*Z Z*I=Z Z*X=1i*Y Z*Z=I Z*Y=-1i*X Y*I=Y Y*X=-1i*Z Y*Z=1i*X Y*Y=I")
 
     I = pauli.I
     X = pauli.X
@@ -1942,18 +1961,27 @@ def test_five():
     Y = pauli.Y
 
     def mkop(I, X, Z, Y): # 0, 1, w, w^2
-        op = (I@I@I@I@I+I@X@Z@Z@X+I@Z@Y@Y@Z+I@Y@X@X@Y
-            +X@I@X@Z@Z+X@X@Y@I@Y+X@Z@Z@X@I+X@Y@I@Y@X
-            +Z@I@Z@Y@Y+Z@X@I@X@Z+Z@Z@X@I@X+Z@Y@Y@Z@I
-            +Y@I@Y@X@X+Y@X@X@Y@I+Y@Z@I@Z@Y+Y@Y@Z@I@Z)
-        return op
+        name = argv.get("code", "five")
+        P = build_code(pauli, name)
+        P = P.subs({"I":I, "X":X, "Z":Z, "Y":Y})
+        return P
 
     P = mkop(I, X, Z, Y)
-    code = StabilizerCode(pauli, "XZZXI IXZZX XIXZZ ZXIXZ")
-    P1 = code.get_projector()
-    assert P == P1
 
-    def get_wenum(P, n=5):
+    for idxs in P.get_keys():
+        n = len(idxs)
+        break
+    print("n =", n)
+
+    if 0:
+        print("P:")
+        show_spec(P)
+        print("P*P:")
+        show_spec(P*P)
+
+    k = argv.get("k", 1)
+
+    def get_wenum(P, n=n):
         wenum = [0]*(n+1)
         for idxs in P.get_keys():
             val = P[idxs]
@@ -1968,54 +1996,218 @@ def test_five():
         return wenum
 
     print(P)
+    assert P*P == 2**(n-k) * P, str(P*P)
+
     print(get_wenum(P))
     #print(P.get_terms())
     #for k in P.get_keys():
     #    print(k, P[k])
 
-    Q = P.subs({"I":I, "X":X, "Z":X, "Y":X})
-    print(Q)
-    print(get_wenum(Q))
+    #Q = P.subs({"I":I, "X":X, "Z":X, "Y":X})
+    #print(Q)
+    #print(get_wenum(Q))
 
     # https://www.sciencedirect.com/science/article/pii/0097316578900213
     w, x, y, z = I, X, Z, Y
     half = 0.5
-    Q = 2*mkop(half*(w+x+y+z), half*(w-x+y-z), half*(w+x-y-z), half*(w-x-y+z))
-    #Q0 = P.subs({"I":w+x+y+z, "X":w-x+y-z, "Z":w+x-y-z, "Y":w-x-y+z})
-    #assert Q0==Q
-    print(Q)
+    Q = mkop(half*(w+x+y+z), half*(w-x+y-z), half*(w+x-y-z), half*(w-x-y+z))
+
+    idxs = (0,)*n # identity
+    m = P[idxs] / Q[idxs]
+    Q = m*Q
+
     print(get_wenum(Q))
 
-    #QQ = (Q*Q)
 
-    Pf = P.subs({"I":I, "X":X, "Z":Y, "Y":Z})
-    Qf = Q.subs({"I":I, "X":X, "Z":Y, "Y":Z})
-    R = Qf-P
-    print(R)
-    assert R*P == P*R # why ?
+    def demote(val):
+        val = complex(val)
+        if val.imag == 0:
+            val = val.real
+            if val == round(val):
+                val = int(round(val))
+        return val
 
-
-    def show_spec(R):
-        A = to_dense_complex(R)
-        items = A.eigs()
-        neg, pos, zero = 0, 0, 0
-        for val, vec in items:
-            if abs(val.imag)<EPSILON:
-                val = val.real
-            print("\t", val)
-            if val < -EPSILON:
-                neg += 1
-            elif val > EPSILON:
-                pos += 1
+    def compare_le(P, Q):
+        for idxs in P.get_keys():
+            lhs, rhs = P[idxs], Q[idxs]
+            lhs, rhs = demote(lhs), demote(rhs)
+            if 0 < lhs <= rhs:
+                pass
             else:
-                zero += 1
-        print("neg=%d, pos=%d, zero=%d"%(neg, pos, zero))
+                #print("fail:", idxs, lhs, rhs)
+                return False
+        return True
 
-    print("show_spec(P):")
-    show_spec(P)
-    #print("show_spec(R):")
-    #show_spec(R)
 
+    Q_XZ = Q.subs({"I":I, "X":Z, "Z":X, "Y":Y})
+    Q_ZY = Q.subs({"I":I, "X":X, "Z":Y, "Y":Z})
+
+    print("compare_le(P, Q)   :", compare_le(P, Q) )
+    print("compare_le(P, Q_XZ):", compare_le(P, Q_XZ) )
+    print("compare_le(P, Q_ZY):", compare_le(P, Q_ZY) )
+
+    print("P*Q == Q*P         :", P*Q == Q*P)
+    print("P*Q_XZ == Q_XZ*P   :", P*Q_XZ == Q_XZ*P)
+    print("P*Q_ZY == Q_ZY*P   :", P*Q_ZY == Q_ZY*P)
+
+    R = Q - P
+    R_XZ = Q_XZ - P
+    R_ZY = Q_ZY - P
+    print("R*P==P*R:          :", R*P == P*R)
+    print("R_XZ*P==P*R_XZ     :", R_XZ*P == P*R_XZ)
+    print("R_ZY*P==P*R_ZY     :", R_ZY*P == P*R_ZY)
+
+    if pauli_name == "complex":
+        R = R_ZY
+    else:
+        R = R_XZ
+
+    #print("show_spec(P*R):")
+    #show_spec(P*R)
+    #print("show_spec(P):")
+    #show_spec(P)
+    print("show_spec(R):")
+    show_spec(R)
+
+
+def test_gcolor():
+
+    # ./models.py gcolor show
+    """
+    Model(n=15, Lx/z: 1, Gx: 18, Gz: 18, Hx: 4, Hz: 4, Rx/z: 6)
+    Hx/Hz:
+    11111111....... 11111111.......
+    1111....1111... 1111....1111...
+    11..11..11..11. 11..11..11..11.
+    1.1.1.1.1.1.1.1 1.1.1.1.1.1.1.1
+    
+    Gx/Gz:
+    1111........... 1111...........
+    ....1111....... ....1111.......
+    11..11......... 11..11.........
+    ..11..11....... ..11..11.......
+    1.1.1.1........ 1.1.1.1........
+    .1.1.1.1....... .1.1.1.1.......
+    ........1111... ........1111...
+    ........11..11. ........11..11.
+    ........1.1.1.1 ........1.1.1.1
+    11......11..... 11......11.....
+    ..11......11... ..11......11...
+    1.1.....1.1.... 1.1.....1.1....
+    .1.1.....1.1... .1.1.....1.1...
+    ....11......11. ....11......11.
+    ....1.1.....1.1 ....1.1.....1.1
+    1...1...1...1.. 1...1...1...1..
+    .1...1...1...1. .1...1...1...1.
+    ..1...1...1...1 ..1...1...1...1
+    """
+
+    
+    # real pauli algebra
+    pauli = build_algebra("IXZY", "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+
+    I = pauli.I
+    X = pauli.X
+    Z = pauli.Z
+    Y = pauli.Y
+
+    ops = """
+    1111...........
+    ....1111.......
+    11..11.........
+    ..11..11.......
+    1.1.1.1........
+    .1.1.1.1.......
+    ........1111...
+    ........11..11.
+    ........1.1.1.1
+    11......11.....
+    ..11......11...
+    1.1.....1.1....
+    .1.1.....1.1...
+    ....11......11.
+    ....1.1.....1.1
+    1...1...1...1..
+    .1...1...1...1.
+    ..1...1...1...1
+    """.strip().split()
+    assert len(ops) == 18
+
+    # Construct the Hamiltonian
+    H = None
+    for op in ops:
+        op = op.replace(".", "I")
+        xop = op.replace("1", "X")
+        xop = parse_op(pauli, xop)[0]
+        if H is None:
+            H = xop
+        else:
+            H += xop
+
+        zop = op.replace("1", "Z")
+        zop = parse_op(pauli, zop)[0]
+        H += zop
+    print(H)
+
+    n = 15
+    def get_wenum(P, n=n):
+        wenum = [0]*(n+1)
+        for idxs in P.get_keys():
+            val = P[idxs]
+            n = len(idxs)
+            w = n - idxs.count(0)
+            val = complex(val)
+            if val.imag == 0:
+                val = val.real
+                if val == round(val):
+                    val = int(round(val))
+            wenum[w] += val
+        return wenum
+
+    print(get_wenum(H))
+
+    return # too big ! give up...
+
+    # Construct the Jamiltonian
+    w, x, y, z = I, X, Z, Y
+    half = 0.5
+    J = H.subs({
+        "I":half*(w+x+y+z), 
+        "X":half*(w-x+y-z), 
+        "Z":half*(w+x-y-z), 
+        "Y":half*(w-x-y+z)})
+
+    print(get_wenum(J))
+    
+
+
+def test_gf4():
+
+    pauli_name = argv.get("pauli", "real")
+
+    if pauli_name=="real":
+        print("real pauli")
+        pauli = build_algebra("IXZY",
+            "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+    else:
+        print("complex pauli")
+        pauli = build_algebra("IXZY",
+            "I*I=I I*X=X I*Z=Z I*Y=Y X*I=X X*X=I X*Z=-1i*Y"
+            " X*Y=1i*Z Z*I=Z Z*X=1i*Y Z*Z=I Z*Y=-1i*X Y*I=Y Y*X=-1i*Z Y*Z=1i*X Y*Y=I")
+
+    I = pauli.I
+    X = pauli.X
+    Z = pauli.Z
+    Y = pauli.Y
+
+    w, x, y, z = I, X, Z, Y
+    half = 0.5
+    for A in [
+        half*(w+x+y+z), 
+        half*(w-x+y-z), 
+        half*(w+x-y-z), 
+        half*(w-x-y+z)]:
+        print(to_dense_complex(A).v)
 
 
 def main():
@@ -2024,14 +2216,17 @@ def main():
 
 if __name__ == "__main__":
 
-    build()
-
     _seed = argv.seed
     if _seed is not None:
         numpy.random.seed(_seed)
         seed(_seed)
 
     name = argv.next() or "main"
+
+    if name in "test_macwilliams test_gcolor test_gf4".split():
+        pass
+    else:
+        build()
 
     if argv.profile:
         import cProfile as profile

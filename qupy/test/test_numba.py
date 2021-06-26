@@ -1072,21 +1072,60 @@ def test_weight_enums():
 
     # https://arxiv.org/pdf/quant-ph/9610040.pdf
 
-    # five qubit code
-    Hs = "XZZXI IXZZX XIXZZ ZXIXZ"
-    code = Code(Hs)
-    code.check()
-    print(code)
+    code = argv.get("code")
 
-    P = code.P
-    #print(code.opstr(code.P))
-    # P = IIIII+IXZZX-IZYYZ-IYXXY+XIXZZ-XXYIY+XZZXI
-    # -XYIYX-ZIZYY+ZXIXZ+ZZXIX-ZYYZI-YIYXX-YXXYI-YZIZY-YYZIZ
+    if code == "gcolor":
+        n = 15
+        ops = """
+        1111...........
+        ....1111.......
+        11..11.........
+        ..11..11.......
+        1.1.1.1........
+        .1.1.1.1.......
+        ........1111...
+        ........11..11.
+        ........1.1.1.1
+        11......11.....
+        ..11......11...
+        1.1.....1.1....
+        .1.1.....1.1...
+        ....11......11.
+        ....1.1.....1.1
+        1...1...1...1..
+        .1...1...1...1.
+        ..1...1...1...1
+        """.strip().split()
+        assert len(ops) == 18
 
-    weights = dict((w, []) for w in range(code.n+1))
+        space = Space(n)
+        xops = [space.make_xop([i for i in range(n) if op[i]=='1']) for op in ops]
+        zops = [space.make_zop([i for i in range(n) if op[i]=='1']) for op in ops]
+        #print(space.opstr(xops[0])) # too big...
+        #return
+        P = xops[0] 
+        for op in xops[1:] + zops:
+            P = P + op
+
+    else:
+        if code == "five":
+            Hs = "XZZXI IXZZX XIXZZ ZXIXZ" # five qubit code
+        elif code == "steane":
+            Hs = "XXXXIII XXIIXXI XIXIXIX ZZZZIII ZZIIZZI ZIZIZIZ" # steane code
+        else:
+            assert 0, code
+        code = Code(Hs)
+        code.check()
+        print(code)
+        P = code.P
+        n = code.n
+        space = code.space
+        
+
+    weights = dict((w, []) for w in range(n+1))
     #print(weights)
     get_weight = lambda decl : len(decl)-decl.count("I")
-    for decl,op in code.get_basis():
+    for decl,op in space.get_basis():
         weights[get_weight(decl)].append(op)
 
     Ptr = P.trace()
@@ -1100,12 +1139,12 @@ def test_weight_enums():
         #Ui = U.transpose().conj()
         #print(numpy.dot(U, Ui))
         idx = 0
-        U = Operator.make_tensor1(code.n, U, idx)
-        #U = code.make_tensor1(U, idx, inverse=~U)
+        U = Operator.make_tensor1(n, U, idx)
+        #U = space.make_tensor1(U, idx, inverse=~U)
 
     elif 0:
 
-        Us = [Gate.random_unitary(2) for idx in range(code.n)]
+        Us = [Gate.random_unitary(2) for idx in range(n)]
         U = Operator.make_tensor(Us)
 
 
@@ -1119,7 +1158,7 @@ def test_weight_enums():
     if U is not None:
         P = U * P * U.inverse
 
-    for d in range(code.n+1):
+    for d in range(n+1):
         Ad = 0.
         for op in weights[d]:
             val = (op*P).trace() * (op.inverse * P).trace()
@@ -1127,7 +1166,7 @@ def test_weight_enums():
         write(Ad)
     print()
     
-    for d in range(code.n+1):
+    for d in range(n+1):
         Bd = 0.
         for op in weights[d]:
             val = (op*P*op.inverse * P).trace()
