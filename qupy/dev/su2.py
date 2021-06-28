@@ -741,24 +741,47 @@ def promote_algebra(algebra, G):
 
 
 class StabilizerCode(object):
-    def __init__(self, algebra, ops):
-        if type(ops) is str:
-            ops = ops.split()
-            ops = [algebra.parse(s) for s in ops]
+    def __init__(self, algebra, stabs, logops=[]):
+        if type(stabs) is str:
+            stabs = stabs.split()
+            stabs = [algebra.parse(s) for s in stabs]
         else:
-            ops = list(ops)
-        self.n = ops[0].grade
-        for g in ops:
-          for h in ops:
-            assert g*h == h*g , "%s %s"%(g, h)
-        self.ops = list(ops)
+            stabs = list(stabs)
+        if type(logops) is str:
+            logops = logops.split()
+            logops = [algebra.parse(s) for s in logops]
+        else:
+            logops = list(logops)
+        self.algebra = algebra
+        self.n = stabs[0].grade
+        self.I = algebra.parse("I"*self.n)
+        for g in stabs+logops:
+            assert g*g == self.I
+            for h in stabs:
+                assert g*h == h*g , "%s %s"%(g, h)
+        self.stabs = list(stabs)
+        self.logops = list(logops)
         self._P = None
 
     def get_projector(self):
         " Build projector onto codespace "
         if self._P is not None:
             return self._P
-        G = mulclose(self.ops, verbose=False)
+        P = self.I
+        for op in self.stabs:
+            P = P*(self.I + op)
+        r = 2**len(self.stabs)
+        for op in self.logops:
+            assert P*op == op*P
+        self._P = P
+        return P
+
+    def get_projector_1(self):
+        " Build projector onto codespace "
+        if self._P is not None:
+            return self._P
+        G = mulclose(self.stabs, verbose=False)
+        assert len(G) == 2**(len(self.stabs))
         #print("get_projector:", len(G))
         #P = (1./len(G))*reduce(add, G)
         P = reduce(add, G)
@@ -802,6 +825,7 @@ Tx:Hz =
     ....XXXX....XXXX
     ........XXXXXXXX
     """.replace(".", "I")
+    print(sx)
     
     sz = """
     .Z.Z.Z.Z.Z.Z.Z.Z
@@ -815,12 +839,57 @@ Tx:Hz =
     ......ZZ..ZZ....
     .....ZZ..ZZ.....
     """.replace(".", "I")
+    print(sz)
     code = StabilizerCode(pauli, sx+sz)
 
     return code
 
 
-def build_code(pauli, name=None):
+def rand_css(pauli, n, k):
+    from qupy.ldpc.solve import zeros2, dot2, rank, shortstr, enum2, parse, rand2, find_kernel
+
+    m = n-k
+    mx = m//2
+    mz = m-mx
+
+    Hz = rand2(mz, n)
+    print(shortstr(Hz))
+    print()
+
+    Kx = find_kernel(Hz)
+
+    Hx = Kx[:mx, :]
+    Lx = Kx[mx:, :]
+
+    print(shortstr(Hx))
+    print()
+
+    strops = []
+    for row in Hz:
+        row = shortstr(row).replace('1', 'Z').replace('.', 'I')
+        strops.append(row)
+    for row in Hx:
+        row = shortstr(row).replace('1', 'X').replace('.', 'I')
+        strops.append(row)
+
+    strops = ' '.join(strops)
+
+    code = StabilizerCode(pauli, strops)
+    return code
+
+
+def test_rand():
+
+    pauli = build_algebra("IXZY",
+        "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+    code = rand_css(pauli, 10, 2)
+
+    P = code.get_projector()
+    print(P)
+
+
+
+def make_code(pauli, name=None):
     I = pauli.I
     X = pauli.X
     Y = pauli.Y
@@ -842,16 +911,21 @@ def build_code(pauli, name=None):
     elif name=="four":
         code = StabilizerCode(pauli, "XXII ZZII IIXX IIZZ")
     elif name=="five":
-        code = StabilizerCode(pauli, "XZZXI IXZZX XIXZZ ZXIXZ")
+        code = StabilizerCode(pauli, "XZZXI IXZZX XIXZZ ZXIXZ", "XXXXX ZZZZZ")
     elif name=="surface":
-        code = StabilizerCode(pauli, "ZZZII IIZZZ XIXXI IXXIX")
+        code = StabilizerCode(pauli, "ZZZII IIZZZ XIXXI IXXIX", "XXIII ZIIZI")
     elif name=="seven":
-        code = StabilizerCode(pauli, "XZZXIII IXZZXII IIXZZXI IIIXZZX XIIIXZZ ZXIIIXZ ZZXIIIX")
+        code = StabilizerCode(pauli, "XZZXIII IXZZXII IIXZZXI IIIXZZX XIIIXZZ ZXIIIXZ")
     elif name=="steane":
-        code = StabilizerCode(pauli, "XXXXIII XXIIXXI XIXIXIX ZZZZIII ZZIIZZI ZIZIZIZ")
+        code = StabilizerCode(pauli, 
+            "XXXXIII XXIIXXI XIXIXIX ZZZZIII ZZIIZZI ZIZIZIZ", "XXXXXXX ZZZZZZZ")
     elif name=="color832":
         # https://earltcampbell.com/2016/09/26/the-smallest-interesting-colour-code/
         code = StabilizerCode(pauli, "ZZZZIIII ZZIIZZII ZIZIZIZI ZZZZZZZZ XXXXXXXX")
+    elif name=="rand_css":
+        n = argv.get("n", 10)
+        k = argv.get("k", 2)
+        code = rand_css(pauli, n, k)
     elif name=="rm":
         code = build_rm(pauli)
     elif name=="toric":
@@ -864,13 +938,14 @@ def build_code(pauli, name=None):
         .Z..ZZZ.
         """.replace(".", "I")
         code = StabilizerCode(pauli, s)
-    else:
-        op = argv.op
-        if op:
-            op = eval(op, locals())
-    if op is None:
-        op = code.get_projector()
+    return code
+
+
+def build_code(pauli, name=None):
+    code = make_code(pauli, name)
+    op = code.get_projector()
     return op
+
 
 
 def test_code():
@@ -1924,20 +1999,29 @@ def find_commutative_invariants():
 
 def test_macwilliams():
 
-    pauli_name = argv.get("pauli", "complex")
+    pauli_name = argv.get("pauli", "C") # argh, complex is a builtin duh
 
-    def show_spec(R):
-        if pauli_name == "complex":
-            A = to_dense_complex(R)
-        else:
-            A = to_dense_real(R)
+    if pauli_name=="real":
+        pauli = build_algebra("IXZY",
+            "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
+        to_dense = to_dense_real
+    else:
+        pauli = build_algebra("IXZY",
+            "I*I=I I*X=X I*Z=Z I*Y=Y X*I=X X*X=I X*Z=-1i*Y"
+            " X*Y=1i*Z Z*I=Z Z*X=1i*Y Z*Z=I Z*Y=-1i*X Y*I=Y Y*X=-1i*Z Y*Z=1i*X Y*Y=I")
+        to_dense = to_dense_complex
+
+    def show_spec(R, to_dense=to_dense):
+        A = to_dense(R)
         items = A.eigs()
         neg, pos, zero = 0, 0, 0
         for val, vec in items:
-            if abs(val.imag)<EPSILON:
+            if abs(val.imag)<1e-6:
                 val = val.real
-            if abs(val)>EPSILON:
-                print("\t%.6f ....**2 = %.6f"%(val, val**2))
+                if abs(val)>EPSILON:
+                    print("\t%.6f ....**2 = %.6f"%(val, val**2))
+            else:
+                print("\t%s"%val)
             if val < -EPSILON:
                 neg += 1
             elif val > EPSILON:
@@ -1947,26 +2031,18 @@ def test_macwilliams():
         print("neg=%d, pos=%d, zero=%d"%(neg, pos, zero))
 
 
-    if pauli_name=="real":
-        pauli = build_algebra("IXZY",
-            "X*X=I Z*Z=I Y*Y=-I X*Z=Y Z*X=-Y X*Y=Z Y*X=-Z Z*Y=-X Y*Z=X")
-    else:
-        pauli = build_algebra("IXZY",
-            "I*I=I I*X=X I*Z=Z I*Y=Y X*I=X X*X=I X*Z=-1i*Y"
-            " X*Y=1i*Z Z*I=Z Z*X=1i*Y Z*Z=I Z*Y=-1i*X Y*I=Y Y*X=-1i*Z Y*Z=1i*X Y*Y=I")
-
     I = pauli.I
     X = pauli.X
     Z = pauli.Z
     Y = pauli.Y
 
-    def mkop(I, X, Z, Y): # 0, 1, w, w^2
-        name = argv.get("code", "five")
-        P = build_code(pauli, name)
-        P = P.subs({"I":I, "X":X, "Z":Z, "Y":Y})
-        return P
+    #print("Y =")
+    #print(to_dense(Y))
+    #assert Y==X*Z # real pauli Y
 
-    P = mkop(I, X, Z, Y)
+    name = argv.get("code", "five")
+    code = make_code(pauli, name)
+    P = code.get_projector()
 
     for idxs in P.get_keys():
         n = len(idxs)
@@ -1995,10 +2071,25 @@ def test_macwilliams():
             wenum[w] += val
         return wenum
 
-    print(P)
-    assert P*P == 2**(n-k) * P, str(P*P)
+    if n <= 10:
+        print("P =", P)
+
+    PP = P*P
+
+    #show_spec(P)
+    #print("PP:")
+    #show_spec(PP)
+
+    const = (0,)*n # identity
+    r = PP[const] / P[const]
+
+    #assert P*P == 2**(n-k) * P, str(P*P)
+    assert P*P == r * P, str(P*P)
 
     print(get_wenum(P))
+
+    show_spec(P)
+
     #print(P.get_terms())
     #for k in P.get_keys():
     #    print(k, P[k])
@@ -2010,12 +2101,15 @@ def test_macwilliams():
     # https://www.sciencedirect.com/science/article/pii/0097316578900213
     w, x, y, z = I, X, Z, Y
     half = 0.5
-    Q = mkop(half*(w+x+y+z), half*(w-x+y-z), half*(w+x-y-z), half*(w-x-y+z))
+    #Q = mkop(half*(w+x+y+z), half*(w-x+y-z), half*(w+x-y-z), half*(w-x-y+z))
+    Q = P.subs({"I":half*(w+x+y+z), "X":half*(w-x+y-z), "Z":half*(w+x-y-z), "Y":half*(w-x-y+z)})
+    #print(get_wenum(Q))
 
-    idxs = (0,)*n # identity
-    m = P[idxs] / Q[idxs]
+    m = P[const] / Q[const]
     Q = m*Q
 
+    if n <= 7:
+        print("Q =", Q)
     print(get_wenum(Q))
 
 
@@ -2039,8 +2133,10 @@ def test_macwilliams():
         return True
 
 
-    Q_XZ = Q.subs({"I":I, "X":Z, "Z":X, "Y":Y})
-    Q_ZY = Q.subs({"I":I, "X":X, "Z":Y, "Y":Z})
+    print("Q_XZ")
+    Q_XZ = Q.subs({"I":I, "X":Z, "Z":X, "Y":Y}) # slow.....!
+    print("Q_ZY")
+    Q_ZY = Q.subs({"I":I, "X":X, "Z":Y, "Y":Z}) # slow.....!
 
     print("compare_le(P, Q)   :", compare_le(P, Q) )
     print("compare_le(P, Q_XZ):", compare_le(P, Q_XZ) )
@@ -2057,10 +2153,17 @@ def test_macwilliams():
     print("R_XZ*P==P*R_XZ     :", R_XZ*P == P*R_XZ)
     print("R_ZY*P==P*R_ZY     :", R_ZY*P == P*R_ZY)
 
-    if pauli_name == "complex":
-        R = R_ZY
-    else:
+    if pauli_name == "real":
         R = R_XZ
+    else:
+        R = R_ZY
+
+    if R==0.:
+        print("R=0")
+        return
+
+    if n <= 7:
+        print("R =", R)
 
     #print("show_spec(P*R):")
     #show_spec(P*R)
@@ -2068,6 +2171,33 @@ def test_macwilliams():
     #show_spec(P)
     print("show_spec(R):")
     show_spec(R)
+
+    #show_spec(R*P)
+    #RP = (1/16)*R*P
+    #print("RP == R", RP == R)
+
+    #for op in code.logops:
+    #    show_spec(R*op)
+    
+
+def test_rm():
+
+    I = Poly.identity(2)
+    zero = Poly.zero(2)
+    x = Poly({(1, 0): 1.})
+    y = Poly({(0, 1): 1.})
+
+    A = lambda x,y:(x**16+105*x**12*y**4+280*x**10*y**6+675*x**8*y**8
+        +5208*x**6*y**10+8435*x**4*y**12+1680*x**2*y**14)
+
+    A = lambda x,y:x**5+15*x*y**4
+
+    print(A(x, y).texstr())
+
+    B = 2*A((x+3*y)/2, (x-y)/2)
+    print(B.texstr())
+    
+
 
 
 def test_gcolor():
@@ -2223,7 +2353,7 @@ if __name__ == "__main__":
 
     name = argv.next() or "main"
 
-    if name in "test_macwilliams test_gcolor test_gf4".split():
+    if name in "test_rand test_macwilliams test_gcolor test_gf4".split() or 1:
         pass
     else:
         build()

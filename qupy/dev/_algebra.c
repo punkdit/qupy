@@ -11544,8 +11544,8 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
  *                 the_op = complex(v)*final # ARRGGGHHH !!
  *             else:
  *                 the_op = the_op + complex(v)*final # ARRGGGHHH !!             # <<<<<<<<<<<<<<
- *         return the_op
- * 
+ *         if the_op is None:
+ *             the_op = 0.
  */
     /*else*/ {
       __pyx_t_6 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyComplex_Type)), __pyx_v_v); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 436, __pyx_L1_error)
@@ -11574,6 +11574,36 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
   /* "qupy/dev/_algebra.pyx":437
  *             else:
  *                 the_op = the_op + complex(v)*final # ARRGGGHHH !!
+ *         if the_op is None:             # <<<<<<<<<<<<<<
+ *             the_op = 0.
+ *         return the_op
+ */
+  __pyx_t_12 = (__pyx_v_the_op == Py_None);
+  __pyx_t_11 = (__pyx_t_12 != 0);
+  if (__pyx_t_11) {
+
+    /* "qupy/dev/_algebra.pyx":438
+ *                 the_op = the_op + complex(v)*final # ARRGGGHHH !!
+ *         if the_op is None:
+ *             the_op = 0.             # <<<<<<<<<<<<<<
+ *         return the_op
+ * 
+ */
+    __Pyx_INCREF(__pyx_float_0_);
+    __Pyx_DECREF_SET(__pyx_v_the_op, __pyx_float_0_);
+
+    /* "qupy/dev/_algebra.pyx":437
+ *             else:
+ *                 the_op = the_op + complex(v)*final # ARRGGGHHH !!
+ *         if the_op is None:             # <<<<<<<<<<<<<<
+ *             the_op = 0.
+ *         return the_op
+ */
+  }
+
+  /* "qupy/dev/_algebra.pyx":439
+ *         if the_op is None:
+ *             the_op = 0.
  *         return the_op             # <<<<<<<<<<<<<<
  * 
  * 
@@ -12150,7 +12180,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_54__setstate_cython__(str
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":442
+/* "qupy/dev/_algebra.pyx":444
  * 
  * 
  * def build_algebra(names, rel):             # <<<<<<<<<<<<<<
@@ -12190,11 +12220,11 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_1build_algebra(PyObject *__pyx_se
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_rel)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("build_algebra", 1, 2, 2, 1); __PYX_ERR(0, 442, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("build_algebra", 1, 2, 2, 1); __PYX_ERR(0, 444, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "build_algebra") < 0)) __PYX_ERR(0, 442, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "build_algebra") < 0)) __PYX_ERR(0, 444, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -12207,7 +12237,7 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_1build_algebra(PyObject *__pyx_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("build_algebra", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 442, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("build_algebra", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 444, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("qupy.dev._algebra.build_algebra", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -12253,19 +12283,19 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   __Pyx_RefNannySetupContext("build_algebra", 0);
   __Pyx_INCREF(__pyx_v_names);
 
-  /* "qupy/dev/_algebra.pyx":443
+  /* "qupy/dev/_algebra.pyx":445
  * 
  * def build_algebra(names, rel):
  *     names = list(names)             # <<<<<<<<<<<<<<
  *     assert names[0] == "I" # identity
  *     dim = len(names)
  */
-  __pyx_t_1 = PySequence_List(__pyx_v_names); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 443, __pyx_L1_error)
+  __pyx_t_1 = PySequence_List(__pyx_v_names); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 445, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF_SET(__pyx_v_names, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":444
+  /* "qupy/dev/_algebra.pyx":446
  * def build_algebra(names, rel):
  *     names = list(names)
  *     assert names[0] == "I" # identity             # <<<<<<<<<<<<<<
@@ -12274,58 +12304,58 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_names, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 444, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_names, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 446, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_n_s_I, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 444, __pyx_L1_error)
+    __pyx_t_2 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_n_s_I, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 446, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (unlikely(!__pyx_t_2)) {
       PyErr_SetNone(PyExc_AssertionError);
-      __PYX_ERR(0, 444, __pyx_L1_error)
+      __PYX_ERR(0, 446, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "qupy/dev/_algebra.pyx":445
+  /* "qupy/dev/_algebra.pyx":447
  *     names = list(names)
  *     assert names[0] == "I" # identity
  *     dim = len(names)             # <<<<<<<<<<<<<<
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE
  */
-  __pyx_t_3 = PyObject_Length(__pyx_v_names); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 445, __pyx_L1_error)
+  __pyx_t_3 = PyObject_Length(__pyx_v_names); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 447, __pyx_L1_error)
   __pyx_v_dim = __pyx_t_3;
 
-  /* "qupy/dev/_algebra.pyx":446
+  /* "qupy/dev/_algebra.pyx":448
  *     assert names[0] == "I" # identity
  *     dim = len(names)
  *     coefs = {} # structure coefs             # <<<<<<<<<<<<<<
  *     coefs[0, 0, 0] = ONE
  *     for i in range(1, dim):
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 446, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 448, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_coefs = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":447
+  /* "qupy/dev/_algebra.pyx":449
  *     dim = len(names)
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE             # <<<<<<<<<<<<<<
  *     for i in range(1, dim):
  *         coefs[0, i, i] = ONE
  */
-  if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_tuple__8, __pyx_float_1_0) < 0)) __PYX_ERR(0, 447, __pyx_L1_error)
+  if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_tuple__8, __pyx_float_1_0) < 0)) __PYX_ERR(0, 449, __pyx_L1_error)
 
-  /* "qupy/dev/_algebra.pyx":448
+  /* "qupy/dev/_algebra.pyx":450
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE
  *     for i in range(1, dim):             # <<<<<<<<<<<<<<
  *         coefs[0, i, i] = ONE
  *         coefs[i, 0, i] = ONE
  */
-  __pyx_t_1 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 448, __pyx_L1_error)
+  __pyx_t_1 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 450, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 448, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 450, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_int_1);
   __Pyx_GIVEREF(__pyx_int_1);
@@ -12333,16 +12363,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 448, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 450, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_4 = __pyx_t_1; __Pyx_INCREF(__pyx_t_4); __pyx_t_3 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 448, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 450, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 448, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 450, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -12350,17 +12380,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       if (likely(PyList_CheckExact(__pyx_t_4))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 448, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 450, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 448, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 450, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 448, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 450, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 448, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 450, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -12370,7 +12400,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 448, __pyx_L1_error)
+          else __PYX_ERR(0, 450, __pyx_L1_error)
         }
         break;
       }
@@ -12379,14 +12409,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":449
+    /* "qupy/dev/_algebra.pyx":451
  *     coefs[0, 0, 0] = ONE
  *     for i in range(1, dim):
  *         coefs[0, i, i] = ONE             # <<<<<<<<<<<<<<
  *         coefs[i, 0, i] = ONE
  * 
  */
-    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 449, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 451, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_GIVEREF(__pyx_int_0);
@@ -12397,17 +12427,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_INCREF(__pyx_v_i);
     __Pyx_GIVEREF(__pyx_v_i);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_v_i);
-    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_1, __pyx_float_1_0) < 0)) __PYX_ERR(0, 449, __pyx_L1_error)
+    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_1, __pyx_float_1_0) < 0)) __PYX_ERR(0, 451, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":450
+    /* "qupy/dev/_algebra.pyx":452
  *     for i in range(1, dim):
  *         coefs[0, i, i] = ONE
  *         coefs[i, 0, i] = ONE             # <<<<<<<<<<<<<<
  * 
  *     eqs = rel.split()
  */
-    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 450, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 452, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_i);
     __Pyx_GIVEREF(__pyx_v_i);
@@ -12418,10 +12448,10 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_INCREF(__pyx_v_i);
     __Pyx_GIVEREF(__pyx_v_i);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_v_i);
-    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_1, __pyx_float_1_0) < 0)) __PYX_ERR(0, 450, __pyx_L1_error)
+    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_1, __pyx_float_1_0) < 0)) __PYX_ERR(0, 452, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":448
+    /* "qupy/dev/_algebra.pyx":450
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE
  *     for i in range(1, dim):             # <<<<<<<<<<<<<<
@@ -12431,14 +12461,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":452
+  /* "qupy/dev/_algebra.pyx":454
  *         coefs[i, 0, i] = ONE
  * 
  *     eqs = rel.split()             # <<<<<<<<<<<<<<
  *     for eq in eqs:
  *         #print("eq:", eq)
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_rel, __pyx_n_s_split); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 452, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_rel, __pyx_n_s_split); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 454, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_6 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -12452,13 +12482,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   }
   __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 452, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 454, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_eqs = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":453
+  /* "qupy/dev/_algebra.pyx":455
  * 
  *     eqs = rel.split()
  *     for eq in eqs:             # <<<<<<<<<<<<<<
@@ -12469,26 +12499,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __pyx_t_4 = __pyx_v_eqs; __Pyx_INCREF(__pyx_t_4); __pyx_t_3 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_eqs); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 453, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_eqs); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 455, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 453, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 455, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_5)) {
       if (likely(PyList_CheckExact(__pyx_t_4))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 453, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 455, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 453, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 455, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 453, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 455, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 453, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 455, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -12498,7 +12528,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 453, __pyx_L1_error)
+          else __PYX_ERR(0, 455, __pyx_L1_error)
         }
         break;
       }
@@ -12507,14 +12537,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_eq, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":455
+    /* "qupy/dev/_algebra.pyx":457
  *     for eq in eqs:
  *         #print("eq:", eq)
  *         lhs, rhs = eq.split("=")             # <<<<<<<<<<<<<<
  *         assert lhs.count("*") == 1, repr(lhs)
  *         A, B = lhs.split("*")
  */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_eq, __pyx_n_s_split); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 455, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_eq, __pyx_n_s_split); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 457, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_7 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -12528,7 +12558,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     }
     __pyx_t_1 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_7, __pyx_kp_s__9) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_kp_s__9);
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 455, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 457, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if ((likely(PyTuple_CheckExact(__pyx_t_1))) || (PyList_CheckExact(__pyx_t_1))) {
@@ -12537,7 +12567,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 455, __pyx_L1_error)
+        __PYX_ERR(0, 457, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -12550,15 +12580,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_t_6);
       __Pyx_INCREF(__pyx_t_7);
       #else
-      __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 455, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 457, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 455, __pyx_L1_error)
+      __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 457, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       #endif
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_8 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 455, __pyx_L1_error)
+      __pyx_t_8 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 457, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -12566,7 +12596,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_GOTREF(__pyx_t_6);
       index = 1; __pyx_t_7 = __pyx_t_9(__pyx_t_8); if (unlikely(!__pyx_t_7)) goto __pyx_L7_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_7);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) __PYX_ERR(0, 455, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) __PYX_ERR(0, 457, __pyx_L1_error)
       __pyx_t_9 = NULL;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       goto __pyx_L8_unpacking_done;
@@ -12574,7 +12604,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __pyx_t_9 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 455, __pyx_L1_error)
+      __PYX_ERR(0, 457, __pyx_L1_error)
       __pyx_L8_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_lhs, __pyx_t_6);
@@ -12582,7 +12612,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_rhs, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":456
+    /* "qupy/dev/_algebra.pyx":458
  *         #print("eq:", eq)
  *         lhs, rhs = eq.split("=")
  *         assert lhs.count("*") == 1, repr(lhs)             # <<<<<<<<<<<<<<
@@ -12591,7 +12621,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
  */
     #ifndef CYTHON_WITHOUT_ASSERTIONS
     if (unlikely(!Py_OptimizeFlag)) {
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_lhs, __pyx_n_s_count); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 456, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_lhs, __pyx_n_s_count); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 458, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __pyx_t_6 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
@@ -12605,32 +12635,32 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       }
       __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_6, __pyx_kp_s__4) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_kp_s__4);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 456, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 458, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = __Pyx_PyInt_EqObjC(__pyx_t_1, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 456, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyInt_EqObjC(__pyx_t_1, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 458, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 456, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 458, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       if (unlikely(!__pyx_t_2)) {
-        __pyx_t_7 = PyObject_Repr(__pyx_v_lhs); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 456, __pyx_L1_error)
+        __pyx_t_7 = PyObject_Repr(__pyx_v_lhs); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 458, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         PyErr_SetObject(PyExc_AssertionError, __pyx_t_7);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __PYX_ERR(0, 456, __pyx_L1_error)
+        __PYX_ERR(0, 458, __pyx_L1_error)
       }
     }
     #endif
 
-    /* "qupy/dev/_algebra.pyx":457
+    /* "qupy/dev/_algebra.pyx":459
  *         lhs, rhs = eq.split("=")
  *         assert lhs.count("*") == 1, repr(lhs)
  *         A, B = lhs.split("*")             # <<<<<<<<<<<<<<
  *         i = names.index(A)
  *         j = names.index(B)
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_lhs, __pyx_n_s_split); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 457, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_lhs, __pyx_n_s_split); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_6 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -12644,7 +12674,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     }
     __pyx_t_7 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_6, __pyx_kp_s__4) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_kp_s__4);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 457, __pyx_L1_error)
+    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if ((likely(PyTuple_CheckExact(__pyx_t_7))) || (PyList_CheckExact(__pyx_t_7))) {
@@ -12653,7 +12683,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 457, __pyx_L1_error)
+        __PYX_ERR(0, 459, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -12666,15 +12696,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_t_1);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 457, __pyx_L1_error)
+      __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 459, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 457, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 459, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       #endif
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_8 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 457, __pyx_L1_error)
+      __pyx_t_8 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 459, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -12682,7 +12712,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_GOTREF(__pyx_t_1);
       index = 1; __pyx_t_6 = __pyx_t_9(__pyx_t_8); if (unlikely(!__pyx_t_6)) goto __pyx_L9_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) __PYX_ERR(0, 457, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) __PYX_ERR(0, 459, __pyx_L1_error)
       __pyx_t_9 = NULL;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       goto __pyx_L10_unpacking_done;
@@ -12690,7 +12720,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __pyx_t_9 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 457, __pyx_L1_error)
+      __PYX_ERR(0, 459, __pyx_L1_error)
       __pyx_L10_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_A, __pyx_t_1);
@@ -12698,14 +12728,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_B, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":458
+    /* "qupy/dev/_algebra.pyx":460
  *         assert lhs.count("*") == 1, repr(lhs)
  *         A, B = lhs.split("*")
  *         i = names.index(A)             # <<<<<<<<<<<<<<
  *         j = names.index(B)
  *         rhs, C = rhs[:-1], rhs[-1]
  */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 458, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 460, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_1 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -12719,20 +12749,20 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     }
     __pyx_t_7 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_1, __pyx_v_A) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_v_A);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 458, __pyx_L1_error)
+    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 460, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":459
+    /* "qupy/dev/_algebra.pyx":461
  *         A, B = lhs.split("*")
  *         i = names.index(A)
  *         j = names.index(B)             # <<<<<<<<<<<<<<
  *         rhs, C = rhs[:-1], rhs[-1]
  *         #print("rhs:", rhs)
  */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 459, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 461, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_1 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -12746,36 +12776,36 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     }
     __pyx_t_7 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_1, __pyx_v_B) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_v_B);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 459, __pyx_L1_error)
+    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 461, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_XDECREF_SET(__pyx_v_j, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":460
+    /* "qupy/dev/_algebra.pyx":462
  *         i = names.index(A)
  *         j = names.index(B)
  *         rhs, C = rhs[:-1], rhs[-1]             # <<<<<<<<<<<<<<
  *         #print("rhs:", rhs)
  *         k = names.index(C)
  */
-    __pyx_t_7 = __Pyx_PyObject_GetSlice(__pyx_v_rhs, 0, -1L, NULL, NULL, &__pyx_slice__10, 0, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 460, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetSlice(__pyx_v_rhs, 0, -1L, NULL, NULL, &__pyx_slice__10, 0, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 462, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_rhs, -1L, long, 1, __Pyx_PyInt_From_long, 0, 1, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 460, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_rhs, -1L, long, 1, __Pyx_PyInt_From_long, 0, 1, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 462, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF_SET(__pyx_v_rhs, __pyx_t_7);
     __pyx_t_7 = 0;
     __Pyx_XDECREF_SET(__pyx_v_C, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":462
+    /* "qupy/dev/_algebra.pyx":464
  *         rhs, C = rhs[:-1], rhs[-1]
  *         #print("rhs:", rhs)
  *         k = names.index(C)             # <<<<<<<<<<<<<<
  *         val = None
  *         if not rhs:
  */
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 462, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 464, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_1 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
@@ -12789,13 +12819,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     }
     __pyx_t_6 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_1, __pyx_v_C) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_C);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 462, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 464, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":463
+    /* "qupy/dev/_algebra.pyx":465
  *         #print("rhs:", rhs)
  *         k = names.index(C)
  *         val = None             # <<<<<<<<<<<<<<
@@ -12805,18 +12835,18 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_INCREF(Py_None);
     __Pyx_XDECREF_SET(__pyx_v_val, Py_None);
 
-    /* "qupy/dev/_algebra.pyx":464
+    /* "qupy/dev/_algebra.pyx":466
  *         k = names.index(C)
  *         val = None
  *         if not rhs:             # <<<<<<<<<<<<<<
  *             val = ONE
  *         elif rhs == "+":
  */
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_rhs); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 464, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_rhs); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 466, __pyx_L1_error)
     __pyx_t_10 = ((!__pyx_t_2) != 0);
     if (__pyx_t_10) {
 
-      /* "qupy/dev/_algebra.pyx":465
+      /* "qupy/dev/_algebra.pyx":467
  *         val = None
  *         if not rhs:
  *             val = ONE             # <<<<<<<<<<<<<<
@@ -12826,7 +12856,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_float_1_0);
       __Pyx_DECREF_SET(__pyx_v_val, __pyx_float_1_0);
 
-      /* "qupy/dev/_algebra.pyx":464
+      /* "qupy/dev/_algebra.pyx":466
  *         k = names.index(C)
  *         val = None
  *         if not rhs:             # <<<<<<<<<<<<<<
@@ -12836,17 +12866,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       goto __pyx_L11;
     }
 
-    /* "qupy/dev/_algebra.pyx":466
+    /* "qupy/dev/_algebra.pyx":468
  *         if not rhs:
  *             val = ONE
  *         elif rhs == "+":             # <<<<<<<<<<<<<<
  *             val = ONE
  *         elif rhs == "-":
  */
-    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s__5, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 466, __pyx_L1_error)
+    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s__5, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 468, __pyx_L1_error)
     if (__pyx_t_10) {
 
-      /* "qupy/dev/_algebra.pyx":467
+      /* "qupy/dev/_algebra.pyx":469
  *             val = ONE
  *         elif rhs == "+":
  *             val = ONE             # <<<<<<<<<<<<<<
@@ -12856,7 +12886,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_float_1_0);
       __Pyx_DECREF_SET(__pyx_v_val, __pyx_float_1_0);
 
-      /* "qupy/dev/_algebra.pyx":466
+      /* "qupy/dev/_algebra.pyx":468
  *         if not rhs:
  *             val = ONE
  *         elif rhs == "+":             # <<<<<<<<<<<<<<
@@ -12866,17 +12896,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       goto __pyx_L11;
     }
 
-    /* "qupy/dev/_algebra.pyx":468
+    /* "qupy/dev/_algebra.pyx":470
  *         elif rhs == "+":
  *             val = ONE
  *         elif rhs == "-":             # <<<<<<<<<<<<<<
  *             val = -ONE
  *         elif rhs == "1i*":
  */
-    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s__3, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 468, __pyx_L1_error)
+    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s__3, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 470, __pyx_L1_error)
     if (__pyx_t_10) {
 
-      /* "qupy/dev/_algebra.pyx":469
+      /* "qupy/dev/_algebra.pyx":471
  *             val = ONE
  *         elif rhs == "-":
  *             val = -ONE             # <<<<<<<<<<<<<<
@@ -12886,7 +12916,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_float_neg_1_0);
       __Pyx_DECREF_SET(__pyx_v_val, __pyx_float_neg_1_0);
 
-      /* "qupy/dev/_algebra.pyx":468
+      /* "qupy/dev/_algebra.pyx":470
  *         elif rhs == "+":
  *             val = ONE
  *         elif rhs == "-":             # <<<<<<<<<<<<<<
@@ -12896,29 +12926,29 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       goto __pyx_L11;
     }
 
-    /* "qupy/dev/_algebra.pyx":470
+    /* "qupy/dev/_algebra.pyx":472
  *         elif rhs == "-":
  *             val = -ONE
  *         elif rhs == "1i*":             # <<<<<<<<<<<<<<
  *             val = 1j
  *         elif rhs == "-1i*":
  */
-    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s_1i, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 470, __pyx_L1_error)
+    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s_1i, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 472, __pyx_L1_error)
     if (__pyx_t_10) {
 
-      /* "qupy/dev/_algebra.pyx":471
+      /* "qupy/dev/_algebra.pyx":473
  *             val = -ONE
  *         elif rhs == "1i*":
  *             val = 1j             # <<<<<<<<<<<<<<
  *         elif rhs == "-1i*":
  *             val = -1j
  */
-      __pyx_t_6 = PyComplex_FromDoubles(0.0, 1.0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 471, __pyx_L1_error)
+      __pyx_t_6 = PyComplex_FromDoubles(0.0, 1.0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 473, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF_SET(__pyx_v_val, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "qupy/dev/_algebra.pyx":470
+      /* "qupy/dev/_algebra.pyx":472
  *         elif rhs == "-":
  *             val = -ONE
  *         elif rhs == "1i*":             # <<<<<<<<<<<<<<
@@ -12928,17 +12958,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       goto __pyx_L11;
     }
 
-    /* "qupy/dev/_algebra.pyx":472
+    /* "qupy/dev/_algebra.pyx":474
  *         elif rhs == "1i*":
  *             val = 1j
  *         elif rhs == "-1i*":             # <<<<<<<<<<<<<<
  *             val = -1j
  *         else:
  */
-    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s_1i_2, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 472, __pyx_L1_error)
+    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s_1i_2, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 474, __pyx_L1_error)
     if (__pyx_t_10) {
 
-      /* "qupy/dev/_algebra.pyx":473
+      /* "qupy/dev/_algebra.pyx":475
  *             val = 1j
  *         elif rhs == "-1i*":
  *             val = -1j             # <<<<<<<<<<<<<<
@@ -12946,12 +12976,12 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
  *             assert 0, repr(eq)
  */
       __pyx_t_11 = __Pyx_c_neg_double(__pyx_t_double_complex_from_parts(0, 1.0));
-      __pyx_t_6 = __pyx_PyComplex_FromComplex(__pyx_t_11); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 473, __pyx_L1_error)
+      __pyx_t_6 = __pyx_PyComplex_FromComplex(__pyx_t_11); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 475, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF_SET(__pyx_v_val, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "qupy/dev/_algebra.pyx":472
+      /* "qupy/dev/_algebra.pyx":474
  *         elif rhs == "1i*":
  *             val = 1j
  *         elif rhs == "-1i*":             # <<<<<<<<<<<<<<
@@ -12961,7 +12991,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       goto __pyx_L11;
     }
 
-    /* "qupy/dev/_algebra.pyx":475
+    /* "qupy/dev/_algebra.pyx":477
  *             val = -1j
  *         else:
  *             assert 0, repr(eq)             # <<<<<<<<<<<<<<
@@ -12972,25 +13002,25 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       #ifndef CYTHON_WITHOUT_ASSERTIONS
       if (unlikely(!Py_OptimizeFlag)) {
         if (unlikely(!0)) {
-          __pyx_t_6 = PyObject_Repr(__pyx_v_eq); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 475, __pyx_L1_error)
+          __pyx_t_6 = PyObject_Repr(__pyx_v_eq); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 477, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           PyErr_SetObject(PyExc_AssertionError, __pyx_t_6);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __PYX_ERR(0, 475, __pyx_L1_error)
+          __PYX_ERR(0, 477, __pyx_L1_error)
         }
       }
       #endif
     }
     __pyx_L11:;
 
-    /* "qupy/dev/_algebra.pyx":476
+    /* "qupy/dev/_algebra.pyx":478
  *         else:
  *             assert 0, repr(eq)
  *         oldval = coefs.get((i, j, k))             # <<<<<<<<<<<<<<
  *         assert oldval is None or oldval==val
  *         coefs[i, j, k] = val
  */
-    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 476, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 478, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_v_i);
     __Pyx_GIVEREF(__pyx_v_i);
@@ -13001,13 +13031,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_INCREF(__pyx_v_k);
     __Pyx_GIVEREF(__pyx_v_k);
     PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_v_k);
-    __pyx_t_7 = __Pyx_PyDict_GetItemDefault(__pyx_v_coefs, __pyx_t_6, Py_None); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 476, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyDict_GetItemDefault(__pyx_v_coefs, __pyx_t_6, Py_None); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 478, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_XDECREF_SET(__pyx_v_oldval, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":477
+    /* "qupy/dev/_algebra.pyx":479
  *             assert 0, repr(eq)
  *         oldval = coefs.get((i, j, k))
  *         assert oldval is None or oldval==val             # <<<<<<<<<<<<<<
@@ -13023,26 +13053,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
         __pyx_t_10 = __pyx_t_12;
         goto __pyx_L12_bool_binop_done;
       }
-      __pyx_t_7 = PyObject_RichCompare(__pyx_v_oldval, __pyx_v_val, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 477, __pyx_L1_error)
-      __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_12 < 0)) __PYX_ERR(0, 477, __pyx_L1_error)
+      __pyx_t_7 = PyObject_RichCompare(__pyx_v_oldval, __pyx_v_val, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 479, __pyx_L1_error)
+      __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_12 < 0)) __PYX_ERR(0, 479, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_10 = __pyx_t_12;
       __pyx_L12_bool_binop_done:;
       if (unlikely(!__pyx_t_10)) {
         PyErr_SetNone(PyExc_AssertionError);
-        __PYX_ERR(0, 477, __pyx_L1_error)
+        __PYX_ERR(0, 479, __pyx_L1_error)
       }
     }
     #endif
 
-    /* "qupy/dev/_algebra.pyx":478
+    /* "qupy/dev/_algebra.pyx":480
  *         oldval = coefs.get((i, j, k))
  *         assert oldval is None or oldval==val
  *         coefs[i, j, k] = val             # <<<<<<<<<<<<<<
  * 
  *     algebra = Algebra(dim, names, coefs)
  */
-    __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 478, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 480, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_INCREF(__pyx_v_i);
     __Pyx_GIVEREF(__pyx_v_i);
@@ -13053,10 +13083,10 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_INCREF(__pyx_v_k);
     __Pyx_GIVEREF(__pyx_v_k);
     PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_k);
-    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_7, __pyx_v_val) < 0)) __PYX_ERR(0, 478, __pyx_L1_error)
+    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_7, __pyx_v_val) < 0)) __PYX_ERR(0, 480, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":453
+    /* "qupy/dev/_algebra.pyx":455
  * 
  *     eqs = rel.split()
  *     for eq in eqs:             # <<<<<<<<<<<<<<
@@ -13066,16 +13096,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":480
+  /* "qupy/dev/_algebra.pyx":482
  *         coefs[i, j, k] = val
  * 
  *     algebra = Algebra(dim, names, coefs)             # <<<<<<<<<<<<<<
  *     return algebra
  * 
  */
-  __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 480, __pyx_L1_error)
+  __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 482, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 480, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 482, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_4);
@@ -13086,13 +13116,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   __Pyx_GIVEREF(__pyx_v_coefs);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_coefs);
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Algebra), __pyx_t_7, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 480, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Algebra), __pyx_t_7, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 482, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_v_algebra = ((struct __pyx_obj_4qupy_3dev_8_algebra_Algebra *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":481
+  /* "qupy/dev/_algebra.pyx":483
  * 
  *     algebra = Algebra(dim, names, coefs)
  *     return algebra             # <<<<<<<<<<<<<<
@@ -13104,7 +13134,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   __pyx_r = ((PyObject *)__pyx_v_algebra);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":442
+  /* "qupy/dev/_algebra.pyx":444
  * 
  * 
  * def build_algebra(names, rel):             # <<<<<<<<<<<<<<
@@ -15668,39 +15698,39 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
 
-  /* "qupy/dev/_algebra.pyx":447
+  /* "qupy/dev/_algebra.pyx":449
  *     dim = len(names)
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE             # <<<<<<<<<<<<<<
  *     for i in range(1, dim):
  *         coefs[0, i, i] = ONE
  */
-  __pyx_tuple__8 = PyTuple_Pack(3, __pyx_int_0, __pyx_int_0, __pyx_int_0); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 447, __pyx_L1_error)
+  __pyx_tuple__8 = PyTuple_Pack(3, __pyx_int_0, __pyx_int_0, __pyx_int_0); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 449, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
 
-  /* "qupy/dev/_algebra.pyx":460
+  /* "qupy/dev/_algebra.pyx":462
  *         i = names.index(A)
  *         j = names.index(B)
  *         rhs, C = rhs[:-1], rhs[-1]             # <<<<<<<<<<<<<<
  *         #print("rhs:", rhs)
  *         k = names.index(C)
  */
-  __pyx_slice__10 = PySlice_New(Py_None, __pyx_int_neg_1, Py_None); if (unlikely(!__pyx_slice__10)) __PYX_ERR(0, 460, __pyx_L1_error)
+  __pyx_slice__10 = PySlice_New(Py_None, __pyx_int_neg_1, Py_None); if (unlikely(!__pyx_slice__10)) __PYX_ERR(0, 462, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice__10);
   __Pyx_GIVEREF(__pyx_slice__10);
 
-  /* "qupy/dev/_algebra.pyx":442
+  /* "qupy/dev/_algebra.pyx":444
  * 
  * 
  * def build_algebra(names, rel):             # <<<<<<<<<<<<<<
  *     names = list(names)
  *     assert names[0] == "I" # identity
  */
-  __pyx_tuple__11 = PyTuple_Pack(17, __pyx_n_s_names, __pyx_n_s_rel, __pyx_n_s_dim, __pyx_n_s_coefs, __pyx_n_s_i, __pyx_n_s_eqs, __pyx_n_s_eq, __pyx_n_s_lhs, __pyx_n_s_rhs, __pyx_n_s_A, __pyx_n_s_B, __pyx_n_s_j, __pyx_n_s_C, __pyx_n_s_k, __pyx_n_s_val, __pyx_n_s_oldval, __pyx_n_s_algebra); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 442, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(17, __pyx_n_s_names, __pyx_n_s_rel, __pyx_n_s_dim, __pyx_n_s_coefs, __pyx_n_s_i, __pyx_n_s_eqs, __pyx_n_s_eq, __pyx_n_s_lhs, __pyx_n_s_rhs, __pyx_n_s_A, __pyx_n_s_B, __pyx_n_s_j, __pyx_n_s_C, __pyx_n_s_k, __pyx_n_s_val, __pyx_n_s_oldval, __pyx_n_s_algebra); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 444, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(2, 0, 17, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_algebra_pyx, __pyx_n_s_build_algebra, 442, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 442, __pyx_L1_error)
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(2, 0, 17, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_algebra_pyx, __pyx_n_s_build_algebra, 444, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 444, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_Algebra(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
@@ -16138,16 +16168,16 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":442
+  /* "qupy/dev/_algebra.pyx":444
  * 
  * 
  * def build_algebra(names, rel):             # <<<<<<<<<<<<<<
  *     names = list(names)
  *     assert names[0] == "I" # identity
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4qupy_3dev_8_algebra_1build_algebra, NULL, __pyx_n_s_qupy_dev__algebra); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 442, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4qupy_3dev_8_algebra_1build_algebra, NULL, __pyx_n_s_qupy_dev__algebra); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 444, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_build_algebra, __pyx_t_2) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_build_algebra, __pyx_t_2) < 0) __PYX_ERR(0, 444, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "(tree fragment)":1

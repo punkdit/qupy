@@ -434,6 +434,8 @@ cdef class Tensor:
                 the_op = complex(v)*final # ARRGGGHHH !!
             else:
                 the_op = the_op + complex(v)*final # ARRGGGHHH !!
+        if the_op is None:
+            the_op = 0.
         return the_op
 
 

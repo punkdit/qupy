@@ -1107,6 +1107,9 @@ def test_weight_enums():
         for op in xops[1:] + zops:
             P = P + op
 
+        # probably hopeless to try this...
+        return
+
     else:
         if code == "five":
             Hs = "XZZXI IXZZX XIXZZ ZXIXZ" # five qubit code

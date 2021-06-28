@@ -238,6 +238,40 @@ class Poly(object):
 
     __repr__ = __str__
 
+    def texstr(self):
+        rank = self.rank
+        names = self.names
+        items = []
+        cs = list(self.cs.items())
+        #cs.sort(key = lambda (k,v):list(reversed(k)))
+        cs.sort(key = lambda k_v1:(-sum(k_v1[0], scalar.zero), list(reversed(k_v1[0]))))
+        for k, val in cs:
+            if abs(val)<EPSILON:
+                continue
+            item = []
+            for i, exp in enumerate(k):
+                if exp == 0:
+                    pass
+                elif exp == 1:
+                    item.append("%s" % (names[i],))
+                else:
+                    item.append("%s^{%d}" % (names[i], exp))
+            item = '*'.join(item)
+            if not item:
+                item = str(val)
+            elif val==1:
+                pass
+            elif val==-1:
+                item = "-"+item
+            else:
+                item = "%s%s" % (fstr(val), item)
+            items.append(item)
+        s = ' + '.join(items)
+        s = s.replace("+ -", "- ")
+        if not s:
+            s = "0"
+        return s
+
     @classmethod
     def random(cls, rank, degree=3, terms=3):
         cs = {}
