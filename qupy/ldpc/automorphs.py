@@ -24,6 +24,7 @@ def write(*args):
     print(*args, end="", flush=True)
 
 def load(name, verbose=False):
+    print("load(%r)"%name)
     if verbose:
         blob = numpy.load(name)
         for a in blob.files:
@@ -35,7 +36,24 @@ def load(name, verbose=False):
     H = H.transpose()
     return H
 
-if 1:
+if argv.surface:
+    # try the surface code...
+    rows, cols = argv.get("rows", 3), argv.get("cols", 3)
+    print(rows, cols)
+
+    cx = Complex()
+    cx.build_surface((0, 0), (rows, cols))
+    #cx.build_torus(rows, cols)
+    code = cx.get_code()
+    
+    Hz, Hx = cx.get_parity_checks()
+    print("Hz:")
+    print(shortstr(Hz))
+    print("Hx:")
+    print(shortstr(Hx))
+
+else:
+
     stem = argv.get("stem", "55_32_5")
     #stem = "55_360_8"
     #stem = "77_78_5"
@@ -53,22 +71,6 @@ if 1:
     #print(shortstr(Hz))
 
 
-if 0:
-    # try the surface code...
-    rows, cols = argv.get("rows", 3), argv.get("cols", 3)
-    print(rows, cols)
-
-    cx = Complex()
-    cx.build_surface((0, 0), (rows, cols))
-    #cx.build_torus(rows, cols)
-    code = cx.get_code()
-    
-    Hz, Hx = cx.get_parity_checks()
-    print("Hz:")
-    print(shortstr(Hz))
-    print("Hx:")
-    print(shortstr(Hx))
-
 from qupy.condmat.isomorph import Tanner, search
 
 lhs = Tanner.build2(Hx, Hz)
@@ -83,7 +85,7 @@ for f in search(lhs, rhs):
     write('.')
     count += 1
 
-print("count:", count)
+print("\nautomorphism count:", count)
 
 
 
