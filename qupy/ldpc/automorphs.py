@@ -36,14 +36,19 @@ def load(name, verbose=False):
     H = H.transpose()
     return H
 
-if argv.surface:
+if argv.surface or argv.torus:
+
     # try the surface code...
     rows, cols = argv.get("rows", 3), argv.get("cols", 3)
     print(rows, cols)
 
     cx = Complex()
-    cx.build_surface((0, 0), (rows, cols))
-    #cx.build_torus(rows, cols)
+    if argv.surface:
+        print("build_surface")
+        cx.build_surface((0, 0), (rows, cols), open_top=True, open_bot=True)
+    else:
+        print("build_torus")
+        cx.build_torus(rows, cols)
     code = cx.get_code()
     
     Hz, Hx = cx.get_parity_checks()
