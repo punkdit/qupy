@@ -445,7 +445,9 @@ def test_puncture(A, B, ma, na, mb, nb, Ina, Ima, Inb, Imb, ka, kb, kat, kbt, k,
     print(shortstrx(R))
     lzt = cat((kron(KerA, R), zeros2(ma*nb, KerA.shape[1]*R.shape[1])), axis=0)
     print("lzt:", lzt.shape)
+    print(shortstrx(lzt))
     print("Hzt:", Hzt.shape)
+    print(shortstrx(Hzt))
 
     assert dot2(Hx, lzt).sum()==0
 

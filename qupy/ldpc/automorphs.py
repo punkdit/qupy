@@ -35,7 +35,7 @@ def load(name, verbose=False):
     H = H.transpose()
     return H
 
-if 0:
+if 1:
     stem = argv.get("stem", "55_32_5")
     #stem = "55_360_8"
     #stem = "77_78_5"
@@ -52,34 +52,22 @@ if 0:
     print(Hz.shape)
     #print(shortstr(Hz))
 
+
 if 0:
-    Lx = load(stem + "_logX.npz", verbose=True)
-    #Lx = linear_independent(Lx)
-    print(Lx.shape)
-    print(Lx)
-    print(shortstr(Lx))
-    print(rank(Lx))
+    # try the surface code...
+    rows, cols = argv.get("rows", 3), argv.get("cols", 3)
+    print(rows, cols)
+
+    cx = Complex()
+    cx.build_surface((0, 0), (rows, cols))
+    #cx.build_torus(rows, cols)
+    code = cx.get_code()
     
-    Lz = load(stem + "_logZ.npz")
-    Lz = linear_independent(Lz)
-    print(Lz.shape)
-    print(shortstr(Lz))
-    print(rank(Lz))
-    
-
-rows, cols = argv.get("rows", 3), argv.get("cols", 3)
-print(rows, cols)
-
-cx = Complex()
-cx.build_surface((0, 0), (rows, cols))
-#cx.build_torus(rows, cols)
-code = cx.get_code()
-
-Hz, Hx = cx.get_parity_checks()
-print("Hz:")
-print(shortstr(Hz))
-print("Hx:")
-print(shortstr(Hx))
+    Hz, Hx = cx.get_parity_checks()
+    print("Hz:")
+    print(shortstr(Hz))
+    print("Hx:")
+    print(shortstr(Hx))
 
 from qupy.condmat.isomorph import Tanner, search
 

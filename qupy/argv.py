@@ -17,10 +17,15 @@ class Argv(object):
         return self.args.pop(1) if len(self.args)>1 else None
 
     def parse(self, value):
-        try:
-            return eval(value)
-        except:
+        if "_" in value:
+            # XXX why does 123_456 eval to 123456 int ? XXX
             return value
+        try:
+            value = eval(value)
+        except:
+            pass
+        #print("parse:", value)
+        return value
 
     def get(self, name, default=None):
         return self.argmap.get(name, default)
