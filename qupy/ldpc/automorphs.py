@@ -71,7 +71,7 @@ else:
     print(rank(Hx))
     
     Hz = load(stem + "_Hz.npz")
-    Hz = linear_independent(Hz)
+    #Hz = linear_independent(Hz)
     print(Hz.shape)
     #print(shortstr(Hz))
 
