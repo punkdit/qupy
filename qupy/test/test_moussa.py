@@ -30,7 +30,7 @@ from qupy.util import mulclose
 r2 = math.sqrt(2)
 
 
-I, X, Z, Y, S, T = Gate.I, Gate.X, Gate.Z, Gate.Y, Gate.S, Gate.T
+I, X, Z, Y, S, T, H = Gate.I, Gate.X, Gate.Z, Gate.Y, Gate.S, Gate.T, Gate.H
 
 assert X*X == I
 assert Z*Z == I
@@ -284,7 +284,21 @@ def main_5():
 
 def main_8():
 
-    "Moussa transverse S gate on 8-qubit toric code"
+    """
+    Moussa transverse S gate on 8-qubit toric code
+
+    qubits are numbered starting from 1:
+
+    +-1-+-2-
+    |   |
+    3   4
+    |   |
+    +-5-+-6-
+    |   |
+    7   8
+    |   |
+
+    """
 
     n = 8
     stabs = "ZIZZZIII IZZZIZII ZIIIZIZZ XXXIIIXI XXIXIIIX IIXIXXXI"
@@ -306,35 +320,45 @@ def main_8():
 
     assert v0 != v1
 
+    # these are n-qubit operators:
     CZ = lambda i,j : Z.control(i-1, j-1, rank=n)
+    CX = lambda i,j : X.control(i-1, j-1, rank=n)
+    SWAP = lambda i,j : CX(i,j)*CX(j,i)
 
-    if 0:
-        A = (I @ S @ I @ ~S @ S @ I @ ~S @ I)
-        A = A*CZ(1,6)*CZ(3,8)
-    else:
-        A = CZ(1,3)*CZ(4,5)*CZ(6,8)*CZ(2,7)
+    #A = CZ(1,3)*CZ(4,5)*CZ(6,8)*CZ(2,7) # not a weak duality !
 
-    #print(opstr(A))
+    for A in [
+        #(I @ I @ I @ I @ I @ I @ I @ I)
+        (I @ S @ I @ ~S @ S @ I @ ~S @ I)*CZ(1,6)*CZ(3,8), # logical  S @ ~S
+        #(S @ I @ ~S @ I @ I @ S @ I @ ~S)*CZ(2,5)*CZ(4,7), # logical  S @ ~S
+        #(I @ ~S @ I @ S @ ~S @ I @ S @ I)*CZ(1,6)*CZ(3,8),  # logical ~S @ S
+        #(S @ I @ I @ ~S @ I @ S @ ~S @ I)*CZ(2,5)*CZ(3,8), # logical  S @ ~S
+        #(H @ H @ H @ H @ H @ H @ H @ H) * SWAP(1,6) * SWAP(3,8), # fail....
+    ]:
 
-    P1 = A*code.P*~A
-    assert(P1 == code.P)
+        #print(opstr(A))
+    
+        assert A*code.P == code.P*A
+        #P1 = A*code.P*~A
+        #assert(P1 == code.P)
+    
+        vs = [v0, v1, v2, v3]
+        op = []
+        for u in vs:
+            u = A*u
+            row = []
+            for v in vs:
+                r = u.dag() * v
+                row.append(r)
+                print("%.2f+%.2fj"%(r.real, r.imag), end=" ")
+            print()
+            op.append(row)
+    
+        op = numpy.array(op)
+        #op.shape = (2,2,2,2)
+        #print(op)
 
-    vs = [v0, v1, v2, v3]
-    op = []
-    for u in vs:
-        u = A*u
-        row = []
-        for v in vs:
-            r = u.dag() * v
-            row.append(r)
-            #print("%.2f+%.2fj"%(r.real, r.imag), end=" ")
-        #print()
-        op.append(row)
-
-    op = numpy.array(op)
-    #op.shape = (2,2,2,2)
-    print(op)
-
+        print()
 
 
 def main_10():

@@ -4,8 +4,7 @@
 Here are a few examples of codes based on {5,5} and {7,7} tessellations
 of hyperbolic surfaces.  The files come as numpy matrices and include
 X/Z parity check matrices and a basis of X/Z logicals).  The file names
-are the schlaefli symbol, number of physical qubits and the minimum
-distance.
+are the schlaefli symbol, number of checks, and the minimum distance.
 
 55_32_5_Hx.npz    55_32_5_logZ.npz  55_360_8_logX.npz  77_78_5_Hz.npz
 55_32_5_Hz.npz    55_360_8_Hx.npz   55_360_8_logZ.npz  77_78_5_logX.npz
@@ -75,6 +74,9 @@ else:
     print(Hz.shape)
     #print(shortstr(Hz))
 
+mx, n = Hx.shape
+mz, _ = Hz.shape
+print(mx, mz, n)
 
 from qupy.condmat.isomorph import Tanner, search
 
@@ -87,7 +89,13 @@ else:
 
 count = 0
 for f in search(lhs, rhs):
-    write('.')
+    #write('.')
+    #print(f)
+    fixed = 0
+    for i in range(n):
+        if f[i] == i:
+            fixed += 1
+    print("[%d]"%fixed, end="", flush=True)
     count += 1
 
 print("\nautomorphism count:", count)
