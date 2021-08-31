@@ -17,30 +17,52 @@ import numpy
 import numba as nb
 
 from qupy.argv import argv
+is_real = False
 if argv.complex64:
     from qupy import scalar
     scalar.scalar = numpy.complex64
     scalar.EPSILON = 1e-6
+elif argv.float64:
+    from qupy import scalar
+    scalar.scalar = numpy.float64
+    scalar.EPSILON = 1e-6
+    is_real = True
+elif argv.float32:
+    from qupy import scalar
+    scalar.scalar = numpy.float32
+    scalar.EPSILON = 1e-6
+    is_real = True
+
 from qupy.dense import Qu, Gate, Vector, EPSILON, scalar
 from qupy.dense import genidx, bits, is_close, on, off, scalar
 from qupy.dense import commutator, anticommutator
 from qupy.tool import cross
 from qupy.util import mulclose
 
+print("scalar:", scalar)
+
 r2 = math.sqrt(2)
 
 DEBUG = argv.debug
 
-I, X, Z, S, T = Gate.I, Gate.X, Gate.Z, Gate.S, Gate.T
+if is_real:
+    I, X, Z = Gate.I, Gate.X, Gate.Z
+    
+    assert X*X == I
+    assert Z*Z == I
+    S, T = None, None
 
-assert X*X == I
-assert Z*Z == I
-assert S*S == Z
-#assert (T*T).is_close(S, 1e-6)
-assert T*T == S
-
-Sd = S.dag()
-assert S*Sd == I
+else:
+    I, X, Z, S, T = Gate.I, Gate.X, Gate.Z, Gate.S, Gate.T
+    
+    assert X*X == I
+    assert Z*Z == I
+    assert S*S == Z
+    #assert (T*T).is_close(S, 1e-6)
+    assert T*T == S
+    
+    Sd = S.dag()
+    assert S*Sd == I
 
 
 class Operator(object):
@@ -1677,6 +1699,45 @@ def main_pair():
             print("FAIL")
             print()
     
+
+def test_bring():
+    Hz = parse("""
+    11111.........................
+    1....1111.....................
+    .1.......1111.................
+    ..1..1.......111..............
+    ...1..1..1......11............
+    ....1.....1..1....11..........
+    ...........1....1...111.......
+    ............1.....1.1..11.....
+    ..............1....1...1.11...
+    .......1.......1.........1.11.
+    ........1........1...1.....1.1
+    ......................1.1.1.11
+    """)
+    Hx = parse("""
+    11......1..1.........1........
+    .....11..11..1................
+    ...11...........1.1.1.........
+    .........1..1....1......1....1
+    ....................11.1.1.1..
+    ..........11.......1..1...1...
+    .............1.1..1.....1...1.
+    ..11...........1.1.........1..
+    .....1..1.....1...........1..1
+    .11.........1.1........1......
+    1...1..1...........1.....1....
+    ......11........1.....1.....1.
+    """)
+    Hz = remove_dependent(Hz)
+    Hx = remove_dependent(Hx)
+    code = CSSCode(Hz, Hx)
+
+    print(code)
+    #code.check() # too big...
+
+    P = code.P
+    #assert P == P*P # too big...
 
 
 def weakly_T_dual_codes(m, n, minfixed=2, trials=100):
