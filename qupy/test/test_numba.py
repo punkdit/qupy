@@ -1770,14 +1770,15 @@ def test_bring():
 
     print(code)
 
-    print(code.P == code1.P)
+    #print(code.P == code1.P)
     #code.check() # too big...
 
     showmem("test_bring")
     #return
 
     P = code.P
-    assert P == P*P # too big...
+    m = code.mx + code.mz
+    print( (2**m)*P == P*P ) # too big...
 
     if S is None:
         return
