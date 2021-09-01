@@ -1731,13 +1731,36 @@ def test_bring():
     """)
     Hz = remove_dependent(Hz)
     Hx = remove_dependent(Hx)
+
     code = CSSCode(Hz, Hx)
 
+    perm = (0, 1, 11, 21, 8, 19, 25, 7, 4, 23, 14, 2, 12,
+        26, 10, 22, 27, 20, 29, 5, 17, 3, 15, 9, 24, 6, 13, 16, 28, 18)
+
+    Hz1 = Hz[:, perm]
+    Hx1 = Hx[:, perm]
+    code1 = CSSCode(Hx1, Hz1)
+
     print(code)
+
+    print(code.P == code1.P)
     #code.check() # too big...
 
     P = code.P
     #assert P == P*P # too big...
+
+    fold = code.I
+    for i, j in enumerate(perm):
+        if i < j:
+            fold *= code.make_cz(i, j)
+        elif i==j:
+            fold *= code.make_tensor1(S, i)
+
+    print(fold)
+
+    lhs = fold*P
+
+
 
 
 def weakly_T_dual_codes(m, n, minfixed=2, trials=100):

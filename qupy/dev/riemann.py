@@ -207,6 +207,7 @@ def main():
             break
 
     perm = tuple(bitmap)
+    print(perm)
 
     # XX too big...
 #    fold = I
