@@ -1771,14 +1771,14 @@ def test_bring():
     print(code)
 
     #print(code.P == code1.P)
-    #code.check() # too big...
+    #code.check() # big...
 
     showmem("test_bring")
     #return
 
     P = code.P
     m = code.mx + code.mz
-    print( (2**m)*P == P*P ) # too big...
+    #print( (2**m)*P == P*P ) # big...
 
     if S is None:
         return
@@ -1793,6 +1793,8 @@ def test_bring():
     print(fold)
 
     lhs = fold*P
+    rhs = P*fold
+    print("fold:", lhs==rhs)
 
 
 
