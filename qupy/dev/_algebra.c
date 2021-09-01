@@ -922,7 +922,7 @@ struct __pyx_obj_4qupy_3dev_8_algebra___pyx_scope_struct_1_genexpr {
 };
 
 
-/* "qupy/dev/_algebra.pyx":119
+/* "qupy/dev/_algebra.pyx":120
  *         self._items = None
  * 
  *     def __str__(Tensor self):             # <<<<<<<<<<<<<<
@@ -936,7 +936,7 @@ struct __pyx_obj_4qupy_3dev_8_algebra___pyx_scope_struct_2___str__ {
 };
 
 
-/* "qupy/dev/_algebra.pyx":126
+/* "qupy/dev/_algebra.pyx":127
  *         for k in keys:
  *             v = self[k]
  *             s = ''.join(algebra.names[ki] for ki in k)             # <<<<<<<<<<<<<<
@@ -953,7 +953,7 @@ struct __pyx_obj_4qupy_3dev_8_algebra___pyx_scope_struct_3_genexpr {
 };
 
 
-/* "qupy/dev/_algebra.pyx":140
+/* "qupy/dev/_algebra.pyx":141
  *         return ss
  * 
  *     def get_terms(Tensor self):             # <<<<<<<<<<<<<<
@@ -967,7 +967,7 @@ struct __pyx_obj_4qupy_3dev_8_algebra___pyx_scope_struct_4_get_terms {
 };
 
 
-/* "qupy/dev/_algebra.pyx":147
+/* "qupy/dev/_algebra.pyx":148
  *         for k in keys:
  *             v = self[k]
  *             term = ''.join(algebra.names[ki] for ki in k)             # <<<<<<<<<<<<<<
@@ -984,7 +984,7 @@ struct __pyx_obj_4qupy_3dev_8_algebra___pyx_scope_struct_5_genexpr {
 };
 
 
-/* "qupy/dev/_algebra.pyx":300
+/* "qupy/dev/_algebra.pyx":301
  *         return self.get_items()
  * 
  *     def norm(self):             # <<<<<<<<<<<<<<
@@ -997,7 +997,7 @@ struct __pyx_obj_4qupy_3dev_8_algebra___pyx_scope_struct_6_norm {
 };
 
 
-/* "qupy/dev/_algebra.pyx":301
+/* "qupy/dev/_algebra.pyx":302
  * 
  *     def norm(self):
  *         return sum(abs(val) for val in self.get_values())             # <<<<<<<<<<<<<<
@@ -4105,7 +4105,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_7Algebra_12__setstate_cython__(st
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":102
+/* "qupy/dev/_algebra.pyx":103
  *     cdef object _keys, _values, _items
  * 
  *     def __init__(Tensor self, Algebra algebra):             # <<<<<<<<<<<<<<
@@ -4139,7 +4139,7 @@ static int __pyx_pw_4qupy_3dev_8_algebra_6Tensor_1__init__(PyObject *__pyx_v_sel
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 102, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 103, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -4150,13 +4150,13 @@ static int __pyx_pw_4qupy_3dev_8_algebra_6Tensor_1__init__(PyObject *__pyx_v_sel
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 102, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 103, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("qupy.dev._algebra.Tensor.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_algebra), __pyx_ptype_4qupy_3dev_8_algebra_Algebra, 1, "algebra", 0))) __PYX_ERR(0, 102, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_algebra), __pyx_ptype_4qupy_3dev_8_algebra_Algebra, 1, "algebra", 0))) __PYX_ERR(0, 103, __pyx_L1_error)
   __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor___init__(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self), __pyx_v_algebra);
 
   /* function exit code */
@@ -4174,7 +4174,7 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor___init__(struct __pyx_obj_4qupy
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "qupy/dev/_algebra.pyx":103
+  /* "qupy/dev/_algebra.pyx":104
  * 
  *     def __init__(Tensor self, Algebra algebra):
  *         self.algebra = algebra             # <<<<<<<<<<<<<<
@@ -4187,14 +4187,14 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor___init__(struct __pyx_obj_4qupy
   __Pyx_DECREF(((PyObject *)__pyx_v_self->algebra));
   __pyx_v_self->algebra = __pyx_v_algebra;
 
-  /* "qupy/dev/_algebra.pyx":104
+  /* "qupy/dev/_algebra.pyx":105
  *     def __init__(Tensor self, Algebra algebra):
  *         self.algebra = algebra
  *         self.children = [None]*algebra.dim             # <<<<<<<<<<<<<<
  *         self.value = 0.0
  * # FAIL
  */
-  __pyx_t_1 = PyList_New(1 * ((__pyx_v_algebra->dim<0) ? 0:__pyx_v_algebra->dim)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1 * ((__pyx_v_algebra->dim<0) ? 0:__pyx_v_algebra->dim)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   { Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < __pyx_v_algebra->dim; __pyx_temp++) {
@@ -4209,7 +4209,7 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor___init__(struct __pyx_obj_4qupy
   __pyx_v_self->children = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":105
+  /* "qupy/dev/_algebra.pyx":106
  *         self.algebra = algebra
  *         self.children = [None]*algebra.dim
  *         self.value = 0.0             # <<<<<<<<<<<<<<
@@ -4218,7 +4218,7 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor___init__(struct __pyx_obj_4qupy
  */
   __pyx_v_self->value = __pyx_t_double_complex_from_parts(0.0, 0);
 
-  /* "qupy/dev/_algebra.pyx":110
+  /* "qupy/dev/_algebra.pyx":111
  * #        self._values = []
  * #        self._items = []
  *         self._keys = None             # <<<<<<<<<<<<<<
@@ -4231,7 +4231,7 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor___init__(struct __pyx_obj_4qupy
   __Pyx_DECREF(__pyx_v_self->_keys);
   __pyx_v_self->_keys = Py_None;
 
-  /* "qupy/dev/_algebra.pyx":111
+  /* "qupy/dev/_algebra.pyx":112
  * #        self._items = []
  *         self._keys = None
  *         self._values = None             # <<<<<<<<<<<<<<
@@ -4244,7 +4244,7 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor___init__(struct __pyx_obj_4qupy
   __Pyx_DECREF(__pyx_v_self->_values);
   __pyx_v_self->_values = Py_None;
 
-  /* "qupy/dev/_algebra.pyx":112
+  /* "qupy/dev/_algebra.pyx":113
  *         self._keys = None
  *         self._values = None
  *         self._items = None             # <<<<<<<<<<<<<<
@@ -4257,7 +4257,7 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor___init__(struct __pyx_obj_4qupy
   __Pyx_DECREF(__pyx_v_self->_items);
   __pyx_v_self->_items = Py_None;
 
-  /* "qupy/dev/_algebra.pyx":102
+  /* "qupy/dev/_algebra.pyx":103
  *     cdef object _keys, _values, _items
  * 
  *     def __init__(Tensor self, Algebra algebra):             # <<<<<<<<<<<<<<
@@ -4277,7 +4277,7 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor___init__(struct __pyx_obj_4qupy
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":114
+/* "qupy/dev/_algebra.pyx":115
  *         self._items = None
  * 
  *     cdef flush(Tensor self):             # <<<<<<<<<<<<<<
@@ -4290,7 +4290,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_flush(struct __pyx_obj_4qu
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("flush", 0);
 
-  /* "qupy/dev/_algebra.pyx":115
+  /* "qupy/dev/_algebra.pyx":116
  * 
  *     cdef flush(Tensor self):
  *         self._keys = None             # <<<<<<<<<<<<<<
@@ -4303,7 +4303,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_flush(struct __pyx_obj_4qu
   __Pyx_DECREF(__pyx_v_self->_keys);
   __pyx_v_self->_keys = Py_None;
 
-  /* "qupy/dev/_algebra.pyx":116
+  /* "qupy/dev/_algebra.pyx":117
  *     cdef flush(Tensor self):
  *         self._keys = None
  *         self._values = None             # <<<<<<<<<<<<<<
@@ -4316,7 +4316,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_flush(struct __pyx_obj_4qu
   __Pyx_DECREF(__pyx_v_self->_values);
   __pyx_v_self->_values = Py_None;
 
-  /* "qupy/dev/_algebra.pyx":117
+  /* "qupy/dev/_algebra.pyx":118
  *         self._keys = None
  *         self._values = None
  *         self._items = None             # <<<<<<<<<<<<<<
@@ -4329,7 +4329,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_flush(struct __pyx_obj_4qu
   __Pyx_DECREF(__pyx_v_self->_items);
   __pyx_v_self->_items = Py_None;
 
-  /* "qupy/dev/_algebra.pyx":114
+  /* "qupy/dev/_algebra.pyx":115
  *         self._items = None
  * 
  *     cdef flush(Tensor self):             # <<<<<<<<<<<<<<
@@ -4344,7 +4344,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_flush(struct __pyx_obj_4qu
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":119
+/* "qupy/dev/_algebra.pyx":120
  *         self._items = None
  * 
  *     def __str__(Tensor self):             # <<<<<<<<<<<<<<
@@ -4366,7 +4366,7 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_3__str__(PyObject *__pyx_
 }
 static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_7__str___2generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "qupy/dev/_algebra.pyx":126
+/* "qupy/dev/_algebra.pyx":127
  *         for k in keys:
  *             v = self[k]
  *             s = ''.join(algebra.names[ki] for ki in k)             # <<<<<<<<<<<<<<
@@ -4383,7 +4383,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_7__str___genexpr(PyObject
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_4qupy_3dev_8_algebra___pyx_scope_struct_3_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 126, __pyx_L1_error)
+    __PYX_ERR(0, 127, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -4391,7 +4391,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_7__str___genexpr(PyObject
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_4qupy_3dev_8_algebra_6Tensor_7__str___2generator1, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_str___locals_genexpr, __pyx_n_s_qupy_dev__algebra); if (unlikely(!gen)) __PYX_ERR(0, 126, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_4qupy_3dev_8_algebra_6Tensor_7__str___2generator1, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_str___locals_genexpr, __pyx_n_s_qupy_dev__algebra); if (unlikely(!gen)) __PYX_ERR(0, 127, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -4425,32 +4425,32 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_7__str___2generator1(__py
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 126, __pyx_L1_error)
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_k)) { __Pyx_RaiseClosureNameError("k"); __PYX_ERR(0, 126, __pyx_L1_error) }
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 127, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_k)) { __Pyx_RaiseClosureNameError("k"); __PYX_ERR(0, 127, __pyx_L1_error) }
   if (likely(PyList_CheckExact(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_k)) || PyTuple_CheckExact(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_k)) {
     __pyx_t_1 = __pyx_cur_scope->__pyx_outer_scope->__pyx_v_k; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_k); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_k); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 126, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 127, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 126, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 127, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 126, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 127, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 126, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 127, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 126, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 127, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -4460,7 +4460,7 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_7__str___2generator1(__py
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 126, __pyx_L1_error)
+          else __PYX_ERR(0, 127, __pyx_L1_error)
         }
         break;
       }
@@ -4470,8 +4470,8 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_7__str___2generator1(__py
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_ki, __pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_4);
     __pyx_t_4 = 0;
-    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_algebra)) { __Pyx_RaiseClosureNameError("algebra"); __PYX_ERR(0, 126, __pyx_L1_error) }
-    __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_algebra->names, __pyx_cur_scope->__pyx_v_ki); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 126, __pyx_L1_error)
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_algebra)) { __Pyx_RaiseClosureNameError("algebra"); __PYX_ERR(0, 127, __pyx_L1_error) }
+    __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_algebra->names, __pyx_cur_scope->__pyx_v_ki); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 127, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
@@ -4491,7 +4491,7 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_7__str___2generator1(__py
     __Pyx_XGOTREF(__pyx_t_1);
     __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
     __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 126, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 127, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
@@ -4514,7 +4514,7 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_7__str___2generator1(__py
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":119
+/* "qupy/dev/_algebra.pyx":120
  *         self._items = None
  * 
  *     def __str__(Tensor self):             # <<<<<<<<<<<<<<
@@ -4543,24 +4543,24 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_4qupy_3dev_8_algebra___pyx_scope_struct_2___str__ *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 119, __pyx_L1_error)
+    __PYX_ERR(0, 120, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
 
-  /* "qupy/dev/_algebra.pyx":120
+  /* "qupy/dev/_algebra.pyx":121
  * 
  *     def __str__(Tensor self):
  *         ss = []             # <<<<<<<<<<<<<<
  *         algebra = self.algebra
  *         keys = self.get_keys()
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_ss = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":121
+  /* "qupy/dev/_algebra.pyx":122
  *     def __str__(Tensor self):
  *         ss = []
  *         algebra = self.algebra             # <<<<<<<<<<<<<<
@@ -4573,26 +4573,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
   __pyx_cur_scope->__pyx_v_algebra = ((struct __pyx_obj_4qupy_3dev_8_algebra_Algebra *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":122
+  /* "qupy/dev/_algebra.pyx":123
  *         ss = []
  *         algebra = self.algebra
  *         keys = self.get_keys()             # <<<<<<<<<<<<<<
  *         keys.sort()
  *         for k in keys:
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_keys(__pyx_v_self, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_keys(__pyx_v_self, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_keys = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":123
+  /* "qupy/dev/_algebra.pyx":124
  *         algebra = self.algebra
  *         keys = self.get_keys()
  *         keys.sort()             # <<<<<<<<<<<<<<
  *         for k in keys:
  *             v = self[k]
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_keys, __pyx_n_s_sort); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_keys, __pyx_n_s_sort); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 124, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -4606,12 +4606,12 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 124, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":124
+  /* "qupy/dev/_algebra.pyx":125
  *         keys = self.get_keys()
  *         keys.sort()
  *         for k in keys:             # <<<<<<<<<<<<<<
@@ -4622,26 +4622,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
     __pyx_t_1 = __pyx_v_keys; __Pyx_INCREF(__pyx_t_1); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_keys); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 124, __pyx_L1_error)
+    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_keys); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 124, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 125, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_5)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 124, __pyx_L1_error)
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 125, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 124, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 125, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       } else {
         if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 124, __pyx_L1_error)
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 125, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 124, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 125, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       }
@@ -4651,7 +4651,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 124, __pyx_L1_error)
+          else __PYX_ERR(0, 125, __pyx_L1_error)
         }
         break;
       }
@@ -4662,49 +4662,49 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
     __Pyx_GIVEREF(__pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "qupy/dev/_algebra.pyx":125
+    /* "qupy/dev/_algebra.pyx":126
  *         keys.sort()
  *         for k in keys:
  *             v = self[k]             # <<<<<<<<<<<<<<
  *             s = ''.join(algebra.names[ki] for ki in k)
  *             if abs(v) < EPSILON:
  */
-    __pyx_t_2 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self), __pyx_cur_scope->__pyx_v_k); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 125, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self), __pyx_cur_scope->__pyx_v_k); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 126, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "qupy/dev/_algebra.pyx":126
+    /* "qupy/dev/_algebra.pyx":127
  *         for k in keys:
  *             v = self[k]
  *             s = ''.join(algebra.names[ki] for ki in k)             # <<<<<<<<<<<<<<
  *             if abs(v) < EPSILON:
  *                 continue
  */
-    __pyx_t_2 = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_7__str___genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 126, __pyx_L1_error)
+    __pyx_t_2 = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_7__str___genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 127, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyString_Join(__pyx_kp_s__2, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 126, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyString_Join(__pyx_kp_s__2, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 127, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "qupy/dev/_algebra.pyx":127
+    /* "qupy/dev/_algebra.pyx":128
  *             v = self[k]
  *             s = ''.join(algebra.names[ki] for ki in k)
  *             if abs(v) < EPSILON:             # <<<<<<<<<<<<<<
  *                 continue
  *             elif abs(v-1) < EPSILON:
  */
-    __pyx_t_3 = __Pyx_PyNumber_Absolute(__pyx_v_v); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 127, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyNumber_Absolute(__pyx_v_v); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 128, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 127, __pyx_L1_error)
+    __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 127, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 128, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_6) {
 
-      /* "qupy/dev/_algebra.pyx":128
+      /* "qupy/dev/_algebra.pyx":129
  *             s = ''.join(algebra.names[ki] for ki in k)
  *             if abs(v) < EPSILON:
  *                 continue             # <<<<<<<<<<<<<<
@@ -4713,7 +4713,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
  */
       goto __pyx_L3_continue;
 
-      /* "qupy/dev/_algebra.pyx":127
+      /* "qupy/dev/_algebra.pyx":128
  *             v = self[k]
  *             s = ''.join(algebra.names[ki] for ki in k)
  *             if abs(v) < EPSILON:             # <<<<<<<<<<<<<<
@@ -4722,57 +4722,57 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
  */
     }
 
-    /* "qupy/dev/_algebra.pyx":129
+    /* "qupy/dev/_algebra.pyx":130
  *             if abs(v) < EPSILON:
  *                 continue
  *             elif abs(v-1) < EPSILON:             # <<<<<<<<<<<<<<
  *                 pass
  *             elif abs(v+1) < EPSILON:
  */
-    __pyx_t_2 = __Pyx_PyInt_SubtractObjC(__pyx_v_v, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_SubtractObjC(__pyx_v_v, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 130, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyNumber_Absolute(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 129, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyNumber_Absolute(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 130, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
+    __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 130, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 129, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 130, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_6) {
       goto __pyx_L5;
     }
 
-    /* "qupy/dev/_algebra.pyx":131
+    /* "qupy/dev/_algebra.pyx":132
  *             elif abs(v-1) < EPSILON:
  *                 pass
  *             elif abs(v+1) < EPSILON:             # <<<<<<<<<<<<<<
  *                 s = "-"+s
  *             else:
  */
-    __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_v_v, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_v_v, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 132, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyNumber_Absolute(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 131, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyNumber_Absolute(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 132, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)
+    __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 132, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 131, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 132, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_6) {
 
-      /* "qupy/dev/_algebra.pyx":132
+      /* "qupy/dev/_algebra.pyx":133
  *                 pass
  *             elif abs(v+1) < EPSILON:
  *                 s = "-"+s             # <<<<<<<<<<<<<<
  *             else:
  *                 s = fstr(v)+"*"+s
  */
-      __pyx_t_2 = PyNumber_Add(__pyx_kp_s__3, __pyx_v_s); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 132, __pyx_L1_error)
+      __pyx_t_2 = PyNumber_Add(__pyx_kp_s__3, __pyx_v_s); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 133, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF_SET(__pyx_v_s, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "qupy/dev/_algebra.pyx":131
+      /* "qupy/dev/_algebra.pyx":132
  *             elif abs(v-1) < EPSILON:
  *                 pass
  *             elif abs(v+1) < EPSILON:             # <<<<<<<<<<<<<<
@@ -4782,7 +4782,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
       goto __pyx_L5;
     }
 
-    /* "qupy/dev/_algebra.pyx":134
+    /* "qupy/dev/_algebra.pyx":135
  *                 s = "-"+s
  *             else:
  *                 s = fstr(v)+"*"+s             # <<<<<<<<<<<<<<
@@ -4790,7 +4790,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
  *         ss = '+'.join(ss) or "0"
  */
     /*else*/ {
-      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_fstr); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 134, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_fstr); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 135, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_7 = NULL;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -4804,13 +4804,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
       }
       __pyx_t_2 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_7, __pyx_v_v) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_v);
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 134, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 135, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_3 = PyNumber_Add(__pyx_t_2, __pyx_kp_s__4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 134, __pyx_L1_error)
+      __pyx_t_3 = PyNumber_Add(__pyx_t_2, __pyx_kp_s__4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 135, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_2 = PyNumber_Add(__pyx_t_3, __pyx_v_s); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 134, __pyx_L1_error)
+      __pyx_t_2 = PyNumber_Add(__pyx_t_3, __pyx_v_s); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 135, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF_SET(__pyx_v_s, __pyx_t_2);
@@ -4818,16 +4818,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
     }
     __pyx_L5:;
 
-    /* "qupy/dev/_algebra.pyx":135
+    /* "qupy/dev/_algebra.pyx":136
  *             else:
  *                 s = fstr(v)+"*"+s
  *             ss.append(s)             # <<<<<<<<<<<<<<
  *         ss = '+'.join(ss) or "0"
  *         ss = ss.replace("+-", "-")
  */
-    __pyx_t_8 = __Pyx_PyObject_Append(__pyx_v_ss, __pyx_v_s); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 135, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_Append(__pyx_v_ss, __pyx_v_s); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 136, __pyx_L1_error)
 
-    /* "qupy/dev/_algebra.pyx":124
+    /* "qupy/dev/_algebra.pyx":125
  *         keys = self.get_keys()
  *         keys.sort()
  *         for k in keys:             # <<<<<<<<<<<<<<
@@ -4838,16 +4838,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":136
+  /* "qupy/dev/_algebra.pyx":137
  *                 s = fstr(v)+"*"+s
  *             ss.append(s)
  *         ss = '+'.join(ss) or "0"             # <<<<<<<<<<<<<<
  *         ss = ss.replace("+-", "-")
  *         return ss
  */
-  __pyx_t_2 = __Pyx_PyString_Join(__pyx_kp_s__5, __pyx_v_ss); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyString_Join(__pyx_kp_s__5, __pyx_v_ss); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 137, __pyx_L1_error)
   if (!__pyx_t_6) {
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   } else {
@@ -4862,22 +4862,22 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
   __Pyx_DECREF_SET(__pyx_v_ss, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":137
+  /* "qupy/dev/_algebra.pyx":138
  *             ss.append(s)
  *         ss = '+'.join(ss) or "0"
  *         ss = ss.replace("+-", "-")             # <<<<<<<<<<<<<<
  *         return ss
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_ss, __pyx_n_s_replace); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_ss, __pyx_n_s_replace); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF_SET(__pyx_v_ss, __pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":138
+  /* "qupy/dev/_algebra.pyx":139
  *         ss = '+'.join(ss) or "0"
  *         ss = ss.replace("+-", "-")
  *         return ss             # <<<<<<<<<<<<<<
@@ -4889,7 +4889,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
   __pyx_r = __pyx_v_ss;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":119
+  /* "qupy/dev/_algebra.pyx":120
  *         self._items = None
  * 
  *     def __str__(Tensor self):             # <<<<<<<<<<<<<<
@@ -4916,7 +4916,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_2__str__(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":140
+/* "qupy/dev/_algebra.pyx":141
  *         return ss
  * 
  *     def get_terms(Tensor self):             # <<<<<<<<<<<<<<
@@ -4938,7 +4938,7 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_5get_terms(PyObject *__py
 }
 static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_9get_terms_2generator2(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "qupy/dev/_algebra.pyx":147
+/* "qupy/dev/_algebra.pyx":148
  *         for k in keys:
  *             v = self[k]
  *             term = ''.join(algebra.names[ki] for ki in k)             # <<<<<<<<<<<<<<
@@ -4955,7 +4955,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_9get_terms_genexpr(PyObje
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_4qupy_3dev_8_algebra___pyx_scope_struct_5_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 147, __pyx_L1_error)
+    __PYX_ERR(0, 148, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -4963,7 +4963,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_9get_terms_genexpr(PyObje
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_4qupy_3dev_8_algebra_6Tensor_9get_terms_2generator2, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_get_terms_locals_genexpr, __pyx_n_s_qupy_dev__algebra); if (unlikely(!gen)) __PYX_ERR(0, 147, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_4qupy_3dev_8_algebra_6Tensor_9get_terms_2generator2, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_get_terms_locals_genexpr, __pyx_n_s_qupy_dev__algebra); if (unlikely(!gen)) __PYX_ERR(0, 148, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -4997,32 +4997,32 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_9get_terms_2generator2(__
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 147, __pyx_L1_error)
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_k)) { __Pyx_RaiseClosureNameError("k"); __PYX_ERR(0, 147, __pyx_L1_error) }
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_k)) { __Pyx_RaiseClosureNameError("k"); __PYX_ERR(0, 148, __pyx_L1_error) }
   if (likely(PyList_CheckExact(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_k)) || PyTuple_CheckExact(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_k)) {
     __pyx_t_1 = __pyx_cur_scope->__pyx_outer_scope->__pyx_v_k; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_k); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_k); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 147, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 147, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 148, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 147, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 148, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -5032,7 +5032,7 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_9get_terms_2generator2(__
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 147, __pyx_L1_error)
+          else __PYX_ERR(0, 148, __pyx_L1_error)
         }
         break;
       }
@@ -5042,8 +5042,8 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_9get_terms_2generator2(__
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_ki, __pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_4);
     __pyx_t_4 = 0;
-    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_algebra)) { __Pyx_RaiseClosureNameError("algebra"); __PYX_ERR(0, 147, __pyx_L1_error) }
-    __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_algebra->names, __pyx_cur_scope->__pyx_v_ki); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 147, __pyx_L1_error)
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_algebra)) { __Pyx_RaiseClosureNameError("algebra"); __PYX_ERR(0, 148, __pyx_L1_error) }
+    __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_algebra->names, __pyx_cur_scope->__pyx_v_ki); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
@@ -5063,7 +5063,7 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_9get_terms_2generator2(__
     __Pyx_XGOTREF(__pyx_t_1);
     __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
     __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 147, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 148, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
@@ -5086,7 +5086,7 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_9get_terms_2generator2(__
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":140
+/* "qupy/dev/_algebra.pyx":141
  *         return ss
  * 
  *     def get_terms(Tensor self):             # <<<<<<<<<<<<<<
@@ -5114,12 +5114,12 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_4get_terms(struct __pyx_o
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_4qupy_3dev_8_algebra___pyx_scope_struct_4_get_terms *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 140, __pyx_L1_error)
+    __PYX_ERR(0, 141, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
 
-  /* "qupy/dev/_algebra.pyx":141
+  /* "qupy/dev/_algebra.pyx":142
  * 
  *     def get_terms(Tensor self):
  *         algebra = self.algebra             # <<<<<<<<<<<<<<
@@ -5132,26 +5132,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_4get_terms(struct __pyx_o
   __pyx_cur_scope->__pyx_v_algebra = ((struct __pyx_obj_4qupy_3dev_8_algebra_Algebra *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":142
+  /* "qupy/dev/_algebra.pyx":143
  *     def get_terms(Tensor self):
  *         algebra = self.algebra
  *         keys = self.get_keys()             # <<<<<<<<<<<<<<
  *         keys.sort()
  *         terms = []
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_keys(__pyx_v_self, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_keys(__pyx_v_self, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_keys = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":143
+  /* "qupy/dev/_algebra.pyx":144
  *         algebra = self.algebra
  *         keys = self.get_keys()
  *         keys.sort()             # <<<<<<<<<<<<<<
  *         terms = []
  *         for k in keys:
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_keys, __pyx_n_s_sort); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_keys, __pyx_n_s_sort); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -5165,24 +5165,24 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_4get_terms(struct __pyx_o
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":144
+  /* "qupy/dev/_algebra.pyx":145
  *         keys = self.get_keys()
  *         keys.sort()
  *         terms = []             # <<<<<<<<<<<<<<
  *         for k in keys:
  *             v = self[k]
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_terms = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":145
+  /* "qupy/dev/_algebra.pyx":146
  *         keys.sort()
  *         terms = []
  *         for k in keys:             # <<<<<<<<<<<<<<
@@ -5193,26 +5193,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_4get_terms(struct __pyx_o
     __pyx_t_1 = __pyx_v_keys; __Pyx_INCREF(__pyx_t_1); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_keys); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
+    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_keys); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 145, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 146, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_5)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 145, __pyx_L1_error)
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 146, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 145, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 146, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       } else {
         if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 145, __pyx_L1_error)
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 146, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 145, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 146, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       }
@@ -5222,7 +5222,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_4get_terms(struct __pyx_o
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 145, __pyx_L1_error)
+          else __PYX_ERR(0, 146, __pyx_L1_error)
         }
         break;
       }
@@ -5233,41 +5233,41 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_4get_terms(struct __pyx_o
     __Pyx_GIVEREF(__pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "qupy/dev/_algebra.pyx":146
+    /* "qupy/dev/_algebra.pyx":147
  *         terms = []
  *         for k in keys:
  *             v = self[k]             # <<<<<<<<<<<<<<
  *             term = ''.join(algebra.names[ki] for ki in k)
  *             term = algebra.parse(term)
  */
-    __pyx_t_2 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self), __pyx_cur_scope->__pyx_v_k); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 146, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self), __pyx_cur_scope->__pyx_v_k); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "qupy/dev/_algebra.pyx":147
+    /* "qupy/dev/_algebra.pyx":148
  *         for k in keys:
  *             v = self[k]
  *             term = ''.join(algebra.names[ki] for ki in k)             # <<<<<<<<<<<<<<
  *             term = algebra.parse(term)
  *             terms.append(term)
  */
-    __pyx_t_2 = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_9get_terms_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 147, __pyx_L1_error)
+    __pyx_t_2 = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_9get_terms_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyString_Join(__pyx_kp_s__2, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 147, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyString_Join(__pyx_kp_s__2, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF_SET(__pyx_v_term, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "qupy/dev/_algebra.pyx":148
+    /* "qupy/dev/_algebra.pyx":149
  *             v = self[k]
  *             term = ''.join(algebra.names[ki] for ki in k)
  *             term = algebra.parse(term)             # <<<<<<<<<<<<<<
  *             terms.append(term)
  *         return terms
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_algebra), __pyx_n_s_parse); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_algebra), __pyx_n_s_parse); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_6 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -5281,22 +5281,22 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_4get_terms(struct __pyx_o
     }
     __pyx_t_3 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_6, __pyx_v_term) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_term);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF_SET(__pyx_v_term, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "qupy/dev/_algebra.pyx":149
+    /* "qupy/dev/_algebra.pyx":150
  *             term = ''.join(algebra.names[ki] for ki in k)
  *             term = algebra.parse(term)
  *             terms.append(term)             # <<<<<<<<<<<<<<
  *         return terms
  * 
  */
-    __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_terms, __pyx_v_term); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 149, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_terms, __pyx_v_term); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 150, __pyx_L1_error)
 
-    /* "qupy/dev/_algebra.pyx":145
+    /* "qupy/dev/_algebra.pyx":146
  *         keys.sort()
  *         terms = []
  *         for k in keys:             # <<<<<<<<<<<<<<
@@ -5306,7 +5306,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_4get_terms(struct __pyx_o
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":150
+  /* "qupy/dev/_algebra.pyx":151
  *             term = algebra.parse(term)
  *             terms.append(term)
  *         return terms             # <<<<<<<<<<<<<<
@@ -5318,7 +5318,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_4get_terms(struct __pyx_o
   __pyx_r = __pyx_v_terms;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":140
+  /* "qupy/dev/_algebra.pyx":141
  *         return ss
  * 
  *     def get_terms(Tensor self):             # <<<<<<<<<<<<<<
@@ -5345,7 +5345,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_4get_terms(struct __pyx_o
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":152
+/* "qupy/dev/_algebra.pyx":153
  *         return terms
  * 
  *     def __repr__(Tensor self):             # <<<<<<<<<<<<<<
@@ -5374,7 +5374,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_6__repr__(struct __pyx_ob
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "qupy/dev/_algebra.pyx":153
+  /* "qupy/dev/_algebra.pyx":154
  * 
  *     def __repr__(Tensor self):
  *         return self.__str__()             # <<<<<<<<<<<<<<
@@ -5382,7 +5382,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_6__repr__(struct __pyx_ob
  *     def get_zero(Tensor self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_str); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_str); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -5396,14 +5396,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_6__repr__(struct __pyx_ob
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 153, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":152
+  /* "qupy/dev/_algebra.pyx":153
  *         return terms
  * 
  *     def __repr__(Tensor self):             # <<<<<<<<<<<<<<
@@ -5424,7 +5424,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_6__repr__(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":155
+/* "qupy/dev/_algebra.pyx":156
  *         return self.__str__()
  * 
  *     def get_zero(Tensor self):             # <<<<<<<<<<<<<<
@@ -5451,7 +5451,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_8get_zero(struct __pyx_ob
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("get_zero", 0);
 
-  /* "qupy/dev/_algebra.pyx":156
+  /* "qupy/dev/_algebra.pyx":157
  * 
  *     def get_zero(Tensor self):
  *         return Tensor(self.algebra)             # <<<<<<<<<<<<<<
@@ -5459,13 +5459,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_8get_zero(struct __pyx_ob
  *     def __getitem__(Tensor self, key):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":155
+  /* "qupy/dev/_algebra.pyx":156
  *         return self.__str__()
  * 
  *     def get_zero(Tensor self):             # <<<<<<<<<<<<<<
@@ -5484,7 +5484,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_8get_zero(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":158
+/* "qupy/dev/_algebra.pyx":159
  *         return Tensor(self.algebra)
  * 
  *     def __getitem__(Tensor self, key):             # <<<<<<<<<<<<<<
@@ -5520,7 +5520,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_10__getitem__(struct __py
   int __pyx_t_7;
   __Pyx_RefNannySetupContext("__getitem__", 0);
 
-  /* "qupy/dev/_algebra.pyx":161
+  /* "qupy/dev/_algebra.pyx":162
  *         cdef int i
  *         cdef Tensor child, _child
  *         child = self             # <<<<<<<<<<<<<<
@@ -5530,7 +5530,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_10__getitem__(struct __py
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __pyx_v_child = __pyx_v_self;
 
-  /* "qupy/dev/_algebra.pyx":162
+  /* "qupy/dev/_algebra.pyx":163
  *         cdef Tensor child, _child
  *         child = self
  *         for i in key:             # <<<<<<<<<<<<<<
@@ -5541,26 +5541,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_10__getitem__(struct __py
     __pyx_t_1 = __pyx_v_key; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_key); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 162, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_key); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 163, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 162, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 163, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 162, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 163, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 162, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 162, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 163, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 162, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -5570,30 +5570,30 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_10__getitem__(struct __py
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 162, __pyx_L1_error)
+          else __PYX_ERR(0, 163, __pyx_L1_error)
         }
         break;
       }
       __Pyx_GOTREF(__pyx_t_4);
     }
-    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 162, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 163, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_i = __pyx_t_5;
 
-    /* "qupy/dev/_algebra.pyx":163
+    /* "qupy/dev/_algebra.pyx":164
  *         child = self
  *         for i in key:
  *             _child = child.children[i]             # <<<<<<<<<<<<<<
  *             if _child is None:
  *                 return ZERO
  */
-    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_child->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 163, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_child->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 163, __pyx_L1_error)
+    if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v__child, ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_4));
     __pyx_t_4 = 0;
 
-    /* "qupy/dev/_algebra.pyx":164
+    /* "qupy/dev/_algebra.pyx":165
  *         for i in key:
  *             _child = child.children[i]
  *             if _child is None:             # <<<<<<<<<<<<<<
@@ -5604,7 +5604,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_10__getitem__(struct __py
     __pyx_t_7 = (__pyx_t_6 != 0);
     if (__pyx_t_7) {
 
-      /* "qupy/dev/_algebra.pyx":165
+      /* "qupy/dev/_algebra.pyx":166
  *             _child = child.children[i]
  *             if _child is None:
  *                 return ZERO             # <<<<<<<<<<<<<<
@@ -5617,7 +5617,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_10__getitem__(struct __py
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       goto __pyx_L0;
 
-      /* "qupy/dev/_algebra.pyx":164
+      /* "qupy/dev/_algebra.pyx":165
  *         for i in key:
  *             _child = child.children[i]
  *             if _child is None:             # <<<<<<<<<<<<<<
@@ -5626,7 +5626,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_10__getitem__(struct __py
  */
     }
 
-    /* "qupy/dev/_algebra.pyx":166
+    /* "qupy/dev/_algebra.pyx":167
  *             if _child is None:
  *                 return ZERO
  *             child = _child             # <<<<<<<<<<<<<<
@@ -5636,7 +5636,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_10__getitem__(struct __py
     __Pyx_INCREF(((PyObject *)__pyx_v__child));
     __Pyx_DECREF_SET(__pyx_v_child, __pyx_v__child);
 
-    /* "qupy/dev/_algebra.pyx":162
+    /* "qupy/dev/_algebra.pyx":163
  *         cdef Tensor child, _child
  *         child = self
  *         for i in key:             # <<<<<<<<<<<<<<
@@ -5646,7 +5646,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_10__getitem__(struct __py
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":167
+  /* "qupy/dev/_algebra.pyx":168
  *                 return ZERO
  *             child = _child
  *         return child.value             # <<<<<<<<<<<<<<
@@ -5654,13 +5654,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_10__getitem__(struct __py
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_PyComplex_FromComplex(__pyx_v_child->value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 167, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyComplex_FromComplex(__pyx_v_child->value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 168, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":158
+  /* "qupy/dev/_algebra.pyx":159
  *         return Tensor(self.algebra)
  * 
  *     def __getitem__(Tensor self, key):             # <<<<<<<<<<<<<<
@@ -5682,7 +5682,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_10__getitem__(struct __py
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":170
+/* "qupy/dev/_algebra.pyx":171
  * 
  *     @property
  *     def grade(Tensor self):             # <<<<<<<<<<<<<<
@@ -5717,7 +5717,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_5grade___get__(struct __p
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "qupy/dev/_algebra.pyx":173
+  /* "qupy/dev/_algebra.pyx":174
  *         cdef int i
  *         cdef Tensor child, _child
  *         for i in range(self.algebra.dim):             # <<<<<<<<<<<<<<
@@ -5729,20 +5729,20 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_5grade___get__(struct __p
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "qupy/dev/_algebra.pyx":174
+    /* "qupy/dev/_algebra.pyx":175
  *         cdef Tensor child, _child
  *         for i in range(self.algebra.dim):
  *             child = self.children[i]             # <<<<<<<<<<<<<<
  *             if child is not None:
  *                 return child.grade+1
  */
-    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 174, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 175, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 174, __pyx_L1_error)
+    if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 175, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_child, ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_4));
     __pyx_t_4 = 0;
 
-    /* "qupy/dev/_algebra.pyx":175
+    /* "qupy/dev/_algebra.pyx":176
  *         for i in range(self.algebra.dim):
  *             child = self.children[i]
  *             if child is not None:             # <<<<<<<<<<<<<<
@@ -5753,7 +5753,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_5grade___get__(struct __p
     __pyx_t_6 = (__pyx_t_5 != 0);
     if (__pyx_t_6) {
 
-      /* "qupy/dev/_algebra.pyx":176
+      /* "qupy/dev/_algebra.pyx":177
  *             child = self.children[i]
  *             if child is not None:
  *                 return child.grade+1             # <<<<<<<<<<<<<<
@@ -5761,16 +5761,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_5grade___get__(struct __p
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_child), __pyx_n_s_grade); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 176, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_child), __pyx_n_s_grade); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 177, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_7 = __Pyx_PyInt_AddObjC(__pyx_t_4, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 176, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyInt_AddObjC(__pyx_t_4, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 177, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_r = __pyx_t_7;
       __pyx_t_7 = 0;
       goto __pyx_L0;
 
-      /* "qupy/dev/_algebra.pyx":175
+      /* "qupy/dev/_algebra.pyx":176
  *         for i in range(self.algebra.dim):
  *             child = self.children[i]
  *             if child is not None:             # <<<<<<<<<<<<<<
@@ -5780,7 +5780,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_5grade___get__(struct __p
     }
   }
 
-  /* "qupy/dev/_algebra.pyx":177
+  /* "qupy/dev/_algebra.pyx":178
  *             if child is not None:
  *                 return child.grade+1
  *         return 0             # <<<<<<<<<<<<<<
@@ -5792,7 +5792,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_5grade___get__(struct __p
   __pyx_r = __pyx_int_0;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":170
+  /* "qupy/dev/_algebra.pyx":171
  * 
  *     @property
  *     def grade(Tensor self):             # <<<<<<<<<<<<<<
@@ -5813,7 +5813,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_5grade___get__(struct __p
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":179
+/* "qupy/dev/_algebra.pyx":180
  *         return 0
  * 
  *     def iadditem(Tensor self, key, object value):             # <<<<<<<<<<<<<<
@@ -5852,11 +5852,11 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_13iadditem(PyObject *__py
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("iadditem", 1, 2, 2, 1); __PYX_ERR(0, 179, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("iadditem", 1, 2, 2, 1); __PYX_ERR(0, 180, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "iadditem") < 0)) __PYX_ERR(0, 179, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "iadditem") < 0)) __PYX_ERR(0, 180, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -5869,7 +5869,7 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_13iadditem(PyObject *__py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("iadditem", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 179, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("iadditem", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 180, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("qupy.dev._algebra.Tensor.iadditem", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -5898,7 +5898,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_12iadditem(struct __pyx_o
   __pyx_t_double_complex __pyx_t_8;
   __Pyx_RefNannySetupContext("iadditem", 0);
 
-  /* "qupy/dev/_algebra.pyx":183
+  /* "qupy/dev/_algebra.pyx":184
  *         cdef int i
  *         cdef Tensor child, _child
  *         child = self             # <<<<<<<<<<<<<<
@@ -5908,7 +5908,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_12iadditem(struct __pyx_o
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __pyx_v_child = __pyx_v_self;
 
-  /* "qupy/dev/_algebra.pyx":184
+  /* "qupy/dev/_algebra.pyx":185
  *         cdef Tensor child, _child
  *         child = self
  *         for i in key:             # <<<<<<<<<<<<<<
@@ -5919,26 +5919,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_12iadditem(struct __pyx_o
     __pyx_t_1 = __pyx_v_key; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_key); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 184, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_key); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 185, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 184, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 185, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 184, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 185, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 184, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 185, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 184, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 185, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 184, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 185, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -5948,30 +5948,30 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_12iadditem(struct __pyx_o
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 184, __pyx_L1_error)
+          else __PYX_ERR(0, 185, __pyx_L1_error)
         }
         break;
       }
       __Pyx_GOTREF(__pyx_t_4);
     }
-    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 184, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 185, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_i = __pyx_t_5;
 
-    /* "qupy/dev/_algebra.pyx":185
+    /* "qupy/dev/_algebra.pyx":186
  *         child = self
  *         for i in key:
  *             _child = child.children[i]             # <<<<<<<<<<<<<<
  *             if _child is None:
  *                 _child = Tensor(self.algebra)
  */
-    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_child->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 185, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_child->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 186, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 185, __pyx_L1_error)
+    if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 186, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v__child, ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_4));
     __pyx_t_4 = 0;
 
-    /* "qupy/dev/_algebra.pyx":186
+    /* "qupy/dev/_algebra.pyx":187
  *         for i in key:
  *             _child = child.children[i]
  *             if _child is None:             # <<<<<<<<<<<<<<
@@ -5982,28 +5982,28 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_12iadditem(struct __pyx_o
     __pyx_t_7 = (__pyx_t_6 != 0);
     if (__pyx_t_7) {
 
-      /* "qupy/dev/_algebra.pyx":187
+      /* "qupy/dev/_algebra.pyx":188
  *             _child = child.children[i]
  *             if _child is None:
  *                 _child = Tensor(self.algebra)             # <<<<<<<<<<<<<<
  *                 child.children[i] = _child
  *             child = _child
  */
-      __pyx_t_4 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 187, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 188, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF_SET(__pyx_v__child, ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_4));
       __pyx_t_4 = 0;
 
-      /* "qupy/dev/_algebra.pyx":188
+      /* "qupy/dev/_algebra.pyx":189
  *             if _child is None:
  *                 _child = Tensor(self.algebra)
  *                 child.children[i] = _child             # <<<<<<<<<<<<<<
  *             child = _child
  *         child.value += value
  */
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_child->children, __pyx_v_i, ((PyObject *)__pyx_v__child), int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) __PYX_ERR(0, 188, __pyx_L1_error)
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_child->children, __pyx_v_i, ((PyObject *)__pyx_v__child), int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) __PYX_ERR(0, 189, __pyx_L1_error)
 
-      /* "qupy/dev/_algebra.pyx":186
+      /* "qupy/dev/_algebra.pyx":187
  *         for i in key:
  *             _child = child.children[i]
  *             if _child is None:             # <<<<<<<<<<<<<<
@@ -6012,7 +6012,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_12iadditem(struct __pyx_o
  */
     }
 
-    /* "qupy/dev/_algebra.pyx":189
+    /* "qupy/dev/_algebra.pyx":190
  *                 _child = Tensor(self.algebra)
  *                 child.children[i] = _child
  *             child = _child             # <<<<<<<<<<<<<<
@@ -6022,7 +6022,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_12iadditem(struct __pyx_o
     __Pyx_INCREF(((PyObject *)__pyx_v__child));
     __Pyx_DECREF_SET(__pyx_v_child, __pyx_v__child);
 
-    /* "qupy/dev/_algebra.pyx":184
+    /* "qupy/dev/_algebra.pyx":185
  *         cdef Tensor child, _child
  *         child = self
  *         for i in key:             # <<<<<<<<<<<<<<
@@ -6032,45 +6032,45 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_12iadditem(struct __pyx_o
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":190
+  /* "qupy/dev/_algebra.pyx":191
  *                 child.children[i] = _child
  *             child = _child
  *         child.value += value             # <<<<<<<<<<<<<<
  *         child.flush()
  * 
  */
-  __pyx_t_1 = __pyx_PyComplex_FromComplex(__pyx_v_child->value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 190, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyComplex_FromComplex(__pyx_v_child->value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 191, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = PyNumber_InPlaceAdd(__pyx_t_1, __pyx_v_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 190, __pyx_L1_error)
+  __pyx_t_4 = PyNumber_InPlaceAdd(__pyx_t_1, __pyx_v_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 191, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_8 = __Pyx_PyComplex_As___pyx_t_double_complex(__pyx_t_4); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyComplex_As___pyx_t_double_complex(__pyx_t_4); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 191, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_child->value = __pyx_t_8;
 
-  /* "qupy/dev/_algebra.pyx":191
+  /* "qupy/dev/_algebra.pyx":192
  *             child = _child
  *         child.value += value
  *         child.flush()             # <<<<<<<<<<<<<<
  * 
  *         # flush cache
  */
-  __pyx_t_4 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_child->__pyx_vtab)->flush(__pyx_v_child); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __pyx_t_4 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_child->__pyx_vtab)->flush(__pyx_v_child); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":197
+  /* "qupy/dev/_algebra.pyx":198
  * #        self._values = None
  * #        self._items = None
  *         self.flush()             # <<<<<<<<<<<<<<
  * 
  *     def __setitem__(Tensor self, key, object value):
  */
-  __pyx_t_4 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->flush(__pyx_v_self); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_4 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->flush(__pyx_v_self); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 198, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":179
+  /* "qupy/dev/_algebra.pyx":180
  *         return 0
  * 
  *     def iadditem(Tensor self, key, object value):             # <<<<<<<<<<<<<<
@@ -6094,7 +6094,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_12iadditem(struct __pyx_o
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":199
+/* "qupy/dev/_algebra.pyx":200
  *         self.flush()
  * 
  *     def __setitem__(Tensor self, key, object value):             # <<<<<<<<<<<<<<
@@ -6131,7 +6131,7 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor_14__setitem__(struct __pyx_obj_
   __pyx_t_double_complex __pyx_t_8;
   __Pyx_RefNannySetupContext("__setitem__", 0);
 
-  /* "qupy/dev/_algebra.pyx":204
+  /* "qupy/dev/_algebra.pyx":205
  *         cdef Tensor child, _child
  * #        print(id(self), "__setitem__")
  *         child = self             # <<<<<<<<<<<<<<
@@ -6141,7 +6141,7 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor_14__setitem__(struct __pyx_obj_
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __pyx_v_child = __pyx_v_self;
 
-  /* "qupy/dev/_algebra.pyx":205
+  /* "qupy/dev/_algebra.pyx":206
  * #        print(id(self), "__setitem__")
  *         child = self
  *         for i in key:             # <<<<<<<<<<<<<<
@@ -6152,26 +6152,26 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor_14__setitem__(struct __pyx_obj_
     __pyx_t_1 = __pyx_v_key; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_key); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 205, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_key); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 206, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 205, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 206, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 205, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 206, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 205, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 205, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 206, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 205, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -6181,30 +6181,30 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor_14__setitem__(struct __pyx_obj_
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 205, __pyx_L1_error)
+          else __PYX_ERR(0, 206, __pyx_L1_error)
         }
         break;
       }
       __Pyx_GOTREF(__pyx_t_4);
     }
-    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 205, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 206, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_i = __pyx_t_5;
 
-    /* "qupy/dev/_algebra.pyx":206
+    /* "qupy/dev/_algebra.pyx":207
  *         child = self
  *         for i in key:
  *             _child = child.children[i]             # <<<<<<<<<<<<<<
  *             if _child is None:
  *                 _child = Tensor(self.algebra)
  */
-    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_child->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_child->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 207, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 206, __pyx_L1_error)
+    if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 207, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v__child, ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_4));
     __pyx_t_4 = 0;
 
-    /* "qupy/dev/_algebra.pyx":207
+    /* "qupy/dev/_algebra.pyx":208
  *         for i in key:
  *             _child = child.children[i]
  *             if _child is None:             # <<<<<<<<<<<<<<
@@ -6215,28 +6215,28 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor_14__setitem__(struct __pyx_obj_
     __pyx_t_7 = (__pyx_t_6 != 0);
     if (__pyx_t_7) {
 
-      /* "qupy/dev/_algebra.pyx":208
+      /* "qupy/dev/_algebra.pyx":209
  *             _child = child.children[i]
  *             if _child is None:
  *                 _child = Tensor(self.algebra)             # <<<<<<<<<<<<<<
  *                 child.children[i] = _child
  *             child = _child
  */
-      __pyx_t_4 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 208, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 209, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF_SET(__pyx_v__child, ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_4));
       __pyx_t_4 = 0;
 
-      /* "qupy/dev/_algebra.pyx":209
+      /* "qupy/dev/_algebra.pyx":210
  *             if _child is None:
  *                 _child = Tensor(self.algebra)
  *                 child.children[i] = _child             # <<<<<<<<<<<<<<
  *             child = _child
  *         child.value = value
  */
-      if (unlikely(__Pyx_SetItemInt(__pyx_v_child->children, __pyx_v_i, ((PyObject *)__pyx_v__child), int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) __PYX_ERR(0, 209, __pyx_L1_error)
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_child->children, __pyx_v_i, ((PyObject *)__pyx_v__child), int, 1, __Pyx_PyInt_From_int, 0, 1, 1) < 0)) __PYX_ERR(0, 210, __pyx_L1_error)
 
-      /* "qupy/dev/_algebra.pyx":207
+      /* "qupy/dev/_algebra.pyx":208
  *         for i in key:
  *             _child = child.children[i]
  *             if _child is None:             # <<<<<<<<<<<<<<
@@ -6245,7 +6245,7 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor_14__setitem__(struct __pyx_obj_
  */
     }
 
-    /* "qupy/dev/_algebra.pyx":210
+    /* "qupy/dev/_algebra.pyx":211
  *                 _child = Tensor(self.algebra)
  *                 child.children[i] = _child
  *             child = _child             # <<<<<<<<<<<<<<
@@ -6255,7 +6255,7 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor_14__setitem__(struct __pyx_obj_
     __Pyx_INCREF(((PyObject *)__pyx_v__child));
     __Pyx_DECREF_SET(__pyx_v_child, __pyx_v__child);
 
-    /* "qupy/dev/_algebra.pyx":205
+    /* "qupy/dev/_algebra.pyx":206
  * #        print(id(self), "__setitem__")
  *         child = self
  *         for i in key:             # <<<<<<<<<<<<<<
@@ -6265,39 +6265,39 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor_14__setitem__(struct __pyx_obj_
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":211
+  /* "qupy/dev/_algebra.pyx":212
  *                 child.children[i] = _child
  *             child = _child
  *         child.value = value             # <<<<<<<<<<<<<<
  *         child.flush()
  * 
  */
-  __pyx_t_8 = __Pyx_PyComplex_As___pyx_t_double_complex(__pyx_v_value); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyComplex_As___pyx_t_double_complex(__pyx_v_value); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L1_error)
   __pyx_v_child->value = __pyx_t_8;
 
-  /* "qupy/dev/_algebra.pyx":212
+  /* "qupy/dev/_algebra.pyx":213
  *             child = _child
  *         child.value = value
  *         child.flush()             # <<<<<<<<<<<<<<
  * 
  *         # flush cache
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_child->__pyx_vtab)->flush(__pyx_v_child); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_child->__pyx_vtab)->flush(__pyx_v_child); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":219
+  /* "qupy/dev/_algebra.pyx":220
  * #        self._items = None
  * #        print(id(self), "__setitem__: flush")
  *         self.flush()             # <<<<<<<<<<<<<<
  * 
  *     def nnz(Tensor self, double EPSILON=EPSILON):
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->flush(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 219, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->flush(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":199
+  /* "qupy/dev/_algebra.pyx":200
  *         self.flush()
  * 
  *     def __setitem__(Tensor self, key, object value):             # <<<<<<<<<<<<<<
@@ -6320,7 +6320,7 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor_14__setitem__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":221
+/* "qupy/dev/_algebra.pyx":222
  *         self.flush()
  * 
  *     def nnz(Tensor self, double EPSILON=EPSILON):             # <<<<<<<<<<<<<<
@@ -6356,7 +6356,7 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_17nnz(PyObject *__pyx_v_s
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nnz") < 0)) __PYX_ERR(0, 221, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "nnz") < 0)) __PYX_ERR(0, 222, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -6367,14 +6367,14 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_17nnz(PyObject *__pyx_v_s
       }
     }
     if (values[0]) {
-      __pyx_v_EPSILON = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_EPSILON == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 221, __pyx_L3_error)
+      __pyx_v_EPSILON = __pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_EPSILON == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 222, __pyx_L3_error)
     } else {
       __pyx_v_EPSILON = ((double)1e-08);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("nnz", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 221, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("nnz", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 222, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("qupy.dev._algebra.Tensor.nnz", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6400,7 +6400,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_16nnz(struct __pyx_obj_4q
   int __pyx_t_6;
   __Pyx_RefNannySetupContext("nnz", 0);
 
-  /* "qupy/dev/_algebra.pyx":222
+  /* "qupy/dev/_algebra.pyx":223
  * 
  *     def nnz(Tensor self, double EPSILON=EPSILON):
  *         count = 0             # <<<<<<<<<<<<<<
@@ -6410,22 +6410,22 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_16nnz(struct __pyx_obj_4q
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_count = __pyx_int_0;
 
-  /* "qupy/dev/_algebra.pyx":223
+  /* "qupy/dev/_algebra.pyx":224
  *     def nnz(Tensor self, double EPSILON=EPSILON):
  *         count = 0
  *         for value in self.get_values():             # <<<<<<<<<<<<<<
  *             if abs(value) > EPSILON:
  *                 count += 1
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_values(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_values(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 223, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 224, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 223, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 224, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -6433,17 +6433,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_16nnz(struct __pyx_obj_4q
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 223, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 224, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 224, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 223, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 224, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 224, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -6453,7 +6453,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_16nnz(struct __pyx_obj_4q
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 223, __pyx_L1_error)
+          else __PYX_ERR(0, 224, __pyx_L1_error)
         }
         break;
       }
@@ -6462,34 +6462,34 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_16nnz(struct __pyx_obj_4q
     __Pyx_XDECREF_SET(__pyx_v_value, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":224
+    /* "qupy/dev/_algebra.pyx":225
  *         count = 0
  *         for value in self.get_values():
  *             if abs(value) > EPSILON:             # <<<<<<<<<<<<<<
  *                 count += 1
  *         return count
  */
-    __pyx_t_1 = __Pyx_PyNumber_Absolute(__pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 224, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyNumber_Absolute(__pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 225, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_1, __pyx_float_1eneg_08, Py_GT); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 224, __pyx_L1_error)
+    __pyx_t_5 = PyObject_RichCompare(__pyx_t_1, __pyx_float_1eneg_08, Py_GT); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 225, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 224, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 225, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (__pyx_t_6) {
 
-      /* "qupy/dev/_algebra.pyx":225
+      /* "qupy/dev/_algebra.pyx":226
  *         for value in self.get_values():
  *             if abs(value) > EPSILON:
  *                 count += 1             # <<<<<<<<<<<<<<
  *         return count
  * 
  */
-      __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_v_count, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 225, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_v_count, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 226, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF_SET(__pyx_v_count, __pyx_t_5);
       __pyx_t_5 = 0;
 
-      /* "qupy/dev/_algebra.pyx":224
+      /* "qupy/dev/_algebra.pyx":225
  *         count = 0
  *         for value in self.get_values():
  *             if abs(value) > EPSILON:             # <<<<<<<<<<<<<<
@@ -6498,7 +6498,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_16nnz(struct __pyx_obj_4q
  */
     }
 
-    /* "qupy/dev/_algebra.pyx":223
+    /* "qupy/dev/_algebra.pyx":224
  *     def nnz(Tensor self, double EPSILON=EPSILON):
  *         count = 0
  *         for value in self.get_values():             # <<<<<<<<<<<<<<
@@ -6508,7 +6508,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_16nnz(struct __pyx_obj_4q
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":226
+  /* "qupy/dev/_algebra.pyx":227
  *             if abs(value) > EPSILON:
  *                 count += 1
  *         return count             # <<<<<<<<<<<<<<
@@ -6520,7 +6520,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_16nnz(struct __pyx_obj_4q
   __pyx_r = __pyx_v_count;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":221
+  /* "qupy/dev/_algebra.pyx":222
  *         self.flush()
  * 
  *     def nnz(Tensor self, double EPSILON=EPSILON):             # <<<<<<<<<<<<<<
@@ -6543,7 +6543,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_16nnz(struct __pyx_obj_4q
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":228
+/* "qupy/dev/_algebra.pyx":229
  *         return count
  * 
  *     cpdef object get_keys(Tensor self):             # <<<<<<<<<<<<<<
@@ -6579,7 +6579,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_keys); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_keys); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 229, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_4qupy_3dev_8_algebra_6Tensor_19get_keys)) {
         __Pyx_XDECREF(__pyx_r);
@@ -6596,7 +6596,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 228, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 229, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -6617,7 +6617,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
     #endif
   }
 
-  /* "qupy/dev/_algebra.pyx":231
+  /* "qupy/dev/_algebra.pyx":232
  *         cdef Tensor child
  *         cdef int i
  *         if self._keys is not None:             # <<<<<<<<<<<<<<
@@ -6628,7 +6628,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
   __pyx_t_6 = (__pyx_t_5 != 0);
   if (__pyx_t_6) {
 
-    /* "qupy/dev/_algebra.pyx":233
+    /* "qupy/dev/_algebra.pyx":234
  *         if self._keys is not None:
  *             #print(id(self), "get_keys: cache hit")
  *             return self._keys             # <<<<<<<<<<<<<<
@@ -6640,7 +6640,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
     __pyx_r = __pyx_v_self->_keys;
     goto __pyx_L0;
 
-    /* "qupy/dev/_algebra.pyx":231
+    /* "qupy/dev/_algebra.pyx":232
  *         cdef Tensor child
  *         cdef int i
  *         if self._keys is not None:             # <<<<<<<<<<<<<<
@@ -6649,19 +6649,19 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":234
+  /* "qupy/dev/_algebra.pyx":235
  *             #print(id(self), "get_keys: cache hit")
  *             return self._keys
  *         keys = []             # <<<<<<<<<<<<<<
  * #        if self.value != ZERO:
  * #            keys.append(())
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 235, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_keys = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":237
+  /* "qupy/dev/_algebra.pyx":238
  * #        if self.value != ZERO:
  * #            keys.append(())
  *         if abs(self.value) > EPSILON:             # <<<<<<<<<<<<<<
@@ -6671,16 +6671,16 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
   __pyx_t_6 = ((__Pyx_c_abs_double(__pyx_v_self->value) > 1e-08) != 0);
   if (__pyx_t_6) {
 
-    /* "qupy/dev/_algebra.pyx":238
+    /* "qupy/dev/_algebra.pyx":239
  * #            keys.append(())
  *         if abs(self.value) > EPSILON:
  *             keys.append(())             # <<<<<<<<<<<<<<
  *         for i from 0<=i<self.algebra.dim:
  *             child = self.children[i]
  */
-    __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_keys, __pyx_empty_tuple); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 238, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_keys, __pyx_empty_tuple); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 239, __pyx_L1_error)
 
-    /* "qupy/dev/_algebra.pyx":237
+    /* "qupy/dev/_algebra.pyx":238
  * #        if self.value != ZERO:
  * #            keys.append(())
  *         if abs(self.value) > EPSILON:             # <<<<<<<<<<<<<<
@@ -6689,7 +6689,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":239
+  /* "qupy/dev/_algebra.pyx":240
  *         if abs(self.value) > EPSILON:
  *             keys.append(())
  *         for i from 0<=i<self.algebra.dim:             # <<<<<<<<<<<<<<
@@ -6699,20 +6699,20 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
   __pyx_t_8 = __pyx_v_self->algebra->dim;
   for (__pyx_v_i = 0; __pyx_v_i < __pyx_t_8; __pyx_v_i++) {
 
-    /* "qupy/dev/_algebra.pyx":240
+    /* "qupy/dev/_algebra.pyx":241
  *             keys.append(())
  *         for i from 0<=i<self.algebra.dim:
  *             child = self.children[i]             # <<<<<<<<<<<<<<
  *             if child is None:
  *                 continue
  */
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 240, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 241, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 240, __pyx_L1_error)
+    if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 241, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_child, ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_1));
     __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":241
+    /* "qupy/dev/_algebra.pyx":242
  *         for i from 0<=i<self.algebra.dim:
  *             child = self.children[i]
  *             if child is None:             # <<<<<<<<<<<<<<
@@ -6723,7 +6723,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
     __pyx_t_5 = (__pyx_t_6 != 0);
     if (__pyx_t_5) {
 
-      /* "qupy/dev/_algebra.pyx":242
+      /* "qupy/dev/_algebra.pyx":243
  *             child = self.children[i]
  *             if child is None:
  *                 continue             # <<<<<<<<<<<<<<
@@ -6732,7 +6732,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
  */
       goto __pyx_L5_continue;
 
-      /* "qupy/dev/_algebra.pyx":241
+      /* "qupy/dev/_algebra.pyx":242
  *         for i from 0<=i<self.algebra.dim:
  *             child = self.children[i]
  *             if child is None:             # <<<<<<<<<<<<<<
@@ -6741,22 +6741,22 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
  */
     }
 
-    /* "qupy/dev/_algebra.pyx":243
+    /* "qupy/dev/_algebra.pyx":244
  *             if child is None:
  *                 continue
  *             for key in child.get_keys():             # <<<<<<<<<<<<<<
  *                 keys.append((i,)+key)
  *         self._keys = keys
  */
-    __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_child->__pyx_vtab)->get_keys(__pyx_v_child, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 243, __pyx_L1_error)
+    __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_child->__pyx_vtab)->get_keys(__pyx_v_child, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 244, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
       __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_9 = 0;
       __pyx_t_10 = NULL;
     } else {
-      __pyx_t_9 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 243, __pyx_L1_error)
+      __pyx_t_9 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 244, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_10 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 243, __pyx_L1_error)
+      __pyx_t_10 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 244, __pyx_L1_error)
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     for (;;) {
@@ -6764,17 +6764,17 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
         if (likely(PyList_CheckExact(__pyx_t_2))) {
           if (__pyx_t_9 >= PyList_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_9); __Pyx_INCREF(__pyx_t_1); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 243, __pyx_L1_error)
+          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_9); __Pyx_INCREF(__pyx_t_1); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 244, __pyx_L1_error)
           #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 243, __pyx_L1_error)
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 244, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           #endif
         } else {
           if (__pyx_t_9 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_9); __Pyx_INCREF(__pyx_t_1); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 243, __pyx_L1_error)
+          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_9); __Pyx_INCREF(__pyx_t_1); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 244, __pyx_L1_error)
           #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 243, __pyx_L1_error)
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 244, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           #endif
         }
@@ -6784,7 +6784,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 243, __pyx_L1_error)
+            else __PYX_ERR(0, 244, __pyx_L1_error)
           }
           break;
         }
@@ -6793,27 +6793,27 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
       __Pyx_XDECREF_SET(__pyx_v_key, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "qupy/dev/_algebra.pyx":244
+      /* "qupy/dev/_algebra.pyx":245
  *                 continue
  *             for key in child.get_keys():
  *                 keys.append((i,)+key)             # <<<<<<<<<<<<<<
  *         self._keys = keys
  *         #print(id(self), "get_keys: cache miss")
  */
-      __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 244, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 245, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 244, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 245, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_GIVEREF(__pyx_t_1);
       PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
       __pyx_t_1 = 0;
-      __pyx_t_1 = PyNumber_Add(__pyx_t_3, __pyx_v_key); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 244, __pyx_L1_error)
+      __pyx_t_1 = PyNumber_Add(__pyx_t_3, __pyx_v_key); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 245, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_keys, __pyx_t_1); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 244, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_keys, __pyx_t_1); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 245, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "qupy/dev/_algebra.pyx":243
+      /* "qupy/dev/_algebra.pyx":244
  *             if child is None:
  *                 continue
  *             for key in child.get_keys():             # <<<<<<<<<<<<<<
@@ -6825,7 +6825,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
     __pyx_L5_continue:;
   }
 
-  /* "qupy/dev/_algebra.pyx":245
+  /* "qupy/dev/_algebra.pyx":246
  *             for key in child.get_keys():
  *                 keys.append((i,)+key)
  *         self._keys = keys             # <<<<<<<<<<<<<<
@@ -6838,7 +6838,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
   __Pyx_DECREF(__pyx_v_self->_keys);
   __pyx_v_self->_keys = __pyx_v_keys;
 
-  /* "qupy/dev/_algebra.pyx":247
+  /* "qupy/dev/_algebra.pyx":248
  *         self._keys = keys
  *         #print(id(self), "get_keys: cache miss")
  *         return keys             # <<<<<<<<<<<<<<
@@ -6850,7 +6850,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(struct __pyx_obj_
   __pyx_r = __pyx_v_keys;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":228
+  /* "qupy/dev/_algebra.pyx":229
  *         return count
  * 
  *     cpdef object get_keys(Tensor self):             # <<<<<<<<<<<<<<
@@ -6894,7 +6894,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_18get_keys(struct __pyx_o
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("get_keys", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_4qupy_3dev_8_algebra_6Tensor_get_keys(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 229, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -6911,7 +6911,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_18get_keys(struct __pyx_o
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":249
+/* "qupy/dev/_algebra.pyx":250
  *         return keys
  * 
  *     cdef object get_values(Tensor self):             # <<<<<<<<<<<<<<
@@ -6936,7 +6936,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
   PyObject *(*__pyx_t_8)(PyObject *);
   __Pyx_RefNannySetupContext("get_values", 0);
 
-  /* "qupy/dev/_algebra.pyx":252
+  /* "qupy/dev/_algebra.pyx":253
  *         cdef Tensor child
  *         cdef int i
  *         if self._values is not None:             # <<<<<<<<<<<<<<
@@ -6947,7 +6947,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "qupy/dev/_algebra.pyx":253
+    /* "qupy/dev/_algebra.pyx":254
  *         cdef int i
  *         if self._values is not None:
  *             return self._values             # <<<<<<<<<<<<<<
@@ -6959,7 +6959,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
     __pyx_r = __pyx_v_self->_values;
     goto __pyx_L0;
 
-    /* "qupy/dev/_algebra.pyx":252
+    /* "qupy/dev/_algebra.pyx":253
  *         cdef Tensor child
  *         cdef int i
  *         if self._values is not None:             # <<<<<<<<<<<<<<
@@ -6968,19 +6968,19 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":254
+  /* "qupy/dev/_algebra.pyx":255
  *         if self._values is not None:
  *             return self._values
  *         values = []             # <<<<<<<<<<<<<<
  * #        if self.value != ZERO:
  *         if abs(self.value) > EPSILON:
  */
-  __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 254, __pyx_L1_error)
+  __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_values = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":256
+  /* "qupy/dev/_algebra.pyx":257
  *         values = []
  * #        if self.value != ZERO:
  *         if abs(self.value) > EPSILON:             # <<<<<<<<<<<<<<
@@ -6990,19 +6990,19 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
   __pyx_t_2 = ((__Pyx_c_abs_double(__pyx_v_self->value) > 1e-08) != 0);
   if (__pyx_t_2) {
 
-    /* "qupy/dev/_algebra.pyx":257
+    /* "qupy/dev/_algebra.pyx":258
  * #        if self.value != ZERO:
  *         if abs(self.value) > EPSILON:
  *             values.append(self.value)             # <<<<<<<<<<<<<<
  *         for i from 0<=i<self.algebra.dim:
  *             child = self.children[i]
  */
-    __pyx_t_3 = __pyx_PyComplex_FromComplex(__pyx_v_self->value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 257, __pyx_L1_error)
+    __pyx_t_3 = __pyx_PyComplex_FromComplex(__pyx_v_self->value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_values, __pyx_t_3); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 257, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_values, __pyx_t_3); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "qupy/dev/_algebra.pyx":256
+    /* "qupy/dev/_algebra.pyx":257
  *         values = []
  * #        if self.value != ZERO:
  *         if abs(self.value) > EPSILON:             # <<<<<<<<<<<<<<
@@ -7011,7 +7011,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":258
+  /* "qupy/dev/_algebra.pyx":259
  *         if abs(self.value) > EPSILON:
  *             values.append(self.value)
  *         for i from 0<=i<self.algebra.dim:             # <<<<<<<<<<<<<<
@@ -7021,20 +7021,20 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
   __pyx_t_5 = __pyx_v_self->algebra->dim;
   for (__pyx_v_i = 0; __pyx_v_i < __pyx_t_5; __pyx_v_i++) {
 
-    /* "qupy/dev/_algebra.pyx":259
+    /* "qupy/dev/_algebra.pyx":260
  *             values.append(self.value)
  *         for i from 0<=i<self.algebra.dim:
  *             child = self.children[i]             # <<<<<<<<<<<<<<
  *             if child is None:
  *                 continue
  */
-    __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 259, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 260, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 259, __pyx_L1_error)
+    if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 260, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_child, ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_3));
     __pyx_t_3 = 0;
 
-    /* "qupy/dev/_algebra.pyx":260
+    /* "qupy/dev/_algebra.pyx":261
  *         for i from 0<=i<self.algebra.dim:
  *             child = self.children[i]
  *             if child is None:             # <<<<<<<<<<<<<<
@@ -7045,7 +7045,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
     __pyx_t_1 = (__pyx_t_2 != 0);
     if (__pyx_t_1) {
 
-      /* "qupy/dev/_algebra.pyx":261
+      /* "qupy/dev/_algebra.pyx":262
  *             child = self.children[i]
  *             if child is None:
  *                 continue             # <<<<<<<<<<<<<<
@@ -7054,7 +7054,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
  */
       goto __pyx_L5_continue;
 
-      /* "qupy/dev/_algebra.pyx":260
+      /* "qupy/dev/_algebra.pyx":261
  *         for i from 0<=i<self.algebra.dim:
  *             child = self.children[i]
  *             if child is None:             # <<<<<<<<<<<<<<
@@ -7063,22 +7063,22 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
  */
     }
 
-    /* "qupy/dev/_algebra.pyx":262
+    /* "qupy/dev/_algebra.pyx":263
  *             if child is None:
  *                 continue
  *             for value in child.get_values():             # <<<<<<<<<<<<<<
  *                 values.append(value)
  *         self._values = values
  */
-    __pyx_t_3 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_child->__pyx_vtab)->get_values(__pyx_v_child); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 262, __pyx_L1_error)
+    __pyx_t_3 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_child->__pyx_vtab)->get_values(__pyx_v_child); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 263, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
       __pyx_t_6 = __pyx_t_3; __Pyx_INCREF(__pyx_t_6); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 262, __pyx_L1_error)
+      __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 263, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 262, __pyx_L1_error)
+      __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 263, __pyx_L1_error)
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     for (;;) {
@@ -7086,17 +7086,17 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
         if (likely(PyList_CheckExact(__pyx_t_6))) {
           if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 262, __pyx_L1_error)
+          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 263, __pyx_L1_error)
           #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 262, __pyx_L1_error)
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 263, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_3);
           #endif
         } else {
           if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 262, __pyx_L1_error)
+          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 263, __pyx_L1_error)
           #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 262, __pyx_L1_error)
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 263, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_3);
           #endif
         }
@@ -7106,7 +7106,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 262, __pyx_L1_error)
+            else __PYX_ERR(0, 263, __pyx_L1_error)
           }
           break;
         }
@@ -7115,16 +7115,16 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
       __Pyx_XDECREF_SET(__pyx_v_value, __pyx_t_3);
       __pyx_t_3 = 0;
 
-      /* "qupy/dev/_algebra.pyx":263
+      /* "qupy/dev/_algebra.pyx":264
  *                 continue
  *             for value in child.get_values():
  *                 values.append(value)             # <<<<<<<<<<<<<<
  *         self._values = values
  *         return values
  */
-      __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_values, __pyx_v_value); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 263, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyList_Append(__pyx_v_values, __pyx_v_value); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 264, __pyx_L1_error)
 
-      /* "qupy/dev/_algebra.pyx":262
+      /* "qupy/dev/_algebra.pyx":263
  *             if child is None:
  *                 continue
  *             for value in child.get_values():             # <<<<<<<<<<<<<<
@@ -7136,7 +7136,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
     __pyx_L5_continue:;
   }
 
-  /* "qupy/dev/_algebra.pyx":264
+  /* "qupy/dev/_algebra.pyx":265
  *             for value in child.get_values():
  *                 values.append(value)
  *         self._values = values             # <<<<<<<<<<<<<<
@@ -7149,7 +7149,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
   __Pyx_DECREF(__pyx_v_self->_values);
   __pyx_v_self->_values = __pyx_v_values;
 
-  /* "qupy/dev/_algebra.pyx":265
+  /* "qupy/dev/_algebra.pyx":266
  *                 values.append(value)
  *         self._values = values
  *         return values             # <<<<<<<<<<<<<<
@@ -7161,7 +7161,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
   __pyx_r = __pyx_v_values;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":249
+  /* "qupy/dev/_algebra.pyx":250
  *         return keys
  * 
  *     cdef object get_values(Tensor self):             # <<<<<<<<<<<<<<
@@ -7184,7 +7184,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_values(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":267
+/* "qupy/dev/_algebra.pyx":268
  *         return values
  * 
  *     cdef object get_items(Tensor self):             # <<<<<<<<<<<<<<
@@ -7214,7 +7214,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
   PyObject *(*__pyx_t_12)(PyObject *);
   __Pyx_RefNannySetupContext("get_items", 0);
 
-  /* "qupy/dev/_algebra.pyx":270
+  /* "qupy/dev/_algebra.pyx":271
  *         cdef Tensor child
  *         cdef int i
  *         if self._items is not None:             # <<<<<<<<<<<<<<
@@ -7225,7 +7225,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "qupy/dev/_algebra.pyx":271
+    /* "qupy/dev/_algebra.pyx":272
  *         cdef int i
  *         if self._items is not None:
  *             return self._items             # <<<<<<<<<<<<<<
@@ -7237,7 +7237,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
     __pyx_r = __pyx_v_self->_items;
     goto __pyx_L0;
 
-    /* "qupy/dev/_algebra.pyx":270
+    /* "qupy/dev/_algebra.pyx":271
  *         cdef Tensor child
  *         cdef int i
  *         if self._items is not None:             # <<<<<<<<<<<<<<
@@ -7246,19 +7246,19 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":272
+  /* "qupy/dev/_algebra.pyx":273
  *         if self._items is not None:
  *             return self._items
  *         items = []             # <<<<<<<<<<<<<<
  * #        if self.value != ZERO:
  *         if abs(self.value) > EPSILON:
  */
-  __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 272, __pyx_L1_error)
+  __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 273, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_items = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":274
+  /* "qupy/dev/_algebra.pyx":275
  *         items = []
  * #        if self.value != ZERO:
  *         if abs(self.value) > EPSILON:             # <<<<<<<<<<<<<<
@@ -7268,16 +7268,16 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
   __pyx_t_2 = ((__Pyx_c_abs_double(__pyx_v_self->value) > 1e-08) != 0);
   if (__pyx_t_2) {
 
-    /* "qupy/dev/_algebra.pyx":275
+    /* "qupy/dev/_algebra.pyx":276
  * #        if self.value != ZERO:
  *         if abs(self.value) > EPSILON:
  *             items.append(((), self.value))             # <<<<<<<<<<<<<<
  *         for i from 0<=i<self.algebra.dim:
  *             child = self.children[i]
  */
-    __pyx_t_3 = __pyx_PyComplex_FromComplex(__pyx_v_self->value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 275, __pyx_L1_error)
+    __pyx_t_3 = __pyx_PyComplex_FromComplex(__pyx_v_self->value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 276, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 275, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 276, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_empty_tuple);
     __Pyx_GIVEREF(__pyx_empty_tuple);
@@ -7285,10 +7285,10 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_5 = __Pyx_PyList_Append(__pyx_v_items, __pyx_t_4); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 275, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyList_Append(__pyx_v_items, __pyx_t_4); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 276, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "qupy/dev/_algebra.pyx":274
+    /* "qupy/dev/_algebra.pyx":275
  *         items = []
  * #        if self.value != ZERO:
  *         if abs(self.value) > EPSILON:             # <<<<<<<<<<<<<<
@@ -7297,7 +7297,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":276
+  /* "qupy/dev/_algebra.pyx":277
  *         if abs(self.value) > EPSILON:
  *             items.append(((), self.value))
  *         for i from 0<=i<self.algebra.dim:             # <<<<<<<<<<<<<<
@@ -7307,20 +7307,20 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
   __pyx_t_6 = __pyx_v_self->algebra->dim;
   for (__pyx_v_i = 0; __pyx_v_i < __pyx_t_6; __pyx_v_i++) {
 
-    /* "qupy/dev/_algebra.pyx":277
+    /* "qupy/dev/_algebra.pyx":278
  *             items.append(((), self.value))
  *         for i from 0<=i<self.algebra.dim:
  *             child = self.children[i]             # <<<<<<<<<<<<<<
  *             if child is None:
  *                 continue
  */
-    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 277, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 278, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 277, __pyx_L1_error)
+    if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 278, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_child, ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_4));
     __pyx_t_4 = 0;
 
-    /* "qupy/dev/_algebra.pyx":278
+    /* "qupy/dev/_algebra.pyx":279
  *         for i from 0<=i<self.algebra.dim:
  *             child = self.children[i]
  *             if child is None:             # <<<<<<<<<<<<<<
@@ -7331,7 +7331,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
     __pyx_t_1 = (__pyx_t_2 != 0);
     if (__pyx_t_1) {
 
-      /* "qupy/dev/_algebra.pyx":279
+      /* "qupy/dev/_algebra.pyx":280
  *             child = self.children[i]
  *             if child is None:
  *                 continue             # <<<<<<<<<<<<<<
@@ -7340,7 +7340,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
  */
       goto __pyx_L5_continue;
 
-      /* "qupy/dev/_algebra.pyx":278
+      /* "qupy/dev/_algebra.pyx":279
  *         for i from 0<=i<self.algebra.dim:
  *             child = self.children[i]
  *             if child is None:             # <<<<<<<<<<<<<<
@@ -7349,22 +7349,22 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
  */
     }
 
-    /* "qupy/dev/_algebra.pyx":280
+    /* "qupy/dev/_algebra.pyx":281
  *             if child is None:
  *                 continue
  *             for (key, value) in child.get_items():             # <<<<<<<<<<<<<<
  *                 items.append(((i,)+key, value))
  *         self._items = items
  */
-    __pyx_t_4 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_child->__pyx_vtab)->get_items(__pyx_v_child); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 280, __pyx_L1_error)
+    __pyx_t_4 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_child->__pyx_vtab)->get_items(__pyx_v_child); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     if (likely(PyList_CheckExact(__pyx_t_4)) || PyTuple_CheckExact(__pyx_t_4)) {
       __pyx_t_3 = __pyx_t_4; __Pyx_INCREF(__pyx_t_3); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_7 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 280, __pyx_L1_error)
+      __pyx_t_7 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 281, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_8 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 280, __pyx_L1_error)
+      __pyx_t_8 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 281, __pyx_L1_error)
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     for (;;) {
@@ -7372,17 +7372,17 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
         if (likely(PyList_CheckExact(__pyx_t_3))) {
           if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_3)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 280, __pyx_L1_error)
+          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 281, __pyx_L1_error)
           #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 280, __pyx_L1_error)
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           #endif
         } else {
           if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 280, __pyx_L1_error)
+          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 281, __pyx_L1_error)
           #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 280, __pyx_L1_error)
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           #endif
         }
@@ -7392,7 +7392,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 280, __pyx_L1_error)
+            else __PYX_ERR(0, 281, __pyx_L1_error)
           }
           break;
         }
@@ -7404,7 +7404,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
         if (unlikely(size != 2)) {
           if (size > 2) __Pyx_RaiseTooManyValuesError(2);
           else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-          __PYX_ERR(0, 280, __pyx_L1_error)
+          __PYX_ERR(0, 281, __pyx_L1_error)
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
         if (likely(PyTuple_CheckExact(sequence))) {
@@ -7417,15 +7417,15 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
         __Pyx_INCREF(__pyx_t_9);
         __Pyx_INCREF(__pyx_t_10);
         #else
-        __pyx_t_9 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 280, __pyx_L1_error)
+        __pyx_t_9 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 281, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
-        __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 280, __pyx_L1_error)
+        __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 281, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_10);
         #endif
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       } else {
         Py_ssize_t index = -1;
-        __pyx_t_11 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 280, __pyx_L1_error)
+        __pyx_t_11 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 281, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __pyx_t_12 = Py_TYPE(__pyx_t_11)->tp_iternext;
@@ -7433,7 +7433,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
         __Pyx_GOTREF(__pyx_t_9);
         index = 1; __pyx_t_10 = __pyx_t_12(__pyx_t_11); if (unlikely(!__pyx_t_10)) goto __pyx_L10_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_10);
-        if (__Pyx_IternextUnpackEndCheck(__pyx_t_12(__pyx_t_11), 2) < 0) __PYX_ERR(0, 280, __pyx_L1_error)
+        if (__Pyx_IternextUnpackEndCheck(__pyx_t_12(__pyx_t_11), 2) < 0) __PYX_ERR(0, 281, __pyx_L1_error)
         __pyx_t_12 = NULL;
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         goto __pyx_L11_unpacking_done;
@@ -7441,7 +7441,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         __pyx_t_12 = NULL;
         if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-        __PYX_ERR(0, 280, __pyx_L1_error)
+        __PYX_ERR(0, 281, __pyx_L1_error)
         __pyx_L11_unpacking_done:;
       }
       __Pyx_XDECREF_SET(__pyx_v_key, __pyx_t_9);
@@ -7449,24 +7449,24 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
       __Pyx_XDECREF_SET(__pyx_v_value, __pyx_t_10);
       __pyx_t_10 = 0;
 
-      /* "qupy/dev/_algebra.pyx":281
+      /* "qupy/dev/_algebra.pyx":282
  *                 continue
  *             for (key, value) in child.get_items():
  *                 items.append(((i,)+key, value))             # <<<<<<<<<<<<<<
  *         self._items = items
  *         return items
  */
-      __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 282, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_10 = PyTuple_New(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 281, __pyx_L1_error)
+      __pyx_t_10 = PyTuple_New(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 282, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_GIVEREF(__pyx_t_4);
       PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_4);
       __pyx_t_4 = 0;
-      __pyx_t_4 = PyNumber_Add(__pyx_t_10, __pyx_v_key); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L1_error)
+      __pyx_t_4 = PyNumber_Add(__pyx_t_10, __pyx_v_key); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 282, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __pyx_t_10 = PyTuple_New(2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 281, __pyx_L1_error)
+      __pyx_t_10 = PyTuple_New(2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 282, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_GIVEREF(__pyx_t_4);
       PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_4);
@@ -7474,10 +7474,10 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_v_value);
       __pyx_t_4 = 0;
-      __pyx_t_5 = __Pyx_PyList_Append(__pyx_v_items, __pyx_t_10); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 281, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyList_Append(__pyx_v_items, __pyx_t_10); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 282, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-      /* "qupy/dev/_algebra.pyx":280
+      /* "qupy/dev/_algebra.pyx":281
  *             if child is None:
  *                 continue
  *             for (key, value) in child.get_items():             # <<<<<<<<<<<<<<
@@ -7489,7 +7489,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
     __pyx_L5_continue:;
   }
 
-  /* "qupy/dev/_algebra.pyx":282
+  /* "qupy/dev/_algebra.pyx":283
  *             for (key, value) in child.get_items():
  *                 items.append(((i,)+key, value))
  *         self._items = items             # <<<<<<<<<<<<<<
@@ -7502,7 +7502,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
   __Pyx_DECREF(__pyx_v_self->_items);
   __pyx_v_self->_items = __pyx_v_items;
 
-  /* "qupy/dev/_algebra.pyx":283
+  /* "qupy/dev/_algebra.pyx":284
  *                 items.append(((i,)+key, value))
  *         self._items = items
  *         return items             # <<<<<<<<<<<<<<
@@ -7514,7 +7514,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
   __pyx_r = __pyx_v_items;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":267
+  /* "qupy/dev/_algebra.pyx":268
  *         return values
  * 
  *     cdef object get_items(Tensor self):             # <<<<<<<<<<<<<<
@@ -7541,7 +7541,7 @@ static PyObject *__pyx_f_4qupy_3dev_8_algebra_6Tensor_get_items(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":285
+/* "qupy/dev/_algebra.pyx":286
  *         return items
  * 
  *     def copy(Tensor self):             # <<<<<<<<<<<<<<
@@ -7578,34 +7578,34 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_20copy(struct __pyx_obj_4
   PyObject *(*__pyx_t_8)(PyObject *);
   __Pyx_RefNannySetupContext("copy", 0);
 
-  /* "qupy/dev/_algebra.pyx":286
+  /* "qupy/dev/_algebra.pyx":287
  * 
  *     def copy(Tensor self):
  *         op = Tensor(self.algebra)             # <<<<<<<<<<<<<<
  *         for (k, v) in self.get_items():
  *             op[k] = v
  */
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 286, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 287, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_op = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":287
+  /* "qupy/dev/_algebra.pyx":288
  *     def copy(Tensor self):
  *         op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
  *             op[k] = v
  *         return op
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 287, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 288, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 287, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 288, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 287, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 288, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -7613,17 +7613,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_20copy(struct __pyx_obj_4
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 287, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 288, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 287, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 288, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 287, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 288, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 287, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 288, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -7633,7 +7633,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_20copy(struct __pyx_obj_4
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 287, __pyx_L1_error)
+          else __PYX_ERR(0, 288, __pyx_L1_error)
         }
         break;
       }
@@ -7645,7 +7645,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_20copy(struct __pyx_obj_4
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 287, __pyx_L1_error)
+        __PYX_ERR(0, 288, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -7658,15 +7658,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_20copy(struct __pyx_obj_4
       __Pyx_INCREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 287, __pyx_L1_error)
+      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 288, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 287, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 288, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       #endif
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 287, __pyx_L1_error)
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 288, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
@@ -7674,7 +7674,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_20copy(struct __pyx_obj_4
       __Pyx_GOTREF(__pyx_t_5);
       index = 1; __pyx_t_6 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 287, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 288, __pyx_L1_error)
       __pyx_t_8 = NULL;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       goto __pyx_L6_unpacking_done;
@@ -7682,7 +7682,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_20copy(struct __pyx_obj_4
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 287, __pyx_L1_error)
+      __PYX_ERR(0, 288, __pyx_L1_error)
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_5);
@@ -7690,16 +7690,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_20copy(struct __pyx_obj_4
     __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":288
+    /* "qupy/dev/_algebra.pyx":289
  *         op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():
  *             op[k] = v             # <<<<<<<<<<<<<<
  *         return op
  * 
  */
-    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v_k, __pyx_v_v) < 0)) __PYX_ERR(0, 288, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v_k, __pyx_v_v) < 0)) __PYX_ERR(0, 289, __pyx_L1_error)
 
-    /* "qupy/dev/_algebra.pyx":287
+    /* "qupy/dev/_algebra.pyx":288
  *     def copy(Tensor self):
  *         op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
@@ -7709,7 +7709,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_20copy(struct __pyx_obj_4
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":289
+  /* "qupy/dev/_algebra.pyx":290
  *         for (k, v) in self.get_items():
  *             op[k] = v
  *         return op             # <<<<<<<<<<<<<<
@@ -7721,7 +7721,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_20copy(struct __pyx_obj_4
   __pyx_r = ((PyObject *)__pyx_v_op);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":285
+  /* "qupy/dev/_algebra.pyx":286
  *         return items
  * 
  *     def copy(Tensor self):             # <<<<<<<<<<<<<<
@@ -7747,7 +7747,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_20copy(struct __pyx_obj_4
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":291
+/* "qupy/dev/_algebra.pyx":292
  *         return op
  * 
  *     def keys(Tensor self):             # <<<<<<<<<<<<<<
@@ -7774,7 +7774,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_22keys(struct __pyx_obj_4
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("keys", 0);
 
-  /* "qupy/dev/_algebra.pyx":292
+  /* "qupy/dev/_algebra.pyx":293
  * 
  *     def keys(Tensor self):
  *         return self.get_keys()             # <<<<<<<<<<<<<<
@@ -7782,13 +7782,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_22keys(struct __pyx_obj_4
  *     def values(Tensor self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_keys(__pyx_v_self, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 292, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_keys(__pyx_v_self, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 293, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":291
+  /* "qupy/dev/_algebra.pyx":292
  *         return op
  * 
  *     def keys(Tensor self):             # <<<<<<<<<<<<<<
@@ -7807,7 +7807,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_22keys(struct __pyx_obj_4
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":294
+/* "qupy/dev/_algebra.pyx":295
  *         return self.get_keys()
  * 
  *     def values(Tensor self):             # <<<<<<<<<<<<<<
@@ -7834,7 +7834,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_24values(struct __pyx_obj
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("values", 0);
 
-  /* "qupy/dev/_algebra.pyx":295
+  /* "qupy/dev/_algebra.pyx":296
  * 
  *     def values(Tensor self):
  *         return self.get_values()             # <<<<<<<<<<<<<<
@@ -7842,13 +7842,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_24values(struct __pyx_obj
  *     def items(Tensor self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_values(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_values(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":294
+  /* "qupy/dev/_algebra.pyx":295
  *         return self.get_keys()
  * 
  *     def values(Tensor self):             # <<<<<<<<<<<<<<
@@ -7867,7 +7867,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_24values(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":297
+/* "qupy/dev/_algebra.pyx":298
  *         return self.get_values()
  * 
  *     def items(Tensor self):             # <<<<<<<<<<<<<<
@@ -7894,7 +7894,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_26items(struct __pyx_obj_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("items", 0);
 
-  /* "qupy/dev/_algebra.pyx":298
+  /* "qupy/dev/_algebra.pyx":299
  * 
  *     def items(Tensor self):
  *         return self.get_items()             # <<<<<<<<<<<<<<
@@ -7902,13 +7902,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_26items(struct __pyx_obj_
  *     def norm(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 299, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":297
+  /* "qupy/dev/_algebra.pyx":298
  *         return self.get_values()
  * 
  *     def items(Tensor self):             # <<<<<<<<<<<<<<
@@ -7927,7 +7927,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_26items(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":300
+/* "qupy/dev/_algebra.pyx":301
  *         return self.get_items()
  * 
  *     def norm(self):             # <<<<<<<<<<<<<<
@@ -7949,7 +7949,7 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_29norm(PyObject *__pyx_v_
 }
 static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_4norm_2generator3(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "qupy/dev/_algebra.pyx":301
+/* "qupy/dev/_algebra.pyx":302
  * 
  *     def norm(self):
  *         return sum(abs(val) for val in self.get_values())             # <<<<<<<<<<<<<<
@@ -7966,7 +7966,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_4norm_genexpr(PyObject *_
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_4qupy_3dev_8_algebra___pyx_scope_struct_7_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 301, __pyx_L1_error)
+    __PYX_ERR(0, 302, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -7974,7 +7974,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_4norm_genexpr(PyObject *_
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_4qupy_3dev_8_algebra_6Tensor_4norm_2generator3, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_norm_locals_genexpr, __pyx_n_s_qupy_dev__algebra); if (unlikely(!gen)) __PYX_ERR(0, 301, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_4qupy_3dev_8_algebra_6Tensor_4norm_2generator3, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_norm_locals_genexpr, __pyx_n_s_qupy_dev__algebra); if (unlikely(!gen)) __PYX_ERR(0, 302, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -8008,17 +8008,17 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_4norm_2generator3(__pyx_C
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 301, __pyx_L1_error)
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 301, __pyx_L1_error) }
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self->__pyx_vtab)->get_values(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 302, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 302, __pyx_L1_error) }
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self->__pyx_vtab)->get_values(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 302, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 301, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 302, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 301, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 302, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -8026,17 +8026,17 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_4norm_2generator3(__pyx_C
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 301, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 302, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 302, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 301, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 302, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 302, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -8046,7 +8046,7 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_4norm_2generator3(__pyx_C
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 301, __pyx_L1_error)
+          else __PYX_ERR(0, 302, __pyx_L1_error)
         }
         break;
       }
@@ -8056,7 +8056,7 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_4norm_2generator3(__pyx_C
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_val, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyNumber_Absolute(__pyx_cur_scope->__pyx_v_val); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyNumber_Absolute(__pyx_cur_scope->__pyx_v_val); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 302, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
@@ -8076,7 +8076,7 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_4norm_2generator3(__pyx_C
     __Pyx_XGOTREF(__pyx_t_2);
     __pyx_t_3 = __pyx_cur_scope->__pyx_t_1;
     __pyx_t_4 = __pyx_cur_scope->__pyx_t_2;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 301, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 302, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
@@ -8099,7 +8099,7 @@ static PyObject *__pyx_gb_4qupy_3dev_8_algebra_6Tensor_4norm_2generator3(__pyx_C
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":300
+/* "qupy/dev/_algebra.pyx":301
  *         return self.get_items()
  * 
  *     def norm(self):             # <<<<<<<<<<<<<<
@@ -8118,7 +8118,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_28norm(struct __pyx_obj_4
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_4qupy_3dev_8_algebra___pyx_scope_struct_6_norm *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 300, __pyx_L1_error)
+    __PYX_ERR(0, 301, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -8126,7 +8126,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_28norm(struct __pyx_obj_4
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
 
-  /* "qupy/dev/_algebra.pyx":301
+  /* "qupy/dev/_algebra.pyx":302
  * 
  *     def norm(self):
  *         return sum(abs(val) for val in self.get_values())             # <<<<<<<<<<<<<<
@@ -8134,16 +8134,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_28norm(struct __pyx_obj_4
  *     def eq(self, other):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_4norm_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_t_1 = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_4norm_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 302, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_sum, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_sum, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 302, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":300
+  /* "qupy/dev/_algebra.pyx":301
  *         return self.get_items()
  * 
  *     def norm(self):             # <<<<<<<<<<<<<<
@@ -8164,7 +8164,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_28norm(struct __pyx_obj_4
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":303
+/* "qupy/dev/_algebra.pyx":304
  *         return sum(abs(val) for val in self.get_values())
  * 
  *     def eq(self, other):             # <<<<<<<<<<<<<<
@@ -8197,7 +8197,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_30eq(struct __pyx_obj_4qu
   __Pyx_RefNannySetupContext("eq", 0);
   __Pyx_INCREF(__pyx_v_other);
 
-  /* "qupy/dev/_algebra.pyx":304
+  /* "qupy/dev/_algebra.pyx":305
  * 
  *     def eq(self, other):
  *         if not isinstance(other, Tensor) and other==0:             # <<<<<<<<<<<<<<
@@ -8211,22 +8211,22 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_30eq(struct __pyx_obj_4qu
     __pyx_t_1 = __pyx_t_3;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_v_other, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 304, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_v_other, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 305, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 304, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 305, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_1 = __pyx_t_3;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "qupy/dev/_algebra.pyx":305
+    /* "qupy/dev/_algebra.pyx":306
  *     def eq(self, other):
  *         if not isinstance(other, Tensor) and other==0:
  *             other = self.get_zero()             # <<<<<<<<<<<<<<
  *         return (self-other).norm() < EPSILON
  * 
  */
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_zero); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 305, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_zero); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 306, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -8240,13 +8240,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_30eq(struct __pyx_obj_4qu
     }
     __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 305, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 306, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF_SET(__pyx_v_other, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "qupy/dev/_algebra.pyx":304
+    /* "qupy/dev/_algebra.pyx":305
  * 
  *     def eq(self, other):
  *         if not isinstance(other, Tensor) and other==0:             # <<<<<<<<<<<<<<
@@ -8255,7 +8255,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_30eq(struct __pyx_obj_4qu
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":306
+  /* "qupy/dev/_algebra.pyx":307
  *         if not isinstance(other, Tensor) and other==0:
  *             other = self.get_zero()
  *         return (self-other).norm() < EPSILON             # <<<<<<<<<<<<<<
@@ -8263,9 +8263,9 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_30eq(struct __pyx_obj_4qu
  *     def ne(self, other):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = PyNumber_Subtract(((PyObject *)__pyx_v_self), __pyx_v_other); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 306, __pyx_L1_error)
+  __pyx_t_5 = PyNumber_Subtract(((PyObject *)__pyx_v_self), __pyx_v_other); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 307, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_norm); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 306, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_norm); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 307, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_5 = NULL;
@@ -8280,16 +8280,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_30eq(struct __pyx_obj_4qu
   }
   __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 306, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 307, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyObject_RichCompare(__pyx_t_4, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 306, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_t_4, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 307, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_r = __pyx_t_6;
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":303
+  /* "qupy/dev/_algebra.pyx":304
  *         return sum(abs(val) for val in self.get_values())
  * 
  *     def eq(self, other):             # <<<<<<<<<<<<<<
@@ -8311,7 +8311,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_30eq(struct __pyx_obj_4qu
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":308
+/* "qupy/dev/_algebra.pyx":309
  *         return (self-other).norm() < EPSILON
  * 
  *     def ne(self, other):             # <<<<<<<<<<<<<<
@@ -8344,7 +8344,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_32ne(struct __pyx_obj_4qu
   __Pyx_RefNannySetupContext("ne", 0);
   __Pyx_INCREF(__pyx_v_other);
 
-  /* "qupy/dev/_algebra.pyx":309
+  /* "qupy/dev/_algebra.pyx":310
  * 
  *     def ne(self, other):
  *         if not isinstance(other, Tensor) and other==0:             # <<<<<<<<<<<<<<
@@ -8358,22 +8358,22 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_32ne(struct __pyx_obj_4qu
     __pyx_t_1 = __pyx_t_3;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_v_other, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 309, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_v_other, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 310, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 309, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 310, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_1 = __pyx_t_3;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "qupy/dev/_algebra.pyx":310
+    /* "qupy/dev/_algebra.pyx":311
  *     def ne(self, other):
  *         if not isinstance(other, Tensor) and other==0:
  *             other = self.get_zero()             # <<<<<<<<<<<<<<
  *         return (self-other).norm() > EPSILON
  * 
  */
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_zero); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 310, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_zero); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 311, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -8387,13 +8387,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_32ne(struct __pyx_obj_4qu
     }
     __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 310, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 311, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF_SET(__pyx_v_other, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "qupy/dev/_algebra.pyx":309
+    /* "qupy/dev/_algebra.pyx":310
  * 
  *     def ne(self, other):
  *         if not isinstance(other, Tensor) and other==0:             # <<<<<<<<<<<<<<
@@ -8402,7 +8402,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_32ne(struct __pyx_obj_4qu
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":311
+  /* "qupy/dev/_algebra.pyx":312
  *         if not isinstance(other, Tensor) and other==0:
  *             other = self.get_zero()
  *         return (self-other).norm() > EPSILON             # <<<<<<<<<<<<<<
@@ -8410,9 +8410,9 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_32ne(struct __pyx_obj_4qu
  *     def __richcmp__(self, other, int idx):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = PyNumber_Subtract(((PyObject *)__pyx_v_self), __pyx_v_other); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 311, __pyx_L1_error)
+  __pyx_t_5 = PyNumber_Subtract(((PyObject *)__pyx_v_self), __pyx_v_other); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_norm); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 311, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_norm); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_5 = NULL;
@@ -8427,16 +8427,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_32ne(struct __pyx_obj_4qu
   }
   __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 311, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyObject_RichCompare(__pyx_t_4, __pyx_float_1eneg_08, Py_GT); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 311, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_t_4, __pyx_float_1eneg_08, Py_GT); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_r = __pyx_t_6;
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":308
+  /* "qupy/dev/_algebra.pyx":309
  *         return (self-other).norm() < EPSILON
  * 
  *     def ne(self, other):             # <<<<<<<<<<<<<<
@@ -8458,7 +8458,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_32ne(struct __pyx_obj_4qu
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":313
+/* "qupy/dev/_algebra.pyx":314
  *         return (self-other).norm() > EPSILON
  * 
  *     def __richcmp__(self, other, int idx):             # <<<<<<<<<<<<<<
@@ -8492,7 +8492,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
   __Pyx_RefNannySetupContext("__richcmp__", 0);
   __Pyx_INCREF(__pyx_v_other);
 
-  /* "qupy/dev/_algebra.pyx":314
+  /* "qupy/dev/_algebra.pyx":315
  * 
  *     def __richcmp__(self, other, int idx):
  *         if idx != Py_EQ and idx != Py_NE:             # <<<<<<<<<<<<<<
@@ -8510,7 +8510,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "qupy/dev/_algebra.pyx":315
+    /* "qupy/dev/_algebra.pyx":316
  *     def __richcmp__(self, other, int idx):
  *         if idx != Py_EQ and idx != Py_NE:
  *             assert 0, idx             # <<<<<<<<<<<<<<
@@ -8520,21 +8520,21 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
     #ifndef CYTHON_WITHOUT_ASSERTIONS
     if (unlikely(!Py_OptimizeFlag)) {
       if (unlikely(!0)) {
-        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_idx); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 315, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_idx); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 316, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 315, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 316, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_GIVEREF(__pyx_t_3);
         PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
         __pyx_t_3 = 0;
         PyErr_SetObject(PyExc_AssertionError, __pyx_t_4);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __PYX_ERR(0, 315, __pyx_L1_error)
+        __PYX_ERR(0, 316, __pyx_L1_error)
       }
     }
     #endif
 
-    /* "qupy/dev/_algebra.pyx":314
+    /* "qupy/dev/_algebra.pyx":315
  * 
  *     def __richcmp__(self, other, int idx):
  *         if idx != Py_EQ and idx != Py_NE:             # <<<<<<<<<<<<<<
@@ -8543,7 +8543,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":317
+  /* "qupy/dev/_algebra.pyx":318
  *             assert 0, idx
  * 
  *         if other is None:             # <<<<<<<<<<<<<<
@@ -8554,7 +8554,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "qupy/dev/_algebra.pyx":318
+    /* "qupy/dev/_algebra.pyx":319
  * 
  *         if other is None:
  *             return idx == Py_NE             # <<<<<<<<<<<<<<
@@ -8562,13 +8562,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
  *         if not isinstance(other, Tensor) and other==0:
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyBool_FromLong((__pyx_v_idx == Py_NE)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 318, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyBool_FromLong((__pyx_v_idx == Py_NE)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 319, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "qupy/dev/_algebra.pyx":317
+    /* "qupy/dev/_algebra.pyx":318
  *             assert 0, idx
  * 
  *         if other is None:             # <<<<<<<<<<<<<<
@@ -8577,7 +8577,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":320
+  /* "qupy/dev/_algebra.pyx":321
  *             return idx == Py_NE
  * 
  *         if not isinstance(other, Tensor) and other==0:             # <<<<<<<<<<<<<<
@@ -8591,22 +8591,22 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
     __pyx_t_2 = __pyx_t_5;
     goto __pyx_L8_bool_binop_done;
   }
-  __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_v_other, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 320, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_v_other, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 321, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 320, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 321, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_2 = __pyx_t_5;
   __pyx_L8_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "qupy/dev/_algebra.pyx":321
+    /* "qupy/dev/_algebra.pyx":322
  * 
  *         if not isinstance(other, Tensor) and other==0:
  *             other = self.get_zero()             # <<<<<<<<<<<<<<
  *         r = (self-other).norm()
  *         if idx==Py_EQ:
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_zero); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 321, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_zero); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 322, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_6 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -8620,13 +8620,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
     }
     __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 321, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 322, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF_SET(__pyx_v_other, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "qupy/dev/_algebra.pyx":320
+    /* "qupy/dev/_algebra.pyx":321
  *             return idx == Py_NE
  * 
  *         if not isinstance(other, Tensor) and other==0:             # <<<<<<<<<<<<<<
@@ -8635,16 +8635,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":322
+  /* "qupy/dev/_algebra.pyx":323
  *         if not isinstance(other, Tensor) and other==0:
  *             other = self.get_zero()
  *         r = (self-other).norm()             # <<<<<<<<<<<<<<
  *         if idx==Py_EQ:
  *             return r<EPSILON
  */
-  __pyx_t_3 = PyNumber_Subtract(((PyObject *)__pyx_v_self), __pyx_v_other); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 322, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Subtract(((PyObject *)__pyx_v_self), __pyx_v_other); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 323, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_norm); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 322, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_norm); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 323, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = NULL;
@@ -8659,13 +8659,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
   }
   __pyx_t_4 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 322, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 323, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_v_r = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":323
+  /* "qupy/dev/_algebra.pyx":324
  *             other = self.get_zero()
  *         r = (self-other).norm()
  *         if idx==Py_EQ:             # <<<<<<<<<<<<<<
@@ -8675,7 +8675,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
   __pyx_t_2 = ((__pyx_v_idx == Py_EQ) != 0);
   if (__pyx_t_2) {
 
-    /* "qupy/dev/_algebra.pyx":324
+    /* "qupy/dev/_algebra.pyx":325
  *         r = (self-other).norm()
  *         if idx==Py_EQ:
  *             return r<EPSILON             # <<<<<<<<<<<<<<
@@ -8683,12 +8683,12 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
  *             return r>EPSILON
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyObject_RichCompare(__pyx_v_r, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 324, __pyx_L1_error)
+    __pyx_t_4 = PyObject_RichCompare(__pyx_v_r, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 325, __pyx_L1_error)
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "qupy/dev/_algebra.pyx":323
+    /* "qupy/dev/_algebra.pyx":324
  *             other = self.get_zero()
  *         r = (self-other).norm()
  *         if idx==Py_EQ:             # <<<<<<<<<<<<<<
@@ -8697,7 +8697,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":325
+  /* "qupy/dev/_algebra.pyx":326
  *         if idx==Py_EQ:
  *             return r<EPSILON
  *         elif idx==Py_NE:             # <<<<<<<<<<<<<<
@@ -8707,7 +8707,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
   __pyx_t_2 = ((__pyx_v_idx == Py_NE) != 0);
   if (__pyx_t_2) {
 
-    /* "qupy/dev/_algebra.pyx":326
+    /* "qupy/dev/_algebra.pyx":327
  *             return r<EPSILON
  *         elif idx==Py_NE:
  *             return r>EPSILON             # <<<<<<<<<<<<<<
@@ -8715,12 +8715,12 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
  *     def __add__(Tensor self, Tensor other):
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyObject_RichCompare(__pyx_v_r, __pyx_float_1eneg_08, Py_GT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 326, __pyx_L1_error)
+    __pyx_t_4 = PyObject_RichCompare(__pyx_v_r, __pyx_float_1eneg_08, Py_GT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 327, __pyx_L1_error)
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "qupy/dev/_algebra.pyx":325
+    /* "qupy/dev/_algebra.pyx":326
  *         if idx==Py_EQ:
  *             return r<EPSILON
  *         elif idx==Py_NE:             # <<<<<<<<<<<<<<
@@ -8729,7 +8729,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":313
+  /* "qupy/dev/_algebra.pyx":314
  *         return (self-other).norm() > EPSILON
  * 
  *     def __richcmp__(self, other, int idx):             # <<<<<<<<<<<<<<
@@ -8754,7 +8754,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_34__richcmp__(struct __py
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":328
+/* "qupy/dev/_algebra.pyx":329
  *             return r>EPSILON
  * 
  *     def __add__(Tensor self, Tensor other):             # <<<<<<<<<<<<<<
@@ -8768,8 +8768,8 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_37__add__(PyObject *__pyx
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__add__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "self", 0))) __PYX_ERR(0, 328, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "other", 0))) __PYX_ERR(0, 328, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "self", 0))) __PYX_ERR(0, 329, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "other", 0))) __PYX_ERR(0, 329, __pyx_L1_error)
   __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self), ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other));
 
   /* function exit code */
@@ -8798,14 +8798,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
   int __pyx_t_9;
   __Pyx_RefNannySetupContext("__add__", 0);
 
-  /* "qupy/dev/_algebra.pyx":330
+  /* "qupy/dev/_algebra.pyx":331
  *     def __add__(Tensor self, Tensor other):
  *         #assert self.grade == other.grade # i guess this is not necessary...
  *         cdef Tensor op = self.copy()             # <<<<<<<<<<<<<<
  *         for (k, v) in other.get_items():
  *             op.iadditem(k, v)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 330, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 331, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -8819,29 +8819,29 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 330, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 331, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 330, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 331, __pyx_L1_error)
   __pyx_v_op = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":331
+  /* "qupy/dev/_algebra.pyx":332
  *         #assert self.grade == other.grade # i guess this is not necessary...
  *         cdef Tensor op = self.copy()
  *         for (k, v) in other.get_items():             # <<<<<<<<<<<<<<
  *             op.iadditem(k, v)
  *         return op
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other->__pyx_vtab)->get_items(__pyx_v_other); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 331, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other->__pyx_vtab)->get_items(__pyx_v_other); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 331, __pyx_L1_error)
+    __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 332, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 331, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 332, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -8849,17 +8849,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 331, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 332, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 331, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 331, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 332, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 331, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -8869,7 +8869,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 331, __pyx_L1_error)
+          else __PYX_ERR(0, 332, __pyx_L1_error)
         }
         break;
       }
@@ -8881,7 +8881,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 331, __pyx_L1_error)
+        __PYX_ERR(0, 332, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -8894,15 +8894,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
       __Pyx_INCREF(__pyx_t_3);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 331, __pyx_L1_error)
+      __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 332, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 331, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 332, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       #endif
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 331, __pyx_L1_error)
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 332, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
@@ -8910,7 +8910,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
       __Pyx_GOTREF(__pyx_t_3);
       index = 1; __pyx_t_6 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 331, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 332, __pyx_L1_error)
       __pyx_t_8 = NULL;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       goto __pyx_L6_unpacking_done;
@@ -8918,7 +8918,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 331, __pyx_L1_error)
+      __PYX_ERR(0, 332, __pyx_L1_error)
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_3);
@@ -8926,14 +8926,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
     __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":332
+    /* "qupy/dev/_algebra.pyx":333
  *         cdef Tensor op = self.copy()
  *         for (k, v) in other.get_items():
  *             op.iadditem(k, v)             # <<<<<<<<<<<<<<
  *         return op
  * 
  */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_op), __pyx_n_s_iadditem); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 332, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_op), __pyx_n_s_iadditem); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 333, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_3 = NULL;
     __pyx_t_9 = 0;
@@ -8950,7 +8950,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_6)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_k, __pyx_v_v};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 333, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -8958,13 +8958,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_k, __pyx_v_v};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 333, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_7 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 332, __pyx_L1_error)
+      __pyx_t_7 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 333, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       if (__pyx_t_3) {
         __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -8975,14 +8975,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
       __Pyx_INCREF(__pyx_v_v);
       __Pyx_GIVEREF(__pyx_v_v);
       PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_9, __pyx_v_v);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 333, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     }
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":331
+    /* "qupy/dev/_algebra.pyx":332
  *         #assert self.grade == other.grade # i guess this is not necessary...
  *         cdef Tensor op = self.copy()
  *         for (k, v) in other.get_items():             # <<<<<<<<<<<<<<
@@ -8992,7 +8992,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":333
+  /* "qupy/dev/_algebra.pyx":334
  *         for (k, v) in other.get_items():
  *             op.iadditem(k, v)
  *         return op             # <<<<<<<<<<<<<<
@@ -9004,7 +9004,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
   __pyx_r = ((PyObject *)__pyx_v_op);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":328
+  /* "qupy/dev/_algebra.pyx":329
  *             return r>EPSILON
  * 
  *     def __add__(Tensor self, Tensor other):             # <<<<<<<<<<<<<<
@@ -9030,7 +9030,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_36__add__(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":335
+/* "qupy/dev/_algebra.pyx":336
  *         return op
  * 
  *     def permute(Tensor self, perm):             # <<<<<<<<<<<<<<
@@ -9073,34 +9073,34 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38permute(struct __pyx_ob
   int __pyx_t_12;
   __Pyx_RefNannySetupContext("permute", 0);
 
-  /* "qupy/dev/_algebra.pyx":338
+  /* "qupy/dev/_algebra.pyx":339
  *         cdef Tensor op
  *         cdef int i
  *         op = Tensor(self.algebra)             # <<<<<<<<<<<<<<
  *         for (k, v) in self.get_items():
  *             _k = []
  */
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 338, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 339, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_op = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":339
+  /* "qupy/dev/_algebra.pyx":340
  *         cdef int i
  *         op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
  *             _k = []
  *             for i in range(len(k)):
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 339, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 340, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 339, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 340, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 339, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 340, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -9108,17 +9108,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38permute(struct __pyx_ob
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 339, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 340, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 339, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 340, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 339, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 340, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 339, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 340, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -9128,7 +9128,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38permute(struct __pyx_ob
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 339, __pyx_L1_error)
+          else __PYX_ERR(0, 340, __pyx_L1_error)
         }
         break;
       }
@@ -9140,7 +9140,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38permute(struct __pyx_ob
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 339, __pyx_L1_error)
+        __PYX_ERR(0, 340, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -9153,15 +9153,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38permute(struct __pyx_ob
       __Pyx_INCREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 339, __pyx_L1_error)
+      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 340, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 339, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 340, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       #endif
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 339, __pyx_L1_error)
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 340, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
@@ -9169,7 +9169,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38permute(struct __pyx_ob
       __Pyx_GOTREF(__pyx_t_5);
       index = 1; __pyx_t_6 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 339, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 340, __pyx_L1_error)
       __pyx_t_8 = NULL;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       goto __pyx_L6_unpacking_done;
@@ -9177,7 +9177,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38permute(struct __pyx_ob
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 339, __pyx_L1_error)
+      __PYX_ERR(0, 340, __pyx_L1_error)
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_5);
@@ -9185,68 +9185,68 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38permute(struct __pyx_ob
     __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":340
+    /* "qupy/dev/_algebra.pyx":341
  *         op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():
  *             _k = []             # <<<<<<<<<<<<<<
  *             for i in range(len(k)):
  *                 _k.append(k[perm[i]])
  */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 340, __pyx_L1_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 341, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v__k, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":341
+    /* "qupy/dev/_algebra.pyx":342
  *         for (k, v) in self.get_items():
  *             _k = []
  *             for i in range(len(k)):             # <<<<<<<<<<<<<<
  *                 _k.append(k[perm[i]])
  *             _k = tuple(_k)
  */
-    __pyx_t_9 = PyObject_Length(__pyx_v_k); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 341, __pyx_L1_error)
+    __pyx_t_9 = PyObject_Length(__pyx_v_k); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 342, __pyx_L1_error)
     __pyx_t_10 = __pyx_t_9;
     for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
       __pyx_v_i = __pyx_t_11;
 
-      /* "qupy/dev/_algebra.pyx":342
+      /* "qupy/dev/_algebra.pyx":343
  *             _k = []
  *             for i in range(len(k)):
  *                 _k.append(k[perm[i]])             # <<<<<<<<<<<<<<
  *             _k = tuple(_k)
  *             op[_k] = v
  */
-      __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_perm, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 342, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_perm, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 343, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_k, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 342, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_k, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 343, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_12 = __Pyx_PyObject_Append(__pyx_v__k, __pyx_t_6); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(0, 342, __pyx_L1_error)
+      __pyx_t_12 = __Pyx_PyObject_Append(__pyx_v__k, __pyx_t_6); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(0, 343, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
 
-    /* "qupy/dev/_algebra.pyx":343
+    /* "qupy/dev/_algebra.pyx":344
  *             for i in range(len(k)):
  *                 _k.append(k[perm[i]])
  *             _k = tuple(_k)             # <<<<<<<<<<<<<<
  *             op[_k] = v
  *         return op
  */
-    __pyx_t_6 = __Pyx_PySequence_Tuple(__pyx_v__k); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 343, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PySequence_Tuple(__pyx_v__k); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 344, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF_SET(__pyx_v__k, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":344
+    /* "qupy/dev/_algebra.pyx":345
  *                 _k.append(k[perm[i]])
  *             _k = tuple(_k)
  *             op[_k] = v             # <<<<<<<<<<<<<<
  *         return op
  * 
  */
-    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v__k, __pyx_v_v) < 0)) __PYX_ERR(0, 344, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v__k, __pyx_v_v) < 0)) __PYX_ERR(0, 345, __pyx_L1_error)
 
-    /* "qupy/dev/_algebra.pyx":339
+    /* "qupy/dev/_algebra.pyx":340
  *         cdef int i
  *         op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
@@ -9256,7 +9256,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38permute(struct __pyx_ob
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":345
+  /* "qupy/dev/_algebra.pyx":346
  *             _k = tuple(_k)
  *             op[_k] = v
  *         return op             # <<<<<<<<<<<<<<
@@ -9268,7 +9268,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38permute(struct __pyx_ob
   __pyx_r = ((PyObject *)__pyx_v_op);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":335
+  /* "qupy/dev/_algebra.pyx":336
  *         return op
  * 
  *     def permute(Tensor self, perm):             # <<<<<<<<<<<<<<
@@ -9295,7 +9295,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_38permute(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":347
+/* "qupy/dev/_algebra.pyx":348
  *         return op
  * 
  *     def __sub__(Tensor self, Tensor other):             # <<<<<<<<<<<<<<
@@ -9309,8 +9309,8 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_41__sub__(PyObject *__pyx
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__sub__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "self", 0))) __PYX_ERR(0, 347, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "other", 0))) __PYX_ERR(0, 347, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "self", 0))) __PYX_ERR(0, 348, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "other", 0))) __PYX_ERR(0, 348, __pyx_L1_error)
   __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self), ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other));
 
   /* function exit code */
@@ -9340,14 +9340,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
   PyObject *__pyx_t_10 = NULL;
   __Pyx_RefNannySetupContext("__sub__", 0);
 
-  /* "qupy/dev/_algebra.pyx":349
+  /* "qupy/dev/_algebra.pyx":350
  *     def __sub__(Tensor self, Tensor other):
  *         #assert self.grade == other.grade
  *         cdef Tensor op = self.copy()             # <<<<<<<<<<<<<<
  *         for (k, v) in other.get_items():
  *             op.iadditem(k, -v)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 349, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 350, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -9361,29 +9361,29 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 349, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 350, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 349, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 350, __pyx_L1_error)
   __pyx_v_op = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":350
+  /* "qupy/dev/_algebra.pyx":351
  *         #assert self.grade == other.grade
  *         cdef Tensor op = self.copy()
  *         for (k, v) in other.get_items():             # <<<<<<<<<<<<<<
  *             op.iadditem(k, -v)
  *         return op
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other->__pyx_vtab)->get_items(__pyx_v_other); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 350, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other->__pyx_vtab)->get_items(__pyx_v_other); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 351, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 350, __pyx_L1_error)
+    __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 351, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 350, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 351, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -9391,17 +9391,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 350, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 351, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 350, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 351, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 350, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 351, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 350, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 351, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -9411,7 +9411,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 350, __pyx_L1_error)
+          else __PYX_ERR(0, 351, __pyx_L1_error)
         }
         break;
       }
@@ -9423,7 +9423,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 350, __pyx_L1_error)
+        __PYX_ERR(0, 351, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -9436,15 +9436,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
       __Pyx_INCREF(__pyx_t_3);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 350, __pyx_L1_error)
+      __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 351, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 350, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 351, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       #endif
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 350, __pyx_L1_error)
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 351, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
@@ -9452,7 +9452,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
       __Pyx_GOTREF(__pyx_t_3);
       index = 1; __pyx_t_6 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 350, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 351, __pyx_L1_error)
       __pyx_t_8 = NULL;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       goto __pyx_L6_unpacking_done;
@@ -9460,7 +9460,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 350, __pyx_L1_error)
+      __PYX_ERR(0, 351, __pyx_L1_error)
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_3);
@@ -9468,16 +9468,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
     __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":351
+    /* "qupy/dev/_algebra.pyx":352
  *         cdef Tensor op = self.copy()
  *         for (k, v) in other.get_items():
  *             op.iadditem(k, -v)             # <<<<<<<<<<<<<<
  *         return op
  * 
  */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_op), __pyx_n_s_iadditem); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 351, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_op), __pyx_n_s_iadditem); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 352, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_3 = PyNumber_Negative(__pyx_v_v); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 351, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Negative(__pyx_v_v); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 352, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_7 = NULL;
     __pyx_t_9 = 0;
@@ -9494,7 +9494,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_6)) {
       PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_v_k, __pyx_t_3};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 351, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 352, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -9503,14 +9503,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
       PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_v_k, __pyx_t_3};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 351, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 352, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     } else
     #endif
     {
-      __pyx_t_10 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 351, __pyx_L1_error)
+      __pyx_t_10 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 352, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       if (__pyx_t_7) {
         __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_7); __pyx_t_7 = NULL;
@@ -9521,14 +9521,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
       __Pyx_GIVEREF(__pyx_t_3);
       PyTuple_SET_ITEM(__pyx_t_10, 1+__pyx_t_9, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_10, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 351, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_10, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 352, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     }
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":350
+    /* "qupy/dev/_algebra.pyx":351
  *         #assert self.grade == other.grade
  *         cdef Tensor op = self.copy()
  *         for (k, v) in other.get_items():             # <<<<<<<<<<<<<<
@@ -9538,7 +9538,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":352
+  /* "qupy/dev/_algebra.pyx":353
  *         for (k, v) in other.get_items():
  *             op.iadditem(k, -v)
  *         return op             # <<<<<<<<<<<<<<
@@ -9550,7 +9550,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
   __pyx_r = ((PyObject *)__pyx_v_op);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":347
+  /* "qupy/dev/_algebra.pyx":348
  *         return op
  * 
  *     def __sub__(Tensor self, Tensor other):             # <<<<<<<<<<<<<<
@@ -9577,7 +9577,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_40__sub__(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":354
+/* "qupy/dev/_algebra.pyx":355
  *         return op
  * 
  *     def rmul(Tensor self, r):             # <<<<<<<<<<<<<<
@@ -9614,34 +9614,34 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42rmul(struct __pyx_obj_4
   PyObject *(*__pyx_t_8)(PyObject *);
   __Pyx_RefNannySetupContext("rmul", 0);
 
-  /* "qupy/dev/_algebra.pyx":355
+  /* "qupy/dev/_algebra.pyx":356
  * 
  *     def rmul(Tensor self, r):
  *         cdef Tensor op = Tensor(self.algebra)             # <<<<<<<<<<<<<<
  *         for (k, v) in self.get_items():
  *             op[k] = complex(r)*v
  */
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 355, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 356, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_op = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":356
+  /* "qupy/dev/_algebra.pyx":357
  *     def rmul(Tensor self, r):
  *         cdef Tensor op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
  *             op[k] = complex(r)*v
  *         return op
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 357, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 356, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 357, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 356, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 357, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -9649,17 +9649,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42rmul(struct __pyx_obj_4
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 356, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 357, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 356, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 357, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 356, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 357, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 356, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 357, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -9669,7 +9669,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42rmul(struct __pyx_obj_4
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 356, __pyx_L1_error)
+          else __PYX_ERR(0, 357, __pyx_L1_error)
         }
         break;
       }
@@ -9681,7 +9681,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42rmul(struct __pyx_obj_4
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 356, __pyx_L1_error)
+        __PYX_ERR(0, 357, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -9694,15 +9694,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42rmul(struct __pyx_obj_4
       __Pyx_INCREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 356, __pyx_L1_error)
+      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 357, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 356, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 357, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       #endif
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 356, __pyx_L1_error)
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 357, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
@@ -9710,7 +9710,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42rmul(struct __pyx_obj_4
       __Pyx_GOTREF(__pyx_t_5);
       index = 1; __pyx_t_6 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 356, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 357, __pyx_L1_error)
       __pyx_t_8 = NULL;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       goto __pyx_L6_unpacking_done;
@@ -9718,7 +9718,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42rmul(struct __pyx_obj_4
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 356, __pyx_L1_error)
+      __PYX_ERR(0, 357, __pyx_L1_error)
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_5);
@@ -9726,22 +9726,22 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42rmul(struct __pyx_obj_4
     __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":357
+    /* "qupy/dev/_algebra.pyx":358
  *         cdef Tensor op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():
  *             op[k] = complex(r)*v             # <<<<<<<<<<<<<<
  *         return op
  * 
  */
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyComplex_Type)), __pyx_v_r); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 357, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyComplex_Type)), __pyx_v_r); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 358, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyNumber_Multiply(__pyx_t_1, __pyx_v_v); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 357, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_Multiply(__pyx_t_1, __pyx_v_v); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 358, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v_k, __pyx_t_6) < 0)) __PYX_ERR(0, 357, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v_k, __pyx_t_6) < 0)) __PYX_ERR(0, 358, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":356
+    /* "qupy/dev/_algebra.pyx":357
  *     def rmul(Tensor self, r):
  *         cdef Tensor op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
@@ -9751,7 +9751,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42rmul(struct __pyx_obj_4
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":358
+  /* "qupy/dev/_algebra.pyx":359
  *         for (k, v) in self.get_items():
  *             op[k] = complex(r)*v
  *         return op             # <<<<<<<<<<<<<<
@@ -9763,7 +9763,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42rmul(struct __pyx_obj_4
   __pyx_r = ((PyObject *)__pyx_v_op);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":354
+  /* "qupy/dev/_algebra.pyx":355
  *         return op
  * 
  *     def rmul(Tensor self, r):             # <<<<<<<<<<<<<<
@@ -9789,7 +9789,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_42rmul(struct __pyx_obj_4
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":360
+/* "qupy/dev/_algebra.pyx":361
  *         return op
  * 
  *     def __neg__(Tensor self):             # <<<<<<<<<<<<<<
@@ -9826,34 +9826,34 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__neg__(struct __pyx_ob
   PyObject *(*__pyx_t_8)(PyObject *);
   __Pyx_RefNannySetupContext("__neg__", 0);
 
-  /* "qupy/dev/_algebra.pyx":361
+  /* "qupy/dev/_algebra.pyx":362
  * 
  *     def __neg__(Tensor self):
  *         cdef Tensor op = Tensor(self.algebra)             # <<<<<<<<<<<<<<
  *         for (k, v) in self.get_items():
  *             op[k] = -v
  */
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 361, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 362, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_op = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":362
+  /* "qupy/dev/_algebra.pyx":363
  *     def __neg__(Tensor self):
  *         cdef Tensor op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
  *             op[k] = -v
  *         return op
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 362, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 363, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 362, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 363, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 362, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 363, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -9861,17 +9861,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__neg__(struct __pyx_ob
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 362, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 363, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 362, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 363, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 362, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 363, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 362, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 363, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -9881,7 +9881,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__neg__(struct __pyx_ob
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 362, __pyx_L1_error)
+          else __PYX_ERR(0, 363, __pyx_L1_error)
         }
         break;
       }
@@ -9893,7 +9893,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__neg__(struct __pyx_ob
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 362, __pyx_L1_error)
+        __PYX_ERR(0, 363, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -9906,15 +9906,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__neg__(struct __pyx_ob
       __Pyx_INCREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 362, __pyx_L1_error)
+      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 363, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 362, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 363, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       #endif
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 362, __pyx_L1_error)
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 363, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
@@ -9922,7 +9922,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__neg__(struct __pyx_ob
       __Pyx_GOTREF(__pyx_t_5);
       index = 1; __pyx_t_6 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 362, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 363, __pyx_L1_error)
       __pyx_t_8 = NULL;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       goto __pyx_L6_unpacking_done;
@@ -9930,7 +9930,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__neg__(struct __pyx_ob
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 362, __pyx_L1_error)
+      __PYX_ERR(0, 363, __pyx_L1_error)
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_5);
@@ -9938,19 +9938,19 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__neg__(struct __pyx_ob
     __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":363
+    /* "qupy/dev/_algebra.pyx":364
  *         cdef Tensor op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():
  *             op[k] = -v             # <<<<<<<<<<<<<<
  *         return op
  * 
  */
-    __pyx_t_1 = PyNumber_Negative(__pyx_v_v); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 363, __pyx_L1_error)
+    __pyx_t_1 = PyNumber_Negative(__pyx_v_v); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 364, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v_k, __pyx_t_1) < 0)) __PYX_ERR(0, 363, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v_k, __pyx_t_1) < 0)) __PYX_ERR(0, 364, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":362
+    /* "qupy/dev/_algebra.pyx":363
  *     def __neg__(Tensor self):
  *         cdef Tensor op = Tensor(self.algebra)
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
@@ -9960,7 +9960,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__neg__(struct __pyx_ob
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":364
+  /* "qupy/dev/_algebra.pyx":365
  *         for (k, v) in self.get_items():
  *             op[k] = -v
  *         return op             # <<<<<<<<<<<<<<
@@ -9972,7 +9972,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__neg__(struct __pyx_ob
   __pyx_r = ((PyObject *)__pyx_v_op);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":360
+  /* "qupy/dev/_algebra.pyx":361
  *         return op
  * 
  *     def __neg__(Tensor self):             # <<<<<<<<<<<<<<
@@ -9998,7 +9998,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_44__neg__(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":366
+/* "qupy/dev/_algebra.pyx":367
  *         return op
  * 
  *     def __matmul__(Tensor self, Tensor other):             # <<<<<<<<<<<<<<
@@ -10013,8 +10013,8 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_6Tensor_47__matmul__(PyObject *__
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__matmul__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "self", 0))) __PYX_ERR(0, 366, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "other", 0))) __PYX_ERR(0, 366, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_self), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "self", 0))) __PYX_ERR(0, 367, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_other), __pyx_ptype_4qupy_3dev_8_algebra_Tensor, 1, "other", 0))) __PYX_ERR(0, 367, __pyx_L1_error)
   __pyx_r = __pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self), ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other));
 
   /* function exit code */
@@ -10053,7 +10053,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
   PyObject *__pyx_t_12 = NULL;
   __Pyx_RefNannySetupContext("__matmul__", 0);
 
-  /* "qupy/dev/_algebra.pyx":367
+  /* "qupy/dev/_algebra.pyx":368
  * 
  *     def __matmul__(Tensor self, Tensor other):
  *         assert self.algebra is other.algebra             # <<<<<<<<<<<<<<
@@ -10065,48 +10065,48 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
     __pyx_t_1 = (__pyx_v_self->algebra == __pyx_v_other->algebra);
     if (unlikely(!(__pyx_t_1 != 0))) {
       PyErr_SetNone(PyExc_AssertionError);
-      __PYX_ERR(0, 367, __pyx_L1_error)
+      __PYX_ERR(0, 368, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "qupy/dev/_algebra.pyx":368
+  /* "qupy/dev/_algebra.pyx":369
  *     def __matmul__(Tensor self, Tensor other):
  *         assert self.algebra is other.algebra
  *         cdef Tensor op = Tensor(self.algebra)             # <<<<<<<<<<<<<<
  *         items = self.get_items()
  *         jtems = other.get_items()
  */
-  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 368, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 369, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_op = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":369
+  /* "qupy/dev/_algebra.pyx":370
  *         assert self.algebra is other.algebra
  *         cdef Tensor op = Tensor(self.algebra)
  *         items = self.get_items()             # <<<<<<<<<<<<<<
  *         jtems = other.get_items()
  *         for (k1, v1) in items:
  */
-  __pyx_t_2 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 369, __pyx_L1_error)
+  __pyx_t_2 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 370, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_items = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":370
+  /* "qupy/dev/_algebra.pyx":371
  *         cdef Tensor op = Tensor(self.algebra)
  *         items = self.get_items()
  *         jtems = other.get_items()             # <<<<<<<<<<<<<<
  *         for (k1, v1) in items:
  *           for (k2, v2) in jtems:
  */
-  __pyx_t_2 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other->__pyx_vtab)->get_items(__pyx_v_other); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 370, __pyx_L1_error)
+  __pyx_t_2 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other->__pyx_vtab)->get_items(__pyx_v_other); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 371, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_jtems = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":371
+  /* "qupy/dev/_algebra.pyx":372
  *         items = self.get_items()
  *         jtems = other.get_items()
  *         for (k1, v1) in items:             # <<<<<<<<<<<<<<
@@ -10117,26 +10117,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
     __pyx_t_2 = __pyx_v_items; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_items); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 371, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_items); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 372, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 371, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 372, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_4)) {
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_5 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 371, __pyx_L1_error)
+        __pyx_t_5 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 372, __pyx_L1_error)
         #else
-        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 371, __pyx_L1_error)
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 372, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 371, __pyx_L1_error)
+        __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 372, __pyx_L1_error)
         #else
-        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 371, __pyx_L1_error)
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 372, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         #endif
       }
@@ -10146,7 +10146,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 371, __pyx_L1_error)
+          else __PYX_ERR(0, 372, __pyx_L1_error)
         }
         break;
       }
@@ -10158,7 +10158,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 371, __pyx_L1_error)
+        __PYX_ERR(0, 372, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -10171,15 +10171,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
       __Pyx_INCREF(__pyx_t_6);
       __Pyx_INCREF(__pyx_t_7);
       #else
-      __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 371, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 372, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 371, __pyx_L1_error)
+      __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 372, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       #endif
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_8 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 371, __pyx_L1_error)
+      __pyx_t_8 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 372, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -10187,7 +10187,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
       __Pyx_GOTREF(__pyx_t_6);
       index = 1; __pyx_t_7 = __pyx_t_9(__pyx_t_8); if (unlikely(!__pyx_t_7)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_7);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) __PYX_ERR(0, 371, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) __PYX_ERR(0, 372, __pyx_L1_error)
       __pyx_t_9 = NULL;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       goto __pyx_L6_unpacking_done;
@@ -10195,7 +10195,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __pyx_t_9 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 371, __pyx_L1_error)
+      __PYX_ERR(0, 372, __pyx_L1_error)
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_k1, __pyx_t_6);
@@ -10203,7 +10203,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
     __Pyx_XDECREF_SET(__pyx_v_v1, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":372
+    /* "qupy/dev/_algebra.pyx":373
  *         jtems = other.get_items()
  *         for (k1, v1) in items:
  *           for (k2, v2) in jtems:             # <<<<<<<<<<<<<<
@@ -10214,26 +10214,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
       __pyx_t_5 = __pyx_v_jtems; __Pyx_INCREF(__pyx_t_5); __pyx_t_10 = 0;
       __pyx_t_11 = NULL;
     } else {
-      __pyx_t_10 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_jtems); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 372, __pyx_L1_error)
+      __pyx_t_10 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_jtems); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 373, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_11 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 372, __pyx_L1_error)
+      __pyx_t_11 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 373, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_11)) {
         if (likely(PyList_CheckExact(__pyx_t_5))) {
           if (__pyx_t_10 >= PyList_GET_SIZE(__pyx_t_5)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_7 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_10); __Pyx_INCREF(__pyx_t_7); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 372, __pyx_L1_error)
+          __pyx_t_7 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_10); __Pyx_INCREF(__pyx_t_7); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 373, __pyx_L1_error)
           #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_5, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 372, __pyx_L1_error)
+          __pyx_t_7 = PySequence_ITEM(__pyx_t_5, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 373, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           #endif
         } else {
           if (__pyx_t_10 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_10); __Pyx_INCREF(__pyx_t_7); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 372, __pyx_L1_error)
+          __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_10); __Pyx_INCREF(__pyx_t_7); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 373, __pyx_L1_error)
           #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_5, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 372, __pyx_L1_error)
+          __pyx_t_7 = PySequence_ITEM(__pyx_t_5, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 373, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           #endif
         }
@@ -10243,7 +10243,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 372, __pyx_L1_error)
+            else __PYX_ERR(0, 373, __pyx_L1_error)
           }
           break;
         }
@@ -10255,7 +10255,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
         if (unlikely(size != 2)) {
           if (size > 2) __Pyx_RaiseTooManyValuesError(2);
           else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-          __PYX_ERR(0, 372, __pyx_L1_error)
+          __PYX_ERR(0, 373, __pyx_L1_error)
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
         if (likely(PyTuple_CheckExact(sequence))) {
@@ -10268,15 +10268,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
         __Pyx_INCREF(__pyx_t_6);
         __Pyx_INCREF(__pyx_t_8);
         #else
-        __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 372, __pyx_L1_error)
+        __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 373, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_8 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 372, __pyx_L1_error)
+        __pyx_t_8 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 373, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         #endif
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       } else {
         Py_ssize_t index = -1;
-        __pyx_t_12 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 372, __pyx_L1_error)
+        __pyx_t_12 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 373, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_12);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __pyx_t_9 = Py_TYPE(__pyx_t_12)->tp_iternext;
@@ -10284,7 +10284,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
         __Pyx_GOTREF(__pyx_t_6);
         index = 1; __pyx_t_8 = __pyx_t_9(__pyx_t_12); if (unlikely(!__pyx_t_8)) goto __pyx_L9_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_8);
-        if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_12), 2) < 0) __PYX_ERR(0, 372, __pyx_L1_error)
+        if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_12), 2) < 0) __PYX_ERR(0, 373, __pyx_L1_error)
         __pyx_t_9 = NULL;
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
         goto __pyx_L10_unpacking_done;
@@ -10292,7 +10292,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
         __pyx_t_9 = NULL;
         if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-        __PYX_ERR(0, 372, __pyx_L1_error)
+        __PYX_ERR(0, 373, __pyx_L1_error)
         __pyx_L10_unpacking_done:;
       }
       __Pyx_XDECREF_SET(__pyx_v_k2, __pyx_t_6);
@@ -10300,19 +10300,19 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
       __Pyx_XDECREF_SET(__pyx_v_v2, __pyx_t_8);
       __pyx_t_8 = 0;
 
-      /* "qupy/dev/_algebra.pyx":373
+      /* "qupy/dev/_algebra.pyx":374
  *         for (k1, v1) in items:
  *           for (k2, v2) in jtems:
  *             k = k1+k2             # <<<<<<<<<<<<<<
  *             assert op[k] == ZERO
  *             op[k] = v1*v2
  */
-      __pyx_t_7 = PyNumber_Add(__pyx_v_k1, __pyx_v_k2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 373, __pyx_L1_error)
+      __pyx_t_7 = PyNumber_Add(__pyx_v_k1, __pyx_v_k2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 374, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "qupy/dev/_algebra.pyx":374
+      /* "qupy/dev/_algebra.pyx":375
  *           for (k2, v2) in jtems:
  *             k = k1+k2
  *             assert op[k] == ZERO             # <<<<<<<<<<<<<<
@@ -10321,33 +10321,33 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
  */
       #ifndef CYTHON_WITHOUT_ASSERTIONS
       if (unlikely(!Py_OptimizeFlag)) {
-        __pyx_t_7 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_op), __pyx_v_k); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 374, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_op), __pyx_v_k); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 375, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_8 = __Pyx_PyFloat_EqObjC(__pyx_t_7, __pyx_float_0_0, 0.0, 0, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 374, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyFloat_EqObjC(__pyx_t_7, __pyx_float_0_0, 0.0, 0, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 375, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 374, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 375, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         if (unlikely(!__pyx_t_1)) {
           PyErr_SetNone(PyExc_AssertionError);
-          __PYX_ERR(0, 374, __pyx_L1_error)
+          __PYX_ERR(0, 375, __pyx_L1_error)
         }
       }
       #endif
 
-      /* "qupy/dev/_algebra.pyx":375
+      /* "qupy/dev/_algebra.pyx":376
  *             k = k1+k2
  *             assert op[k] == ZERO
  *             op[k] = v1*v2             # <<<<<<<<<<<<<<
  *         return op
  * 
  */
-      __pyx_t_8 = PyNumber_Multiply(__pyx_v_v1, __pyx_v_v2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 375, __pyx_L1_error)
+      __pyx_t_8 = PyNumber_Multiply(__pyx_v_v1, __pyx_v_v2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 376, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v_k, __pyx_t_8) < 0)) __PYX_ERR(0, 375, __pyx_L1_error)
+      if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_op), __pyx_v_k, __pyx_t_8) < 0)) __PYX_ERR(0, 376, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "qupy/dev/_algebra.pyx":372
+      /* "qupy/dev/_algebra.pyx":373
  *         jtems = other.get_items()
  *         for (k1, v1) in items:
  *           for (k2, v2) in jtems:             # <<<<<<<<<<<<<<
@@ -10357,7 +10357,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "qupy/dev/_algebra.pyx":371
+    /* "qupy/dev/_algebra.pyx":372
  *         items = self.get_items()
  *         jtems = other.get_items()
  *         for (k1, v1) in items:             # <<<<<<<<<<<<<<
@@ -10367,7 +10367,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":376
+  /* "qupy/dev/_algebra.pyx":377
  *             assert op[k] == ZERO
  *             op[k] = v1*v2
  *         return op             # <<<<<<<<<<<<<<
@@ -10379,7 +10379,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
   __pyx_r = ((PyObject *)__pyx_v_op);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":366
+  /* "qupy/dev/_algebra.pyx":367
  *         return op
  * 
  *     def __matmul__(Tensor self, Tensor other):             # <<<<<<<<<<<<<<
@@ -10412,7 +10412,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_46__matmul__(struct __pyx
 }
 #endif /*!(#if PY_VERSION_HEX >= 0x03050000)*/
 
-/* "qupy/dev/_algebra.pyx":378
+/* "qupy/dev/_algebra.pyx":379
  *         return op
  * 
  *     def __mul__(_self, _other):             # <<<<<<<<<<<<<<
@@ -10469,7 +10469,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
   int __pyx_t_16;
   __Pyx_RefNannySetupContext("__mul__", 0);
 
-  /* "qupy/dev/_algebra.pyx":379
+  /* "qupy/dev/_algebra.pyx":380
  * 
  *     def __mul__(_self, _other):
  *         if not isinstance(_self, Tensor):             # <<<<<<<<<<<<<<
@@ -10480,7 +10480,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
   __pyx_t_2 = ((!(__pyx_t_1 != 0)) != 0);
   if (__pyx_t_2) {
 
-    /* "qupy/dev/_algebra.pyx":380
+    /* "qupy/dev/_algebra.pyx":381
  *     def __mul__(_self, _other):
  *         if not isinstance(_self, Tensor):
  *             return _other.rmul(_self)             # <<<<<<<<<<<<<<
@@ -10488,7 +10488,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
  *         cdef Tensor other = _other
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v__other, __pyx_n_s_rmul); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 380, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v__other, __pyx_n_s_rmul); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 381, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -10502,14 +10502,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
     }
     __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_v__self) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v__self);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 380, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 381, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "qupy/dev/_algebra.pyx":379
+    /* "qupy/dev/_algebra.pyx":380
  * 
  *     def __mul__(_self, _other):
  *         if not isinstance(_self, Tensor):             # <<<<<<<<<<<<<<
@@ -10518,33 +10518,33 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":381
+  /* "qupy/dev/_algebra.pyx":382
  *         if not isinstance(_self, Tensor):
  *             return _other.rmul(_self)
  *         cdef Tensor self = _self             # <<<<<<<<<<<<<<
  *         cdef Tensor other = _other
  *         assert self.algebra is other.algebra
  */
-  if (!(likely(((__pyx_v__self) == Py_None) || likely(__Pyx_TypeTest(__pyx_v__self, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 381, __pyx_L1_error)
+  if (!(likely(((__pyx_v__self) == Py_None) || likely(__Pyx_TypeTest(__pyx_v__self, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 382, __pyx_L1_error)
   __pyx_t_3 = __pyx_v__self;
   __Pyx_INCREF(__pyx_t_3);
   __pyx_v_self = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":382
+  /* "qupy/dev/_algebra.pyx":383
  *             return _other.rmul(_self)
  *         cdef Tensor self = _self
  *         cdef Tensor other = _other             # <<<<<<<<<<<<<<
  *         assert self.algebra is other.algebra
  *         cdef Tensor op1
  */
-  if (!(likely(((__pyx_v__other) == Py_None) || likely(__Pyx_TypeTest(__pyx_v__other, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 382, __pyx_L1_error)
+  if (!(likely(((__pyx_v__other) == Py_None) || likely(__Pyx_TypeTest(__pyx_v__other, __pyx_ptype_4qupy_3dev_8_algebra_Tensor))))) __PYX_ERR(0, 383, __pyx_L1_error)
   __pyx_t_3 = __pyx_v__other;
   __Pyx_INCREF(__pyx_t_3);
   __pyx_v_other = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":383
+  /* "qupy/dev/_algebra.pyx":384
  *         cdef Tensor self = _self
  *         cdef Tensor other = _other
  *         assert self.algebra is other.algebra             # <<<<<<<<<<<<<<
@@ -10556,68 +10556,68 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
     __pyx_t_2 = (__pyx_v_self->algebra == __pyx_v_other->algebra);
     if (unlikely(!(__pyx_t_2 != 0))) {
       PyErr_SetNone(PyExc_AssertionError);
-      __PYX_ERR(0, 383, __pyx_L1_error)
+      __PYX_ERR(0, 384, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "qupy/dev/_algebra.pyx":385
+  /* "qupy/dev/_algebra.pyx":386
  *         assert self.algebra is other.algebra
  *         cdef Tensor op1
  *         cdef Tensor op = Tensor(self.algebra)             # <<<<<<<<<<<<<<
  * 
  *         items = self.get_items()
  */
-  __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 385, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 386, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_op = ((struct __pyx_obj_4qupy_3dev_8_algebra_Tensor *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":387
+  /* "qupy/dev/_algebra.pyx":388
  *         cdef Tensor op = Tensor(self.algebra)
  * 
  *         items = self.get_items()             # <<<<<<<<<<<<<<
  *         jtems = other.get_items()
  * 
  */
-  __pyx_t_3 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __pyx_t_3 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 388, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_items = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":388
+  /* "qupy/dev/_algebra.pyx":389
  * 
  *         items = self.get_items()
  *         jtems = other.get_items()             # <<<<<<<<<<<<<<
  * 
  *         cdef int n = self.grade
  */
-  __pyx_t_3 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other->__pyx_vtab)->get_items(__pyx_v_other); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 388, __pyx_L1_error)
+  __pyx_t_3 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_other->__pyx_vtab)->get_items(__pyx_v_other); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 389, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_jtems = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":390
+  /* "qupy/dev/_algebra.pyx":391
  *         jtems = other.get_items()
  * 
  *         cdef int n = self.grade             # <<<<<<<<<<<<<<
  *         cdef int i
  *         #cdef double complex val, wal, r # slower
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_grade); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 390, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_grade); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 391, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 390, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 391, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_n = __pyx_t_6;
 
-  /* "qupy/dev/_algebra.pyx":394
+  /* "qupy/dev/_algebra.pyx":395
  *         #cdef double complex val, wal, r # slower
  * 
  *         key = [None]*n             # <<<<<<<<<<<<<<
  *         for (idx, val) in items:
  *           if abs(val)<EPSILON:
  */
-  __pyx_t_3 = PyList_New(1 * ((__pyx_v_n<0) ? 0:__pyx_v_n)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 394, __pyx_L1_error)
+  __pyx_t_3 = PyList_New(1 * ((__pyx_v_n<0) ? 0:__pyx_v_n)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   { Py_ssize_t __pyx_temp;
     for (__pyx_temp=0; __pyx_temp < __pyx_v_n; __pyx_temp++) {
@@ -10629,7 +10629,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
   __pyx_v_key = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":395
+  /* "qupy/dev/_algebra.pyx":396
  * 
  *         key = [None]*n
  *         for (idx, val) in items:             # <<<<<<<<<<<<<<
@@ -10640,26 +10640,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
     __pyx_t_3 = __pyx_v_items; __Pyx_INCREF(__pyx_t_3); __pyx_t_7 = 0;
     __pyx_t_8 = NULL;
   } else {
-    __pyx_t_7 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_items); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 395, __pyx_L1_error)
+    __pyx_t_7 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_items); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 396, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_8 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 395, __pyx_L1_error)
+    __pyx_t_8 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 396, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_8)) {
       if (likely(PyList_CheckExact(__pyx_t_3))) {
         if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_3)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 395, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 396, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 395, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 396, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 395, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 396, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 395, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 396, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -10669,7 +10669,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 395, __pyx_L1_error)
+          else __PYX_ERR(0, 396, __pyx_L1_error)
         }
         break;
       }
@@ -10681,7 +10681,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 395, __pyx_L1_error)
+        __PYX_ERR(0, 396, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -10694,15 +10694,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
       __Pyx_INCREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_t_9);
       #else
-      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 395, __pyx_L1_error)
+      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 396, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_9 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 395, __pyx_L1_error)
+      __pyx_t_9 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 396, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       #endif
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_10 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 395, __pyx_L1_error)
+      __pyx_t_10 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 396, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_11 = Py_TYPE(__pyx_t_10)->tp_iternext;
@@ -10710,7 +10710,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
       __Pyx_GOTREF(__pyx_t_5);
       index = 1; __pyx_t_9 = __pyx_t_11(__pyx_t_10); if (unlikely(!__pyx_t_9)) goto __pyx_L6_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_9);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_10), 2) < 0) __PYX_ERR(0, 395, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_10), 2) < 0) __PYX_ERR(0, 396, __pyx_L1_error)
       __pyx_t_11 = NULL;
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       goto __pyx_L7_unpacking_done;
@@ -10718,7 +10718,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __pyx_t_11 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 395, __pyx_L1_error)
+      __PYX_ERR(0, 396, __pyx_L1_error)
       __pyx_L7_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_idx, __pyx_t_5);
@@ -10726,22 +10726,22 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
     __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_9);
     __pyx_t_9 = 0;
 
-    /* "qupy/dev/_algebra.pyx":396
+    /* "qupy/dev/_algebra.pyx":397
  *         key = [None]*n
  *         for (idx, val) in items:
  *           if abs(val)<EPSILON:             # <<<<<<<<<<<<<<
  *               continue
  *           for (jdx, wal) in jtems:
  */
-    __pyx_t_4 = __Pyx_PyNumber_Absolute(__pyx_v_val); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 396, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyNumber_Absolute(__pyx_v_val); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 397, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_9 = PyObject_RichCompare(__pyx_t_4, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 396, __pyx_L1_error)
+    __pyx_t_9 = PyObject_RichCompare(__pyx_t_4, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 397, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 396, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 397, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     if (__pyx_t_2) {
 
-      /* "qupy/dev/_algebra.pyx":397
+      /* "qupy/dev/_algebra.pyx":398
  *         for (idx, val) in items:
  *           if abs(val)<EPSILON:
  *               continue             # <<<<<<<<<<<<<<
@@ -10750,7 +10750,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
  */
       goto __pyx_L4_continue;
 
-      /* "qupy/dev/_algebra.pyx":396
+      /* "qupy/dev/_algebra.pyx":397
  *         key = [None]*n
  *         for (idx, val) in items:
  *           if abs(val)<EPSILON:             # <<<<<<<<<<<<<<
@@ -10759,7 +10759,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
  */
     }
 
-    /* "qupy/dev/_algebra.pyx":398
+    /* "qupy/dev/_algebra.pyx":399
  *           if abs(val)<EPSILON:
  *               continue
  *           for (jdx, wal) in jtems:             # <<<<<<<<<<<<<<
@@ -10770,26 +10770,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
       __pyx_t_9 = __pyx_v_jtems; __Pyx_INCREF(__pyx_t_9); __pyx_t_12 = 0;
       __pyx_t_13 = NULL;
     } else {
-      __pyx_t_12 = -1; __pyx_t_9 = PyObject_GetIter(__pyx_v_jtems); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 398, __pyx_L1_error)
+      __pyx_t_12 = -1; __pyx_t_9 = PyObject_GetIter(__pyx_v_jtems); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 399, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_13 = Py_TYPE(__pyx_t_9)->tp_iternext; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 398, __pyx_L1_error)
+      __pyx_t_13 = Py_TYPE(__pyx_t_9)->tp_iternext; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 399, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_13)) {
         if (likely(PyList_CheckExact(__pyx_t_9))) {
           if (__pyx_t_12 >= PyList_GET_SIZE(__pyx_t_9)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_9, __pyx_t_12); __Pyx_INCREF(__pyx_t_4); __pyx_t_12++; if (unlikely(0 < 0)) __PYX_ERR(0, 398, __pyx_L1_error)
+          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_9, __pyx_t_12); __Pyx_INCREF(__pyx_t_4); __pyx_t_12++; if (unlikely(0 < 0)) __PYX_ERR(0, 399, __pyx_L1_error)
           #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_9, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 398, __pyx_L1_error)
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_9, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 399, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           #endif
         } else {
           if (__pyx_t_12 >= PyTuple_GET_SIZE(__pyx_t_9)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_9, __pyx_t_12); __Pyx_INCREF(__pyx_t_4); __pyx_t_12++; if (unlikely(0 < 0)) __PYX_ERR(0, 398, __pyx_L1_error)
+          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_9, __pyx_t_12); __Pyx_INCREF(__pyx_t_4); __pyx_t_12++; if (unlikely(0 < 0)) __PYX_ERR(0, 399, __pyx_L1_error)
           #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_9, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 398, __pyx_L1_error)
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_9, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 399, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           #endif
         }
@@ -10799,7 +10799,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 398, __pyx_L1_error)
+            else __PYX_ERR(0, 399, __pyx_L1_error)
           }
           break;
         }
@@ -10811,7 +10811,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
         if (unlikely(size != 2)) {
           if (size > 2) __Pyx_RaiseTooManyValuesError(2);
           else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-          __PYX_ERR(0, 398, __pyx_L1_error)
+          __PYX_ERR(0, 399, __pyx_L1_error)
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
         if (likely(PyTuple_CheckExact(sequence))) {
@@ -10824,15 +10824,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
         __Pyx_INCREF(__pyx_t_5);
         __Pyx_INCREF(__pyx_t_10);
         #else
-        __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 398, __pyx_L1_error)
+        __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 399, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 398, __pyx_L1_error)
+        __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 399, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_10);
         #endif
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       } else {
         Py_ssize_t index = -1;
-        __pyx_t_14 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 398, __pyx_L1_error)
+        __pyx_t_14 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 399, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_14);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __pyx_t_11 = Py_TYPE(__pyx_t_14)->tp_iternext;
@@ -10840,7 +10840,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
         __Pyx_GOTREF(__pyx_t_5);
         index = 1; __pyx_t_10 = __pyx_t_11(__pyx_t_14); if (unlikely(!__pyx_t_10)) goto __pyx_L11_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_10);
-        if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_14), 2) < 0) __PYX_ERR(0, 398, __pyx_L1_error)
+        if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_14), 2) < 0) __PYX_ERR(0, 399, __pyx_L1_error)
         __pyx_t_11 = NULL;
         __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
         goto __pyx_L12_unpacking_done;
@@ -10848,7 +10848,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
         __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
         __pyx_t_11 = NULL;
         if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-        __PYX_ERR(0, 398, __pyx_L1_error)
+        __PYX_ERR(0, 399, __pyx_L1_error)
         __pyx_L12_unpacking_done:;
       }
       __Pyx_XDECREF_SET(__pyx_v_jdx, __pyx_t_5);
@@ -10856,22 +10856,22 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
       __Pyx_XDECREF_SET(__pyx_v_wal, __pyx_t_10);
       __pyx_t_10 = 0;
 
-      /* "qupy/dev/_algebra.pyx":399
+      /* "qupy/dev/_algebra.pyx":400
  *               continue
  *           for (jdx, wal) in jtems:
  *             if abs(wal)<EPSILON:             # <<<<<<<<<<<<<<
  *                 continue
  *             r = val*wal
  */
-      __pyx_t_4 = __Pyx_PyNumber_Absolute(__pyx_v_wal); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 399, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyNumber_Absolute(__pyx_v_wal); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 400, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_10 = PyObject_RichCompare(__pyx_t_4, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 399, __pyx_L1_error)
+      __pyx_t_10 = PyObject_RichCompare(__pyx_t_4, __pyx_float_1eneg_08, Py_LT); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 400, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 399, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 400, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       if (__pyx_t_2) {
 
-        /* "qupy/dev/_algebra.pyx":400
+        /* "qupy/dev/_algebra.pyx":401
  *           for (jdx, wal) in jtems:
  *             if abs(wal)<EPSILON:
  *                 continue             # <<<<<<<<<<<<<<
@@ -10880,7 +10880,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
  */
         goto __pyx_L9_continue;
 
-        /* "qupy/dev/_algebra.pyx":399
+        /* "qupy/dev/_algebra.pyx":400
  *               continue
  *           for (jdx, wal) in jtems:
  *             if abs(wal)<EPSILON:             # <<<<<<<<<<<<<<
@@ -10889,19 +10889,19 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
  */
       }
 
-      /* "qupy/dev/_algebra.pyx":401
+      /* "qupy/dev/_algebra.pyx":402
  *             if abs(wal)<EPSILON:
  *                 continue
  *             r = val*wal             # <<<<<<<<<<<<<<
  * 
  * #            for i in range(n):
  */
-      __pyx_t_10 = PyNumber_Multiply(__pyx_v_val, __pyx_v_wal); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 401, __pyx_L1_error)
+      __pyx_t_10 = PyNumber_Multiply(__pyx_v_val, __pyx_v_wal); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 402, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_XDECREF_SET(__pyx_v_r, __pyx_t_10);
       __pyx_t_10 = 0;
 
-      /* "qupy/dev/_algebra.pyx":409
+      /* "qupy/dev/_algebra.pyx":410
  * #                r *= v1
  * 
  *             for i in range(n):             # <<<<<<<<<<<<<<
@@ -10913,18 +10913,18 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
       for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
         __pyx_v_i = __pyx_t_16;
 
-        /* "qupy/dev/_algebra.pyx":410
+        /* "qupy/dev/_algebra.pyx":411
  * 
  *             for i in range(n):
  *                 (k1, v1) = self.algebra.lookup[idx[i], jdx[i]]             # <<<<<<<<<<<<<<
  *                 key[i] = k1
  *                 r *= v1
  */
-        __pyx_t_10 = __Pyx_GetItemInt(__pyx_v_idx, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 410, __pyx_L1_error)
+        __pyx_t_10 = __Pyx_GetItemInt(__pyx_v_idx, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 411, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_10);
-        __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_jdx, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 410, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_jdx, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 411, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 410, __pyx_L1_error)
+        __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 411, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_GIVEREF(__pyx_t_10);
         PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_10);
@@ -10932,7 +10932,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
         PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_t_4);
         __pyx_t_10 = 0;
         __pyx_t_4 = 0;
-        __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_v_self->algebra->lookup, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 410, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_v_self->algebra->lookup, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 411, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         if ((likely(PyTuple_CheckExact(__pyx_t_4))) || (PyList_CheckExact(__pyx_t_4))) {
@@ -10941,7 +10941,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
           if (unlikely(size != 2)) {
             if (size > 2) __Pyx_RaiseTooManyValuesError(2);
             else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-            __PYX_ERR(0, 410, __pyx_L1_error)
+            __PYX_ERR(0, 411, __pyx_L1_error)
           }
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
           if (likely(PyTuple_CheckExact(sequence))) {
@@ -10954,15 +10954,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
           __Pyx_INCREF(__pyx_t_5);
           __Pyx_INCREF(__pyx_t_10);
           #else
-          __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 410, __pyx_L1_error)
+          __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 411, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
-          __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 410, __pyx_L1_error)
+          __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 411, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_10);
           #endif
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         } else {
           Py_ssize_t index = -1;
-          __pyx_t_14 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 410, __pyx_L1_error)
+          __pyx_t_14 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 411, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_14);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
           __pyx_t_11 = Py_TYPE(__pyx_t_14)->tp_iternext;
@@ -10970,7 +10970,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
           __Pyx_GOTREF(__pyx_t_5);
           index = 1; __pyx_t_10 = __pyx_t_11(__pyx_t_14); if (unlikely(!__pyx_t_10)) goto __pyx_L16_unpacking_failed;
           __Pyx_GOTREF(__pyx_t_10);
-          if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_14), 2) < 0) __PYX_ERR(0, 410, __pyx_L1_error)
+          if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_14), 2) < 0) __PYX_ERR(0, 411, __pyx_L1_error)
           __pyx_t_11 = NULL;
           __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
           goto __pyx_L17_unpacking_done;
@@ -10978,7 +10978,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
           __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
           __pyx_t_11 = NULL;
           if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-          __PYX_ERR(0, 410, __pyx_L1_error)
+          __PYX_ERR(0, 411, __pyx_L1_error)
           __pyx_L17_unpacking_done:;
         }
         __Pyx_XDECREF_SET(__pyx_v_k1, __pyx_t_5);
@@ -10986,36 +10986,36 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
         __Pyx_XDECREF_SET(__pyx_v_v1, __pyx_t_10);
         __pyx_t_10 = 0;
 
-        /* "qupy/dev/_algebra.pyx":411
+        /* "qupy/dev/_algebra.pyx":412
  *             for i in range(n):
  *                 (k1, v1) = self.algebra.lookup[idx[i], jdx[i]]
  *                 key[i] = k1             # <<<<<<<<<<<<<<
  *                 r *= v1
  * 
  */
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_key, __pyx_v_i, __pyx_v_k1, int, 1, __Pyx_PyInt_From_int, 1, 1, 1) < 0)) __PYX_ERR(0, 411, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_key, __pyx_v_i, __pyx_v_k1, int, 1, __Pyx_PyInt_From_int, 1, 1, 1) < 0)) __PYX_ERR(0, 412, __pyx_L1_error)
 
-        /* "qupy/dev/_algebra.pyx":412
+        /* "qupy/dev/_algebra.pyx":413
  *                 (k1, v1) = self.algebra.lookup[idx[i], jdx[i]]
  *                 key[i] = k1
  *                 r *= v1             # <<<<<<<<<<<<<<
  * 
  *             op.iadditem(key, r)
  */
-        __pyx_t_4 = PyNumber_InPlaceMultiply(__pyx_v_r, __pyx_v_v1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 412, __pyx_L1_error)
+        __pyx_t_4 = PyNumber_InPlaceMultiply(__pyx_v_r, __pyx_v_v1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 413, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF_SET(__pyx_v_r, __pyx_t_4);
         __pyx_t_4 = 0;
       }
 
-      /* "qupy/dev/_algebra.pyx":414
+      /* "qupy/dev/_algebra.pyx":415
  *                 r *= v1
  * 
  *             op.iadditem(key, r)             # <<<<<<<<<<<<<<
  * 
  *         return op
  */
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_op), __pyx_n_s_iadditem); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 414, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_op), __pyx_n_s_iadditem); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 415, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __pyx_t_5 = NULL;
       __pyx_t_6 = 0;
@@ -11032,7 +11032,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_10)) {
         PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_v_key, __pyx_v_r};
-        __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 414, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 415, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_GOTREF(__pyx_t_4);
       } else
@@ -11040,13 +11040,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_10)) {
         PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_v_key, __pyx_v_r};
-        __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 414, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 415, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_GOTREF(__pyx_t_4);
       } else
       #endif
       {
-        __pyx_t_14 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 414, __pyx_L1_error)
+        __pyx_t_14 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 415, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_14);
         if (__pyx_t_5) {
           __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -11057,14 +11057,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
         __Pyx_INCREF(__pyx_v_r);
         __Pyx_GIVEREF(__pyx_v_r);
         PyTuple_SET_ITEM(__pyx_t_14, 1+__pyx_t_6, __pyx_v_r);
-        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_14, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 414, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_14, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 415, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
       }
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "qupy/dev/_algebra.pyx":398
+      /* "qupy/dev/_algebra.pyx":399
  *           if abs(val)<EPSILON:
  *               continue
  *           for (jdx, wal) in jtems:             # <<<<<<<<<<<<<<
@@ -11075,7 +11075,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
     }
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-    /* "qupy/dev/_algebra.pyx":395
+    /* "qupy/dev/_algebra.pyx":396
  * 
  *         key = [None]*n
  *         for (idx, val) in items:             # <<<<<<<<<<<<<<
@@ -11086,7 +11086,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "qupy/dev/_algebra.pyx":416
+  /* "qupy/dev/_algebra.pyx":417
  *             op.iadditem(key, r)
  * 
  *         return op             # <<<<<<<<<<<<<<
@@ -11098,7 +11098,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
   __pyx_r = ((PyObject *)__pyx_v_op);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":378
+  /* "qupy/dev/_algebra.pyx":379
  *         return op
  * 
  *     def __mul__(_self, _other):             # <<<<<<<<<<<<<<
@@ -11135,7 +11135,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_48__mul__(PyObject *__pyx
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":418
+/* "qupy/dev/_algebra.pyx":419
  *         return op
  * 
  *     def subs(self, rename):             # <<<<<<<<<<<<<<
@@ -11181,7 +11181,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
   int __pyx_t_12;
   __Pyx_RefNannySetupContext("subs", 0);
 
-  /* "qupy/dev/_algebra.pyx":419
+  /* "qupy/dev/_algebra.pyx":420
  * 
  *     def subs(self, rename):
  *         the_op = None             # <<<<<<<<<<<<<<
@@ -11191,7 +11191,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
   __Pyx_INCREF(Py_None);
   __pyx_v_the_op = Py_None;
 
-  /* "qupy/dev/_algebra.pyx":420
+  /* "qupy/dev/_algebra.pyx":421
  *     def subs(self, rename):
  *         the_op = None
  *         algebra = self.algebra             # <<<<<<<<<<<<<<
@@ -11203,22 +11203,22 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
   __pyx_v_algebra = ((struct __pyx_obj_4qupy_3dev_8_algebra_Algebra *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":421
+  /* "qupy/dev/_algebra.pyx":422
  *         the_op = None
  *         algebra = self.algebra
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
  *             final = None
  *             for ki in k:
  */
-  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_4qupy_3dev_8_algebra_Tensor *)__pyx_v_self->__pyx_vtab)->get_items(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 422, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 421, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 422, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 421, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 422, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -11226,17 +11226,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 421, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 422, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 421, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 422, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 421, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 422, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 421, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 422, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -11246,7 +11246,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 421, __pyx_L1_error)
+          else __PYX_ERR(0, 422, __pyx_L1_error)
         }
         break;
       }
@@ -11258,7 +11258,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 421, __pyx_L1_error)
+        __PYX_ERR(0, 422, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -11271,15 +11271,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
       __Pyx_INCREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 421, __pyx_L1_error)
+      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 422, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 421, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 422, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       #endif
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 421, __pyx_L1_error)
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 422, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
@@ -11287,7 +11287,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
       __Pyx_GOTREF(__pyx_t_5);
       index = 1; __pyx_t_6 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 422, __pyx_L1_error)
       __pyx_t_8 = NULL;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       goto __pyx_L6_unpacking_done;
@@ -11295,7 +11295,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 421, __pyx_L1_error)
+      __PYX_ERR(0, 422, __pyx_L1_error)
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_5);
@@ -11303,7 +11303,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
     __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":422
+    /* "qupy/dev/_algebra.pyx":423
  *         algebra = self.algebra
  *         for (k, v) in self.get_items():
  *             final = None             # <<<<<<<<<<<<<<
@@ -11313,7 +11313,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
     __Pyx_INCREF(Py_None);
     __Pyx_XDECREF_SET(__pyx_v_final, Py_None);
 
-    /* "qupy/dev/_algebra.pyx":423
+    /* "qupy/dev/_algebra.pyx":424
  *         for (k, v) in self.get_items():
  *             final = None
  *             for ki in k:             # <<<<<<<<<<<<<<
@@ -11324,26 +11324,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
       __pyx_t_1 = __pyx_v_k; __Pyx_INCREF(__pyx_t_1); __pyx_t_9 = 0;
       __pyx_t_10 = NULL;
     } else {
-      __pyx_t_9 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_k); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 423, __pyx_L1_error)
+      __pyx_t_9 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_k); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 424, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_10 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 423, __pyx_L1_error)
+      __pyx_t_10 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 424, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_10)) {
         if (likely(PyList_CheckExact(__pyx_t_1))) {
           if (__pyx_t_9 >= PyList_GET_SIZE(__pyx_t_1)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_6 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_9); __Pyx_INCREF(__pyx_t_6); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 423, __pyx_L1_error)
+          __pyx_t_6 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_9); __Pyx_INCREF(__pyx_t_6); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 424, __pyx_L1_error)
           #else
-          __pyx_t_6 = PySequence_ITEM(__pyx_t_1, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 423, __pyx_L1_error)
+          __pyx_t_6 = PySequence_ITEM(__pyx_t_1, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 424, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           #endif
         } else {
           if (__pyx_t_9 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_9); __Pyx_INCREF(__pyx_t_6); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 423, __pyx_L1_error)
+          __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_9); __Pyx_INCREF(__pyx_t_6); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 424, __pyx_L1_error)
           #else
-          __pyx_t_6 = PySequence_ITEM(__pyx_t_1, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 423, __pyx_L1_error)
+          __pyx_t_6 = PySequence_ITEM(__pyx_t_1, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 424, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           #endif
         }
@@ -11353,7 +11353,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 423, __pyx_L1_error)
+            else __PYX_ERR(0, 424, __pyx_L1_error)
           }
           break;
         }
@@ -11362,26 +11362,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
       __Pyx_XDECREF_SET(__pyx_v_ki, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "qupy/dev/_algebra.pyx":424
+      /* "qupy/dev/_algebra.pyx":425
  *             final = None
  *             for ki in k:
  *                 c = algebra.names[ki]             # <<<<<<<<<<<<<<
  *                 op = rename.get(c)
  *                 if op is None:
  */
-      __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_algebra->names, __pyx_v_ki); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 424, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_algebra->names, __pyx_v_ki); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 425, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_XDECREF_SET(__pyx_v_c, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "qupy/dev/_algebra.pyx":425
+      /* "qupy/dev/_algebra.pyx":426
  *             for ki in k:
  *                 c = algebra.names[ki]
  *                 op = rename.get(c)             # <<<<<<<<<<<<<<
  *                 if op is None:
  *                     op = Tensor(self.algebra)
  */
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_rename, __pyx_n_s_get); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 425, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_rename, __pyx_n_s_get); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 426, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_7 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -11395,13 +11395,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
       }
       __pyx_t_6 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_v_c) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_c);
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 425, __pyx_L1_error)
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 426, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_XDECREF_SET(__pyx_v_op, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "qupy/dev/_algebra.pyx":426
+      /* "qupy/dev/_algebra.pyx":427
  *                 c = algebra.names[ki]
  *                 op = rename.get(c)
  *                 if op is None:             # <<<<<<<<<<<<<<
@@ -11412,34 +11412,34 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
       __pyx_t_12 = (__pyx_t_11 != 0);
       if (__pyx_t_12) {
 
-        /* "qupy/dev/_algebra.pyx":427
+        /* "qupy/dev/_algebra.pyx":428
  *                 op = rename.get(c)
  *                 if op is None:
  *                     op = Tensor(self.algebra)             # <<<<<<<<<<<<<<
  *                     op[(ki,)] = ONE
  *                 if final is None:
  */
-        __pyx_t_6 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 427, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Tensor), ((PyObject *)__pyx_v_self->algebra)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 428, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF_SET(__pyx_v_op, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "qupy/dev/_algebra.pyx":428
+        /* "qupy/dev/_algebra.pyx":429
  *                 if op is None:
  *                     op = Tensor(self.algebra)
  *                     op[(ki,)] = ONE             # <<<<<<<<<<<<<<
  *                 if final is None:
  *                     final = op
  */
-        __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 428, __pyx_L1_error)
+        __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 429, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_INCREF(__pyx_v_ki);
         __Pyx_GIVEREF(__pyx_v_ki);
         PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_v_ki);
-        if (unlikely(PyObject_SetItem(__pyx_v_op, __pyx_t_6, __pyx_float_1_0) < 0)) __PYX_ERR(0, 428, __pyx_L1_error)
+        if (unlikely(PyObject_SetItem(__pyx_v_op, __pyx_t_6, __pyx_float_1_0) < 0)) __PYX_ERR(0, 429, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "qupy/dev/_algebra.pyx":426
+        /* "qupy/dev/_algebra.pyx":427
  *                 c = algebra.names[ki]
  *                 op = rename.get(c)
  *                 if op is None:             # <<<<<<<<<<<<<<
@@ -11448,7 +11448,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
  */
       }
 
-      /* "qupy/dev/_algebra.pyx":429
+      /* "qupy/dev/_algebra.pyx":430
  *                     op = Tensor(self.algebra)
  *                     op[(ki,)] = ONE
  *                 if final is None:             # <<<<<<<<<<<<<<
@@ -11459,7 +11459,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
       __pyx_t_11 = (__pyx_t_12 != 0);
       if (__pyx_t_11) {
 
-        /* "qupy/dev/_algebra.pyx":430
+        /* "qupy/dev/_algebra.pyx":431
  *                     op[(ki,)] = ONE
  *                 if final is None:
  *                     final = op             # <<<<<<<<<<<<<<
@@ -11469,7 +11469,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
         __Pyx_INCREF(__pyx_v_op);
         __Pyx_DECREF_SET(__pyx_v_final, __pyx_v_op);
 
-        /* "qupy/dev/_algebra.pyx":429
+        /* "qupy/dev/_algebra.pyx":430
  *                     op = Tensor(self.algebra)
  *                     op[(ki,)] = ONE
  *                 if final is None:             # <<<<<<<<<<<<<<
@@ -11479,7 +11479,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
         goto __pyx_L10;
       }
 
-      /* "qupy/dev/_algebra.pyx":432
+      /* "qupy/dev/_algebra.pyx":433
  *                     final = op
  *                 else:
  *                     final = final @ op # tensor             # <<<<<<<<<<<<<<
@@ -11487,14 +11487,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
  *                 the_op = complex(v)*final # ARRGGGHHH !!
  */
       /*else*/ {
-        __pyx_t_6 = __Pyx_PyNumber_MatrixMultiply(__pyx_v_final, __pyx_v_op); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 432, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyNumber_MatrixMultiply(__pyx_v_final, __pyx_v_op); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 433, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF_SET(__pyx_v_final, __pyx_t_6);
         __pyx_t_6 = 0;
       }
       __pyx_L10:;
 
-      /* "qupy/dev/_algebra.pyx":423
+      /* "qupy/dev/_algebra.pyx":424
  *         for (k, v) in self.get_items():
  *             final = None
  *             for ki in k:             # <<<<<<<<<<<<<<
@@ -11504,7 +11504,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":433
+    /* "qupy/dev/_algebra.pyx":434
  *                 else:
  *                     final = final @ op # tensor
  *             if the_op is None:             # <<<<<<<<<<<<<<
@@ -11515,22 +11515,22 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
     __pyx_t_12 = (__pyx_t_11 != 0);
     if (__pyx_t_12) {
 
-      /* "qupy/dev/_algebra.pyx":434
+      /* "qupy/dev/_algebra.pyx":435
  *                     final = final @ op # tensor
  *             if the_op is None:
  *                 the_op = complex(v)*final # ARRGGGHHH !!             # <<<<<<<<<<<<<<
  *             else:
  *                 the_op = the_op + complex(v)*final # ARRGGGHHH !!
  */
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyComplex_Type)), __pyx_v_v); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 434, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyComplex_Type)), __pyx_v_v); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 435, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_6 = PyNumber_Multiply(__pyx_t_1, __pyx_v_final); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 434, __pyx_L1_error)
+      __pyx_t_6 = PyNumber_Multiply(__pyx_t_1, __pyx_v_final); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 435, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF_SET(__pyx_v_the_op, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "qupy/dev/_algebra.pyx":433
+      /* "qupy/dev/_algebra.pyx":434
  *                 else:
  *                     final = final @ op # tensor
  *             if the_op is None:             # <<<<<<<<<<<<<<
@@ -11540,7 +11540,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
       goto __pyx_L11;
     }
 
-    /* "qupy/dev/_algebra.pyx":436
+    /* "qupy/dev/_algebra.pyx":437
  *                 the_op = complex(v)*final # ARRGGGHHH !!
  *             else:
  *                 the_op = the_op + complex(v)*final # ARRGGGHHH !!             # <<<<<<<<<<<<<<
@@ -11548,12 +11548,12 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
  *             the_op = 0.
  */
     /*else*/ {
-      __pyx_t_6 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyComplex_Type)), __pyx_v_v); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 436, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyComplex_Type)), __pyx_v_v); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 437, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_1 = PyNumber_Multiply(__pyx_t_6, __pyx_v_final); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 436, __pyx_L1_error)
+      __pyx_t_1 = PyNumber_Multiply(__pyx_t_6, __pyx_v_final); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 437, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __pyx_t_6 = PyNumber_Add(__pyx_v_the_op, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 436, __pyx_L1_error)
+      __pyx_t_6 = PyNumber_Add(__pyx_v_the_op, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 437, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF_SET(__pyx_v_the_op, __pyx_t_6);
@@ -11561,7 +11561,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
     }
     __pyx_L11:;
 
-    /* "qupy/dev/_algebra.pyx":421
+    /* "qupy/dev/_algebra.pyx":422
  *         the_op = None
  *         algebra = self.algebra
  *         for (k, v) in self.get_items():             # <<<<<<<<<<<<<<
@@ -11571,7 +11571,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":437
+  /* "qupy/dev/_algebra.pyx":438
  *             else:
  *                 the_op = the_op + complex(v)*final # ARRGGGHHH !!
  *         if the_op is None:             # <<<<<<<<<<<<<<
@@ -11582,7 +11582,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
   __pyx_t_11 = (__pyx_t_12 != 0);
   if (__pyx_t_11) {
 
-    /* "qupy/dev/_algebra.pyx":438
+    /* "qupy/dev/_algebra.pyx":439
  *                 the_op = the_op + complex(v)*final # ARRGGGHHH !!
  *         if the_op is None:
  *             the_op = 0.             # <<<<<<<<<<<<<<
@@ -11592,7 +11592,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
     __Pyx_INCREF(__pyx_float_0_);
     __Pyx_DECREF_SET(__pyx_v_the_op, __pyx_float_0_);
 
-    /* "qupy/dev/_algebra.pyx":437
+    /* "qupy/dev/_algebra.pyx":438
  *             else:
  *                 the_op = the_op + complex(v)*final # ARRGGGHHH !!
  *         if the_op is None:             # <<<<<<<<<<<<<<
@@ -11601,7 +11601,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
  */
   }
 
-  /* "qupy/dev/_algebra.pyx":439
+  /* "qupy/dev/_algebra.pyx":440
  *         if the_op is None:
  *             the_op = 0.
  *         return the_op             # <<<<<<<<<<<<<<
@@ -11613,7 +11613,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
   __pyx_r = __pyx_v_the_op;
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":418
+  /* "qupy/dev/_algebra.pyx":419
  *         return op
  * 
  *     def subs(self, rename):             # <<<<<<<<<<<<<<
@@ -11649,7 +11649,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_50subs(struct __pyx_obj_4
  * 
  *     cdef public Algebra algebra             # <<<<<<<<<<<<<<
  *     cdef public object children
- * #    cdef object value
+ * #    cdef double complex value
  */
 
 /* Python wrapper */
@@ -11753,8 +11753,8 @@ static int __pyx_pf_4qupy_3dev_8_algebra_6Tensor_7algebra_4__del__(struct __pyx_
  * 
  *     cdef public Algebra algebra
  *     cdef public object children             # <<<<<<<<<<<<<<
- * #    cdef object value
- *     cdef double complex value
+ * #    cdef double complex value
+ * #    cdef float complex value # does not help much with memory usage
  */
 
 /* Python wrapper */
@@ -12180,7 +12180,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_6Tensor_54__setstate_cython__(str
   return __pyx_r;
 }
 
-/* "qupy/dev/_algebra.pyx":444
+/* "qupy/dev/_algebra.pyx":445
  * 
  * 
  * def build_algebra(names, rel):             # <<<<<<<<<<<<<<
@@ -12220,11 +12220,11 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_1build_algebra(PyObject *__pyx_se
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_rel)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("build_algebra", 1, 2, 2, 1); __PYX_ERR(0, 444, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("build_algebra", 1, 2, 2, 1); __PYX_ERR(0, 445, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "build_algebra") < 0)) __PYX_ERR(0, 444, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "build_algebra") < 0)) __PYX_ERR(0, 445, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -12237,7 +12237,7 @@ static PyObject *__pyx_pw_4qupy_3dev_8_algebra_1build_algebra(PyObject *__pyx_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("build_algebra", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 444, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("build_algebra", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 445, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("qupy.dev._algebra.build_algebra", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -12283,19 +12283,19 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   __Pyx_RefNannySetupContext("build_algebra", 0);
   __Pyx_INCREF(__pyx_v_names);
 
-  /* "qupy/dev/_algebra.pyx":445
+  /* "qupy/dev/_algebra.pyx":446
  * 
  * def build_algebra(names, rel):
  *     names = list(names)             # <<<<<<<<<<<<<<
  *     assert names[0] == "I" # identity
  *     dim = len(names)
  */
-  __pyx_t_1 = PySequence_List(__pyx_v_names); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 445, __pyx_L1_error)
+  __pyx_t_1 = PySequence_List(__pyx_v_names); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF_SET(__pyx_v_names, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":446
+  /* "qupy/dev/_algebra.pyx":447
  * def build_algebra(names, rel):
  *     names = list(names)
  *     assert names[0] == "I" # identity             # <<<<<<<<<<<<<<
@@ -12304,58 +12304,58 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_names, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 446, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_names, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 447, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_n_s_I, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 446, __pyx_L1_error)
+    __pyx_t_2 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_n_s_I, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 447, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (unlikely(!__pyx_t_2)) {
       PyErr_SetNone(PyExc_AssertionError);
-      __PYX_ERR(0, 446, __pyx_L1_error)
+      __PYX_ERR(0, 447, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "qupy/dev/_algebra.pyx":447
+  /* "qupy/dev/_algebra.pyx":448
  *     names = list(names)
  *     assert names[0] == "I" # identity
  *     dim = len(names)             # <<<<<<<<<<<<<<
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE
  */
-  __pyx_t_3 = PyObject_Length(__pyx_v_names); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 447, __pyx_L1_error)
+  __pyx_t_3 = PyObject_Length(__pyx_v_names); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 448, __pyx_L1_error)
   __pyx_v_dim = __pyx_t_3;
 
-  /* "qupy/dev/_algebra.pyx":448
+  /* "qupy/dev/_algebra.pyx":449
  *     assert names[0] == "I" # identity
  *     dim = len(names)
  *     coefs = {} # structure coefs             # <<<<<<<<<<<<<<
  *     coefs[0, 0, 0] = ONE
  *     for i in range(1, dim):
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 448, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 449, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_coefs = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "qupy/dev/_algebra.pyx":449
+  /* "qupy/dev/_algebra.pyx":450
  *     dim = len(names)
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE             # <<<<<<<<<<<<<<
  *     for i in range(1, dim):
  *         coefs[0, i, i] = ONE
  */
-  if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_tuple__8, __pyx_float_1_0) < 0)) __PYX_ERR(0, 449, __pyx_L1_error)
+  if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_tuple__8, __pyx_float_1_0) < 0)) __PYX_ERR(0, 450, __pyx_L1_error)
 
-  /* "qupy/dev/_algebra.pyx":450
+  /* "qupy/dev/_algebra.pyx":451
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE
  *     for i in range(1, dim):             # <<<<<<<<<<<<<<
  *         coefs[0, i, i] = ONE
  *         coefs[i, 0, i] = ONE
  */
-  __pyx_t_1 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 450, __pyx_L1_error)
+  __pyx_t_1 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 451, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 450, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 451, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_int_1);
   __Pyx_GIVEREF(__pyx_int_1);
@@ -12363,16 +12363,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 450, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 451, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_4 = __pyx_t_1; __Pyx_INCREF(__pyx_t_4); __pyx_t_3 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 450, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 451, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 450, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 451, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -12380,17 +12380,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       if (likely(PyList_CheckExact(__pyx_t_4))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 450, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 451, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 450, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 451, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 450, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 451, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 450, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 451, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -12400,7 +12400,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 450, __pyx_L1_error)
+          else __PYX_ERR(0, 451, __pyx_L1_error)
         }
         break;
       }
@@ -12409,14 +12409,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":451
+    /* "qupy/dev/_algebra.pyx":452
  *     coefs[0, 0, 0] = ONE
  *     for i in range(1, dim):
  *         coefs[0, i, i] = ONE             # <<<<<<<<<<<<<<
  *         coefs[i, 0, i] = ONE
  * 
  */
-    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 451, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 452, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_GIVEREF(__pyx_int_0);
@@ -12427,17 +12427,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_INCREF(__pyx_v_i);
     __Pyx_GIVEREF(__pyx_v_i);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_v_i);
-    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_1, __pyx_float_1_0) < 0)) __PYX_ERR(0, 451, __pyx_L1_error)
+    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_1, __pyx_float_1_0) < 0)) __PYX_ERR(0, 452, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":452
+    /* "qupy/dev/_algebra.pyx":453
  *     for i in range(1, dim):
  *         coefs[0, i, i] = ONE
  *         coefs[i, 0, i] = ONE             # <<<<<<<<<<<<<<
  * 
  *     eqs = rel.split()
  */
-    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 452, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 453, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_i);
     __Pyx_GIVEREF(__pyx_v_i);
@@ -12448,10 +12448,10 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_INCREF(__pyx_v_i);
     __Pyx_GIVEREF(__pyx_v_i);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_v_i);
-    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_1, __pyx_float_1_0) < 0)) __PYX_ERR(0, 452, __pyx_L1_error)
+    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_1, __pyx_float_1_0) < 0)) __PYX_ERR(0, 453, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":450
+    /* "qupy/dev/_algebra.pyx":451
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE
  *     for i in range(1, dim):             # <<<<<<<<<<<<<<
@@ -12461,14 +12461,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":454
+  /* "qupy/dev/_algebra.pyx":455
  *         coefs[i, 0, i] = ONE
  * 
  *     eqs = rel.split()             # <<<<<<<<<<<<<<
  *     for eq in eqs:
  *         #print("eq:", eq)
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_rel, __pyx_n_s_split); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 454, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_rel, __pyx_n_s_split); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 455, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_6 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -12482,13 +12482,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   }
   __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 454, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 455, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_eqs = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":455
+  /* "qupy/dev/_algebra.pyx":456
  * 
  *     eqs = rel.split()
  *     for eq in eqs:             # <<<<<<<<<<<<<<
@@ -12499,26 +12499,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __pyx_t_4 = __pyx_v_eqs; __Pyx_INCREF(__pyx_t_4); __pyx_t_3 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_eqs); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 455, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_eqs); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 456, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 455, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 456, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_5)) {
       if (likely(PyList_CheckExact(__pyx_t_4))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 455, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 456, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 455, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 456, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 455, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 456, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 455, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 456, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -12528,7 +12528,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 455, __pyx_L1_error)
+          else __PYX_ERR(0, 456, __pyx_L1_error)
         }
         break;
       }
@@ -12537,14 +12537,14 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_eq, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "qupy/dev/_algebra.pyx":457
+    /* "qupy/dev/_algebra.pyx":458
  *     for eq in eqs:
  *         #print("eq:", eq)
  *         lhs, rhs = eq.split("=")             # <<<<<<<<<<<<<<
  *         assert lhs.count("*") == 1, repr(lhs)
  *         A, B = lhs.split("*")
  */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_eq, __pyx_n_s_split); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 457, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_eq, __pyx_n_s_split); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 458, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_7 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -12558,7 +12558,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     }
     __pyx_t_1 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_7, __pyx_kp_s__9) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_kp_s__9);
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 457, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 458, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if ((likely(PyTuple_CheckExact(__pyx_t_1))) || (PyList_CheckExact(__pyx_t_1))) {
@@ -12567,7 +12567,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 457, __pyx_L1_error)
+        __PYX_ERR(0, 458, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -12580,15 +12580,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_t_6);
       __Pyx_INCREF(__pyx_t_7);
       #else
-      __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 457, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 458, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 457, __pyx_L1_error)
+      __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 458, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       #endif
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_8 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 457, __pyx_L1_error)
+      __pyx_t_8 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 458, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -12596,7 +12596,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_GOTREF(__pyx_t_6);
       index = 1; __pyx_t_7 = __pyx_t_9(__pyx_t_8); if (unlikely(!__pyx_t_7)) goto __pyx_L7_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_7);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) __PYX_ERR(0, 457, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) __PYX_ERR(0, 458, __pyx_L1_error)
       __pyx_t_9 = NULL;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       goto __pyx_L8_unpacking_done;
@@ -12604,7 +12604,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __pyx_t_9 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 457, __pyx_L1_error)
+      __PYX_ERR(0, 458, __pyx_L1_error)
       __pyx_L8_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_lhs, __pyx_t_6);
@@ -12612,7 +12612,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_rhs, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":458
+    /* "qupy/dev/_algebra.pyx":459
  *         #print("eq:", eq)
  *         lhs, rhs = eq.split("=")
  *         assert lhs.count("*") == 1, repr(lhs)             # <<<<<<<<<<<<<<
@@ -12621,7 +12621,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
  */
     #ifndef CYTHON_WITHOUT_ASSERTIONS
     if (unlikely(!Py_OptimizeFlag)) {
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_lhs, __pyx_n_s_count); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 458, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_lhs, __pyx_n_s_count); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 459, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __pyx_t_6 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
@@ -12635,32 +12635,32 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       }
       __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_6, __pyx_kp_s__4) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_kp_s__4);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 458, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 459, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = __Pyx_PyInt_EqObjC(__pyx_t_1, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 458, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyInt_EqObjC(__pyx_t_1, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 459, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 458, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 459, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       if (unlikely(!__pyx_t_2)) {
-        __pyx_t_7 = PyObject_Repr(__pyx_v_lhs); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 458, __pyx_L1_error)
+        __pyx_t_7 = PyObject_Repr(__pyx_v_lhs); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 459, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         PyErr_SetObject(PyExc_AssertionError, __pyx_t_7);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __PYX_ERR(0, 458, __pyx_L1_error)
+        __PYX_ERR(0, 459, __pyx_L1_error)
       }
     }
     #endif
 
-    /* "qupy/dev/_algebra.pyx":459
+    /* "qupy/dev/_algebra.pyx":460
  *         lhs, rhs = eq.split("=")
  *         assert lhs.count("*") == 1, repr(lhs)
  *         A, B = lhs.split("*")             # <<<<<<<<<<<<<<
  *         i = names.index(A)
  *         j = names.index(B)
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_lhs, __pyx_n_s_split); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 459, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_lhs, __pyx_n_s_split); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 460, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_6 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -12674,7 +12674,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     }
     __pyx_t_7 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_6, __pyx_kp_s__4) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_kp_s__4);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 459, __pyx_L1_error)
+    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 460, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if ((likely(PyTuple_CheckExact(__pyx_t_7))) || (PyList_CheckExact(__pyx_t_7))) {
@@ -12683,7 +12683,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 459, __pyx_L1_error)
+        __PYX_ERR(0, 460, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -12696,15 +12696,15 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_t_1);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 459, __pyx_L1_error)
+      __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 460, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 459, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 460, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       #endif
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_8 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 459, __pyx_L1_error)
+      __pyx_t_8 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 460, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -12712,7 +12712,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_GOTREF(__pyx_t_1);
       index = 1; __pyx_t_6 = __pyx_t_9(__pyx_t_8); if (unlikely(!__pyx_t_6)) goto __pyx_L9_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) __PYX_ERR(0, 459, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 2) < 0) __PYX_ERR(0, 460, __pyx_L1_error)
       __pyx_t_9 = NULL;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       goto __pyx_L10_unpacking_done;
@@ -12720,7 +12720,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __pyx_t_9 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 459, __pyx_L1_error)
+      __PYX_ERR(0, 460, __pyx_L1_error)
       __pyx_L10_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_A, __pyx_t_1);
@@ -12728,39 +12728,12 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_XDECREF_SET(__pyx_v_B, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":460
+    /* "qupy/dev/_algebra.pyx":461
  *         assert lhs.count("*") == 1, repr(lhs)
  *         A, B = lhs.split("*")
  *         i = names.index(A)             # <<<<<<<<<<<<<<
  *         j = names.index(B)
  *         rhs, C = rhs[:-1], rhs[-1]
- */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 460, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_1 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
-      __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_6);
-      if (likely(__pyx_t_1)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-        __Pyx_INCREF(__pyx_t_1);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_6, function);
-      }
-    }
-    __pyx_t_7 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_1, __pyx_v_A) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_v_A);
-    __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 460, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_7);
-    __pyx_t_7 = 0;
-
-    /* "qupy/dev/_algebra.pyx":461
- *         A, B = lhs.split("*")
- *         i = names.index(A)
- *         j = names.index(B)             # <<<<<<<<<<<<<<
- *         rhs, C = rhs[:-1], rhs[-1]
- *         #print("rhs:", rhs)
  */
     __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 461, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
@@ -12774,38 +12747,65 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
         __Pyx_DECREF_SET(__pyx_t_6, function);
       }
     }
-    __pyx_t_7 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_1, __pyx_v_B) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_v_B);
+    __pyx_t_7 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_1, __pyx_v_A) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_v_A);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 461, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_7);
+    __pyx_t_7 = 0;
+
+    /* "qupy/dev/_algebra.pyx":462
+ *         A, B = lhs.split("*")
+ *         i = names.index(A)
+ *         j = names.index(B)             # <<<<<<<<<<<<<<
+ *         rhs, C = rhs[:-1], rhs[-1]
+ *         #print("rhs:", rhs)
+ */
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 462, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_1 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
+      __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_6);
+      if (likely(__pyx_t_1)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+        __Pyx_INCREF(__pyx_t_1);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_6, function);
+      }
+    }
+    __pyx_t_7 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_1, __pyx_v_B) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_v_B);
+    __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 462, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_XDECREF_SET(__pyx_v_j, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":462
+    /* "qupy/dev/_algebra.pyx":463
  *         i = names.index(A)
  *         j = names.index(B)
  *         rhs, C = rhs[:-1], rhs[-1]             # <<<<<<<<<<<<<<
  *         #print("rhs:", rhs)
  *         k = names.index(C)
  */
-    __pyx_t_7 = __Pyx_PyObject_GetSlice(__pyx_v_rhs, 0, -1L, NULL, NULL, &__pyx_slice__10, 0, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 462, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetSlice(__pyx_v_rhs, 0, -1L, NULL, NULL, &__pyx_slice__10, 0, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 463, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_rhs, -1L, long, 1, __Pyx_PyInt_From_long, 0, 1, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 462, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_rhs, -1L, long, 1, __Pyx_PyInt_From_long, 0, 1, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 463, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF_SET(__pyx_v_rhs, __pyx_t_7);
     __pyx_t_7 = 0;
     __Pyx_XDECREF_SET(__pyx_v_C, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":464
+    /* "qupy/dev/_algebra.pyx":465
  *         rhs, C = rhs[:-1], rhs[-1]
  *         #print("rhs:", rhs)
  *         k = names.index(C)             # <<<<<<<<<<<<<<
  *         val = None
  *         if not rhs:
  */
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 464, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_names, __pyx_n_s_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 465, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_1 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
@@ -12819,13 +12819,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     }
     __pyx_t_6 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_1, __pyx_v_C) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_C);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 464, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 465, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "qupy/dev/_algebra.pyx":465
+    /* "qupy/dev/_algebra.pyx":466
  *         #print("rhs:", rhs)
  *         k = names.index(C)
  *         val = None             # <<<<<<<<<<<<<<
@@ -12835,18 +12835,18 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_INCREF(Py_None);
     __Pyx_XDECREF_SET(__pyx_v_val, Py_None);
 
-    /* "qupy/dev/_algebra.pyx":466
+    /* "qupy/dev/_algebra.pyx":467
  *         k = names.index(C)
  *         val = None
  *         if not rhs:             # <<<<<<<<<<<<<<
  *             val = ONE
  *         elif rhs == "+":
  */
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_rhs); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 466, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_rhs); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 467, __pyx_L1_error)
     __pyx_t_10 = ((!__pyx_t_2) != 0);
     if (__pyx_t_10) {
 
-      /* "qupy/dev/_algebra.pyx":467
+      /* "qupy/dev/_algebra.pyx":468
  *         val = None
  *         if not rhs:
  *             val = ONE             # <<<<<<<<<<<<<<
@@ -12856,7 +12856,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_float_1_0);
       __Pyx_DECREF_SET(__pyx_v_val, __pyx_float_1_0);
 
-      /* "qupy/dev/_algebra.pyx":466
+      /* "qupy/dev/_algebra.pyx":467
  *         k = names.index(C)
  *         val = None
  *         if not rhs:             # <<<<<<<<<<<<<<
@@ -12866,17 +12866,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       goto __pyx_L11;
     }
 
-    /* "qupy/dev/_algebra.pyx":468
+    /* "qupy/dev/_algebra.pyx":469
  *         if not rhs:
  *             val = ONE
  *         elif rhs == "+":             # <<<<<<<<<<<<<<
  *             val = ONE
  *         elif rhs == "-":
  */
-    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s__5, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 468, __pyx_L1_error)
+    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s__5, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 469, __pyx_L1_error)
     if (__pyx_t_10) {
 
-      /* "qupy/dev/_algebra.pyx":469
+      /* "qupy/dev/_algebra.pyx":470
  *             val = ONE
  *         elif rhs == "+":
  *             val = ONE             # <<<<<<<<<<<<<<
@@ -12886,7 +12886,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_float_1_0);
       __Pyx_DECREF_SET(__pyx_v_val, __pyx_float_1_0);
 
-      /* "qupy/dev/_algebra.pyx":468
+      /* "qupy/dev/_algebra.pyx":469
  *         if not rhs:
  *             val = ONE
  *         elif rhs == "+":             # <<<<<<<<<<<<<<
@@ -12896,17 +12896,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       goto __pyx_L11;
     }
 
-    /* "qupy/dev/_algebra.pyx":470
+    /* "qupy/dev/_algebra.pyx":471
  *         elif rhs == "+":
  *             val = ONE
  *         elif rhs == "-":             # <<<<<<<<<<<<<<
  *             val = -ONE
  *         elif rhs == "1i*":
  */
-    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s__3, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 470, __pyx_L1_error)
+    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s__3, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 471, __pyx_L1_error)
     if (__pyx_t_10) {
 
-      /* "qupy/dev/_algebra.pyx":471
+      /* "qupy/dev/_algebra.pyx":472
  *             val = ONE
  *         elif rhs == "-":
  *             val = -ONE             # <<<<<<<<<<<<<<
@@ -12916,7 +12916,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       __Pyx_INCREF(__pyx_float_neg_1_0);
       __Pyx_DECREF_SET(__pyx_v_val, __pyx_float_neg_1_0);
 
-      /* "qupy/dev/_algebra.pyx":470
+      /* "qupy/dev/_algebra.pyx":471
  *         elif rhs == "+":
  *             val = ONE
  *         elif rhs == "-":             # <<<<<<<<<<<<<<
@@ -12926,29 +12926,29 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       goto __pyx_L11;
     }
 
-    /* "qupy/dev/_algebra.pyx":472
+    /* "qupy/dev/_algebra.pyx":473
  *         elif rhs == "-":
  *             val = -ONE
  *         elif rhs == "1i*":             # <<<<<<<<<<<<<<
  *             val = 1j
  *         elif rhs == "-1i*":
  */
-    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s_1i, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 472, __pyx_L1_error)
+    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s_1i, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 473, __pyx_L1_error)
     if (__pyx_t_10) {
 
-      /* "qupy/dev/_algebra.pyx":473
+      /* "qupy/dev/_algebra.pyx":474
  *             val = -ONE
  *         elif rhs == "1i*":
  *             val = 1j             # <<<<<<<<<<<<<<
  *         elif rhs == "-1i*":
  *             val = -1j
  */
-      __pyx_t_6 = PyComplex_FromDoubles(0.0, 1.0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 473, __pyx_L1_error)
+      __pyx_t_6 = PyComplex_FromDoubles(0.0, 1.0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 474, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF_SET(__pyx_v_val, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "qupy/dev/_algebra.pyx":472
+      /* "qupy/dev/_algebra.pyx":473
  *         elif rhs == "-":
  *             val = -ONE
  *         elif rhs == "1i*":             # <<<<<<<<<<<<<<
@@ -12958,17 +12958,17 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       goto __pyx_L11;
     }
 
-    /* "qupy/dev/_algebra.pyx":474
+    /* "qupy/dev/_algebra.pyx":475
  *         elif rhs == "1i*":
  *             val = 1j
  *         elif rhs == "-1i*":             # <<<<<<<<<<<<<<
  *             val = -1j
  *         else:
  */
-    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s_1i_2, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 474, __pyx_L1_error)
+    __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_rhs, __pyx_kp_s_1i_2, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 475, __pyx_L1_error)
     if (__pyx_t_10) {
 
-      /* "qupy/dev/_algebra.pyx":475
+      /* "qupy/dev/_algebra.pyx":476
  *             val = 1j
  *         elif rhs == "-1i*":
  *             val = -1j             # <<<<<<<<<<<<<<
@@ -12976,12 +12976,12 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
  *             assert 0, repr(eq)
  */
       __pyx_t_11 = __Pyx_c_neg_double(__pyx_t_double_complex_from_parts(0, 1.0));
-      __pyx_t_6 = __pyx_PyComplex_FromComplex(__pyx_t_11); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 475, __pyx_L1_error)
+      __pyx_t_6 = __pyx_PyComplex_FromComplex(__pyx_t_11); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 476, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF_SET(__pyx_v_val, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "qupy/dev/_algebra.pyx":474
+      /* "qupy/dev/_algebra.pyx":475
  *         elif rhs == "1i*":
  *             val = 1j
  *         elif rhs == "-1i*":             # <<<<<<<<<<<<<<
@@ -12991,7 +12991,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       goto __pyx_L11;
     }
 
-    /* "qupy/dev/_algebra.pyx":477
+    /* "qupy/dev/_algebra.pyx":478
  *             val = -1j
  *         else:
  *             assert 0, repr(eq)             # <<<<<<<<<<<<<<
@@ -13002,25 +13002,25 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
       #ifndef CYTHON_WITHOUT_ASSERTIONS
       if (unlikely(!Py_OptimizeFlag)) {
         if (unlikely(!0)) {
-          __pyx_t_6 = PyObject_Repr(__pyx_v_eq); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 477, __pyx_L1_error)
+          __pyx_t_6 = PyObject_Repr(__pyx_v_eq); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 478, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           PyErr_SetObject(PyExc_AssertionError, __pyx_t_6);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __PYX_ERR(0, 477, __pyx_L1_error)
+          __PYX_ERR(0, 478, __pyx_L1_error)
         }
       }
       #endif
     }
     __pyx_L11:;
 
-    /* "qupy/dev/_algebra.pyx":478
+    /* "qupy/dev/_algebra.pyx":479
  *         else:
  *             assert 0, repr(eq)
  *         oldval = coefs.get((i, j, k))             # <<<<<<<<<<<<<<
  *         assert oldval is None or oldval==val
  *         coefs[i, j, k] = val
  */
-    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 478, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 479, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_v_i);
     __Pyx_GIVEREF(__pyx_v_i);
@@ -13031,13 +13031,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_INCREF(__pyx_v_k);
     __Pyx_GIVEREF(__pyx_v_k);
     PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_v_k);
-    __pyx_t_7 = __Pyx_PyDict_GetItemDefault(__pyx_v_coefs, __pyx_t_6, Py_None); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 478, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyDict_GetItemDefault(__pyx_v_coefs, __pyx_t_6, Py_None); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 479, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_XDECREF_SET(__pyx_v_oldval, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":479
+    /* "qupy/dev/_algebra.pyx":480
  *             assert 0, repr(eq)
  *         oldval = coefs.get((i, j, k))
  *         assert oldval is None or oldval==val             # <<<<<<<<<<<<<<
@@ -13053,26 +13053,26 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
         __pyx_t_10 = __pyx_t_12;
         goto __pyx_L12_bool_binop_done;
       }
-      __pyx_t_7 = PyObject_RichCompare(__pyx_v_oldval, __pyx_v_val, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 479, __pyx_L1_error)
-      __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_12 < 0)) __PYX_ERR(0, 479, __pyx_L1_error)
+      __pyx_t_7 = PyObject_RichCompare(__pyx_v_oldval, __pyx_v_val, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 480, __pyx_L1_error)
+      __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_12 < 0)) __PYX_ERR(0, 480, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_10 = __pyx_t_12;
       __pyx_L12_bool_binop_done:;
       if (unlikely(!__pyx_t_10)) {
         PyErr_SetNone(PyExc_AssertionError);
-        __PYX_ERR(0, 479, __pyx_L1_error)
+        __PYX_ERR(0, 480, __pyx_L1_error)
       }
     }
     #endif
 
-    /* "qupy/dev/_algebra.pyx":480
+    /* "qupy/dev/_algebra.pyx":481
  *         oldval = coefs.get((i, j, k))
  *         assert oldval is None or oldval==val
  *         coefs[i, j, k] = val             # <<<<<<<<<<<<<<
  * 
  *     algebra = Algebra(dim, names, coefs)
  */
-    __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 480, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 481, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_INCREF(__pyx_v_i);
     __Pyx_GIVEREF(__pyx_v_i);
@@ -13083,10 +13083,10 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
     __Pyx_INCREF(__pyx_v_k);
     __Pyx_GIVEREF(__pyx_v_k);
     PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_k);
-    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_7, __pyx_v_val) < 0)) __PYX_ERR(0, 480, __pyx_L1_error)
+    if (unlikely(PyDict_SetItem(__pyx_v_coefs, __pyx_t_7, __pyx_v_val) < 0)) __PYX_ERR(0, 481, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-    /* "qupy/dev/_algebra.pyx":455
+    /* "qupy/dev/_algebra.pyx":456
  * 
  *     eqs = rel.split()
  *     for eq in eqs:             # <<<<<<<<<<<<<<
@@ -13096,16 +13096,16 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":482
+  /* "qupy/dev/_algebra.pyx":483
  *         coefs[i, j, k] = val
  * 
  *     algebra = Algebra(dim, names, coefs)             # <<<<<<<<<<<<<<
  *     return algebra
  * 
  */
-  __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 482, __pyx_L1_error)
+  __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 483, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 482, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 483, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_4);
@@ -13116,13 +13116,13 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   __Pyx_GIVEREF(__pyx_v_coefs);
   PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_v_coefs);
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Algebra), __pyx_t_7, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 482, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4qupy_3dev_8_algebra_Algebra), __pyx_t_7, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 483, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_v_algebra = ((struct __pyx_obj_4qupy_3dev_8_algebra_Algebra *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "qupy/dev/_algebra.pyx":483
+  /* "qupy/dev/_algebra.pyx":484
  * 
  *     algebra = Algebra(dim, names, coefs)
  *     return algebra             # <<<<<<<<<<<<<<
@@ -13134,7 +13134,7 @@ static PyObject *__pyx_pf_4qupy_3dev_8_algebra_build_algebra(CYTHON_UNUSED PyObj
   __pyx_r = ((PyObject *)__pyx_v_algebra);
   goto __pyx_L0;
 
-  /* "qupy/dev/_algebra.pyx":444
+  /* "qupy/dev/_algebra.pyx":445
  * 
  * 
  * def build_algebra(names, rel):             # <<<<<<<<<<<<<<
@@ -15666,7 +15666,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 39, __pyx_L1_error)
   __pyx_builtin_AttributeError = __Pyx_GetBuiltinName(__pyx_n_s_AttributeError); if (!__pyx_builtin_AttributeError) __PYX_ERR(0, 80, __pyx_L1_error)
-  __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(0, 302, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -15687,50 +15687,50 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "qupy/dev/_algebra.pyx":137
+  /* "qupy/dev/_algebra.pyx":138
  *             ss.append(s)
  *         ss = '+'.join(ss) or "0"
  *         ss = ss.replace("+-", "-")             # <<<<<<<<<<<<<<
  *         return ss
  * 
  */
-  __pyx_tuple__7 = PyTuple_Pack(2, __pyx_kp_s__6, __pyx_kp_s__3); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_tuple__7 = PyTuple_Pack(2, __pyx_kp_s__6, __pyx_kp_s__3); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
 
-  /* "qupy/dev/_algebra.pyx":449
+  /* "qupy/dev/_algebra.pyx":450
  *     dim = len(names)
  *     coefs = {} # structure coefs
  *     coefs[0, 0, 0] = ONE             # <<<<<<<<<<<<<<
  *     for i in range(1, dim):
  *         coefs[0, i, i] = ONE
  */
-  __pyx_tuple__8 = PyTuple_Pack(3, __pyx_int_0, __pyx_int_0, __pyx_int_0); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __pyx_tuple__8 = PyTuple_Pack(3, __pyx_int_0, __pyx_int_0, __pyx_int_0); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 450, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
 
-  /* "qupy/dev/_algebra.pyx":462
+  /* "qupy/dev/_algebra.pyx":463
  *         i = names.index(A)
  *         j = names.index(B)
  *         rhs, C = rhs[:-1], rhs[-1]             # <<<<<<<<<<<<<<
  *         #print("rhs:", rhs)
  *         k = names.index(C)
  */
-  __pyx_slice__10 = PySlice_New(Py_None, __pyx_int_neg_1, Py_None); if (unlikely(!__pyx_slice__10)) __PYX_ERR(0, 462, __pyx_L1_error)
+  __pyx_slice__10 = PySlice_New(Py_None, __pyx_int_neg_1, Py_None); if (unlikely(!__pyx_slice__10)) __PYX_ERR(0, 463, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice__10);
   __Pyx_GIVEREF(__pyx_slice__10);
 
-  /* "qupy/dev/_algebra.pyx":444
+  /* "qupy/dev/_algebra.pyx":445
  * 
  * 
  * def build_algebra(names, rel):             # <<<<<<<<<<<<<<
  *     names = list(names)
  *     assert names[0] == "I" # identity
  */
-  __pyx_tuple__11 = PyTuple_Pack(17, __pyx_n_s_names, __pyx_n_s_rel, __pyx_n_s_dim, __pyx_n_s_coefs, __pyx_n_s_i, __pyx_n_s_eqs, __pyx_n_s_eq, __pyx_n_s_lhs, __pyx_n_s_rhs, __pyx_n_s_A, __pyx_n_s_B, __pyx_n_s_j, __pyx_n_s_C, __pyx_n_s_k, __pyx_n_s_val, __pyx_n_s_oldval, __pyx_n_s_algebra); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(17, __pyx_n_s_names, __pyx_n_s_rel, __pyx_n_s_dim, __pyx_n_s_coefs, __pyx_n_s_i, __pyx_n_s_eqs, __pyx_n_s_eq, __pyx_n_s_lhs, __pyx_n_s_rhs, __pyx_n_s_A, __pyx_n_s_B, __pyx_n_s_j, __pyx_n_s_C, __pyx_n_s_k, __pyx_n_s_val, __pyx_n_s_oldval, __pyx_n_s_algebra); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 445, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(2, 0, 17, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_algebra_pyx, __pyx_n_s_build_algebra, 444, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(2, 0, 17, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_algebra_pyx, __pyx_n_s_build_algebra, 445, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 445, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_Algebra(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
@@ -15845,7 +15845,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_1_genexpr.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_4qupy_3dev_8_algebra___pyx_scope_struct_1_genexpr = &__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_1_genexpr;
-  if (PyType_Ready(&__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_2___str__) < 0) __PYX_ERR(0, 119, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_2___str__) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_2___str__.tp_print = 0;
   #endif
@@ -15853,7 +15853,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_2___str__.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_4qupy_3dev_8_algebra___pyx_scope_struct_2___str__ = &__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_2___str__;
-  if (PyType_Ready(&__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_3_genexpr) < 0) __PYX_ERR(0, 126, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_3_genexpr) < 0) __PYX_ERR(0, 127, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_3_genexpr.tp_print = 0;
   #endif
@@ -15861,7 +15861,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_3_genexpr.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_4qupy_3dev_8_algebra___pyx_scope_struct_3_genexpr = &__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_3_genexpr;
-  if (PyType_Ready(&__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_4_get_terms) < 0) __PYX_ERR(0, 140, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_4_get_terms) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_4_get_terms.tp_print = 0;
   #endif
@@ -15869,7 +15869,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_4_get_terms.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_4qupy_3dev_8_algebra___pyx_scope_struct_4_get_terms = &__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_4_get_terms;
-  if (PyType_Ready(&__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_5_genexpr) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_5_genexpr) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_5_genexpr.tp_print = 0;
   #endif
@@ -15877,7 +15877,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_5_genexpr.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_4qupy_3dev_8_algebra___pyx_scope_struct_5_genexpr = &__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_5_genexpr;
-  if (PyType_Ready(&__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_6_norm) < 0) __PYX_ERR(0, 300, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_6_norm) < 0) __PYX_ERR(0, 301, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_6_norm.tp_print = 0;
   #endif
@@ -15885,7 +15885,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_6_norm.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_4qupy_3dev_8_algebra___pyx_scope_struct_6_norm = &__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_6_norm;
-  if (PyType_Ready(&__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_7_genexpr) < 0) __PYX_ERR(0, 301, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_7_genexpr) < 0) __PYX_ERR(0, 302, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_4qupy_3dev_8_algebra___pyx_scope_struct_7_genexpr.tp_print = 0;
   #endif
@@ -16168,16 +16168,16 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "qupy/dev/_algebra.pyx":444
+  /* "qupy/dev/_algebra.pyx":445
  * 
  * 
  * def build_algebra(names, rel):             # <<<<<<<<<<<<<<
  *     names = list(names)
  *     assert names[0] == "I" # identity
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4qupy_3dev_8_algebra_1build_algebra, NULL, __pyx_n_s_qupy_dev__algebra); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4qupy_3dev_8_algebra_1build_algebra, NULL, __pyx_n_s_qupy_dev__algebra); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 445, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_build_algebra, __pyx_t_2) < 0) __PYX_ERR(0, 444, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_build_algebra, __pyx_t_2) < 0) __PYX_ERR(0, 445, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "(tree fragment)":1

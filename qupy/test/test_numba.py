@@ -1926,28 +1926,33 @@ def main_identities():
     assert H*H==I
     keys = list(ops.keys())
 
-    lhs = T * X * T.inverse
-    #print(lhs.todense())
-    #print(space.opstr(lhs))
-
-    words = []
-    found = []
-    for N in range(1, 7):
-      for name in cross([keys]*N):
-        op = reduce(mul, [ops[c] for c in name])
-        words.append((name, op))
-        if op == lhs:
-            print(".".join(name))
-            #return
-        #if op not in found:
-        #    found.append(op)
-        #    print(len(found))
-
-    return
+    if 0:
+        lhs = T * X * T.inverse
+        #print(lhs.todense())
+        #print(space.opstr(lhs))
+    
+        words = []
+        found = []
+        for N in range(1, 7):
+          for name in cross([keys]*N):
+            op = reduce(mul, [ops[c] for c in name])
+            words.append((name, op))
+            if op == lhs:
+                print(".".join(name))
+                #return
+            #if op not in found:
+            #    found.append(op)
+            #    print(len(found))
+    
+        return
 
     n = 2
     space = Space(n)
     CZ = space.make_control(Gate.Z, 0, 1)
+    CX = space.make_control(Gate.X, 0, 1)
+    SWAP = space.make_control(Gate.X, 0, 1) * space.make_control(Gate.X, 1, 0)
+    #print(space.opstr(SWAP))
+
     CS = space.make_control(Gate.S, 0, 1)
     assert CS == space.make_control(Gate.S, 1, 0)
     assert CS.inverse != CS

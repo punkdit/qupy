@@ -95,7 +95,8 @@ cdef class Tensor:
 
     cdef public Algebra algebra
     cdef public object children
-#    cdef object value
+#    cdef double complex value
+#    cdef float complex value # does not help with memory usage or speed
     cdef double complex value
     cdef object _keys, _values, _items
 
