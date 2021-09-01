@@ -1774,10 +1774,13 @@ def test_bring():
     #code.check() # too big...
 
     showmem("test_bring")
-    return
+    #return
 
     P = code.P
-    #assert P == P*P # too big...
+    assert P == P*P # too big...
+
+    if S is None:
+        return
 
     fold = code.I
     for i, j in enumerate(perm):
