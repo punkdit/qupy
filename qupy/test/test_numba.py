@@ -13,6 +13,12 @@ from random import shuffle, seed, choice
 from functools import reduce
 from operator import mul, matmul
 
+import psutil
+proc = psutil.Process()
+def showmem(desc):
+    print(desc)
+    print(proc.memory_info())
+
 import numpy
 import numba as nb
 
@@ -111,9 +117,30 @@ class Operator(object):
             print()
         return True
 
+    def __eq_fast_big__(lhs, rhs):
+        #return numpy.allclose(lhs.todense(), rhs.todense())
+        n = lhs.n
+        N = 2**n
+        u = numpy.random.normal(size=(N,))
+        showmem("__eq_fast_big__: random")
+        u = u.astype(scalar)
+        showmem("__eq_fast_big__: lhs")
+        lhs = lhs(u)
+        showmem("__eq_fast_big__: rhs")
+        rhs = rhs(u)
+        showmem("__eq_fast_big__: allclose")
+        M = 2**24
+        idx = 0
+        close = True
+        while idx < N and close:
+            close = close and numpy.allclose(lhs[idx:idx+M], rhs[idx:idx+M])
+            idx += M
+        return close
+
     def __eq_fast__(lhs, rhs):
         assert lhs.n == rhs.n
-        #return numpy.allclose(lhs.todense(), rhs.todense())
+        if lhs.n > 24:
+            return lhs.__eq_fast_big__(rhs) # <--- return
         n = lhs.n
         N = 2**n
         u = numpy.random.normal(size=(N,))
@@ -1745,6 +1772,9 @@ def test_bring():
 
     print(code.P == code1.P)
     #code.check() # too big...
+
+    showmem("test_bring")
+    return
 
     P = code.P
     #assert P == P*P # too big...
