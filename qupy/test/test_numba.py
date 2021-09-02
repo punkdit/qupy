@@ -1819,7 +1819,7 @@ def test_bring():
             if i < j:
                 fold *= code.make_cz(i, j)
             elif i==j:
-                op = [S, Si][idxs[count]]
+                op = [S, Sd][idxs[count]]
                 count += 1
                 fold *= code.make_tensor1(op, i)
     
