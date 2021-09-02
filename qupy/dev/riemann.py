@@ -201,7 +201,7 @@ def main():
             bitmap.append( fn[i+mx+mz]-mx-mz )
         #print(bitmap)
         fixed = [i for i in range(n) if bitmap[i]==i]
-        if len(fixed)==6:
+        if len(fixed)==2:
             #print(bitmap)
             #print(len(fixed), end=" ")
             break
