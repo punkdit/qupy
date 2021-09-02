@@ -536,8 +536,7 @@ class BinOp(Operator):
         self.rhs = rhs
 
 class AssocOp(Operator):
-    def __init__(self, *_items, inverse=None, **kw):
-        assert inverse is None
+    def __init__(self, *_items, **kw):
         items = []
         for item in _items:
             if isinstance(item, self.__class__):
@@ -566,20 +565,14 @@ class SubOp(BinOp):
 
 
 class MulOp(AssocOp):
-    # TODO: fix inverse
-
-#    def __init__(self, lhs, rhs, inverse=None):
-#        if inverse is None and lhs.inverse is not None and rhs.inverse is not None:
-#            inverse = MulOp(rhs.inverse, lhs.inverse, self)
-#        #elif inverse is None:
-#        #    print("MulOp: missing inverse")
-#        #    assert 0, (type(lhs), type(rhs))
-#        BinOp.__init__(self, lhs, rhs, inverse)
-
-#    def __call__(self, u):
-#        u = self.rhs(u)
-#        u = self.lhs(u)
-#        return u
+    def __init__(self, *items, **kw):
+        AssocOp.__init__(self, *items, **kw)
+        if self.inverse is not None:
+            return
+        inverse = [op.inverse for op in reversed(self.items) if op.inverse is not None]
+        if len(inverse) < len(items):
+            return
+        self.inverse = MulOp(*inverse, inverse=self)
 
     def __call__(self, u):
         v = u
@@ -746,7 +739,7 @@ def test():
     for op in [ZI, IZ, XI, IX, ZZ, XX]:
         assert op*op == II
         assert op - 2*op == -op
-        assert op.inverse is not None
+        assert op.inverse is not None, str(op)
         assert op*op.inverse == II
     assert ZI*XI != XI*ZI
     assert ZI*XI == -(XI*ZI) 
@@ -1791,6 +1784,7 @@ def test_bring():
     #return
 
     P = code.P
+    P1 = code1.P
     m = code.mx + code.mz
     #print( (2**m)*P == P*P ) # big...
 
@@ -1807,7 +1801,7 @@ def test_bring():
     print(fold)
 
     lhs = fold*P
-    rhs = P*fold
+    rhs = P1*fold
     print("fold:", lhs==rhs)
 
 
