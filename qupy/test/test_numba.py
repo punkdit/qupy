@@ -1680,6 +1680,7 @@ def main_self_dual():
                 A = B if A is None else B*A
             print(".", end="")
             if A*code.P == code.P*A:
+                print("found", end="")
                 break
         else:
             assert 0
@@ -1737,6 +1738,7 @@ def main_pair():
     
 
 def test_bring():
+
     Hz = parse("""
     11111.........................
     1....1111.....................
@@ -1768,20 +1770,54 @@ def test_bring():
     Hz = remove_dependent(Hz)
     Hx = remove_dependent(Hx)
 
-    code = CSSCode(Hz, Hx)
-
-#    # fixes 6 qubits
-#    perm = (0, 1, 11, 21, 8, 19, 25, 7, 4, 23, 14, 2, 12,
-#        26, 10, 22, 27, 20, 29, 5, 17, 3, 15, 9, 24, 6, 13, 16, 28, 18)
+    # fixes 6 qubits
+    perm = (0, 1, 11, 21, 8, 19, 25, 7, 4, 23, 14, 2, 12,
+        26, 10, 22, 27, 20, 29, 5, 17, 3, 15, 9, 24, 6, 13, 16, 28, 18)
 
     # fixes 2 qubits
-    perm = (0, 4, 19, 25, 7, 11, 21, 8, 1, 20, 16, 3, 18, 
-        22, 10, 26, 27, 23, 28, 6, 15, 2, 17, 13, 24, 5, 9, 14, 29, 12)
+    #perm = (0, 4, 19, 25, 7, 11, 21, 8, 1, 20, 16, 3, 18, 
+    #    22, 10, 26, 27, 23, 28, 6, 15, 2, 17, 13, 24, 5, 9, 14, 29, 12)
+
+    find_fold(Hx, Hz, perm)
 
 
-    Hz1 = Hz[:, perm]
-    Hx1 = Hx[:, perm]
-    code1 = CSSCode(Hx1, Hz1)
+def test_toric():
+    """
+    Moussa transverse S gate on 8-qubit toric code
+
+    qubits are numbered starting from 1:
+
+    +-1-+-2-
+    |   |
+    3   4
+    |   |
+    +-5-+-6-
+    |   |
+    7   8
+    |   |
+
+(I @ S @ I @ ~S @ S @ I @ ~S @ I)*CZ(1,6)*CZ(3,8)
+
+
+    """
+    Hz = parse("1.111... .111.1.. 1...1.11")
+    Hx = parse("111...1. 11.1...1 ..1.111.")
+
+    #       1  2  3  4  5  6  7  8
+    perm = (5, 1, 7, 3, 4, 0, 6, 2)
+
+    find_fold(Hx, Hz, perm)
+
+    
+
+def find_fold(Hz, Hx, perm):
+
+    code = CSSCode(Hz, Hx)
+
+
+    #Hz1 = Hz[:, perm]
+    #Hx1 = Hx[:, perm]
+    #code1 = CSSCode(Hx1, Hz1)
 
     print(code)
 
@@ -1792,7 +1828,7 @@ def test_bring():
     #return
 
     P = code.P
-    P1 = code1.P
+    #P1 = code1.P
     m = code.mx + code.mz
     #print( (2**m)*P == P*P ) # big...
 
@@ -1824,7 +1860,7 @@ def test_bring():
                 fold *= code.make_tensor1(op, i)
     
         print("idxs =", idxs)
-        print("fold = ", fold)
+        print("fold =", fold)
     
         lhs = fold*P
         rhs = P*fold
