@@ -1865,7 +1865,10 @@ def find_fold(Hz, Hx, perm):
         lhs = fold*P
         rhs = P*fold
 
-        print("lhs==rhs:", lhs==rhs)
+        found = lhs == rhs
+        print("found:", lhs==rhs)
+        if found:
+            break
 
 
 
