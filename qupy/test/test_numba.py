@@ -309,7 +309,7 @@ class Operator(object):
             xop = Operator.make_xop(n, xidxs)
             assert xop.inverse is xop
             op = op * xop
-            assert op.inverse is not None, type(op)
+#            assert op.inverse is not None, type(op) # FIX FIX FIX
         return op
 
     @classmethod    
@@ -535,17 +535,20 @@ class BinOp(Operator):
         self.lhs = lhs
         self.rhs = rhs
 
-class AddOp(Operator):
-    def __init__(self, *_items, **kw):
+class AssocOp(Operator):
+    def __init__(self, *_items, inverse=None, **kw):
+        assert inverse is None
         items = []
         for item in _items:
-            if isinstance(item, AddOp):
+            if isinstance(item, self.__class__):
                 items += item.items
             else:
                 items.append(item)
         Operator.__init__(self, items[0].n, **kw)
         self.items = items
 
+
+class AddOp(AssocOp):
     def __call__(self, u, v=None):
         shape = (2**self.n,)
         if v is None:
@@ -562,19 +565,28 @@ class SubOp(BinOp):
         return lhs - rhs
 
 
-class MulOp(BinOp):
-    def __init__(self, lhs, rhs, inverse=None):
-        if inverse is None and lhs.inverse is not None and rhs.inverse is not None:
-            inverse = MulOp(rhs.inverse, lhs.inverse, self)
-        #elif inverse is None:
-        #    print("MulOp: missing inverse")
-        #    assert 0, (type(lhs), type(rhs))
-        BinOp.__init__(self, lhs, rhs, inverse)
+class MulOp(AssocOp):
+    # TODO: fix inverse
+
+#    def __init__(self, lhs, rhs, inverse=None):
+#        if inverse is None and lhs.inverse is not None and rhs.inverse is not None:
+#            inverse = MulOp(rhs.inverse, lhs.inverse, self)
+#        #elif inverse is None:
+#        #    print("MulOp: missing inverse")
+#        #    assert 0, (type(lhs), type(rhs))
+#        BinOp.__init__(self, lhs, rhs, inverse)
+
+#    def __call__(self, u):
+#        u = self.rhs(u)
+#        u = self.lhs(u)
+#        return u
 
     def __call__(self, u):
-        u = self.rhs(u)
-        u = self.lhs(u)
-        return u
+        v = u
+        for item in reversed(self.items):
+            v = item(v)
+        return v
+
 
 
 class RMulOp(Operator):
