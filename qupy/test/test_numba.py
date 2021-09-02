@@ -18,6 +18,8 @@ proc = psutil.Process()
 def showmem(desc):
     print(desc)
     print(proc.memory_info())
+def showmem(desc):
+    pass
 
 import numpy
 import numba as nb
@@ -86,7 +88,7 @@ class Operator(object):
 #    def inverse(self):
 
     def __str__(self):
-        return "%s(%d)"%(self.__class__.__name__, self.n)
+        return "%s(n=%d)"%(self.__class__.__name__, self.n)
 
     def __call__(self, v, u=None):
         try:
@@ -1788,21 +1790,41 @@ def test_bring():
     m = code.mx + code.mz
     #print( (2**m)*P == P*P ) # big...
 
-    if S is None:
-        return
-
-    fold = code.I
+    print("fold =", end=" ")
+    fixed = []
     for i, j in enumerate(perm):
         if i < j:
-            fold *= code.make_cz(i, j)
+            print("CZ(%d, %d) *"%(i, j), end=" ")
         elif i==j:
-            fold *= code.make_tensor1(S, i)
+            print("S(%d) *"%(i,), end=" ")
+            fixed.append(i)
+    print()
 
-    print(fold)
+    if S is None:
+        print("no S gate found.")
+        return
 
-    lhs = fold*P
-    rhs = P1*fold
-    print("fold:", lhs==rhs)
+    opis = [(0, 1)]*len(fixed)
+    for idxs in cross(opis):
+
+        count = 0
+        fold = code.I
+        for i, j in enumerate(perm):
+            if i < j:
+                fold *= code.make_cz(i, j)
+            elif i==j:
+                op = [S, Si][idxs[count]]
+                count += 1
+                fold *= code.make_tensor1(op, i)
+    
+        print("idxs =", idxs)
+        print("fold = ", fold)
+    
+        lhs = fold*P
+        rhs = P*fold
+
+        print("lhs==rhs:", lhs==rhs)
+
 
 
 
