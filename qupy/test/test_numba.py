@@ -546,10 +546,12 @@ class AddOp(Operator):
         Operator.__init__(self, items[0].n, **kw)
         self.items = items
 
-    def __call__(self, u):
-        v = 0
+    def __call__(self, u, v=None):
+        shape = (2**self.n,)
+        if v is None:
+            v = numpy.zeros(shape, dtype=self.dtype)
         for item in self.items:
-            v = v + item(u)
+            v += item(u)
         return v
 
 
