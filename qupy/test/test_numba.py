@@ -8,6 +8,7 @@ Use numba accelerated operators.
 
 """
 
+import sys
 import math
 from random import shuffle, seed, choice
 from functools import reduce
@@ -1325,7 +1326,6 @@ class CSSCode(object):
                     assert a*op == op*a, (i, j)
                     #print( a*op == op*a, (i, j) , end=" ")
                 #print()
-    
         #print("CSSCode.check(): OK")
 
     def __add__(self, other):
@@ -1678,7 +1678,7 @@ def main_self_dual():
                 else:
                     B = code.make_control(Z, i, j)
                 A = B if A is None else B*A
-            print(".", end="")
+            print(".", end="", flush=True)
             if A*code.P == code.P*A:
                 print("found", end="")
                 break
@@ -1770,6 +1770,27 @@ def test_bring():
     Hz = remove_dependent(Hz)
     Hx = remove_dependent(Hx)
 
+    Lx = parse("""
+    ...........11........1.1..1..1
+    ..............11.......11..1.1
+    ................1111.1..1.1111
+    ..................11.111...11.
+    .....................11..11.11
+    .......................11.1111
+    .........................11.1.
+    ...........................111
+    """)
+    Lz = parse("""
+    .....1....1.....11..1...1.111.
+    .........11.....1111.....1.11.
+    ..........1..1.11.11.....1.11.
+    ......1......1..1.1...........
+    ..........1..1..1.1.....1.1.11
+    ...............1.1......1.....
+    ................1..11...111.11
+    .................11.1...1..1..
+    """)
+
     # fixes 6 qubits
     perm = (0, 1, 11, 21, 8, 19, 25, 7, 4, 23, 14, 2, 12,
         26, 10, 22, 27, 20, 29, 5, 17, 3, 15, 9, 24, 6, 13, 16, 28, 18)
@@ -1778,7 +1799,7 @@ def test_bring():
     #perm = (0, 4, 19, 25, 7, 11, 21, 8, 1, 20, 16, 3, 18, 
     #    22, 10, 26, 27, 23, 28, 6, 15, 2, 17, 13, 24, 5, 9, 14, 29, 12)
 
-    find_fold(Hx, Hz, perm)
+    find_fold(Hx, Hz, Lx, Lz, perm, idxs=(0,1,1,0,1,0))
 
 
 def test_toric():
@@ -1796,24 +1817,28 @@ def test_toric():
     7   8
     |   |
 
-(I @ S @ I @ ~S @ S @ I @ ~S @ I)*CZ(1,6)*CZ(3,8)
-
+    (I @ S @ I @ ~S @ S @ I @ ~S @ I)*CZ(1,6)*CZ(3,8)
 
     """
     Hz = parse("1.111... .111.1.. 1...1.11")
     Hx = parse("111...1. 11.1...1 ..1.111.")
 
+    Lx = parse(".1...1..  ......11")
+    Lz = parse("....11..  ...1...1")
+
     #       1  2  3  4  5  6  7  8
     perm = (5, 1, 7, 3, 4, 0, 6, 2)
 
-    find_fold(Hx, Hz, perm)
+    find_fold(Hx, Hz, Lx, Lz, perm, idxs=(0,1,0,1), check=True)
 
     
 
-def find_fold(Hz, Hx, perm):
+def find_fold(Hz, Hx, Lz, Lx, perm, idxs=None, check=False):
 
-    code = CSSCode(Hz, Hx)
+    code = CSSCode(Hz, Hx, Lz, Lx)
 
+    if check:
+        code.check()
 
     #Hz1 = Hz[:, perm]
     #Hx1 = Hx[:, perm]
@@ -1824,7 +1849,7 @@ def find_fold(Hz, Hx, perm):
     #print(code.P == code1.P)
     #code.check() # big...
 
-    showmem("test_bring")
+    showmem("find_fold")
     #return
 
     P = code.P
@@ -1846,8 +1871,18 @@ def find_fold(Hz, Hx, perm):
         print("no S gate found.")
         return
 
-    opis = [(0, 1)]*len(fixed)
-    for idxs in cross(opis):
+    if idxs is None:
+        # search through all of them
+        opis = [(0, 1)]*len(fixed)
+        idxss = list(cross(opis))
+
+    else:
+        assert len(idxs) == len(fixed)
+        idxss = [idxs]
+
+    for idxs in idxss:
+
+        sys.stdout.flush()
 
         count = 0
         fold = code.I
@@ -1862,13 +1897,29 @@ def find_fold(Hz, Hx, perm):
         print("idxs =", idxs)
         print("fold =", fold)
     
-        lhs = fold*P
-        rhs = P*fold
+        if 0:
+            lhs = fold*P
+            rhs = P*fold
+    
+            found = lhs == rhs
+            print("found:", lhs==rhs)
+    
+            if not found:
+                continue
 
-        found = lhs == rhs
-        print("found:", lhs==rhs)
-        if found:
-            break
+        for i in range(code.k):
+            u = code.get_encoded(i)
+            u = fold(u)
+            u = u.conj().T
+            print("u ", end=" ", flush=True)
+            for j in range(code.k):
+                v = code.get_encoded(j)
+                print("v ", end=" ", flush=True)
+                r = numpy.dot(v, u)
+                print("%.2f+%.2fj"%(r.real, r.imag), end=" ", flush=True)
+            print()
+
+        break
 
 
 
