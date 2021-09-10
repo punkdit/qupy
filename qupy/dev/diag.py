@@ -242,10 +242,11 @@ def test_target():
     p = Cliff([1]*N) # phase
     gens = [p]
     for i in range(k):
-        ops = [I]*k
-        ops[i] = S
-        op = reduce(tensor, ops)
-        gens.append(op)
+        for s_gate in [S, Si]:
+            ops = [I]*k
+            ops[i] = s_gate
+            op = reduce(tensor, ops)
+            gens.append(op)
 
     for i in range(k):
       for j in range(i+1, k):
