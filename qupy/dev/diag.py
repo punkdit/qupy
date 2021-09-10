@@ -71,10 +71,10 @@ class Cliff(object):
     def __init__(self, diag, level=2):
         assert 0<level
         N = len(diag)
-        diag = numpy.array(diag, dtype=int)
+        diag = numpy.array(diag, dtype=numpy.uint8)
         diag = diag % (2**level)
         assert diag.shape == (N,)
-        self.diag = diag
+        self.diag = diag.copy()
         self.N = N
         self.level = level
 
@@ -107,7 +107,8 @@ class Cliff(object):
         return numpy.allclose(self.diag, other.diag)
 
     def __hash__(self):
-        return hash(tuple(self.diag)) # .. probably slow, use tostring ...
+        #return hash(tuple(self.diag)) # .. probably slow, use tostring ...
+        return hash(self.diag.tobytes())
 
     def inner(self, other):
         assert isinstance(other, Cliff)
