@@ -6,6 +6,9 @@ from operator import matmul as tensor
 import numpy
 scalar = numpy.complex128
 
+from qupy.util import mulclose_fast, mulclose_find
+
+
 EPSILON = 1e-8
 
 class Diag(object):
@@ -55,6 +58,10 @@ class Diag(object):
             #print()
         return Cliff(diag, level)
             
+    def inner(self, other):
+        assert self.N == other.N
+        r = numpy.dot(self.diag, other.diag)
+        return r
 
 
 class Cliff(object):
@@ -99,6 +106,9 @@ class Cliff(object):
         assert self.level == other.level
         return numpy.allclose(self.diag, other.diag)
 
+    def __hash__(self):
+        return hash(tuple(self.diag)) # .. probably slow, use tostring ...
+
     def inner(self, other):
         assert isinstance(other, Cliff)
         assert self.N == other.N
@@ -126,7 +136,16 @@ def test_diag():
     assert I@I == II
     assert CZ * CZ == II
 
-    print(S@I)
+    SI = S@I
+
+    ops = [II, Z@I, I@Z, S@I, I@S, Z@S, S@Z, CZ]
+    for a in ops:
+      for b in ops:
+        r = a.inner(b)
+        #print("%6s" % r, end=" ")
+      #print()
+    # ???
+
 
 
 def test_cliff():
@@ -149,6 +168,7 @@ def test_cliff():
     assert CZ * CZ == II
 
     assert S@I == Cliff([0, 0, 1, 1])
+
 
 
 def test_target():
@@ -187,13 +207,16 @@ def test_target():
          1, -1, -i, -i, -i, -i,  1, -1,
          1, -1, -i, -i, -i, -i,  1, -1,
     ])
+
     k = 8
-    assert len(target) == 2**k
+    N = 2**k
+    assert len(target) == N
     
     #target = Diag(target.diag[:8])
     target = target.get_cliff()
 
     I = Cliff([0, 0])
+    phase = Cliff([1])
     Z = Cliff([0, 2])
     S = Cliff([0, 1])
     Si = Cliff([0, 3])
@@ -207,13 +230,35 @@ def test_target():
         ops = [I]*k
         ops[i] = S
         op = reduce(tensor, ops)
-        print(op.inner(target)) 
+        #print(op.inner(target)) 
 
     op = reduce(tensor, [S, I, S, I, I, S, S, I])
     #print(op.inner(target)) 
 
-    print(target)
-    print(op)
+    #print(target)
+    #print(op)
+
+    p = Cliff([1]*N) # phase
+    gens = [p]
+    for i in range(k):
+        ops = [I]*k
+        ops[i] = S
+        op = reduce(tensor, ops)
+        gens.append(op)
+
+    for i in range(k):
+      for j in range(i+1, k):
+        diag = [0]*N
+        for idx in range(N):
+            if idx & (2**i) and idx & (2**j):
+                diag[idx] = 2
+        cz = Cliff(diag)
+        assert (cz*cz) == Cliff([0]*N)
+        gens.append(cz)
+
+    #G = mulclose_fast(gens, verbose=True)
+    found = mulclose_find(gens, target, verbose=True)
+    print("found:", found)
 
     
 

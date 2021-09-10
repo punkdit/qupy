@@ -52,10 +52,9 @@ def mulclose_names(gen, names, verbose=False, maxsize=None):
 def mulclose_fast(gen, verbose=False, maxsize=None):
     els = set(gen)
     bdy = list(els)
-    changed = True 
     while bdy: 
-        #if verbose:
-        #    print "mulclose:", len(els)
+        if verbose:
+            print("[%s]" % len(els), end=" ", flush=True)
         _bdy = [] 
         for A in gen: 
             for B in bdy: 
@@ -67,6 +66,31 @@ def mulclose_fast(gen, verbose=False, maxsize=None):
                         return list(els)
         bdy = _bdy 
     return els  
+
+
+# uses hashable operators
+def mulclose_find(gen, target, verbose=False, maxsize=None):
+    els = set(gen)
+    bdy = list(els)
+    if target in els:
+        return True
+    while bdy: 
+        if verbose:
+            print("[%s]" % len(els), end=" ", flush=True)
+        _bdy = [] 
+        for A in gen: 
+            for B in bdy: 
+                C = A*B  
+                if C not in els: 
+                    els.add(C)
+                    _bdy.append(C)
+                    if C == target:
+                        return True
+                    if maxsize and len(els)>=maxsize:
+                        return False
+        bdy = _bdy 
+    return False  
+
 
 
 
