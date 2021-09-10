@@ -76,7 +76,7 @@ def mulclose_find(gen, target, verbose=False, maxsize=None):
         return True
     while bdy: 
         if verbose:
-            print("[%s]" % len(els), end=" ", flush=True)
+            print("[%s:%s]" % (len(els), len(bdy)), end=" ", flush=True)
         _bdy = [] 
         for A in gen: 
             for B in bdy: 
