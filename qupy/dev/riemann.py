@@ -243,18 +243,46 @@ def main():
     #tgt = Tanner.build2(Hx, Hz)
     tgt = Tanner.build2(Hz, Hx) # weak duality
 
+    # from bruhat.psl2:
+    edges = [
+        (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (2, 4), (2, 5),
+        (2, 10), (2, 11), (3, 5), (3, 6), (3, 7), (3, 8), (4,
+        6), (4, 9), (4, 10), (5, 7), (5, 11), (6, 8), (6, 9),
+        (7, 8), (7, 11), (7, 12), (8, 9), (8, 12), (9, 10), (9,
+        12), (10, 11), (10, 12), (11, 12)]
+
     fns = []
+    perms = []
     for fn in search(src, tgt):
         assert len(fn) == mx+mz+n
         bitmap = []
         for i in range(n):
             bitmap.append( fn[i+mx+mz]-mx-mz )
+        perm = tuple(bitmap)
         #print(bitmap)
         fixed = [i for i in range(n) if bitmap[i]==i]
-        if len(fixed)==2:
-            #print(bitmap)
+        if len(fixed)==6:
+            perms.append(perm)
             #print(len(fixed), end=" ")
-            break
+            #break
+        else:
+            print("fixed:", fixed)
+            for i, ii in enumerate(fixed):
+                print('\t', edges[ii])
+    return
+
+    perm = perms[1]
+    idxs = (0,1,1,0,1,0)
+    print(perm)
+    fixed = []
+    for i, ii in enumerate(perm):
+        if i==ii:
+            fixed.append(i)
+    print("fixed:", fixed)
+    for i, ii in enumerate(fixed):
+        print(edges[ii], idxs[i])
+
+    return
 
     perm = tuple(bitmap)
     print(perm)

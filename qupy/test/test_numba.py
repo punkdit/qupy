@@ -1346,12 +1346,15 @@ class CSSCode(object):
         k = self.k
         n = self.n
         assert 0<=idx<2**k
+        #print("get_encoded", idx, 2**n)
         v = numpy.zeros((2**n,), dtype=scalar)
         v[0] = 1
+        #print("get_encoded: P")
         v = self.P*v
         for i in range(k):
             #print(i, len(self.xlogops))
             if idx & (2**i):
+                #print("get_encoded", i)
                 v = self.xlogops[i] * v
         r = numpy.linalg.norm(v)
         assert r>EPSILON
@@ -1907,16 +1910,15 @@ def find_fold(Hz, Hx, Lz, Lx, perm, idxs=None, check=False):
             if not found:
                 continue
 
-        for i in range(code.k):
+        for i in range(2**code.k):
             u = code.get_encoded(i)
             u = fold(u)
             u = u.conj().T
-            print("u ", end=" ", flush=True)
-            for j in range(code.k):
+            for j in range(2**code.k):
                 v = code.get_encoded(j)
-                print("v ", end=" ", flush=True)
                 r = numpy.dot(v, u)
                 print("%.2f+%.2fj"%(r.real, r.imag), end=" ", flush=True)
+                del v
             print()
 
         break
