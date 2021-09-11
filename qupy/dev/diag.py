@@ -242,8 +242,9 @@ def test_target():
     target = op*target
     print(target)
 
+    gens = []
     p = Cliff([1]*N) # phase
-    gens = [p]
+    #gens = [p]
     for i in range(k):
         for s_gate in [S, Si]:
             ops = [I]*k
@@ -260,6 +261,8 @@ def test_target():
         cz = Cliff(diag)
         assert (cz*cz) == Cliff([0]*N)
         gens.append(cz)
+
+    print("gens:", len(gens))
 
     #G = mulclose_fast(gens, verbose=True)
     found = mulclose_find(gens, target, verbose=True, maxsize=None)
