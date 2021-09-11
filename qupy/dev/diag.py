@@ -227,17 +227,20 @@ def test_target():
     #print( I.inner(I) )
     #assert I.inner(I) == 2
 
-    for i in range(k):
-        ops = [I]*k
-        ops[i] = S
-        op = reduce(tensor, ops)
-        #print(op.inner(target)) 
-
+#    for i in range(k):
+#        ops = [I]*k
+#        ops[i] = S
+#        op = reduce(tensor, ops)
+#        #print(op.inner(target)) 
+#
     op = reduce(tensor, [S, I, S, I, I, S, S, I])
-    #print(op.inner(target)) 
-
-    #print(target)
+#    #print(op.inner(target)) 
+#
+#    #print(target)
     #print(op)
+
+    target = op*target
+    print(target)
 
     p = Cliff([1]*N) # phase
     gens = [p]
@@ -246,7 +249,7 @@ def test_target():
             ops = [I]*k
             ops[i] = s_gate
             op = reduce(tensor, ops)
-            gens.append(op)
+            #gens.append(op)
 
     for i in range(k):
       for j in range(i+1, k):
@@ -259,15 +262,15 @@ def test_target():
         gens.append(cz)
 
     #G = mulclose_fast(gens, verbose=True)
-    found = mulclose_find(gens, target, verbose=True)
+    found = mulclose_find(gens, target, verbose=True, maxsize=None)
     print("found:", found)
 
     
 
 if __name__ == "__main__":
 
-    test_diag()
-    test_cliff()
+    #test_diag()
+    #test_cliff()
     test_target()
 
 
