@@ -7,6 +7,7 @@ import numpy
 scalar = numpy.complex128
 
 from qupy.util import mulclose_fast, mulclose_find
+from qupy.ldpc.solve import shortstr, row_reduce, int_scalar, solve, rank
 
 
 EPSILON = 1e-8
@@ -114,7 +115,9 @@ class Cliff(object):
         assert isinstance(other, Cliff)
         assert self.N == other.N
         assert self.level == other.level
-        r = numpy.dot(self.diag, other.diag)
+        lhs = self.diag.astype(int)
+        rhs = other.diag.astype(int)
+        r = numpy.dot(lhs, rhs)
         #r %= 2**self.level
         return r
 
@@ -174,7 +177,7 @@ def test_cliff():
 
 def test_target():
     i = 1j
-    target = Diag([
+    fold = Diag([
          1,  1,  i, -i,  i, -i,  1,  1,
          1,  1,  i, -i,  i, -i,  1,  1,
          1,  1, -i,  i,  i, -i, -1, -1,
@@ -211,11 +214,23 @@ def test_target():
 
     k = 8
     N = 2**k
-    assert len(target) == N
-    
-    #target = Diag(target.diag[:8])
-    target = target.get_cliff()
+    assert len(fold) == N
 
+#    print(fold)
+#    I = Diag([1.]*len(fold))
+#    op = fold
+#    count = 1
+#    while op != I:
+#        op = fold * op
+#        count += 1
+#    print(count)
+#    return
+    
+    # --------------- Diag ->>> Cliff ---------------------
+
+    fold = fold.get_cliff()
+
+    IN = Cliff([0]*N)
     I = Cliff([0, 0])
     phase = Cliff([1])
     Z = Cliff([0, 2])
@@ -224,33 +239,33 @@ def test_target():
     CZ = Cliff([0, 0, 0, 2])
     II = Cliff([0, 0, 0, 0])
 
-    #print( I.inner(I) )
-    #assert I.inner(I) == 2
+    s_gate = reduce(tensor, [S, I, S, I, I, S, S, I])
+    s_gate_i = reduce(tensor, [Si, I, Si, I, I, Si, Si, I])
 
-#    for i in range(k):
-#        ops = [I]*k
-#        ops[i] = S
-#        op = reduce(tensor, ops)
-#        #print(op.inner(target)) 
-#
-    op = reduce(tensor, [S, I, S, I, I, S, S, I])
-#    #print(op.inner(target)) 
-#
-#    #print(target)
-    #print(op)
-
-    target = op*target
+    target = s_gate*fold
     print(target)
 
     gens = []
-    p = Cliff([1]*N) # phase
-    #gens = [p]
+    phase_gate = Cliff([1]*N) 
+    names = []
+
+#    # single qubit S gates
+#    for i in range(k):
+#        for s_gate in [S, Si]:
+#            ops = [I]*k
+#            ops[i] = s_gate
+#            op = reduce(tensor, ops)
+#            #gens.append(op)
+
     for i in range(k):
-        for s_gate in [S, Si]:
-            ops = [I]*k
-            ops[i] = s_gate
-            op = reduce(tensor, ops)
-            #gens.append(op)
+        diag = [0]*N
+        for idx in range(N):
+            if idx & (2**i):
+                diag[idx] = 2
+        Z = Cliff(diag)
+        assert (Z*Z) == Cliff([0]*N)
+        gens.append(Z)
+        names.append("Z_{%d}"%i)
 
     for i in range(k):
       for j in range(i+1, k):
@@ -261,12 +276,46 @@ def test_target():
         cz = Cliff(diag)
         assert (cz*cz) == Cliff([0]*N)
         gens.append(cz)
+        names.append("CZ_{%d,%d}"%(i,j))
 
     print("gens:", len(gens))
 
+    #for a in gens:
+    #  for b in gens:
+    #    print("%4s" % a.inner(b), end=" ")
+    #  print()
+
+    A = numpy.zeros((len(gens), N), dtype=int_scalar)
+    for i, gen in enumerate(gens):
+        A[i] = gen.diag
+    A //= 2
+    #A = row_reduce(A)
+    #print(shortstr(A))
+    print("rank:", rank(A))
+
+    rhs = target.diag
+    rhs = rhs.astype(int_scalar)
+    rhs //= 2
+    u = solve(A.transpose(), rhs)
+
+    print(u)
+    opnames = []
+    op = s_gate_i
+    for i, name in enumerate(names):
+        if u[i]:
+            opnames.append(names[i])
+            op = gens[i] * op
+    print("op =", "*".join(opnames))
+
+    print(op)
+    print(fold)
+    assert op == fold
+
     #G = mulclose_fast(gens, verbose=True)
-    found = mulclose_find(gens, target, verbose=True, maxsize=None)
-    print("found:", found)
+    #found = mulclose_find(gens, target, verbose=True, maxsize=None)
+    #print("found:", found)
+
+    
 
     
 
