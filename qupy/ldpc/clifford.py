@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+"""
+Build symplectic matrices over F_2.
+This group is a quotient of the Clifford group by the Pauli group.
+"""
+
 from collections import namedtuple
 from functools import reduce
 from operator import mul
@@ -134,7 +139,7 @@ class Matrix(object):
         assert n%2 == 0
         self.n = n
         self.m = m
-        self.key = A.tostring() # careful !!
+        self.key = A.tobytes() # careful !!
 
     def __str__(self):
         #s = str(self.A)
@@ -219,6 +224,13 @@ class Matrix(object):
         return Matrix(A)
 
     @classmethod
+    def cz(cls, n, src, tgt):
+        CN = cls.cnot(n, src, tgt)
+        H = cls.hadamard(n, tgt)
+        CZ = H * CN * H
+        return CZ
+
+    @classmethod
     def sgate(cls, n, i):
         A = cls.identity(n).A
         assert 0<=i<n
@@ -298,6 +310,7 @@ class Matrix(object):
         A = Matrix(A)
         return A
 
+Clifford = Matrix
 
 
 def get_gen(n, pairs=None):
@@ -493,7 +506,7 @@ def test_isotropic():
 
     n = 3
     gen, _ = get_gen(n)
-    print(len(mulclose_fast(gen)))
+    assert len(mulclose_fast(gen)) == 1451520
     return
 
     n = argv.get("n", 3)
@@ -625,6 +638,15 @@ def test_encode():
     assert op*source == target
     
 
+def test():
+    n = 5
+    I = Matrix.identity(n)
+    CZ = Matrix.cz(n, 0, 1)
+    SWAP = Matrix.swap(n, 0, 1)
+    assert CZ*CZ == I
+    assert SWAP*CZ == CZ*SWAP
+    S = Matrix.sgate(n, 0)
+    assert S*S == I
 
 
 if __name__ == "__main__":

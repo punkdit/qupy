@@ -901,6 +901,11 @@ def build():
     CN[1, 1, 0, 1] = 1.
     Gate.CN = CN
 
+#    # CZ
+#    CZ = Qu((2, 2, 2, 2), 'udud')
+#    CN[0, 0, 0, 0] = 1.
+#    Gate.CZ = CZ
+
     # SWAP
     SWAP = Qu((2, 2, 2, 2), 'udud')
     SWAP[0, 0, 0, 0] = 1.
