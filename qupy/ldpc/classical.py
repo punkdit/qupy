@@ -20,7 +20,7 @@ from qupy.ldpc.solve import find_kernel, cokernel, eq2, get_reductor, intersect
 from qupy.ldpc.solve import linear_independent, solve, row_reduce, rand2
 from qupy.ldpc.solve import remove_dependent, dependent_rows, span
 from qupy.ldpc.gallagher import make_gallagher, classical_distance
-from qupy.ldpc.clifford import all_codes
+from qupy.ldpc.symplectic import all_codes
 
 
 

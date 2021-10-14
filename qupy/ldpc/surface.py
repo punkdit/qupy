@@ -18,7 +18,7 @@ from qupy.smap import SMap
 from qupy.ldpc.solve import zeros2, shortstr, solve, dot2, array2, eq2, parse, pseudo_inverse
 from qupy.ldpc.css import CSSCode
 from qupy.ldpc.decoder import StarDynamicDistance
-from qupy.ldpc.clifford import Clifford, mulclose_fast, mulclose_find, get_gen, get_encoder
+from qupy.ldpc.symplectic import Clifford, mulclose_fast, mulclose_find, get_gen, get_encoder
 
 
 class Surface(object):

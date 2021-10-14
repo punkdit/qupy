@@ -671,7 +671,7 @@ class CSSCode(object):
 #        return code
 
 #    def get_encoder(source, target):
-#        from qupy.ldpc.clifford import Clifford
+#        from qupy.ldpc.symplectic import Clifford
 #        assert isinstance(target, CSSCode)
 #        src = Clifford(source.to_symplectic())
 #        src_inv = src.inverse()
