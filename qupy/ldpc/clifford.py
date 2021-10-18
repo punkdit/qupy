@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 """
-Modified from qupy.ldpc.symplectic 
+Represent Clifford's as affine symplectic transforms over Z/2 .
+This is the qubit clifford group modulo phases.
 
 """
 
@@ -22,73 +23,8 @@ from qupy.ldpc.solve import enum2, row_reduce
 from qupy.ldpc.css import CSSCode
 
 
-def mulclose_find(gen, names, target, verbose=False, maxsize=None):
-    gen = list(gen)
-    ops = set(gen)
-    lookup = dict((g, (names[i],)) for (i, g) in enumerate(gen))
-    bdy = list(gen)
-    dist = 1
-    while bdy:
-        _bdy = []
-        shuffle(bdy)
-        for g in bdy:
-            shuffle(gen)
-            for h in gen:
-                k = g*h
-                if k in ops:
-                    if len(lookup[g]+lookup[h]) < len(lookup[k]):
-                        lookup[k] = lookup[g]+lookup[h]
-                        assert 0
-                else:
-                    word = lookup[g]+lookup[h]
-                    if len(word) > dist:
-                        dist = len(word)
-                        if verbose:
-                            print("dist:", dist)
-                    lookup[k] = word
-                    ops.add(k)
-                    _bdy.append(k)
-
-                if k==target:
-                    assert type( lookup[g]+lookup[h] ) == tuple
-                    return lookup[g]+lookup[h]
-        bdy = _bdy
-        #if verbose:
-        #    print("mulclose:", len(ops))
-        if maxsize and len(ops) >= maxsize:
-            break
-
-
-def mulclose_names(gen, names, verbose=False, maxsize=None):
-    ops = set(gen)
-    lookup = dict((g, (names[i],)) for (i, g) in enumerate(gen))
-    bdy = gen
-    while bdy:
-        _bdy = set()
-        for g in bdy:
-            for h in gen:
-                k = g*h
-                if k in ops:
-                    if len(lookup[g]+lookup[h]) < len(lookup[k]):
-                        lookup[k] = lookup[g]+lookup[h]
-                        assert 0
-                else:
-                    lookup[k] = lookup[g]+lookup[h]
-                    ops.add(k)
-                    _bdy.add(k)
-        bdy = _bdy
-        if verbose:
-            print("mulclose:", len(ops))
-        if maxsize and len(ops) >= maxsize:
-            break
-    return ops, lookup
-
-
-
 class Clifford(object):
     """
-        Represent Clifford's as affine symplectic transforms over Z/2
-        This is the qubit clifford group modulo phases.
     """
 
     def __init__(self, A):
