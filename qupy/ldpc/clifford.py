@@ -4,6 +4,9 @@
 Represent Clifford's as affine symplectic transforms over Z/2 .
 This is the qubit clifford group modulo phases.
 
+TODO: implement phases as a group extension:
+    phases >---> Clifford --->> AffineSymplectic
+
 """
 
 from collections import namedtuple
