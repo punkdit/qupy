@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 """
-Represent Clifford's as affine symplectic transforms over Z/2 .
+Represent Clifford's as affine symplectic _transforms over Z/2 .
 This is the qubit clifford group modulo phases.
 
-TODO: implement phases as a group extension:
+possible todo: implement phases as a group extension:
     phases >---> Clifford --->> AffineSymplectic
 
 """
@@ -26,6 +26,26 @@ from qupy.ldpc.solve import enum2, row_reduce
 from qupy.ldpc.css import CSSCode
 
 
+def order(n):
+    # size of Clifford group, modulo phases
+    sz = 1
+    for i in range(1, n+1):
+        sz *= 2 * (4**1 - 1) * 4**i
+    return sz
+
+_cache = {}
+def symplectic_form(n):
+    F = _cache.get(n)
+    if F is None:
+        F = zeros2(2*n, 2*n)
+        for i in range(n):
+            F[n+i, i] = 1
+            F[i, n+i] = 1
+        _cache[n] = F
+    F = F.copy()
+    return F
+
+
 class Clifford(object):
     """
     """
@@ -43,6 +63,7 @@ class Clifford(object):
 
         self.A = A
         self.key = A.tobytes() # needs A to be c_contiguous 
+        #assert self.check()
 
     def __str__(self):
         #s = str(self.A)
@@ -68,9 +89,23 @@ class Clifford(object):
         A = self.A.transpose().copy()
         return Clifford(A)
 
+#    def inverse(self):
+#        A = pseudo_inverse(self.A)
+#        return Clifford(A)
+
     def inverse(self):
-        A = pseudo_inverse(self.A)
-        return Clifford(A)
+        A = self.A
+        nn = self.n
+        n = (nn-1)//2
+        B = A[:2*n, :2*n] # symplectic 
+        v = A[:2*n, 2*n]  # translation, shape (2*n,)
+        F = symplectic_form(n)
+        Fi = F # an involution
+        Bi = dot2(Fi, dot2(B.transpose()), F)
+        A1 = A.copy()
+        A1[:2*n, :2*n] = Bi
+        A1[:2*n, 2*n] = dot2(-Bi, v)
+        return Clifford(A1)
 
     def __eq__(self, other):
         assert isinstance(other, Clifford)
@@ -86,6 +121,16 @@ class Clifford(object):
     def __hash__(self):
         # warning: i am mutable
         return hash(self.key)
+
+    def check(self):
+        # check symplectic condition
+        A = self.A
+        nn = self.n
+        n = (nn-1)//2
+        B = A[:2*n, :2*n]
+        F = symplectic_form(n)
+        lhs = dot2(dot2(B.transpose(), F), B)
+        return numpy.alltrue(lhs == F)
 
     @classmethod
     def identity(cls, n):
@@ -167,8 +212,67 @@ class Clifford(object):
                 A[i+n, i+n] = 1 # Z sector
         return Clifford(A)
 
+    @classmethod
+    def make_op(cls, v, method):
+        assert method in [cls.x, cls.z, cls.s, cls.hadamard]
+        n = len(v)
+        g = Clifford.identity(n)
+        for i in range(n):
+            if v[i]:
+                g *= method(n, i)
+        return g
+
+    def get_symplectic(self):
+        n = self.n
+        A = self.A
+        B = A[:n-1, :n-1]
+        return B
+
+    def get_translation(self):
+        n = self.n
+        A = self.A
+        v = A[:n-1, n-1]
+        return v
+
+    def is_translation(self):
+        n = self.n
+        A = self.A
+        A = A[:n-1, :n-1]
+        return numpy.alltrue(A == identity2(n-1))
+
+    def find_encoding(A, Lz, Lx):
+        assert len(Lx) == len(Lz)
+        Ai = A.inverse()
+        rows = []
+        for l in Lz + Lx:
+            B = A*l*Ai
+            assert B.is_translation()
+            v = B.get_translation()
+            rows.append(v)
+        B = numpy.array(rows)
+        #B = B[:8, :]
+        #print(B.shape)
+        #print(shortstr(B))
+        U = numpy.array([l.get_translation() for l in Lz+Lx])
+        #print(U.shape)
+        #print(shortstr(U))
+        Ut = U.transpose()
+        V = solve(Ut, B.transpose())
+        if V is None:
+            return None
+        print(A.get_translation())
+        u = solve(Ut, A.get_translation())
+        print( u is not None )
+        #print(V.shape)
+        #print(shortstr(V))
+
 
 def test():
+
+    n = 3
+    F = symplectic_form(n)
+    I = identity2(2*n)
+    assert numpy.alltrue(I == dot2(F, F))
 
     # --------------------------------------------
     # Clifford group order is 24
@@ -177,31 +281,64 @@ def test():
     I = Clifford.identity(n)
 
     X = Clifford.x(n, 0)
-    #print(X)
-    #print()
     Z = Clifford.z(n, 0)
-    #print(Z)
-    #print()
-
     S = Clifford.s(n, 0)
-    #print(S)
-    #print()
-
+    Si = S.inverse()
     H = Clifford.hadamard(n, 0)
+    Y = X*Z
+
+    print("X =")
+    print(X)
+    print("Z =")
+    print(Z)
+    print("S =")
+    print(S)
+    print("Si =")
+    print(Si)
+    print()
 
     assert X != I
+    assert Z != I
     assert X*X == I
-
+    assert Z*Z == I
     assert Z*X == X*Z # looses the phase 
+
+    assert Si*S == S*Si == I
+    assert Si*Si == Z
+    assert S*Z == Z*S
+    assert S*X == Y*S
+    assert S*Y*Si == X
+    assert S*S == Z
+    assert S*X != X*S
+    assert S*S*S*S == I
+    assert S*S*S == Si
+
+#    B = array2([[1, 0], [0, 1], [1, 1]])
+#    C = array2([[1, 1], [0, 1], [1, 1]])
+#    for bits in cross( [(0,1)]*6 ):
+#        A = zeros2(2*n+1, 2*n+1)
+#        A[2*n, 2*n] = 1
+#        for idx, key in enumerate(numpy.ndindex((2,3))):
+#            #print(key, end=" ")
+#            A[key] = bits[idx]
+#        val = (A[0,0]*A[1,1] - A[0,1]*A[1,0])%2
+#        if val != 1:
+#            continue
+#        op = Clifford(A)
+#        #if op*op == Z:
+#        #    print(op, '\n')
+#        lhs = dot2(A, B)
+#        rhs = C
+#        if numpy.alltrue(lhs == rhs):
+#            print("op =")
+#            print(op, "\n")
+#            print(op*op, "\n")
+#            print(op*op*op, "\n")
+#            print(op*op*op*op, "\n")
+
     assert H*H == I
     assert H*X*H == Z
     assert H*Z*H == X
-
-    assert S*S == Z
-
-    assert S*Z == Z*S
-    assert S*X != X*S
-    assert S*S*S*S == I
 
     assert S*H*S*H*S*H == I
 
@@ -230,6 +367,12 @@ def test():
     CX1 = Clifford.cnot(n, 1, 0)
     CZ = Clifford.cz(n, 0, 1)
     CZ1 = Clifford.cz(n, 1, 0)
+
+    print("CZ =")
+    print(CZ)
+
+    print("CX =")
+    print(CX)
 
     assert SI*SI == ZI
 
@@ -267,6 +410,12 @@ def test():
 
     G = mulclose_fast([SI, IS, CX, HI, IH ])
     assert len(G) == 11520
+
+    for g in G:
+        assert g.check()
+        h = g.inverse()
+        assert h.check()
+        assert g*h == II
 
     # --------------------------------------------
 

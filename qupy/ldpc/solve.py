@@ -9,7 +9,8 @@ import numpy
 import numpy.random as ra
 from numpy import dot, concatenate
 
-int_scalar = numpy.int32
+#int_scalar = numpy.int32
+int_scalar = numpy.int8
 
 from qupy.smap import SMap
 from qupy.tool import cross
