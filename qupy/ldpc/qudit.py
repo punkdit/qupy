@@ -97,7 +97,7 @@ class Clifford(object):
         self.d = d
         self.A = A
         self.key = A.tobytes() # needs A to be c_contiguous 
-        assert self.check()
+        #assert self.check()
 
     def __str__(self):
         #s = str(self.A)
@@ -374,7 +374,8 @@ def test():
     assert S*H*S*H*S*H == I
 
     # --------------------------------------------
-    # qubit Clifford group order is 11520
+    # 2 qubit Clifford group order is 11520
+    # 2 qutrit Clifford group order is 4199040
 
     n = 2
     II = Clifford.identity(d, n)
@@ -429,24 +430,15 @@ def test():
     #print(SWAP)
 
     G = mulclose_fast([SI, IS, CX, HI, IH ])
-    print(len(G))
-    assert len(G) == 11520
+    assert len(G) == d**4 * d**(n**2) * (d**(2*n) - 1) * (d**(2*n-2) - 1)
+    if d==3:
+        assert len(G) == 4199040
 
     for g in G:
         assert g.check()
         h = g.inverse()
         assert h.check()
         assert g*h == II
-
-    # --------------------------------------------
-
-    n = 5
-    I = Clifford.identity(n)
-    CZ = Clifford.cz(d, n, 0, 1)
-    SWAP = Clifford.swap(d, n, 0, 1)
-    assert CZ*CZ == I
-    assert SWAP*CZ == CZ*SWAP
-
 
 
 if __name__ == "__main__":
