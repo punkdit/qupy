@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 
 """
-Represent Clifford's as affine symplectic _transforms over Z/2 .
-This is the qubit clifford group modulo phases.
+Represent qudit Clifford's as affine symplectic _transforms over Z/d .
+This is the qudit clifford group modulo phases.
 
 possible todo: implement phases as a group extension:
     phases >---> Clifford --->> AffineSymplectic
 
-for qudit version see qudit.py
+code derived from qubit version in clifford.py
 
+See:
+https://www.mdpi.com/1099-4300/15/6/2340
+https://arxiv.org/pdf/1803.00696.pdf
+https://arxiv.org/pdf/1803.03228.pdf
+https://arxiv.org/pdf/0909.5233.pdf
 
 """
 
@@ -19,30 +24,55 @@ from random import shuffle
 
 import numpy
 from numpy import concatenate as cat
+from numpy import dot
 
 from qupy.util import mulclose_fast
 from qupy.tool import cross, choose
 from qupy.argv import argv
-from qupy.smap import SMap
-from qupy.ldpc.solve import zeros2, shortstr, solve, dot2, array2, eq2, parse, pseudo_inverse, identity2
-from qupy.ldpc.solve import enum2, row_reduce
-from qupy.ldpc.css import CSSCode
+from qupy.ldpc.solve import shortstr
 
 
-def order(n):
-    # size of Clifford group, modulo phases
-    sz = 1
-    for i in range(1, n+1):
-        sz *= 2 * (4**1 - 1) * 4**i
-    return sz
+
+#int_scalar = numpy.int32
+int_scalar = numpy.int8
+
+
+def array_d(items=[], shape=None):
+    A = numpy.array(items, dtype=int_scalar)
+    if shape is not None:
+        A.shape = shape
+    return A
+
+
+def zeros_d(*shape):
+    if len(shape)==1 and type(shape[0]) is tuple:
+        shape = shape[0]
+    return numpy.zeros(shape, dtype=int_scalar)
+
+
+def identity_d(n):
+    return numpy.identity(n, dtype=int_scalar)
+
+
+def dot_d(d, *items):
+    idx = 0
+    A = items[idx]
+    while idx+1 < len(items):
+        B = items[idx+1]
+        A = dot(A, B)
+        idx += 1
+    A = A%d
+    return A
+
+
 
 _cache = {}
-def symplectic_form(n):
-    F = _cache.get(n)
+def symplectic_form(d, n):
+    F = _cache.get((d, n))
     if F is None:
-        F = zeros2(2*n, 2*n)
+        F = zeros_d(2*n, 2*n)
         for i in range(n):
-            F[n+i, i] = 1
+            F[n+i, i] = d-1
             F[i, n+i] = 1
         _cache[n] = F
     F = F.copy()
@@ -53,7 +83,7 @@ class Clifford(object):
     """
     """
 
-    def __init__(self, A):
+    def __init__(self, d, A):
         assert A.data.c_contiguous, "need to copy A first"
     
         m, n = A.shape
@@ -64,9 +94,10 @@ class Clifford(object):
         assert A[n-1, n-1] == 1, A
         assert numpy.abs(A[n-1]).sum() == 1, A
 
+        self.d = d
         self.A = A
         self.key = A.tobytes() # needs A to be c_contiguous 
-        #assert self.check()
+        assert self.check()
 
     def __str__(self):
         #s = str(self.A)
@@ -77,8 +108,23 @@ class Clifford(object):
     def __mul__(self, other):
         assert isinstance(other, Clifford)
         assert other.shape == self.shape
-        A = dot2(self.A, other.A)
-        return Clifford(A)
+        A = dot_d(self.d, self.A, other.A)
+        return Clifford(self.d, A)
+
+    def __pow__(self, count):
+        if type(count) != int:
+            raise ValueError
+        if count < 0:
+            return self.inverse().__pow__(-count)
+        if count == 0:
+            return Clifford.identity(self.d, self.n//2)
+        if count == 1:
+            return self
+        A = self
+        while count > 1:
+            A = self * A
+            count -= 1
+        return A
 
     def __getitem__(self, key):
         return self.A[key]
@@ -90,11 +136,11 @@ class Clifford(object):
 
     def transpose(self):
         A = self.A.transpose().copy()
-        return Clifford(A)
+        return Clifford(self.d, A)
 
 #    def inverse(self):
 #        A = pseudo_inverse(self.A)
-#        return Clifford(A)
+#        return Clifford(self.d, A)
 
     def inverse(self):
         A = self.A
@@ -102,18 +148,18 @@ class Clifford(object):
         n = (nn-1)//2
         B = A[:2*n, :2*n] # symplectic 
         v = A[:2*n, 2*n]  # translation, shape (2*n,)
-        F = symplectic_form(n)
+        F = symplectic_form(self.d, n)
         Fi = F # an involution
-        Bi = dot2(Fi, dot2(B.transpose()), F)
+        Bi = dot_d(self.d, Fi, dot_d(self.d, B.transpose()), F)
         A1 = A.copy()
         A1[:2*n, :2*n] = Bi
-        A1[:2*n, 2*n] = dot2(-Bi, v)
-        return Clifford(A1)
+        A1[:2*n, 2*n] = dot_d(self.d, -Bi, v)
+        return Clifford(self.d, A1)
 
     def __eq__(self, other):
         assert isinstance(other, Clifford)
         assert self.shape == other.shape
-        #return eq2(self.A, other.A)
+        #return eq_d(self.A, other.A)
         return self.key == other.key
 
     def __ne__(self, other):
@@ -131,76 +177,76 @@ class Clifford(object):
         nn = self.n
         n = (nn-1)//2
         B = A[:2*n, :2*n]
-        F = symplectic_form(n)
-        lhs = dot2(dot2(B.transpose(), F), B)
+        F = symplectic_form(self.d, n)
+        lhs = dot_d(self.d, dot_d(self.d, B.transpose(), F), B)
         return numpy.alltrue(lhs == F)
 
     @classmethod
-    def identity(cls, n):
-        A = zeros2(2*n+1, 2*n+1)
+    def identity(cls, d, n):
+        A = zeros_d(2*n+1, 2*n+1)
         for i in range(2*n+1):
             A[i, i] = 1
-        return Clifford(A)
+        return Clifford(d, A)
 
     @classmethod
-    def z(cls, n, idx):
-        A = zeros2(2*n+1, 2*n+1)
+    def z(cls, d, n, idx):
+        A = zeros_d(2*n+1, 2*n+1)
         for i in range(2*n+1):
             A[i, i] = 1
         A[idx, 2*n] = 1
-        return Clifford(A)
+        return Clifford(d, A)
 
     @classmethod
-    def x(cls, n, idx):
-        A = zeros2(2*n+1, 2*n+1)
+    def x(cls, d, n, idx):
+        A = zeros_d(2*n+1, 2*n+1)
         for i in range(2*n+1):
             A[i, i] = 1
         A[n+idx, 2*n] = 1
-        return Clifford(A)
+        return Clifford(d, A)
 
     @classmethod
-    def hadamard(cls, n, idx):
-        A = zeros2(2*n+1, 2*n+1)
+    def hadamard(cls, d, n, idx):
+        A = zeros_d(2*n+1, 2*n+1)
         for i in range(2*n):
             if i==idx:
                 A[i, n+i] = 1
             elif i==n+idx:
-                A[i, i-n] = 1
+                A[i, i-n] = d-1
             else:
                 A[i, i] = 1
         A[2*n, 2*n] = 1
-        return Clifford(A)
+        return Clifford(d, A)
 
     @classmethod
-    def cnot(cls, n, src, tgt):
+    def cnot(cls, d, n, src, tgt):
         assert src!=tgt
-        A = zeros2(2*n+1, 2*n+1)
+        A = zeros_d(2*n+1, 2*n+1)
         for i in range(2*n+1):
             A[i, i] = 1
         A[2*n, 2*n] = 1
         A[src, tgt] = 1
         A[tgt+n, src+n] = 1
-        return Clifford(A)
+        return Clifford(d, A)
 
     @classmethod
-    def cz(cls, n, src, tgt):
-        CN = cls.cnot(n, src, tgt)
-        H = cls.hadamard(n, tgt)
+    def cz(cls, d, n, src, tgt):
+        CN = cls.cnot(d, n, src, tgt)
+        H = cls.hadamard(d, n, tgt)
         CZ = H * CN * H
         return CZ
 
     @classmethod
-    def s(cls, n, i):
-        A = cls.identity(n).A
+    def s(cls, d, n, i):
+        A = cls.identity(d, n).A
         assert 0<=i<n
         #A[i+n, i] = 1
         A[i, i+n] = 1
         A[i+n, 2*n] = 1
-        return Clifford(A)
+        return Clifford(d, A)
     
     @classmethod
-    def swap(cls, n, idx, jdx):
-        A = zeros2(2*n+1, 2*n+1)
+    def swap(cls, d, n, idx, jdx):
+        A = zeros_d(2*n+1, 2*n+1)
         A[2*n, 2*n] = 1
         assert idx != jdx
         for i in range(n):
@@ -213,16 +259,16 @@ class Clifford(object):
             else:
                 A[i, i] = 1 # X sector
                 A[i+n, i+n] = 1 # Z sector
-        return Clifford(A)
+        return Clifford(d, A)
 
     @classmethod
-    def make_op(cls, v, method):
+    def make_op(cls, d, v, method):
         assert method in [cls.x, cls.z, cls.s, cls.hadamard]
         n = len(v)
-        g = Clifford.identity(n)
+        g = Clifford.identity(d, n)
         for i in range(n):
             if v[i]:
-                g *= method(n, i)
+                g *= method(d, n, i)
         return g
 
     def get_symplectic(self):
@@ -241,7 +287,7 @@ class Clifford(object):
         n = self.n
         A = self.A
         A = A[:n-1, :n-1]
-        return numpy.alltrue(A == identity2(n-1))
+        return numpy.alltrue(A == identity_d(n-1))
 
     def find_encoding(A, Lz, Lx):
         assert len(Lx) == len(Lz)
@@ -272,39 +318,48 @@ class Clifford(object):
 
 def test():
 
+    d = 3
+
     n = 3
-    F = symplectic_form(n)
-    I = identity2(2*n)
-    assert numpy.alltrue(I == dot2(F, F))
+    F = symplectic_form(d, n)
+    Ft = F.transpose()
+    I = identity_d(2*n)
+    assert numpy.alltrue(I == dot_d(d, F, Ft))
 
     # --------------------------------------------
-    # Clifford group order is 24
+    # qubit Clifford group order is 24
+    # qutrit Clifford group order is 216
 
     n = 1
-    I = Clifford.identity(n)
+    I = Clifford.identity(d, n)
 
-    X = Clifford.x(n, 0)
-    Z = Clifford.z(n, 0)
-    S = Clifford.s(n, 0)
+    X = Clifford.x(d, n, 0)
+    Z = Clifford.z(d, n, 0)
+    S = Clifford.s(d, n, 0)
     Si = S.inverse()
-    H = Clifford.hadamard(n, 0)
+    H = Clifford.hadamard(d, n, 0)
     Y = X*Z
 
-    print("X =")
-    print(X)
-    print("Z =")
-    print(Z)
-    print("S =")
-    print(S)
-    print("Si =")
-    print(Si)
-    print()
+    if 0:
+        print("X =")
+        print(X)
+        print("Z =")
+        print(Z)
+        print("S =")
+        print(S)
+        print("Si =")
+        print(Si)
+        print()
 
     assert X != I
     assert Z != I
-    assert X*X == I
-    assert Z*Z == I
+    assert X**d == I
+    assert Z**d == I
     assert Z*X == X*Z # looses the phase 
+
+    G = mulclose_fast([X, H, S])
+    assert len(G) == 216
+    return
 
     assert Si*S == S*Si == I
     assert Si*Si == Z
@@ -316,10 +371,10 @@ def test():
     assert S*S*S*S == I
     assert S*S*S == Si
 
-#    B = array2([[1, 0], [0, 1], [1, 1]])
-#    C = array2([[1, 1], [0, 1], [1, 1]])
+#    B = array_d([[1, 0], [0, 1], [1, 1]])
+#    C = array_d([[1, 1], [0, 1], [1, 1]])
 #    for bits in cross( [(0,1)]*6 ):
-#        A = zeros2(2*n+1, 2*n+1)
+#        A = zeros_d(2*n+1, 2*n+1)
 #        A[2*n, 2*n] = 1
 #        for idx, key in enumerate(numpy.ndindex((2,3))):
 #            #print(key, end=" ")
@@ -330,7 +385,7 @@ def test():
 #        op = Clifford(A)
 #        #if op*op == Z:
 #        #    print(op, '\n')
-#        lhs = dot2(A, B)
+#        lhs = dot_d(d, A, B)
 #        rhs = C
 #        if numpy.alltrue(lhs == rhs):
 #            print("op =")
