@@ -149,7 +149,7 @@ class Clifford(object):
         B = A[:2*n, :2*n] # symplectic 
         v = A[:2*n, 2*n]  # translation, shape (2*n,)
         F = symplectic_form(self.d, n)
-        Fi = F # an involution
+        Fi = F.transpose()
         Bi = dot_d(self.d, Fi, dot_d(self.d, B.transpose()), F)
         A1 = A.copy()
         A1[:2*n, :2*n] = Bi
@@ -225,14 +225,15 @@ class Clifford(object):
             A[i, i] = 1
         A[2*n, 2*n] = 1
         A[src, tgt] = 1
-        A[tgt+n, src+n] = 1
+        A[tgt+n, src+n] = d-1
         return Clifford(d, A)
 
     @classmethod
     def cz(cls, d, n, src, tgt):
         CN = cls.cnot(d, n, src, tgt)
         H = cls.hadamard(d, n, tgt)
-        CZ = H * CN * H
+        Hi = H.inverse()
+        CZ = H * CN * Hi
         return CZ
 
     @classmethod
@@ -338,9 +339,10 @@ def test():
     S = Clifford.s(d, n, 0)
     Si = S.inverse()
     H = Clifford.hadamard(d, n, 0)
+    Hi = H.inverse()
     Y = X*Z
 
-    if 0:
+    if 1:
         print("X =")
         print(X)
         print("Z =")
@@ -357,74 +359,42 @@ def test():
     assert Z**d == I
     assert Z*X == X*Z # looses the phase 
 
-    G = mulclose_fast([X, H, S])
-    assert len(G) == 216
-    return
+    G = mulclose_fast([H, S])
+    assert len(G) == d**3 * (d**2 - 1)
+    for g in G:
+        assert g * g.inverse() == I
 
     assert Si*S == S*Si == I
-    assert Si*Si == Z
     assert S*Z == Z*S
-    assert S*X == Y*S
-    assert S*Y*Si == X
-    assert S*S == Z
     assert S*X != X*S
-    assert S*S*S*S == I
-    assert S*S*S == Si
 
-#    B = array_d([[1, 0], [0, 1], [1, 1]])
-#    C = array_d([[1, 1], [0, 1], [1, 1]])
-#    for bits in cross( [(0,1)]*6 ):
-#        A = zeros_d(2*n+1, 2*n+1)
-#        A[2*n, 2*n] = 1
-#        for idx, key in enumerate(numpy.ndindex((2,3))):
-#            #print(key, end=" ")
-#            A[key] = bits[idx]
-#        val = (A[0,0]*A[1,1] - A[0,1]*A[1,0])%2
-#        if val != 1:
-#            continue
-#        op = Clifford(A)
-#        #if op*op == Z:
-#        #    print(op, '\n')
-#        lhs = dot_d(d, A, B)
-#        rhs = C
-#        if numpy.alltrue(lhs == rhs):
-#            print("op =")
-#            print(op, "\n")
-#            print(op*op, "\n")
-#            print(op*op*op, "\n")
-#            print(op*op*op*op, "\n")
-
-    assert H*H == I
-    assert H*X*H == Z
-    assert H*Z*H == X
+    assert H*X*Hi == Z
+    assert Hi*Z*H == X
 
     assert S*H*S*H*S*H == I
 
-    G = mulclose_fast([S, H])
-    assert len(G) == 24
-
     # --------------------------------------------
-    # Clifford group order is 11520
+    # qubit Clifford group order is 11520
 
     n = 2
-    II = Clifford.identity(n)
+    II = Clifford.identity(d, n)
 
-    XI = Clifford.x(n, 0)
-    IX = Clifford.x(n, 1)
+    XI = Clifford.x(d, n, 0)
+    IX = Clifford.x(d, n, 1)
     XX = XI * IX
-    ZI = Clifford.z(n, 0)
-    IZ = Clifford.z(n, 1)
+    ZI = Clifford.z(d, n, 0)
+    IZ = Clifford.z(d, n, 1)
     ZZ = ZI * IZ
-    SI = Clifford.s(n, 0)
-    IS = Clifford.s(n, 1)
+    SI = Clifford.s(d, n, 0)
+    IS = Clifford.s(d, n, 1)
     SS = SI * IS
-    HI = Clifford.hadamard(n, 0)
-    IH = Clifford.hadamard(n, 1)
+    HI = Clifford.hadamard(d, n, 0)
+    IH = Clifford.hadamard(d, n, 1)
 
-    CX = Clifford.cnot(n, 0, 1)
-    CX1 = Clifford.cnot(n, 1, 0)
-    CZ = Clifford.cz(n, 0, 1)
-    CZ1 = Clifford.cz(n, 1, 0)
+    CX = Clifford.cnot(d, n, 0, 1)
+    CX1 = Clifford.cnot(d, n, 1, 0)
+    CZ = Clifford.cz(d, n, 0, 1)
+    CZ1 = Clifford.cz(d, n, 1, 0)
 
     print("CZ =")
     print(CZ)
@@ -432,41 +402,34 @@ def test():
     print("CX =")
     print(CX)
 
-    assert SI*SI == ZI
-
-    assert SI*ZI == ZI*SI
-    assert SI*XI != XI*SI
-    assert SI*SI*SI*SI == II
-
-    assert CX * CX == II
-    assert CZ * CZ == II
+    assert CX ** d == II
+    assert CZ ** d == II
     assert CZ1 == CZ
 
     assert CX * IX == IX * CX
-    assert CX * XI * CX == XX
+    #assert CX * XI * CX == XX
+    #assert CX * ZI == ZI * CX
+    #assert CX * IZ * CX == ZZ
 
-    assert CX * ZI == ZI * CX
-    assert CX * IZ * CX == ZZ
-
-    SWAP = Clifford.swap(n, 0, 1)
+    SWAP = Clifford.swap(d, n, 0, 1)
     assert SWAP * ZI == IZ * SWAP
     assert SWAP * XI == IX * SWAP
 
-    assert CX * CX1 * CX == SWAP
+    #assert CX * CX1 * CX == SWAP
+    #assert CZ == IH * CX * IH
 
-    assert CZ == IH * CX * IH
+    #assert CZ * ZI == ZI * CZ
+    #assert CZ * IZ == IZ * CZ
 
-    assert CZ * ZI == ZI * CZ
-    assert CZ * IZ == IZ * CZ
-
-    assert CZ * XI * CZ == XI*IZ
-    assert CZ * IX * CZ == IX*ZI
+    #assert CZ * XI * CZ == XI*IZ
+    #assert CZ * IX * CZ == IX*ZI
 
     #print(CX*CX1)
     #print()
     #print(SWAP)
 
     G = mulclose_fast([SI, IS, CX, HI, IH ])
+    print(len(G))
     assert len(G) == 11520
 
     for g in G:
@@ -479,8 +442,8 @@ def test():
 
     n = 5
     I = Clifford.identity(n)
-    CZ = Clifford.cz(n, 0, 1)
-    SWAP = Clifford.swap(n, 0, 1)
+    CZ = Clifford.cz(d, n, 0, 1)
+    SWAP = Clifford.swap(d, n, 0, 1)
     assert CZ*CZ == I
     assert SWAP*CZ == CZ*SWAP
 
