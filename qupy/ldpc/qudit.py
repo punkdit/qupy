@@ -246,6 +246,14 @@ class Clifford(object):
         return Clifford(d, A)
     
     @classmethod
+    def sy_s(cls, d, n, i):
+        "symplectic s"
+        A = cls.identity(d, n).A
+        assert 0<=i<n
+        A[i, i+n] = 1
+        return Clifford(d, A)
+    
+    @classmethod
     def swap(cls, d, n, idx, jdx):
         A = zeros_d(2*n+1, 2*n+1)
         A[2*n, 2*n] = 1
@@ -359,10 +367,12 @@ def test():
     assert Z**d == I
     assert Z*X == X*Z # looses the phase 
 
-    G = mulclose_fast([H, S])
-    assert len(G) == d**3 * (d**2 - 1)
+    G = mulclose_fast([H, S, X])
+    assert len(G) == d**3 * (d**2 - 1), len(G)
     for g in G:
         assert g * g.inverse() == I
+    pauli = [g for g in G if g.is_translation()]
+    assert len(pauli) == d ** (2*n)
 
     assert Si*S == S*Si == I
     assert S*Z == Z*S
@@ -372,6 +382,26 @@ def test():
     assert Hi*Z*H == X
 
     assert S*H*S*H*S*H == I
+
+    def get_order(g):
+        count = 1
+        op = g
+        while op != I:
+            op = g*op
+            count += 1
+        return count
+
+    S = Clifford.sy_s(d, n, 0)
+    assert get_order(S) == 3
+    Si = S.inverse()
+
+    op = S*X*Si
+    assert op == Z*X
+    op = S*op*Si
+    assert S*op*Si == X
+
+    return
+
 
     # --------------------------------------------
     # 2 qubit Clifford group order is 11520
@@ -429,16 +459,19 @@ def test():
     #print()
     #print(SWAP)
 
-    G = mulclose_fast([SI, IS, CX, HI, IH ])
-    assert len(G) == d**4 * d**(n**2) * (d**(2*n) - 1) * (d**(2*n-2) - 1)
-    if d==3:
-        assert len(G) == 4199040
+    if argv.slow:
+        G = mulclose_fast([SI, IS, CX, HI, IH ])
+        assert len(G) == d**4 * d**(n**2) * (d**(2*n) - 1) * (d**(2*n-2) - 1)
+        if d==3:
+            assert len(G) == 4199040
 
-    for g in G:
-        assert g.check()
-        h = g.inverse()
-        assert h.check()
-        assert g*h == II
+        for g in G:
+            assert g.check()
+            h = g.inverse()
+            assert h.check()
+            assert g*h == II
+
+    
 
 
 if __name__ == "__main__":

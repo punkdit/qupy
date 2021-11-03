@@ -80,6 +80,14 @@ class Clifford(object):
         A = dot2(self.A, other.A)
         return Clifford(A)
 
+    def __call__(self, v):
+        assert len(v)+1 == self.n
+        n = self.n
+        A = self.A
+        v = dot2(A[:n-1, :n-1], v)
+        v = (v + A[:n-1, n-1]) % 2
+        return v
+
     def __getitem__(self, key):
         return self.A[key]
 
@@ -121,6 +129,11 @@ class Clifford(object):
         assert self.shape == other.shape
         return self.key != other.key
 
+    def __lt__(self, other):
+        assert isinstance(other, Clifford)
+        assert self.shape == other.shape
+        return self.key < other.key
+
     def __hash__(self):
         # warning: i am mutable
         return hash(self.key)
@@ -141,6 +154,19 @@ class Clifford(object):
         for i in range(2*n+1):
             A[i, i] = 1
         return Clifford(A)
+
+    @classmethod
+    def from_symplectic_and_translation(cls, A, v=None):
+        n = len(A)
+        assert n%2 == 0
+        B = zeros2(n+1, n+1)
+        B[n, n] = 1
+        B[:n, :n] = A
+        if v is not None:
+            assert len(v) == n, len(v)
+            B[:n, n] = v
+        return Clifford(B)
+    from_symplectic = from_symplectic_and_translation
 
     @classmethod
     def z(cls, n, idx):
@@ -243,7 +269,20 @@ class Clifford(object):
         A = A[:n-1, :n-1]
         return numpy.alltrue(A == identity2(n-1))
 
-    def find_encoding(A, Lz, Lx):
+    def get_order(self):
+        I = Clifford.identity(self.n//2)
+        op = self
+        count = 1
+        while op != I:
+            op = self*op
+            count += 1
+        return count
+
+    def find_encoding(A, code):
+        Lx = [Clifford.make_op(l, Clifford.x) for l in code.Lx]
+        Lz = [Clifford.make_op(l, Clifford.z) for l in code.Lz]
+        Hx = [Clifford.make_op(l, Clifford.x) for l in code.Hx]
+        Hz = [Clifford.make_op(l, Clifford.z) for l in code.Hz]
         assert len(Lx) == len(Lz)
         Ai = A.inverse()
         rows = []
@@ -256,18 +295,58 @@ class Clifford(object):
         #B = B[:8, :]
         #print(B.shape)
         #print(shortstr(B))
-        U = numpy.array([l.get_translation() for l in Lz+Lx])
+        U = numpy.array([l.get_translation() for l in Lz+Lx+Hz+Hx])
         #print(U.shape)
         #print(shortstr(U))
         Ut = U.transpose()
         V = solve(Ut, B.transpose())
         if V is None:
             return None
-        print(A.get_translation())
-        u = solve(Ut, A.get_translation())
-        print( u is not None )
+        V = V[:2*code.k]
         #print(V.shape)
         #print(shortstr(V))
+
+        # check that V is symplectic
+        n = len(V) // 2
+        F = symplectic_form(n)
+        lhs = dot2(V.transpose(), dot2(F, V))
+        assert eq2(lhs, F)
+
+        #print(A.get_translation())
+        u = solve(Ut, A.get_translation())
+        u = u[:2*code.k]
+        #print(shortstr(u))
+
+        return Clifford.from_symplectic_and_translation(V, u)
+
+    def is_transversal(A, code):
+        Lz = [Clifford.make_op(l, Clifford.z) for l in code.Lz]
+        Lx = [Clifford.make_op(l, Clifford.x) for l in code.Lx]
+        Hz = [Clifford.make_op(l, Clifford.z) for l in code.Hz]
+        Hx = [Clifford.make_op(l, Clifford.x) for l in code.Hx]
+        hz = [op.get_translation() for op in Hz]
+        hx = [op.get_translation() for op in Hx]
+        h = array2(hz+hx)
+        ht = h.transpose()
+        Ai = A.inverse()
+        tgt = []
+        for u in Hz + Hx:
+            v = A*u*Ai
+            assert v.is_translation()
+            v = v.get_translation()
+            tgt.append(v)
+            #print(u.get_translation())
+            #print("-->")
+            #print(v)
+            #print()
+        tgt = array2(tgt)
+        src = array2([u.get_translation() for u in Hz+Hx])
+        tgt, src = tgt.transpose(), src.transpose()
+        if solve(tgt, src) is None:
+            return False
+        if solve(src, tgt) is None:
+            return False
+        return True
 
 
 def test():
@@ -316,29 +395,6 @@ def test():
     assert S*S*S*S == I
     assert S*S*S == Si
 
-#    B = array2([[1, 0], [0, 1], [1, 1]])
-#    C = array2([[1, 1], [0, 1], [1, 1]])
-#    for bits in cross( [(0,1)]*6 ):
-#        A = zeros2(2*n+1, 2*n+1)
-#        A[2*n, 2*n] = 1
-#        for idx, key in enumerate(numpy.ndindex((2,3))):
-#            #print(key, end=" ")
-#            A[key] = bits[idx]
-#        val = (A[0,0]*A[1,1] - A[0,1]*A[1,0])%2
-#        if val != 1:
-#            continue
-#        op = Clifford(A)
-#        #if op*op == Z:
-#        #    print(op, '\n')
-#        lhs = dot2(A, B)
-#        rhs = C
-#        if numpy.alltrue(lhs == rhs):
-#            print("op =")
-#            print(op, "\n")
-#            print(op*op, "\n")
-#            print(op*op*op, "\n")
-#            print(op*op*op*op, "\n")
-
     assert H*H == I
     assert H*X*H == Z
     assert H*Z*H == X
@@ -347,6 +403,46 @@ def test():
 
     G = mulclose_fast([S, H])
     assert len(G) == 24
+
+#    # --------------------------------------------
+#    # Look for group central extension
+#
+#    G = list(G)
+#    G.sort()
+#    P = [g for g in G if g.is_translation()] # Pauli group
+#    N = len(G)
+#    lookup = dict((g, idx) for (idx, g) in enumerate(G))
+#    coord = lambda g, h : lookup[h] + N*lookup[g] 
+#    #phi = numpy.zeros((N, N), dtype=int)
+#
+#    phi = {}
+#    for g in P:
+#      for h in P:
+#        phi[g, h] = 0
+#
+#    pairs = [(g, h) for g in G for h in G]
+#    triples = [(g, h, k) for g in G for h in G for k in G]
+#    done = False
+#    while not done:
+#      done = True
+#      print(len([phi.get(k) for k in pairs if phi.get(k) is None]))
+#      for (g, h, k) in triples:
+#        vals = [
+#            phi.get((g, h)),
+#            phi.get((h, k)),
+#            phi.get((g, h*k)),
+#            phi.get((g*h, k))]
+#        if vals.count(None) == 1:
+#            phi[g, h] = 0
+#            phi[h, k] = 0
+#            phi[g, h*k] = 0
+#            phi[g*h, k] = 0
+#            done = False
+#    print(len([phi.get(k) for k in pairs if phi.get(k) is None]))
+#    print(len(phi))
+#    print(len(pairs))
+#
+#    return
 
     # --------------------------------------------
     # Clifford group order is 11520
@@ -406,6 +502,10 @@ def test():
 
     assert CZ * XI * CZ == XI*IZ
     assert CZ * IX * CZ == IX*ZI
+
+    assert CX * CZ == CZ * CX
+    print("CX * CZ =")
+    print(CX * CZ)
 
     #print(CX*CX1)
     #print()
