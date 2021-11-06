@@ -12,13 +12,16 @@ We use a modified Hadamard gate, see [1] page 31.
 """
 
 print
+from random import shuffle
 
 import numpy
 from numpy import dot, alltrue, zeros, array, identity, kron
 
 
-from qupy.util import mulclose_fast
+from qupy.ldpc import asymplectic
+from qupy.util import mulclose_fast, mulclose_hom, mulclose_names
 from qupy.smap import SMap
+from qupy.argv import argv
 
 
 #int_scalar = numpy.int8 # dangerous...
@@ -70,11 +73,12 @@ class Clifford(object):
         key = re.tobytes(), im.tobytes(), dyadic
         return hash(key)
 
-    def __neg__(A):
+    def neg(A, inv=None):
         re, im, dyadic = A.re, A.im, A.dyadic
         op = Clifford(-re, -im, dyadic)
-        op.inv = -A.inv if A.inv is not A else op
+        op.inv = A.inv.neg(op) if inv is not None else inv # recurse
         return op
+    __neg__ = neg
 
     def mul(A, B, inv=None):
         re = dot(A.re, B.re) - dot(A.im, B.im)
@@ -115,6 +119,17 @@ class Clifford(object):
         re = identity(N, dtype=int_scalar)
         im = zeros((N, N), dtype=int_scalar)
         re[N-1, N-1] = -1
+        op = cls(re, im)
+        op.inv = op
+        return op
+
+    @classmethod
+    def cx(cls, n, src=0, tgt=1):
+        assert (n, src, tgt) == (2, 0, 1)
+        N = 2**n
+        re = zeros((N, N), dtype=int_scalar)
+        im = zeros((N, N), dtype=int_scalar)
+        re[:,:] = [[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]]
         op = cls(re, im)
         op.inv = op
         return op
@@ -227,8 +242,32 @@ def main():
     for g in G:
         assert g * g.inv == I
 
+    # -----------------------------------------------
+
+    ASp = asymplectic.build()
+
+    hom = mulclose_hom([H, S, X], [ASp.H, ASp.S, ASp.X])
+
+    print("|Clifford| =", len(hom))
+    kernel = []
+    image = set()
+    for g in hom:
+        image.add(hom[g])
+        if hom[g] == ASp.I:
+            kernel.append(g)
+    print("kernel:", len(kernel))
+    print("image:", len(image))
+
+    for g in hom:
+      for h in hom:
+        assert hom[g*h] == hom[g] * hom[h]
+
+    # -----------------------------------------------
+
     II = Clifford.identity(2)
-    #CNOT = Clifford.cnot(2)
+    iII = Clifford.phase(2)
+    nII = iII * iII
+    CX = Clifford.cx(2)
     CZ = Clifford.cz(2)
 
     IX = I @ X
@@ -239,15 +278,113 @@ def main():
     SI = S @ I
     IH = I @ H
     HI = H @ I
+    XZ = XI*IZ
+    ZX = IX*ZI
 
     assert CZ * CZ == II
 
     assert XI * XI == II
     assert Z@X == ZI*IX 
 
-    gen = [IX, XI, SI, IS, HI, IH, CZ]
-    G = mulclose_fast(gen)
-    assert len(G) == 4*11520
+    assert CZ == IH * CX * IH.inv
+
+    assert CZ * ZI == ZI * CZ
+    assert CZ * IZ == IZ * CZ
+
+    assert CZ * XI * CZ == XI*IZ
+    assert CZ * IX * CZ == IX*ZI
+
+    if argv.slow:
+        gen = [IX, XI, SI, IS, HI, IH, CZ]
+        G = mulclose_fast(gen)
+        assert len(G) == 4*11520
+        for g in G:
+            assert g * g.inv == II
+
+#    CZCX = CZ*CX
+#    CXCZ = CX*CZ
+#    phases = [II, iII, nII, nII*iII]
+#    def table(op):
+#        gen = [p*op for op in [II, XI, IX, ZI, IZ, XZ, ZX] for p in phases]
+#        for src in gen:
+#            tgt = op * src * op.inv
+#            for idx, h in enumerate(gen):
+#                if tgt == h:
+#                    break
+#            else:
+#                assert 0
+#    table(CZCX)
+#    table(CXCZ)
+#    return
+
+    # -----------------------------------------------
+
+    src = [IX, XI, SI, IS, HI, IH, CZ]
+    #ASp = asymplectic.build_stim()
+    tgt = [ASp.IX, ASp.XI, ASp.SI, ASp.IS, ASp.HI, ASp.IH]
+    G = mulclose_fast(G)
+
+    for g in G:
+        if g==ASp.II or g*g!=II:
+            continue
+        if g*ASp.SI != ASp.SI*g or g*ASp.IS != ASp.IS*g:
+            continue
+        tgt1 = tgt + [g]
+        hom = mulclose_hom_check(src, tgt1)
+        print(len(hom))
+        if hom is not None:
+            break
+    else:
+        assert 0
+
+    print("|Clifford| =", len(hom))
+    kernel = []
+    image = set()
+    G = list(hom.keys())
+    shuffle(G)
+    for g in G:
+        image.add(hom[g])
+        if hom[g] == ASp.II:
+            kernel.append(g)
+    print("kernel:", len(kernel))
+    print("image:", len(image))
+
+    return
+
+    for g in G:
+      for h in G:
+        assert hom[g*h] == hom[g] * hom[h]
+
+
+def mulclose_hom_check(gen1, gen2, verbose=False, maxsize=None):
+    "build a group hom from generators: gen1 -> gen2"
+    hom = {}
+    send = {}
+    assert len(gen1) == len(gen2)
+    for i in range(len(gen1)):
+        hom[gen1[i]] = gen2[i]
+    bdy = list(gen1)
+    changed = True
+    while bdy:
+        #if verbose:
+        #    print "mulclose:", len(hom)
+        _bdy = []
+        for A in gen1:
+            for B in bdy:
+                C1 = A*B
+                if C1 not in hom:
+                    hom[C1] = hom[A] * hom[B]
+                    _bdy.append(C1)
+                    if maxsize and len(els)>=maxsize:
+                        return list(els)
+                elif hom[C1] != hom[A] * hom[B]:
+                    return None
+                        
+        bdy = _bdy
+    return hom
+
+
+
 
 
 
@@ -255,6 +392,6 @@ if __name__ == "__main__":
 
     main()
 
-    print("OK")
+    print("OK\n")
 
 

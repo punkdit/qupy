@@ -16,6 +16,7 @@ from collections import namedtuple
 from functools import reduce
 from operator import mul
 from random import shuffle
+import string
 
 import numpy
 from numpy import concatenate as cat
@@ -347,6 +348,253 @@ class Clifford(object):
         if solve(src, tgt) is None:
             return False
         return True
+
+
+class NS(object):
+    def __init__(self, **kw):
+        self.__dict__.update(kw)
+
+
+
+def build():
+
+    # --------------------------------------------
+    # Clifford group order is 24
+
+    n = 1
+    I = Clifford.identity(n)
+
+    X = Clifford.x(n, 0)
+    Z = Clifford.z(n, 0)
+    S = Clifford.s(n, 0)
+    Si = S.inverse()
+    H = Clifford.hadamard(n, 0)
+    Y = X*Z
+
+    #make_relators(I, [X, Z, S, H, S*H]) # works
+    #return
+
+    # --------------------------------------------
+    # Clifford group order is 11520
+
+    n = 2
+    II = Clifford.identity(n)
+    XI = Clifford.x(n, 0)
+    IX = Clifford.x(n, 1)
+    ZI = Clifford.z(n, 0)
+    IZ = Clifford.z(n, 1)
+    SI = Clifford.s(n, 0)
+    IS = Clifford.s(n, 1)
+    HI = Clifford.hadamard(n, 0)
+    IH = Clifford.hadamard(n, 1)
+    CX = Clifford.cnot(n, 0, 1)
+    CZ = Clifford.cz(n, 0, 1)
+
+    assert CZ*SI == SI*CZ
+    assert CZ*IS == IS*CZ
+    assert CZ*CZ == II
+
+##    front = [XI, ZI, SI, HI, SI*HI, HI*SI*HI, CZ, SI*CZ, IS*CZ]
+##    front = [XI, ZI, SI, HI, SI*HI, HI*SI*HI, CZ, XI*CZ, IX*CZ]
+#    front = [XI, ZI, SI, HI, SI*HI, HI*SI*HI, CZ, XI*CZ, IX*CZ, CZ*XI*CZ, CZ*IX*CZ]
+#    back = [II, IX, IZ, IS, IH, IS*IH, IH*IS*IH]
+#    #gen = [g*h for g in front for h in back]
+#    gen = front + back 
+#    make_relators(II, gen, depth=6)
+
+    del n
+
+    return NS(**locals())
+
+
+def contains(src, tgt):
+    n, m = len(src), len(tgt)
+    if n > m:
+        return False
+    for i in range(m-n+1):
+        if src == tgt[i:i+n]:
+            return True
+    return False
+
+
+def make_relators(I, gen, names=None, depth=5):
+    # make some gap code for generators and relators
+    n = len(gen)
+    rels = set()
+    def addword(word):
+        i = min(word)
+        idx = word.index(i)
+        n = len(word)
+        word = tuple(word[(i+idx)%n] for i in range(n))
+        rels.add(word)
+
+    for width in range(2, depth):
+        itemss = [tuple(range(n))]*width
+        for word in cross(itemss):
+            gword = [gen[i] for i in word]
+            g = reduce(mul, gword)
+            if g == I:
+                for h in rels:
+                    if contains(h, word+word):
+                        break
+                else:
+                    addword(word)
+    print("rels:", len(rels))
+    if names is None:
+        names = string.ascii_letters[:n]
+    if len(names) < n:
+        names = ["%s%s"%(a,b) for a in string.ascii_letters for b in string.ascii_letters]
+    assert len(names) == len(set(names)) == n, repr(names)
+    print()
+    print("F := FreeGroup(%s);;" % (",".join('"%s"'%l for l in names)))
+    for idx, name in enumerate(names):
+        print("%s := F.%s;;" % (name, idx+1))
+    items = []
+    rels = list(rels)
+    rels.sort()
+    for rel in rels:
+        rel = [names[idx] for idx in rel]
+        rel = "*".join(rel)
+        items.append(rel)
+    print("G := F / [%s];;" % (','.join(items)))
+    print("Order(G);")
+
+
+def mulclose_names(gen, names, verbose=False, maxsize=None):
+    ops = list(gen)
+    words = dict((g, names[i]) for (i, g) in enumerate(gen))
+    bdy = gen
+    while bdy:
+        _bdy = []
+        for g in bdy:
+            for h in gen:
+                k = g*h
+                try:
+                    idx = ops.index(k)
+                    if len(words[g]+words[h]) < len(words[ops[idx]]):
+                        words[ops[idx]] = words[g]+words[h]
+                except ValueError:
+                    words[k] = words[g]+words[h]
+                    ops.append(k)
+                    _bdy.append(k)
+        bdy = _bdy
+        if verbose:
+            print("mulclose:", len(ops))
+        if maxsize and len(ops) >= maxsize:
+            break
+    return ops, words
+
+
+class Stim(object):
+    def __init__(self, op):
+        self.op = op
+    def __eq__(self, other):
+        return self.op == other.op
+    def __hash__(self):
+        return hash(str(self.op))
+    def __mul__(self, other):
+        return Stim(self.op * other.op)
+    @classmethod
+    def identity(cls, n):
+        from stim import Tableau
+        op = Tableau(n)
+        return Stim(op)
+    @classmethod
+    def op(cls, n, idx, name):
+        from stim import Tableau
+        op = Tableau(n)
+        gate = Tableau.from_named_gate(name)
+        op.append(gate, [idx])
+        return Stim(op)
+    @classmethod
+    def x(cls, n, idx):
+        return cls.op(n, idx, "X")
+    @classmethod
+    def z(cls, n, idx):
+        return cls.op(n, idx, "Z")
+    @classmethod
+    def s(cls, n, idx):
+        return cls.op(n, idx, "S")
+    @classmethod
+    def hadamard(cls, n, idx):
+        return cls.op(n, idx, "H")
+    @classmethod
+    def cnot(cls, n, src, tgt):
+        assert (n, src, tgt) == (2, 0, 1)
+        from stim import Tableau
+        gate = Tableau.from_named_gate("CNOT")
+        return cls(gate)
+    @classmethod
+    def cz(cls, n, src, tgt):
+        assert (n, src, tgt) == (2, 0, 1)
+        from stim import Tableau
+        gate = Tableau.from_named_gate("CZ")
+        return cls(gate)
+
+def build_stim():
+
+    n = 2
+    # --------------------------------------------
+    # Clifford group order is 11520
+
+    n = 2
+    II = Stim.identity(n)
+    XI = Stim.x(n, 0)
+    IX = Stim.x(n, 1)
+    ZI = Stim.z(n, 0)
+    IZ = Stim.z(n, 1)
+    SI = Stim.s(n, 0)
+    IS = Stim.s(n, 1)
+    HI = Stim.hadamard(n, 0)
+    IH = Stim.hadamard(n, 1)
+    CX = Stim.cnot(n, 0, 1)
+    CZ = Stim.cz(n, 0, 1)
+    XX = XI*IX
+    ZZ = ZI*IZ
+
+    assert XI*ZI == ZI*XI
+    assert SI*SI == ZI
+    assert SI*ZI == ZI*SI
+    assert SI*XI != XI*SI
+    assert SI*SI*SI*SI == II
+    assert CX * CX == II
+    assert CZ * CZ == II
+    assert CX * IX == IX * CX
+    assert CX * XI * CX == XX
+    assert CX * ZI == ZI * CX
+    assert CX * IZ * CX == ZZ
+
+#    SWAP = Clifford.swap(n, 0, 1)
+#    assert SWAP * ZI == IZ * SWAP
+#    assert SWAP * XI == IX * SWAP
+#    assert CX * CX1 * CX == SWAP
+
+    assert CZ == IH * CX * IH
+    assert CZ * ZI == ZI * CZ
+    assert CZ * IZ == IZ * CZ
+    assert CZ * XI * CZ == XI*IZ
+    assert CZ * IX * CZ == IX*ZI
+
+    assert CZ*SI == SI*CZ
+    assert CZ*IS == IS*CZ
+    assert CZ*CZ == II
+
+#    assert CX * CZ == CZ * CX
+
+#    print("CZ:")
+#    print(CZ.op)
+#    print("CX:")
+#    print(CX.op)
+#    print("CX*CZ:")
+#    print((CX*CZ).op)
+#    print("CZ*CX:")
+#    print((CZ*CX).op)
+#
+#    G = mulclose_fast([SI, IS, CX, HI, IH ])
+#    assert len(G) == 11520, len(G)
+
+
+    return NS(**locals())
 
 
 def test():
