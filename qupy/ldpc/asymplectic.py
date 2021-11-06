@@ -7,7 +7,7 @@ This is the qubit clifford group modulo phases.
 possible todo: implement phases as a group extension:
     phases >---> Clifford --->> AffineSymplectic
 
-for qudit version see qudit.py
+for qudit version see asymplectic_d.py
 
 
 """
