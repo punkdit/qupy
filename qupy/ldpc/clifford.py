@@ -246,21 +246,22 @@ def main():
 
     ASp = asymplectic.build()
 
-    hom = mulclose_hom([H, S, X], [ASp.H, ASp.S, ASp.X])
-
-    print("|Clifford| =", len(hom))
-    kernel = []
-    image = set()
-    for g in hom:
-        image.add(hom[g])
-        if hom[g] == ASp.I:
-            kernel.append(g)
-    print("kernel:", len(kernel))
-    print("image:", len(image))
-
-    for g in hom:
-      for h in hom:
-        assert hom[g*h] == hom[g] * hom[h]
+    if 0:
+        hom = mulclose_hom([H, S, X], [ASp.H, ASp.S, ASp.X])
+    
+        print("|Clifford| =", len(hom))
+        kernel = []
+        image = set()
+        for g in hom:
+            image.add(hom[g])
+            if hom[g] == ASp.I:
+                kernel.append(g)
+        print("kernel:", len(kernel))
+        print("image:", len(image))
+    
+        for g in hom:
+          for h in hom:
+            assert hom[g*h] == hom[g] * hom[h]
 
     # -----------------------------------------------
 
@@ -320,22 +321,10 @@ def main():
     # -----------------------------------------------
 
     src = [IX, XI, SI, IS, HI, IH, CZ]
-    #ASp = asymplectic.build_stim()
-    tgt = [ASp.IX, ASp.XI, ASp.SI, ASp.IS, ASp.HI, ASp.IH]
-    G = mulclose_fast(G)
-
-    for g in G:
-        if g==ASp.II or g*g!=II:
-            continue
-        if g*ASp.SI != ASp.SI*g or g*ASp.IS != ASp.IS*g:
-            continue
-        tgt1 = tgt + [g]
-        hom = mulclose_hom_check(src, tgt1)
-        print(len(hom))
-        if hom is not None:
-            break
-    else:
-        assert 0
+    ASp = asymplectic.build_stim()
+    tgt = [ASp.IX, ASp.XI, ASp.SI, ASp.IS, ASp.HI, ASp.IH, ASp.CZ]
+    G = mulclose_fast(tgt)
+    hom = mulclose_hom(src, tgt)
 
     print("|Clifford| =", len(hom))
     kernel = []

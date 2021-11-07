@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
 """
-Represent Clifford's as affine symplectic _transforms over Z/2 .
-This is the qubit clifford group modulo phases.
+Can we represent Clifford's as affine symplectic _transforms over Z/2 ?
+(The qubit clifford group modulo phases.)
+This does not seem to work, because of characteristic 2 glitches.
 
 possible todo: implement phases as a group extension:
     phases >---> Clifford --->> AffineSymplectic
 
 for qudit version see asymplectic_d.py
-
 
 """
 
@@ -222,7 +222,7 @@ class Clifford(object):
         assert 0<=i<n
         #A[i+n, i] = 1
         A[i, i+n] = 1
-        A[i+n, 2*n] = 1
+        A[i+n, 2*n] = 1 # ????
         return Clifford(A)
     
     @classmethod
@@ -390,8 +390,8 @@ def build():
     CX = Clifford.cnot(n, 0, 1)
     CZ = Clifford.cz(n, 0, 1)
 
-    assert CZ*SI == SI*CZ
-    assert CZ*IS == IS*CZ
+    #assert CZ*SI == SI*CZ # FAIL
+    #assert CZ*IS == IS*CZ # FAIL
     assert CZ*CZ == II
 
 ##    front = [XI, ZI, SI, HI, SI*HI, HI*SI*HI, CZ, SI*CZ, IS*CZ]
@@ -531,9 +531,9 @@ class Stim(object):
         gate = Tableau.from_named_gate("CZ")
         return cls(gate)
 
+
 def build_stim():
 
-    n = 2
     # --------------------------------------------
     # Clifford group order is 11520
 
@@ -551,6 +551,15 @@ def build_stim():
     CZ = Stim.cz(n, 0, 1)
     XX = XI*IX
     ZZ = ZI*IZ
+    XZ = XI*IZ
+    ZX = IX*ZI
+    YI = XI*ZI
+    IY = IX*IZ
+    YY = YI*IY
+    XY = XI*IY
+    YX = IX*YI
+    ZY = ZI*IY
+    YZ = IZ*YI
 
     assert XI*ZI == ZI*XI
     assert SI*SI == ZI
@@ -560,20 +569,20 @@ def build_stim():
     assert CX * CX == II
     assert CZ * CZ == II
     assert CX * IX == IX * CX
-    assert CX * XI * CX == XX
     assert CX * ZI == ZI * CX
-    assert CX * IZ * CX == ZZ
 
-#    SWAP = Clifford.swap(n, 0, 1)
-#    assert SWAP * ZI == IZ * SWAP
-#    assert SWAP * XI == IX * SWAP
-#    assert CX * CX1 * CX == SWAP
+    assert CX * IZ * CX == ZZ
+    assert CX * ZZ * CX == IZ
+    assert CX * XI * CX == XX
+    assert CZ * XX * CZ == YY
+    assert CX * XZ * CX == YY
 
     assert CZ == IH * CX * IH
     assert CZ * ZI == ZI * CZ
     assert CZ * IZ == IZ * CZ
-    assert CZ * XI * CZ == XI*IZ
-    assert CZ * IX * CZ == IX*ZI
+    assert CZ * XI * CZ == XZ
+    assert CZ * IX * CZ == ZX
+    assert CZ * ZX * CZ == IX
 
     assert CZ*SI == SI*CZ
     assert CZ*IS == IS*CZ
@@ -700,15 +709,24 @@ def test():
 
     XI = Clifford.x(n, 0)
     IX = Clifford.x(n, 1)
-    XX = XI * IX
     ZI = Clifford.z(n, 0)
     IZ = Clifford.z(n, 1)
-    ZZ = ZI * IZ
     SI = Clifford.s(n, 0)
     IS = Clifford.s(n, 1)
     SS = SI * IS
     HI = Clifford.hadamard(n, 0)
     IH = Clifford.hadamard(n, 1)
+    XX = XI*IX
+    ZZ = ZI*IZ
+    XZ = XI*IZ
+    ZX = IX*ZI
+    YI = XI*ZI
+    IY = IX*IZ
+    YY = YI*IY
+    XY = XI*IY
+    YX = IX*YI
+    ZY = ZI*IY
+    YZ = IZ*YI
 
     CX = Clifford.cnot(n, 0, 1)
     CX1 = Clifford.cnot(n, 1, 0)
@@ -750,6 +768,12 @@ def test():
 
     assert CZ * XI * CZ == XI*IZ
     assert CZ * IX * CZ == IX*ZI
+
+    assert CX * IZ * CX == ZZ
+    assert CX * ZZ * CX == IZ
+    assert CX * XI * CX == XX
+    assert CZ * XX * CZ == YY
+    assert CX * XZ * CX == YY
 
     assert CX * CZ == CZ * CX
     print("CX * CZ =")
