@@ -345,38 +345,6 @@ def main():
         assert hom[g*h] == hom[g] * hom[h]
 
 
-def mulclose_hom_check(gen1, gen2, verbose=False, maxsize=None):
-    "build a group hom from generators: gen1 -> gen2"
-    hom = {}
-    send = {}
-    assert len(gen1) == len(gen2)
-    for i in range(len(gen1)):
-        hom[gen1[i]] = gen2[i]
-    bdy = list(gen1)
-    changed = True
-    while bdy:
-        #if verbose:
-        #    print "mulclose:", len(hom)
-        _bdy = []
-        for A in gen1:
-            for B in bdy:
-                C1 = A*B
-                if C1 not in hom:
-                    hom[C1] = hom[A] * hom[B]
-                    _bdy.append(C1)
-                    if maxsize and len(els)>=maxsize:
-                        return list(els)
-                elif hom[C1] != hom[A] * hom[B]:
-                    return None
-                        
-        bdy = _bdy
-    return hom
-
-
-
-
-
-
 if __name__ == "__main__":
 
     main()
