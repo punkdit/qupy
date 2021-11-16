@@ -487,20 +487,50 @@ def mulclose_names(gen, names, verbose=False, maxsize=None):
 
 class Stim(object):
     def __init__(self, op):
-        self.op = op
+        #self.op = op
+        #self.key = str(op)
+        self.key = repr(op)
+        self._hash = hash(self.key)
+    @property
+    def op(self):
+        import stim
+        op = eval(self.key)
+        return op
+
+#class Stim(object):
+#    def __init__(self, op):
+#        r = repr(op)
+#        print(r)
+#        flds = r.split('"')
+#        assert len(flds) == 5, flds
+#        x = flds[1]
+#        z = flds[3]
+#        self.key = (x, z)
+#        self._hash = hash(self.key)
+#    @property
+#    def op(self):
+#        from stim import Tableau, PauliString
+#        x, z = self.key
+#        op = Tableau.from_conjugated_generators( 
+#            xs=[PauliString(x)], zs=[PauliString(z)])
+#        return op
+
     def __eq__(self, other):
         return self.op == other.op
     def __hash__(self):
-        return hash(str(self.op))
+        #return hash(str(self.op))
+        return self._hash
     def __mul__(self, other):
         return Stim(self.op * other.op)
+    def inverse(self):
+        return Stim(self.op**-1)
     @classmethod
     def identity(cls, n):
         from stim import Tableau
         op = Tableau(n)
         return Stim(op)
     @classmethod
-    def op(cls, n, idx, name):
+    def mkop(cls, n, idx, name):
         from stim import Tableau
         op = Tableau(n)
         gate = Tableau.from_named_gate(name)
@@ -508,28 +538,51 @@ class Stim(object):
         return Stim(op)
     @classmethod
     def x(cls, n, idx):
-        return cls.op(n, idx, "X")
+        return cls.mkop(n, idx, "X")
+    x_gate = x
     @classmethod
     def z(cls, n, idx):
-        return cls.op(n, idx, "Z")
+        return cls.mkop(n, idx, "Z")
+    z_gate = z
     @classmethod
     def s(cls, n, idx):
-        return cls.op(n, idx, "S")
+        return cls.mkop(n, idx, "S")
+    s_gate = s
     @classmethod
     def hadamard(cls, n, idx):
-        return cls.op(n, idx, "H")
+        return cls.mkop(n, idx, "H")
+    h_gate = hadamard
     @classmethod
     def cnot(cls, n, src, tgt):
-        assert (n, src, tgt) == (2, 0, 1)
+        assert 0<=src<n
+        assert 0<=tgt<n
         from stim import Tableau
         gate = Tableau.from_named_gate("CNOT")
-        return cls(gate)
+        op = Tableau(n)
+        op.append(gate, [src, tgt])
+        return cls(op)
+    cx_gate = cnot
     @classmethod
     def cz(cls, n, src, tgt):
-        assert (n, src, tgt) == (2, 0, 1)
+        assert 0<=src<n
+        assert 0<=tgt<n
         from stim import Tableau
         gate = Tableau.from_named_gate("CZ")
-        return cls(gate)
+        op = Tableau(n)
+        op.append(gate, [src, tgt])
+        return cls(op)
+    cz_gate = cz
+    @classmethod
+    def swap(cls, n, src, tgt):
+        assert 0<=src<n
+        assert 0<=tgt<n
+        from stim import Tableau
+        gate = Tableau.from_named_gate("SWAP")
+        op = Tableau(n)
+        op.append(gate, [src, tgt])
+        return cls(op)
+    swap_gate = swap
+
 
 
 def build_stim():
@@ -598,12 +651,74 @@ def build_stim():
 #    print((CX*CZ).op)
 #    print("CZ*CX:")
 #    print((CZ*CX).op)
-#
-#    G = mulclose_fast([SI, IS, CX, HI, IH ])
-#    assert len(G) == 11520, len(G)
 
+    G = mulclose_fast([SI, IS, CX, HI, IH ])
+    assert len(G) == 11520, len(G)
+
+    # --------------------------------------------
+
+    n = 3
+    III = Stim.identity(n)
+    XII = Stim.x_gate(n, 0)
+    IXI = Stim.x_gate(n, 1)
+    IZI = Stim.z_gate(n, 1)
+    ICZ = Stim.cz_gate(n, 1, 2)
+    CZ_01 = Stim.cz_gate(n, 0, 1)
+
+    SW_02 = Stim.swap_gate(n, 0, 2)
+    CX_02 = Stim.cx_gate(n, 0, 2)
+    CX_20 = Stim.cx_gate(n, 2, 0)
+
+    assert ICZ == Stim.cz_gate(n, 2, 1)
+    assert ICZ * ICZ == III
+    assert XII * ICZ == ICZ * XII
+    assert IXI * ICZ != ICZ * IXI
+    assert IZI * ICZ == ICZ * IZI
+
+    assert SW_02 == CX_02*CX_20*CX_02
+    assert SW_02*SW_02 == III
+    assert SW_02*CZ_01*SW_02 == ICZ
+    assert SW_02.inverse() == SW_02
+
+    g = CX_02 * CZ_01
+    assert g * g.inverse() == III
+
+    # ------------------------------------------
+
+    n = 4
+    cz01 = Stim.cz_gate(n, 0, 1)
+    cz02 = Stim.cz_gate(n, 0, 2)
+    cz03 = Stim.cz_gate(n, 0, 3)
+    cz12 = Stim.cz_gate(n, 1, 2)
+    cz13 = Stim.cz_gate(n, 1, 3)
+    cz23 = Stim.cz_gate(n, 2, 3)
+    h0 = Stim.h_gate(n, 0)
+    h1 = Stim.h_gate(n, 1)
+    h2 = Stim.h_gate(n, 2)
+    h3 = Stim.h_gate(n, 3)
+    s0 = Stim.s_gate(n, 0)
+    s1 = Stim.s_gate(n, 1)
+    s2 = Stim.s_gate(n, 2)
+    s3 = Stim.s_gate(n, 3)
+
+    gens = [
+        h0*h1*h2*h3,
+        cz01*cz23,
+        cz02*cz13,
+        cz03*cz12,         # = 768
+        Stim.z_gate(n, 0),
+        Stim.z_gate(n, 1),
+        Stim.z_gate(n, 2),
+        Stim.z_gate(n, 3), # = 196608
+        cz01*s2*s3,
+        cz02*s1*s3,
+        cz03*s1*s2,
+    ]
+    G = mulclose_fast(gens, verbose=True)
+    print("\n|G| =", len(G))
 
     return NS(**locals())
+
 
 
 def test():

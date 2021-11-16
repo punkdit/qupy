@@ -203,7 +203,7 @@ class Symplectic(object):
         n //= 2
         self.A = A
         self.n = n
-        self.check()
+        #self.check()
 
     def check(A):
         n, A = A.n, A.A
@@ -364,27 +364,28 @@ def main():
 
     # ------------------------------------------------
 
+    # wtf is going on here, i don't know...
+
     I = Heisenberg([0, 0])
     w = Heisenberg([0, 0], 1)
     X = Heisenberg([1, 0])
     Z = Heisenberg([0, 1])
-    Y = Heisenberg([1, 1], 1)
-    XZ = Heisenberg([1, 1], 1)
-    ZX = Heisenberg([1, 1], 3)
+    Y = Heisenberg([1, 1], 2)  # ?
+    XZ = Heisenberg([1, 1], 1) # ?
+    ZX = Heisenberg([1, 1], 3) # ?
 
-    #assert X.sy(Z) == 1
-    #assert Z.sy(X) == 1
-
+    assert X*X == I
+    assert Z*Z == I
     assert XZ != ZX
     assert XZ == -ZX
-    assert X*Z == XZ, (X*Z, XZ)
-#    assert Z*X == ZX
-#    assert Y == w*X*Z
-#
-#    assert w != I
-#    assert w**2 != I
-#    assert w**3 != I
-#    assert w**4 == I
+    assert X*Z == XZ
+    assert Z*X == ZX
+    assert Y == w*X*Z
+
+    assert w != I
+    assert w**2 != I
+    assert w**3 != I
+    assert w**4 == I
 
     XI = X@I
     ZI = Z@I
@@ -404,6 +405,8 @@ def main():
 
     HW = mulclose_fast([wII, XI, ZI, IX, IZ])
     assert len(HW) == 64
+
+    return
 
     # ------------------------------------------------
 
