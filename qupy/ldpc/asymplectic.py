@@ -489,6 +489,7 @@ class Stim(object):
     def __init__(self, op):
         #self.op = op
         #self.key = str(op)
+        self.n = len(op)
         self.key = repr(op)
         self._hash = hash(self.key)
     @property
@@ -517,18 +518,43 @@ class Stim(object):
 
     def __eq__(self, other):
         return self.op == other.op
+
     def __hash__(self):
         #return hash(str(self.op))
         return self._hash
+
     def __mul__(self, other):
         return Stim(self.op * other.op)
+
     def inverse(self):
         return Stim(self.op**-1)
+
+    def __call__(self, hz, hx):
+        from stim import PauliString
+        n = self.n
+        pop = PauliString("I"*n)
+        if hz is not None:
+            assert n == len(hz)
+            pop = pop*PauliString(''.join(["IZ"[i] for i in hz]))
+        if hx is not None:
+            assert n == len(hx)
+            pop = pop*PauliString(''.join(["IX"[i] for i in hx]))
+        pop = self.op(pop)
+        phase, zop, xop = pop.sign, [0]*n, [0]*n
+        for i in range(n):
+            j = pop[i] # 0=I, 1=X, 2=Y, 3=Z
+            if j==1 or j==2:
+                xop[i] = 1
+            if j==3 or j==2:
+                zop[i] = 1
+        return phase, array2(zop), array2(xop)
+
     @classmethod
     def identity(cls, n):
         from stim import Tableau
         op = Tableau(n)
         return Stim(op)
+
     @classmethod
     def mkop(cls, n, idx, name):
         from stim import Tableau
@@ -536,22 +562,27 @@ class Stim(object):
         gate = Tableau.from_named_gate(name)
         op.append(gate, [idx])
         return Stim(op)
+
     @classmethod
     def x(cls, n, idx):
         return cls.mkop(n, idx, "X")
     x_gate = x
+
     @classmethod
     def z(cls, n, idx):
         return cls.mkop(n, idx, "Z")
     z_gate = z
+
     @classmethod
     def s(cls, n, idx):
         return cls.mkop(n, idx, "S")
     s_gate = s
+
     @classmethod
     def hadamard(cls, n, idx):
         return cls.mkop(n, idx, "H")
     h_gate = hadamard
+
     @classmethod
     def cnot(cls, n, src, tgt):
         assert 0<=src<n
@@ -562,6 +593,7 @@ class Stim(object):
         op.append(gate, [src, tgt])
         return cls(op)
     cx_gate = cnot
+
     @classmethod
     def cz(cls, n, src, tgt):
         assert 0<=src<n
@@ -572,6 +604,7 @@ class Stim(object):
         op.append(gate, [src, tgt])
         return cls(op)
     cz_gate = cz
+
     @classmethod
     def swap(cls, n, src, tgt):
         assert 0<=src<n
@@ -586,6 +619,12 @@ class Stim(object):
 
 
 def build_stim():
+
+    n = 1
+    S = Stim.s_gate(n, 0)
+    Si = S.inverse()
+
+    #print(S([1], [1]))
 
     # --------------------------------------------
     # Clifford group order is 11520
@@ -652,8 +691,9 @@ def build_stim():
 #    print("CZ*CX:")
 #    print((CZ*CX).op)
 
-    G = mulclose_fast([SI, IS, CX, HI, IH ])
-    assert len(G) == 11520, len(G)
+    # slow...
+    #G = mulclose_fast([SI, IS, CX, HI, IH ])
+    #assert len(G) == 11520, len(G)
 
     # --------------------------------------------
 
@@ -706,16 +746,16 @@ def build_stim():
         cz01*cz23,
         cz02*cz13,
         cz03*cz12,         # = 768
-        Stim.z_gate(n, 0),
-        Stim.z_gate(n, 1),
-        Stim.z_gate(n, 2),
-        Stim.z_gate(n, 3), # = 196608
-        cz01*s2*s3,
-        cz02*s1*s3,
-        cz03*s1*s2,
+        #Stim.z_gate(n, 0),
+        #Stim.z_gate(n, 1),
+        #Stim.z_gate(n, 2),
+        #Stim.z_gate(n, 3), # = 196608
+        #cz01*s2*s3,
+        #cz02*s1*s3,
+        #cz03*s1*s2,
     ]
-    G = mulclose_fast(gens, verbose=True)
-    print("\n|G| =", len(G))
+    #G = mulclose_fast(gens, verbose=True)
+    #print("\n|G| =", len(G))
 
     return NS(**locals())
 
