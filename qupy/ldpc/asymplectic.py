@@ -529,25 +529,39 @@ class Stim(object):
     def inverse(self):
         return Stim(self.op**-1)
 
-    def __call__(self, hz, hx):
+    def __call__(self, phase, hz, hx):
+        # Here we represent pauli ops as phase*Z*X
+        # so that Y = i*Z*X
         from stim import PauliString
         n = self.n
-        pop = PauliString("I"*n)
+        src = PauliString("I"*n)
+        #print("__call__", phase, hz, hx)
         if hz is not None:
             assert n == len(hz)
-            pop = pop*PauliString(''.join(["IZ"[i] for i in hz]))
+            src = src*PauliString(''.join(["IZ"[i] for i in hz]))
+        #print("\t", src)
         if hx is not None:
             assert n == len(hx)
-            pop = pop*PauliString(''.join(["IX"[i] for i in hx]))
-        pop = self.op(pop)
-        phase, zop, xop = pop.sign, [0]*n, [0]*n
+            src = src*PauliString(''.join(["IX"[i] for i in hx]))
+        #print("\t", src)
+        tgt = self.op(src)
+        #print("\t", phase, "*", src, "--->", tgt)
+        phase *= tgt.sign
+        zop, xop = [0]*n, [0]*n
         for i in range(n):
-            j = pop[i] # 0=I, 1=X, 2=Y, 3=Z
-            if j==1 or j==2:
+            j = tgt[i] # 0=I, 1=X, 2=Y, 3=Z
+            if j==1:
                 xop[i] = 1
-            if j==3 or j==2:
+            elif j==2:
+                # Y = -1j*Z*X
+                xop[i] = 1
                 zop[i] = 1
-        return phase, array2(zop), array2(xop)
+                phase *= -1j
+            elif j==3:
+                zop[i] = 1
+            else:
+                assert 0, "j=%d"%j
+        return phase, zop, xop
 
     @classmethod
     def identity(cls, n):
@@ -619,12 +633,31 @@ class Stim(object):
 
 
 def build_stim():
+    from stim import PauliString
+
+    X = PauliString("X")
+    Y = PauliString("Y")
+    Z = PauliString("Z")
+    assert str(Z*X) == "+iY"
+    assert str(X*Z) == "-iY"
+    assert str(X*Y*Z) == "+i_"
 
     n = 1
     S = Stim.s_gate(n, 0)
     Si = S.inverse()
 
-    #print(S([1], [1]))
+    op = (1., [0], [1]) # == +X
+    op = S(*op)
+    assert op == (-1j, [1], [1]) # == Y
+    op = S(*op)
+    assert op == (-1, [0], [1]) # == -X
+    op = S(*op)
+    assert op == (+1j, [1], [1]) # == Y
+    op = S(*op)
+    assert op == (+1, [0], [1]) # == +X
+
+    op = (1., [0], [1])
+    assert Si(*op) == (1j, [1], [1]) # == -Y
 
     # --------------------------------------------
     # Clifford group order is 11520
