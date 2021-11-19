@@ -550,7 +550,9 @@ class Stim(object):
         zop, xop = [0]*n, [0]*n
         for i in range(n):
             j = tgt[i] # 0=I, 1=X, 2=Y, 3=Z
-            if j==1:
+            if j==0:
+                pass
+            elif j==1:
                 xop[i] = 1
             elif j==2:
                 # Y = -1j*Z*X
