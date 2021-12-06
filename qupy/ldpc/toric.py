@@ -169,8 +169,8 @@ class Toric2D(object):
         fill(Lz[1], 0, 0, 1, 0, 1)
         fill(Lx[0], 0, 0, 0, 0, 1)
         fill(Lx[1], 0, 0, 1, 1, 0)
-        print(shortstr(Lx))
-        print(shortstr(Lz))
+        #print(shortstr(Lx))
+        #print(shortstr(Lz))
 
 #        for i in range(l):
 #            Lx[0, keymap[i, l-1, 1]] = 1

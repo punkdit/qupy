@@ -661,6 +661,9 @@ def build_stim():
     op = (1., [0], [1])
     assert Si(*op) == (1j, [1], [1]) # == -Y
 
+    CZ = Stim.cz_gate(2, 0, 1)
+    print(CZ(1., [0,0], [1,1]))
+
     # --------------------------------------------
     # Clifford group order is 11520
 
