@@ -1809,15 +1809,15 @@ def test_toric():
     """
     Moussa transverse S gate on 8-qubit toric code
 
-    qubits are numbered starting from 1:
+    qubits are numbered:
 
-    +-1-+-2-
+    +-0-+-1-
     |   |
-    3   4
+    2   3
     |   |
-    +-5-+-6-
+    +-4-+-5-
     |   |
-    7   8
+    6   7
     |   |
 
     (I @ S @ I @ ~S @ S @ I @ ~S @ I)*CZ(1,6)*CZ(3,8)
@@ -1829,10 +1829,15 @@ def test_toric():
     Lx = parse(".1...1..  ......11")
     Lz = parse("....11..  ...1...1")
 
-    #       1  2  3  4  5  6  7  8
+    # A reflection works
+    #       0  1  2  3  4  5  6  7
     perm = (5, 1, 7, 3, 4, 0, 6, 2)
-
     find_fold(Hx, Hz, Lx, Lz, perm, idxs=(0,1,0,1), check=True)
+
+    # A rotation involution does not work
+    #       0  1  2  3  4  5  6  7
+    perm = (7, 6, 5, 4, 3, 2, 1, 0)
+    find_fold(Hx, Hz, Lx, Lz, perm, idxs=(), check=True)
 
     
 
@@ -1900,7 +1905,7 @@ def find_fold(Hz, Hx, Lz, Lx, perm, idxs=None, check=False):
         print("idxs =", idxs)
         print("fold =", fold)
     
-        if 0:
+        if 1:
             lhs = fold*P
             rhs = P*fold
     
@@ -1921,7 +1926,7 @@ def find_fold(Hz, Hx, Lz, Lx, perm, idxs=None, check=False):
                 del v
             print()
 
-        break
+        #break
 
 
 
