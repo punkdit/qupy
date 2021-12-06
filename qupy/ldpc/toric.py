@@ -271,6 +271,7 @@ class Toric2D(object):
 
     def strop(self, u, fancy=False):
         m = SMap()
+        u = array2(u)
         n = u.shape[0]
         for i in range(n):
             c = str(min(1, u[i]))
