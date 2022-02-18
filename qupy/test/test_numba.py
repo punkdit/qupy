@@ -1059,7 +1059,7 @@ def main_vasmer():
 
 
 def main_832():
-    """ Build the [[8,3,2]] code
+    """ Build the [[8,3,2]] code.
 
     We number qubits of the cube like this:
     0 ----------- 1
@@ -1068,10 +1068,13 @@ def main_832():
     |  2-------3  |
     |  |       |  |
     |  |       |  |
-    |  4-------5  |
+    |  6-------7  |
     | /         \ |
     |/           \|
-    6 ----------- 7
+    4 ----------- 5
+
+    See: 
+    https://earltcampbell.com/2016/09/26/the-smallest-interesting-colour-code/
     """
 
     make_op = Operator.make_op
@@ -1079,7 +1082,7 @@ def main_832():
 
     n = 8
     I = make_I(n)
-    stabs = ("XXXXXXXX ZZIIIIZZ IIZZZZII ZZZZIIII ZZZZZZZZ")
+    stabs = ("XXXXXXXX ZZZZIIII ZZIIZZII ZIZIZIZI ZZZZZZZZ")
     stabs = [make_op(decl) for decl in stabs.split()]
 
     # Check these commute
@@ -1097,17 +1100,25 @@ def main_832():
 
     assert P*P == (2**len(stabs))*P
 
+    # build the encoded CCZ operator
+    bits = [0, 1, 1, 0, 1, 0, 0, 1]
+    ops = [Operator.make_tensor1(n, Gate.T, i) if bits[i] else Operator.make_tensor1(n, ~Gate.T, i) 
+        for i in range(n)]
+    T = reduce(mul, ops)
+    # check the projector commutes with the gate
+    assert T*P == P*T # works!
+
     # build a gate
     T  = Operator.make_tensor1(n, Gate.S, 0)
-    T *= Operator.make_tensor1(n, ~Gate.S, 5)
-    orbits = [(1, 2, 6), (3, 4, 7)]
+    T *= Operator.make_tensor1(n, ~Gate.S, 7)
+    orbits = [(1, 2, 4), (3, 6, 5)]
     for orbit in orbits:
       for i in range(3):
         a, b = orbit[i], orbit[(i+1)%3]
         T *= Operator.make_control(n, Gate.Z, a, b)
 
     # check the projector commutes with the gate
-    assert T*P == P*T
+    assert T*P == P*T # ????
 
 
 
