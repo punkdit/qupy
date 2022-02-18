@@ -1058,6 +1058,41 @@ def main_vasmer():
     assert T*P == P*T
 
 
+def main_832():
+
+    make_op = Operator.make_op
+    make_I = Operator.make_I
+
+    n = 8
+    I = make_I(n)
+    stabs = ("XXXXXXXX ZZIIIIZZ IIZZZZII ZZZZIIII")
+    stabs = [make_op(decl) for decl in stabs.split()]
+
+    for a in stabs:
+        for b in stabs:
+            assert a*b == b*a
+        #print("/", end="", flush=True)
+
+    P = None
+    for ops in cross([(None, op) for op in stabs]):
+        ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
+        op = reduce(mul, ops)
+        P = op if P is None else op+P
+
+    assert P*P == (2**len(stabs))*P
+
+    T  = Operator.make_tensor1(n, Gate.S, 0)
+    T *= Operator.make_tensor1(n, ~Gate.S, 5)
+    orbits = [(1, 2, 6), (3, 4, 7)]
+    for orbit in orbits:
+      for i in range(3):
+        a, b = orbit[i], orbit[(i+1)%3]
+        T *= Operator.make_control(n, Gate.Z, a, b)
+
+    assert T*P == P*T
+
+
+
 from qupy.ldpc.solve import (
         identity2, kron, dot2, rank, int_scalar, 
         parse, remove_dependent, zeros2, rand2, shortstr, all_codes,
