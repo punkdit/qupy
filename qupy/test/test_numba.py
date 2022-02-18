@@ -1059,20 +1059,36 @@ def main_vasmer():
 
 
 def main_832():
+    """ Build the [[8,3,2]] code
+
+    We number qubits of the cube like this:
+    0 ----------- 1
+    |\           /|
+    | \         / |
+    |  2-------3  |
+    |  |       |  |
+    |  |       |  |
+    |  4-------5  |
+    | /         \ |
+    |/           \|
+    6 ----------- 7
+    """
 
     make_op = Operator.make_op
     make_I = Operator.make_I
 
     n = 8
     I = make_I(n)
-    stabs = ("XXXXXXXX ZZIIIIZZ IIZZZZII ZZZZIIII")
+    stabs = ("XXXXXXXX ZZIIIIZZ IIZZZZII ZZZZIIII ZZZZZZZZ")
     stabs = [make_op(decl) for decl in stabs.split()]
 
+    # Check these commute
     for a in stabs:
         for b in stabs:
             assert a*b == b*a
         #print("/", end="", flush=True)
 
+    # build the code projector
     P = None
     for ops in cross([(None, op) for op in stabs]):
         ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
@@ -1081,6 +1097,7 @@ def main_832():
 
     assert P*P == (2**len(stabs))*P
 
+    # build a gate
     T  = Operator.make_tensor1(n, Gate.S, 0)
     T *= Operator.make_tensor1(n, ~Gate.S, 5)
     orbits = [(1, 2, 6), (3, 4, 7)]
@@ -1089,6 +1106,7 @@ def main_832():
         a, b = orbit[i], orbit[(i+1)%3]
         T *= Operator.make_control(n, Gate.Z, a, b)
 
+    # check the projector commutes with the gate
     assert T*P == P*T
 
 
