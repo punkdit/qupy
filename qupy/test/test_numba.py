@@ -1108,15 +1108,14 @@ def main_832():
     # check the projector commutes with the gate
     assert T*P == P*T # works!
 
-    if 0:
-        # build a Clifford gate
-        T  = Operator.make_tensor1(n, Gate.S, 0)
-        T *= Operator.make_tensor1(n, ~Gate.S, 7)
-        orbits = [(1, 2, 4), (3, 6, 5)]
-        for orbit in orbits:
-          for i in range(3):
-            a, b = orbit[i], orbit[(i+1)%3]
-            T *= Operator.make_control(n, Gate.Z, a, b)
+    # build a Clifford gate
+    C  = Operator.make_tensor1(n, Gate.S, 0)
+    C *= Operator.make_tensor1(n, ~Gate.S, 7)
+    orbits = [(1, 2, 4), (3, 6, 5)]
+    for orbit in orbits:
+      for i in range(3):
+        a, b = orbit[i], orbit[(i+1)%3]
+        C *= Operator.make_control(n, Gate.Z, a, b)
 
     # build a Clifford^2 gate
     T  = Operator.make_tensor1(n, Gate.T, 0)
@@ -1132,6 +1131,11 @@ def main_832():
         for i in [0, 1, 2]:
             a, b = orbit[i], orbit[(i+1)%3]
             T *= Operator.make_swap(n, a, b)
+
+    X = stabs[0]
+    print( T * X == X * C )
+
+    return
 
     # check the projector commutes with the gate
     assert T*P == P*T # ????
