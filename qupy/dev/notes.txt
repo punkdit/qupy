@@ -1,4 +1,32 @@
 
+
+27/9/22
+=======
+
+     IIIII
+    
+    +IXZZX
+    -IZYYZ
+    -IYXXY
+    
+    +XIXZZ
+    -ZIZYY
+    -YIYXX
+    
+    -XYIYX
+    +ZXIXZ
+    -YZIZY
+    
+    -XXYIY
+    +ZZXIX
+    -YYZIZ
+    
+    -ZYYZI
+    -YXXYI
+    +XZZXI
+
+
+
 13/9/22
 =======
 

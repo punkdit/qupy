@@ -4,13 +4,14 @@
 Construct transversal S gate on a folded surface code.
 See: https://arxiv.org/abs/1603.02286
 
-Use numba accelerated operators.
+Use _numba accelerated operators.
 
 """
 
 import sys
 import math
-from random import shuffle, seed, choice
+from math import sqrt
+from random import shuffle, seed, choice, randint
 from functools import reduce
 from operator import mul, matmul
 
@@ -23,6 +24,7 @@ def showmem(desc):
     pass
 
 import numpy
+from numpy.linalg import norm
 import numba as nb
 
 from qupy.argv import argv
@@ -63,11 +65,11 @@ if is_real:
 
 else:
     I, X, Z, S, T = Gate.I, Gate.X, Gate.Z, Gate.S, Gate.T
+    Y = Gate.Y
     
     assert X*X == I
     assert Z*Z == I
     assert S*S == Z
-    #assert (T*T).is_close(S, 1e-6)
     assert T*T == S
     
     Sd = S.dag()
@@ -772,6 +774,17 @@ def test():
     B = Operator.make_control(2, Gate.Z, 0, 1)
     assert A == B
 
+    n = 2
+    SWAP = Operator.make_swap(n, 0, 1)
+    HI = Operator.make_tensor1(n, Gate.H, 0)
+    IH = Operator.make_tensor1(n, Gate.H, 1)
+    CN = Operator.make_control(n, Gate.X, 0, 1)
+
+    G = mulclose([SWAP, HI, IH, CN], True, 10000)
+    print(len(G))
+
+    return
+
     n = 5
     A = Operator.make_cnz(n)
     v = numpy.zeros((2,)*n, dtype=scalar)
@@ -1058,10 +1071,274 @@ def main_vasmer():
     assert T*P == P*T
 
 
+def main_kagome():
+    make_op = Operator.make_op
+    make_I = Operator.make_I
+
+    n = 27
+    I = make_I(n)
+
+    stabs = """
+    ..............X....X..X....
+    ......XX.........X.........
+    ........X.....X......X.....
+    ..X........X..............X
+    ........X..X.....X.........
+    ......X.........X.......X..
+    .............X....X..X.....
+    ....XX...................X.
+    ..X.........X..........X...
+    .....X............X.....X..
+    .X...........X......X......
+    .X.......XX................
+    ...X...........X.........X.
+    .........X..X...X..........
+    ...............X....X.....X
+    X.........X........X.......
+    X..X...X...................
+    Z......ZZ.....Z..Z.Z.......
+    ZZ.Z......Z....Z....Z......
+    ..Z...Z....ZZ...ZZ.........
+    ........Z..Z.Z......ZZ....Z
+    ....ZZ........Z...Z..ZZ....
+    ..Z.Z..........Z.......Z.ZZ
+    .Z.......Z...Z..Z.Z.....Z..
+    ...Z.ZZZ................ZZ.
+    """.strip()
+    codes = ["""
+    ....X........X........X....
+    ....X....X...........X.....
+    ...X.........X....X........
+    ...X.............X.X.......
+    .....X...X...............X.
+    .....X...........X......X..
+    X...........X.........X....
+    X...............X......X...
+    ..X........X........X......
+    ..X.............X..X.......
+    .X..........X.............X
+    .X.........X.............X.
+    ........X.X..........X.....
+    ........X......X.......X...
+    .......X......X...X........
+    .......X..X.........X......
+    ......X.......X...........X
+    ...ZZZZZZZZ..ZZZ.Z.........
+    Z..Z.........Z..Z..Z..Z....
+    ZZZZZZ...Z.ZZZ..ZZ.........
+    ....ZZ.ZZZZ..Z.Z..Z.....Z..
+    ....Z..Z..Z..Z....Z..Z.....
+    ..Z.....Z.Z.....Z...Z..Z...
+    .Z..Z....Z..Z.........Z..Z.
+    Z.....Z.....Z..Z.......Z..Z
+    """,
+    """
+    ........X....X...........X.
+    ........XX..............X..
+    .......X.........X....X....
+    .......X.....X.......X.....
+    ......X..........XX........
+    ......X..X.........X.......
+    ....X...........X.........X
+    ....X.......X............X.
+    ...X............X.....X....
+    ...X.......X...........X...
+    .....X......X.......X......
+    .....X.....X.......X.......
+    X..............X..........X
+    X.........X.............X..
+    ..X...........X......X.....
+    ..X.......X............X...
+    .X.............X..X........
+    ...ZZZZZZZ.ZZZ..ZZ.........
+    ....Z..Z.....Z..Z.....Z..Z.
+    ....ZZ.ZZZ..ZZ..Z..Z..Z....
+    ZZ....ZZ.Z....ZZ.Z...Z..Z..
+    Z.....Z..Z.....Z..Z.....Z..
+    Z.ZZ....Z....Z..Z....Z.ZZ.Z
+    ..Z.....Z.Z..Z.......Z..Z..
+    .Z..Z.......Z..Z....Z.....Z
+    """,
+    """
+    X........X........X........
+    X............X.....X.......
+    ..X..............X.......X.
+    ..X..........X..........X..
+    .X.......X............X....
+    .X...............X...X.....
+    ........X.......X...X......
+    ........X...X......X.......
+    .......X...X..............X
+    .......X........X........X.
+    ......X....X..........X....
+    ......X.....X..........X...
+    ....X.....X.......X........
+    ....X..........X....X......
+    ...X......X...............X
+    ...X..........X.........X..
+    .....X.........X.....X.....
+    .Z.....Z...Z.....Z....Z..Z.
+    ZZZ...ZZZZ.ZZZ..ZZ.........
+    .Z..Z....Z.....Z..Z..Z.....
+    ..Z.....Z....Z..Z..Z.....Z.
+    Z.ZZ.Z....Z..ZZ..ZZ..Z.....
+    ....Z..Z..Z.....Z...Z.....Z
+    Z..Z......Z..Z....Z.....Z..
+    Z.Z.ZZZZ...Z.Z..ZZZ.ZZ.Z...
+    """]
+
+    I = Operator.make_I(n)
+    def make_proj(stabs):
+        P = None
+        for op in stabs:
+            if P is None:
+                P = I + op
+            else:
+                P = P*(I + op)
+        return P
+
+    projs = []
+    for stabs in codes:
+        stabs = [make_op(decl) for decl in stabs.split()]
+        assert len(stabs) == 25, len(stabs)
+        P = make_proj(stabs)
+        projs.append(P)
+        #print("PP = P")
+        #assert P*P == (2**len(stabs))*P
+
+    N = 2**len(stabs)
+    P, Q, R = projs
+    #print(P*Q == Q*P) # False
+    #print(R*Q == Q*R) # False
+    #print(R*P == P*R) # False
+
+    r = 1./(2**51)  # found by inspection ...
+    P = r*P*Q*R
+
+    N = 2**P.n
+
+    u = numpy.zeros((N,), dtype=scalar)
+    u[:] = 1
+    for i in range(100):
+        i0 = randint(0, N-1)
+        i1 = randint(i0, N-1)
+        #u[i0:i1] *= -1
+        u[i0:i1] += randint(-1, 1)
+    u *= 1/norm(u)
+
+    print("P(u)")
+    print(norm(u))
+    v = P(u)
+    print(norm(v))
+    v *= 1/norm(v)
+    print(norm(v))
+
+    print("P(v)")
+    u = P(v)
+    print(norm(u))
+
+    print(numpy.allclose(u, v))
+
+    #print("P==PP",  P == P*P ) # True
+
+
+def main_five():
+
+    write = lambda *args: print(*args, flush=True, end="")
+
+    make_op = Operator.make_op
+    make_I = Operator.make_I
+
+    n = argv.get("n", 5)
+    I = make_I(n)
+
+    if n == 5:
+        stabs = "XZZXI IXZZX XIXZZ ZXIXZ".split() # five qubit code
+    elif n == 10:
+        stabs = []
+        for k in range(n-1):
+            stab = ''.join("XZIZXIIIII"[(j-k)%n] for j in range(n))
+            stabs.append(stab)
+    elif n == 17:
+        stabs = []
+        for k in range(n-1):
+            stab = ''.join("XZIIZXIIIIIIIIIII"[(j-k)%n] for j in range(n))
+            stabs.append(stab)
+    else:
+        assert 0
+    print(stabs)
+
+    stabs = [make_op(decl) for decl in stabs]
+
+    for a in stabs:
+        for b in stabs:
+            assert a*b == b*a
+        write("/")
+    print()
+
+    print("building P...")
+    P = None
+    for ops in cross([(None, op) for op in stabs]):
+        ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
+        op = reduce(mul, ops)
+        P = op if P is None else op+P
+
+    if n < 12:
+        print("P*P == P")
+        assert P*P == (2**len(stabs))*P
+
+    if argv.show:
+        space = Space(n)
+        print(space.opstr(P))
+        return
+
+    def tensor(g, twist=False):
+        A = make_I(n)
+        for k in range(n):
+            if twist:
+                op = [g, ~g][n%2]
+            else:
+                op = g
+            A *= Operator.make_tensor1(n, op, k)
+        return A
+
+    i = 1j
+    A = (1/2)*Gate((2, 2), [[-1+i, -1+i],[1+i,-1-i]])
+    B = (1/2)*Gate((2, 2), [[-1-i, -1-i],[1-i,-1+i]])
+    C = (1/sqrt(2))*Gate((2,2), [[1+i,0],[0,1-i]])
+    H = Gate.H
+    S = Gate.S
+
+    #print(S*Z*~S == Z)
+    #print(S*X*~S == Y)
+    #print(S*Y*~S == -X)
+    #return
+
+    S = Gate.S
+    H = Gate.H
+
+    print("building G")
+    G = mulclose([S, H])
+    print(len(G))
+
+    twist = argv.twist
+    count = 0
+    for g in G:
+        T = tensor(g, twist)
+        if T*P == P*T:
+            write("+")
+            count += 1
+        else:
+            write(".")
+    print()
+    print("count:", count)
+
+
+
 def main_832():
     """ Build the [[8,3,2]] code.
 
-    We number qubits of the cube like this:
+    We _number qubits of the cube like this:
     0 ----------- 1
     |\           /|
     | \         / |
@@ -1893,7 +2170,7 @@ def test_toric():
     """
     Moussa transverse S gate on 8-qubit toric code
 
-    qubits are numbered:
+    qubits are _numbered:
 
     +-0-+-1-
     |   |
@@ -2326,6 +2603,8 @@ def main_identities():
 
 
 if __name__ == "__main__":
+    from time import time
+    t0 = time()
 
     _seed = argv.get("seed")
     if _seed is not None:
@@ -2336,5 +2615,5 @@ if __name__ == "__main__":
     fn = eval(name)
     fn()
 
-    print("%s(): OK"%name)
+    print("%s(): %.3f seconds, OK\n"%(name, time() - t0))
 
