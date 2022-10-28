@@ -1207,37 +1207,86 @@ def main_kagome():
         #assert P*P == (2**len(stabs))*P
 
     N = 2**len(stabs)
+
     P, Q, R = projs
     #print(P*Q == Q*P) # False
     #print(R*Q == Q*R) # False
     #print(R*P == P*R) # False
 
-    r = 1./(2**51)  # found by inspection ...
-    P = r*P*Q*R
+    #test_projector((1/N)*P)
+    #test_projector((1/N)*Q)
+    #test_projector((1/N)*R)
 
-    N = 2**P.n
+    #r = 1./(2**51)  # found by inspection ...
+    #P1 = r*P*Q*R
 
+    P1 = (1/N)*P
+    Q1 = (1/N)*Q
+    R1 = (1/N)*R
+
+    u = rand_vec(2**P1.n)
+    v = rand_vec(2**P1.n)
+    w = rand_vec(2**P1.n)
+
+    u = P1(u)
+    u *= (1/norm(u))
+    v = Q1(v)
+    v *= (1/norm(v))
+    w = R1(v)
+    w *= (1/norm(w))
+
+    uv = u*v
+    uw = u*w
+    vw = v*w
+    uvw = u*v*w
+    where = lambda u : numpy.where(u)[0]
+
+    print("uv:", len(where(uv)))
+    print("uw:", len(where(uw)))
+    print("vw:", len(where(vw)))
+    print("uvw:", len(where(uvw)))
+
+
+def rand_vec(N):
     u = numpy.zeros((N,), dtype=scalar)
     u[:] = 1
     for i in range(100):
-        i0 = randint(0, N-1)
-        i1 = randint(i0, N-1)
+        i0 = max(0, randint(-N, N-1))
+        i1 = min(N-1, randint(i0, 2*N-1))
         #u[i0:i1] *= -1
         u[i0:i1] += randint(-1, 1)
-    u *= 1/norm(u)
+    return u
 
-    print("P(u)")
-    print(norm(u))
+def test_projector(P):
+    print("test_projector")
+
+    N = 2**P.n
+
+    u = rand_vec(N)
+    u *= 1./norm(u)
+
+    #print("u =")
+    #print(u[:100])
+
+    print("|u| =", norm(u))
+    print("v = P(u)")
     v = P(u)
-    print(norm(v))
+    print("|v| =", norm(v))
+    print("v = v/|v|")
     v *= 1/norm(v)
-    print(norm(v))
+    print("|v| =", norm(v))
+    #for i in range(N):
+        #if abs(v[i]) > EPSILON:
+    print(len(numpy.where(v)[0]))   
 
-    print("P(v)")
+    print("v =")
+    print("u = P(v)")
     u = P(v)
-    print(norm(u))
+    print("|u| =", norm(u))
+    #print("u =")
+    #print(u[:100])
 
-    print(numpy.allclose(u, v))
+    print("u==v:", numpy.allclose(u, v))
 
     #print("P==PP",  P == P*P ) # True
 
