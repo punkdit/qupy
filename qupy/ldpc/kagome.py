@@ -15,6 +15,17 @@ def main(srcs, tgt, fs):
 #    for i in [-1, 0, 1, 2]:
 #        print(len(tgt.homology(i)))
 
+    srcs = srcs[:3]
+    fs = fs[:3]
+
+    # check these are disjoint cover
+    n = tgt[1].shape[0]
+    vec = zeros2(1, n)
+    for cmap in fs:
+        f = cmap[1]
+        vec += f.sum(1)
+    assert numpy.alltrue(vec==1)
+
     dims = len(srcs)
     print("dims =", dims)
 
@@ -34,35 +45,36 @@ def main(srcs, tgt, fs):
         return
     
     
+    codes = [src.get_code() for src in srcs]
     Lxs = []
     
     if 1:
-        codes = [src.get_code() for src in srcs]
-        print()
-        
         for code in codes:
             print(code)
             #print(code.distance()) # (3, 6)
         
             LxHx = numpy.concatenate((code.Lx, code.Hx))
             Lxs.append(LxHx)
+            #Lxs.append(code.Hx)
     
     else:
         for src in srcs:
             Lxs.append(src[0])
     
+    LLs = []
+    LLLs = []
+    for i in range(dims):
+      print(Lxs[i].shape)
+      for j in range(i+1, dims):
+        LL = intersect(Lxs[i], Lxs[j])
+        print("\t", LL.shape)
+        LLs.append(LL)
+        for k in range(j+1, dims):
+            LLL = intersect(LL, Lxs[k])
+            print('\t\t', LLL.shape)
+            LLLs.append(LLL)
     
-    L01 = intersect(Lxs[0], Lxs[1])
-    L02 = intersect(Lxs[0], Lxs[2])
-    L12 = intersect(Lxs[1], Lxs[2])
-    print(L01.shape)
-    print(L02.shape)
-    print(L12.shape)
-    
-    L012 = intersect(L01, Lxs[2])
-    print(L012.shape)
-    
-    print(L012)
+    print(shortstr(LLL))
     
 
 
