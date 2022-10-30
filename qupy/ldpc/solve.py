@@ -111,6 +111,8 @@ def randexpo(n, C=10.):
 
 def parse(s):
     s = s.replace('.', '0')
+    s = s.replace('X', '1')
+    s = s.replace('Z', '1')
     #lines = s.split('\n')
     lines = s.split()
     lines = [l.strip() for l in lines if l.strip()]
