@@ -50,6 +50,8 @@ from qupy.dense import commutator, anticommutator
 from qupy.tool import cross
 from qupy.util import mulclose
 
+write = lambda *args: print(*args, flush=True, end="")
+
 print("scalar:", scalar)
 
 r2 = math.sqrt(2)
@@ -75,6 +77,7 @@ else:
     Sd = S.dag()
     assert S*Sd == I
 
+H = Gate.H
 
 class Operator(object):
     def __init__(self, n, d=2, inverse=None, self_inverse=False):
@@ -665,6 +668,9 @@ class Space(object):
         op = Operator.make_control(n, A, i, j)
         return op
 
+    def make_cx(self, i, j):
+        return self.make_control(X, i, j)
+
     def make_cz(self, i, j):
         return self.make_control(Z, i, j)
 
@@ -714,6 +720,21 @@ class Space(object):
         s = s.replace("+-", "-")
         return s
 
+
+def make_cliffords(n):
+    if n==1:
+        G = mulclose([Gate.S, Gate.H])
+        assert len(G) == 192
+        return G
+
+    assert n==2, "??"
+    SWAP = Operator.make_swap(n, 0, 1)
+    HI = Operator.make_tensor1(n, Gate.H, 0)
+    IH = Operator.make_tensor1(n, Gate.H, 1)
+    CN = Operator.make_control(n, Gate.X, 0, 1)
+
+    G = mulclose([SWAP, HI, IH, CN], True, 10000)
+    return G
 
 
 def test():
@@ -774,17 +795,6 @@ def test():
     B = Operator.make_control(2, Gate.Z, 0, 1)
     assert A == B
 
-    n = 2
-    SWAP = Operator.make_swap(n, 0, 1)
-    HI = Operator.make_tensor1(n, Gate.H, 0)
-    IH = Operator.make_tensor1(n, Gate.H, 1)
-    CN = Operator.make_control(n, Gate.X, 0, 1)
-
-    G = mulclose([SWAP, HI, IH, CN], True, 10000)
-    print(len(G))
-
-    return
-
     n = 5
     A = Operator.make_cnz(n)
     v = numpy.zeros((2,)*n, dtype=scalar)
@@ -825,7 +835,6 @@ def test():
     for k, op in space.get_basis():
         assert op * op.inverse == space.I
         assert space.opstr(op) == k
-
 
 
 """
@@ -1300,8 +1309,6 @@ def test_projector(P):
 
 def main_five():
 
-    write = lambda *args: print(*args, flush=True, end="")
-
     make_op = Operator.make_op
     make_I = Operator.make_I
 
@@ -1389,6 +1396,110 @@ def main_five():
     print()
     print("count:", count)
 
+
+def main_twist():
+
+    make_op = Operator.make_op
+    make_I = Operator.make_I
+
+    if argv.five:
+        stabs = "XZZXI IXZZX XIXZZ ZXIXZ".split() # five qubit code
+    elif argv.surface:
+        stabs = "XIXXI IXXIX ZZZII IIZZZ".split() # five qubit surface code
+    elif argv.thirteen:
+        n = 13
+        stab = "ZXIIIXZIIIIII"
+        assert len(stab) == n
+        stabs = []
+        for i in range(12):
+            stabs.append(stab)
+            stab = ''.join(stab[(j+1)%n] for j in range(n)) # cyclic shift
+    else:
+        assert 0
+
+    n = len(stabs[0])
+    I = make_I(n)
+
+    def twist(stab):
+        l0 = {'I':'I', 'X':'X', 'Z':'Z'}
+        l1 = {'I':'I', 'X':'Z', 'Z':'X'}
+        stab = [[l0,l1][i%2][c] for i, c in enumerate(stab)]
+        stab = ''.join(stab)
+        return stab
+
+    if argv.twist:
+        stabs = [twist(stab) for stab in stabs]
+
+    pair = []
+    for stab in stabs:
+        pair.append( stab + "I"*n )
+        pair.append( "I"*n + stab )
+    stabs = pair
+
+    print(stabs)
+    stabs = [make_op(decl) for decl in stabs]
+
+    if n < 10:
+        for a in stabs:
+            for b in stabs:
+                assert a*b == b*a
+                write(".")
+        print()
+    else:
+        for trial in range(0):
+            a = choice(stabs)
+            b = choice(stabs)
+            assert a*b == b*a
+            write(".")
+        print()
+
+    print("building P...")
+
+    space = Space(2*n)
+
+    if 0:
+        P = None
+        for ops in cross([(None, op) for op in stabs]):
+            ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
+            op = reduce(mul, ops)
+            P = op if P is None else op+P
+
+    else:
+        P = space.I
+        for stab in stabs:
+            P = P*(stab + I)
+
+    if n < 12:
+        print("P*P == P")
+        assert P*P == (2**len(stabs))*P
+
+    if 0:
+        A = space.I
+        for i in range(n):
+            B = space.make_cx(i, i+n)
+            #if i%2:
+            #    HH = space.make_tensor1(H, i) * space.make_tensor1(H, i+n)
+            #    B = HH * B * HH
+            A = A*B
+
+    print("control cliffords...")
+    G = make_cliffords(1)
+    if argv.idx is not None:
+        g = G[argv.idx]
+        print(g)
+        G = [g]
+    for g in G:
+        A = space.I
+        for i in range(n):
+            B = space.make_control(g, i, i+n)
+            A = A*B
+        if P*A == A*P:
+            write("+")
+        else:
+            write(".")
+    print()
+    
+    
 
 
 def main_832():
