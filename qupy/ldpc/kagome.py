@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+# process data from bruhat.comp 
 
 import numpy
 
