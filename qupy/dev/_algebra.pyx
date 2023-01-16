@@ -1,4 +1,5 @@
-# cython: profile=False
+#cython: profile=False
+#cython: language_level=3
 
 """
 Associative algebra & tensor powerers thereof.
@@ -150,6 +151,14 @@ cdef class Tensor:
             terms.append(term)
         return terms
 
+    def i_terms(Tensor self):
+        algebra = self.algebra
+        for k in self.i_keys():
+            v = self[k]
+            term = ''.join(algebra.names[ki] for ki in k)
+            term = algebra.parse(term)
+            yield term
+
     def __repr__(Tensor self):
         return self.__str__()
 
@@ -221,10 +230,34 @@ cdef class Tensor:
 
     def nnz(Tensor self, double EPSILON=EPSILON):
         count = 0
-        for value in self.get_values():
+        for value in self.i_values():
             if abs(value) > EPSILON:
                 count += 1
         return count
+
+    def i_values(Tensor self):
+        cdef Tensor child
+        cdef int i
+        if abs(self.value) > EPSILON:
+            yield self.value
+        for i from 0<=i<self.algebra.dim:
+            child = self.children[i]
+            if child is None:
+                continue
+            for value in child.i_values():
+                yield value
+
+    def i_keys(Tensor self):
+        cdef Tensor child
+        cdef int i
+        if abs(self.value) > EPSILON:
+            yield ()
+        for i from 0<=i<self.algebra.dim:
+            child = self.children[i]
+            if child is None:
+                continue
+            for key in child.i_keys():
+                yield (i,)+key
 
     cpdef object get_keys(Tensor self):
         cdef Tensor child

@@ -2062,7 +2062,7 @@ class OEDecoder(ExactDecoder):
         self.build()
 
     def build(self):
-        import opt_einsum as oe
+        import opt_einsum as oe # pip3 install opt_einsum
 
         #from opt_einsum.backends.dispatch import _has_einsum
         #_has_einsum['numpy'] = False
@@ -2090,6 +2090,7 @@ class OEDecoder(ExactDecoder):
             links = list(numpy.where(h)[0])
             linkss.append(links)
             net.append((A, links))
+            #print(A.shape, links)
         #print(linkss)
 
         self.net = net
@@ -2103,6 +2104,7 @@ class OEDecoder(ExactDecoder):
         shapes = []
         for A, links in net:
             links = ''.join(oe.get_symbol(i) for i in links)
+            #print(A.shape, links)
             str_args.append(links)
             shapes.append(A.shape)
         #print(shapes)

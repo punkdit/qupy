@@ -111,6 +111,8 @@ def randexpo(n, C=10.):
 
 def parse(s):
     s = s.replace('.', '0')
+    s = s.replace('X', '1')
+    s = s.replace('Z', '1')
     #lines = s.split('\n')
     lines = s.split()
     lines = [l.strip() for l in lines if l.strip()]
@@ -1356,6 +1358,23 @@ def pushout(J, K, J1=None, K1=None, check=False):
         assert eq2(compose2(KK, F), K1)
 
     return JJ, KK, F
+
+
+def pullback(J, K, J1=None, K1=None, check=False):
+    assert J.shape[0] == K.shape[0]
+    Jt = J.transpose()
+    Kt = K.transpose()
+    if J1 is not None:
+        assert K1 is not None
+        assert J1.shape[1] == K1.shape[1]
+        J1t = J1.transpose()
+        K1t = K1.transpose()
+        JJt, KKt, Ft = pushout(Jt, Kt, J1t, K1t, check)
+        return JJt.transpose(), KKt.transpose(), Ft.transpose()
+
+    JJt, KKt = pushout(Jt, Kt, None, None, check)
+    return JJt.transpose(), KKt.transpose()
+
 
 
 def fromkernel(J, check=False):

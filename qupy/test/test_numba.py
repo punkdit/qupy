@@ -4,13 +4,14 @@
 Construct transversal S gate on a folded surface code.
 See: https://arxiv.org/abs/1603.02286
 
-Use numba accelerated operators.
+Use _numba accelerated operators.
 
 """
 
 import sys
 import math
-from random import shuffle, seed, choice
+from math import sqrt
+from random import shuffle, seed, choice, randint
 from functools import reduce
 from operator import mul, matmul
 
@@ -23,6 +24,7 @@ def showmem(desc):
     pass
 
 import numpy
+from numpy.linalg import norm
 import numba as nb
 
 from qupy.argv import argv
@@ -48,6 +50,8 @@ from qupy.dense import commutator, anticommutator
 from qupy.tool import cross
 from qupy.util import mulclose
 
+write = lambda *args: print(*args, flush=True, end="")
+
 print("scalar:", scalar)
 
 r2 = math.sqrt(2)
@@ -63,16 +67,17 @@ if is_real:
 
 else:
     I, X, Z, S, T = Gate.I, Gate.X, Gate.Z, Gate.S, Gate.T
+    Y = Gate.Y
     
     assert X*X == I
     assert Z*Z == I
     assert S*S == Z
-    #assert (T*T).is_close(S, 1e-6)
     assert T*T == S
     
     Sd = S.dag()
     assert S*Sd == I
 
+H = Gate.H
 
 class Operator(object):
     def __init__(self, n, d=2, inverse=None, self_inverse=False):
@@ -354,7 +359,7 @@ class Operator(object):
 #        return Numop(n, func)
 
     @classmethod
-    def make_tensor1(cls, n, A, idx, inverse=None):
+    def make_tensor1(cls, n, A, idx, inverse=None, verbose=False):
         N = 2**n
         d = 2
         assert A.shape == (2,2)
@@ -380,13 +385,90 @@ class Operator(object):
                 code.append("u[%s] += %s*v[j]"%(index, r))
         code.dedent()
         
-        #print("make_tensor1:")
-        #print('\n'.join(code.lines))
+        if verbose:
+            print("make_tensor1(%d, A, %d)"%(n, idx))
+            print('\n'.join(code.lines))
         func = code.mkfunc()
         op = Numop(n, func, inverse=inverse)
         if inverse is None:
             Ai = A.inverse()
             op.inverse = cls.make_tensor1(n, Ai, idx, inverse=op)
+        return op
+
+    @classmethod
+    def make_tensor2(cls, n, A, idx, jdx, inverse=None, verbose=False):
+        N = 2**n
+        d = 2
+        assert A.shape == (2,2,2,2), A.shape
+        assert A.valence == 'udud', A.valence
+        code = Source()
+        code.append("def func(v, u):").indent()
+        code.append("for k in range(%d):"%N).indent()
+
+        iidx = 2**idx
+        jjdx = 2**jdx
+        indexs = [["k", "k^%d"%jjdx], ["k^%d"%iidx, "k^%d^%d"%(iidx, jjdx)]]
+
+        code.append("if k & %d == 0 and k & %d == 0:"%(iidx, jjdx)).indent()
+        ii, jj = 0, 0
+        for i in range(2):
+          for j in range(2):
+            r = A[i, ii, j, jj]
+            if abs(r.real - r) < EPSILON:
+                r = r.real
+            #if abs(r) < EPSILON:
+            #    continue
+            index = indexs[i!=ii][j!=jj]
+            code.append("u[%s] += %s*v[k]"%(index, r))
+        code.dedent()
+
+        code.append("elif k & %d == 0 and k & %d != 0:"%(iidx, jjdx)).indent()
+        ii, jj = 0, 1
+        for i in range(2):
+          for j in range(2):
+            r = A[i, ii, j, jj]
+            if abs(r.real - r) < EPSILON:
+                r = r.real
+            if abs(r) < EPSILON:
+                continue
+            index = indexs[i!=ii][j!=jj]
+            code.append("u[%s] += %s*v[k]"%(index, r))
+        code.dedent()
+
+        code.append("elif k & %d != 0 and k & %d == 0:"%(iidx, jjdx)).indent()
+        ii, jj = 1, 0
+        for i in range(2):
+          for j in range(2):
+            r = A[i, ii, j, jj]
+            if abs(r.real - r) < EPSILON:
+                r = r.real
+            if abs(r) < EPSILON:
+                continue
+            index = indexs[i!=ii][j!=jj]
+            code.append("u[%s] += %s*v[k]"%(index, r))
+        code.dedent()
+
+        code.append("elif k & %d != 0 and k & %d != 0:"%(iidx, jjdx)).indent()
+        ii, jj = 1, 1
+        for i in range(2):
+          for j in range(2):
+            r = A[i, ii, j, jj]
+            if abs(r.real - r) < EPSILON:
+                r = r.real
+            if abs(r) < EPSILON:
+                continue
+            index = indexs[i!=ii][j!=jj]
+            code.append("u[%s] += %s*v[k]"%(index, r))
+        code.dedent()
+
+        if verbose:
+            print("make_tensor2(%d, A, %d, %d)"%(n, idx, jdx))
+            print('\n'.join(code.lines))
+        func = code.mkfunc()
+        op = Numop(n, func, inverse=inverse)
+        #if inverse is None:
+        #    Ai = A.inverse()
+        #    op.inverse = cls.make_tensor1(n, Ai, idx, inverse=op)
         return op
 
     @classmethod
@@ -615,6 +697,12 @@ class Space(object):
         op = Operator.make_tensor1(n, A, idx, **kw)
         return op
 
+    def make_tensor2(self, A, idx, jdx, **kw):
+        n = self.n
+        assert 0<=idx<jdx<n
+        op = Operator.make_tensor2(n, A, idx, jdx, **kw)
+        return op
+
     def make_xop(self, idxs):
         n = self.n
         key = "make_xop", n, tuple(idxs)
@@ -662,6 +750,9 @@ class Space(object):
         assert i!=j
         op = Operator.make_control(n, A, i, j)
         return op
+
+    def make_cx(self, i, j):
+        return self.make_control(X, i, j)
 
     def make_cz(self, i, j):
         return self.make_control(Z, i, j)
@@ -712,6 +803,92 @@ class Space(object):
         s = s.replace("+-", "-")
         return s
 
+
+def make_cliffords(n, pauli=True):
+    if n==1:
+        assert pauli, "todo"
+        G = mulclose([Gate.S, Gate.H])
+        assert len(G) == 192
+        return G
+
+    assert n==2, "um..."
+
+    # real cliffords
+    II = I@I
+    HI = H@I
+    IH = I@H
+    CN = X.control()
+    SWAP = Gate.SWAP
+    gens = [SWAP, HI, IH, CN]
+
+    G = mulclose(gens , True, 10000)
+    for i,g in enumerate(G):
+        if g.valence == 'uudd':
+            g = g.permuted((0,2,1,3))
+            G[i] = g
+        assert g.valence == 'udud'
+    assert len(G) == 2304
+
+    if not pauli:
+        for g in make_paulis(n):
+            G.remove(g)
+
+    return G
+
+
+def make_paulis(n): # real pauli's
+    gens = []
+    for ops in cross([(I, X, Z)]*n):
+        gen = reduce(matmul, ops)
+        gens.append(gen)
+    G = mulclose(gens, True)
+    for i,g in enumerate(G):
+        if g.valence == 'uudd':
+            g = g.permuted((0,2,1,3))
+            G[i] = g
+        assert g.valence == 'udud'
+    return G
+
+
+def test_paulis():
+
+    C = make_cliffords(2)
+    P = make_paulis(2)
+    print(len(C))
+    for g in P:
+        C.remove(g)
+    print(len(C))
+
+
+def test_tensor2():
+
+    U = Qu((2,2), 'ud')
+    U[0,0] = 1
+    U[0,1] = 2
+    U[1,0] = 3
+    U[1,1] = 4
+    n = 5
+
+    #print("U:")
+    #op = Operator.make_tensor1(n, U, 2, verbose=True)
+
+    op = Operator.make_tensor2(n, II, 1, 3, verbose=False)
+    assert op == Operator.make_I(n)
+
+    n = 3
+    for i in range(n):
+     for j in range(i+1, n):
+        for A in [I, X, Z]:
+          for B in [I, X, Z]:
+            AB = A@B
+            lhs = Operator.make_tensor2(n, AB, i, j)
+            rhs = Operator.make_tensor1(n, A, i) * Operator.make_tensor1(n, B, j)
+            assert lhs == rhs
+    
+    n = 5
+    lhs = Operator.make_tensor2(n, CN, 1, 3)
+    rhs = Operator.make_control(n, X, 3, 1)
+    assert lhs == rhs
 
 
 def test():
@@ -812,7 +989,6 @@ def test():
     for k, op in space.get_basis():
         assert op * op.inverse == space.I
         assert space.opstr(op) == k
-
 
 
 """
@@ -1058,10 +1234,459 @@ def main_vasmer():
     assert T*P == P*T
 
 
+def main_kagome():
+    make_op = Operator.make_op
+    make_I = Operator.make_I
+
+    n = 27
+    I = make_I(n)
+
+    codes = ["""
+X........X........X........
+X............X.....X.......
+..X..............X.......X.
+..X..........X..........X..
+.X.......X............X....
+.X...............X...X.....
+........X.......X...X......
+........X...X......X.......
+.......X...X..............X
+.......X........X........X.
+......X....X..........X....
+......X.....X..........X...
+....X.....X.......X........
+....X..........X....X......
+...X......X...............X
+...X..........X.........X..
+.....X.........X.....X.....
+.Z.....Z...Z.....Z....Z..Z.
+ZZZ...ZZZZ.ZZZ..ZZ.........
+.Z..Z....Z.....Z..Z..Z.....
+..Z.....Z....Z..Z..Z.....Z.
+Z.ZZ.Z....Z..ZZ..ZZ..Z.....
+....Z..Z..Z.....Z...Z.....Z
+Z..Z......Z..Z....Z.....Z..
+Z.Z.ZZZZ...Z.Z..ZZZ.ZZ.Z...
+    """,
+    """
+..X.............X..X.......
+X............X.....X.......
+.X.........X.............X.
+..X..............X.......X.
+.X.......X............X....
+X...........X.........X....
+.......X..X.........X......
+........X.......X...X......
+.......X...X..............X
+......X.......X...........X
+........X......X.......X...
+......X.....X..........X...
+....X.....X.......X........
+...X.........X....X........
+.....X...........X......X..
+...X..........X.........X..
+....X....X...........X.....
+ZZZ...ZZZ..........ZZ.ZZ.ZZ
+..Z....Z...Z....Z...Z....Z.
+Z.Z....ZZ..ZZ......ZZ..Z.Z.
+ZZ..ZZ.......Z...ZZ..ZZ..Z.
+Z...Z....Z...Z....Z...Z....
+..Z....Z..Z..ZZ..ZZZ....Z.Z
+..ZZ.........Z...Z.Z....Z..
+....Z...Z.Z....Z....ZZ.....
+    """,
+    """
+.......X........X........X.
+..X.............X..X.......
+.X.........X.............X.
+......X....X..........X....
+........X...X......X.......
+X...........X.........X....
+.......X..X.........X......
+...X......X...............X
+.....X........X........X...
+......X.......X...........X
+....X..........X....X......
+........X......X.......X...
+..X..........X..........X..
+...X.........X....X........
+.X...............X...X.....
+.....X...........X......X..
+....X....X...........X.....
+.........Z.ZZZ..ZZZZ.ZZ.ZZ.
+......ZZ..ZZ.............ZZ
+..........ZZZ.ZZZ..ZZ.ZZ.ZZ
+ZZ..........ZZ..ZZZZ....ZZ.
+.ZZ.............ZZ......ZZ.
+...Z.Z.......ZZ.........Z.Z
+.......ZZ......ZZ..ZZ......
+...ZZ....ZZ.......Z.Z......
+    """,
+    """
+.......X........X........X.
+.......X...X..............X
+......X.....X..........X...
+......X....X..........X....
+........X.......X...X......
+........X...X......X.......
+...X..........X.........X..
+...X......X...............X
+.....X.........X.....X.....
+.....X........X........X...
+....X..........X....X......
+....X.....X.......X........
+..X..............X.......X.
+..X..........X..........X..
+.X...............X...X.....
+.X.......X............X....
+X............X.....X.......
+.....Z..Z...Z..Z....Z..Z...
+...ZZZZZZ.ZZZ.ZZZ..........
+..Z.....Z....Z..Z..Z.....Z.
+...Z..Z....Z..Z........Z..Z
+ZZ....ZZ.Z.ZZ....Z.Z.....Z.
+..Z..Z........Z..Z...Z..Z..
+.Z.....Z...Z.....Z....Z..Z.
+Z.Z.ZZZZ...ZZ.ZZ..ZZ....ZZ.
+    """]
+
+    I = Operator.make_I(n)
+    def make_proj(stabs):
+        P = None
+        for op in stabs:
+            if P is None:
+                P = I + op
+            else:
+                P = P*(I + op)
+        return P
+
+    projs = []
+    for stabs in codes:
+        stabs = stabs.strip()
+        stabs = [make_op(decl) for decl in stabs.split()]
+        assert len(stabs) == 25, len(stabs)
+        P = make_proj(stabs)
+        projs.append(P)
+        #print("PP = P")
+        #assert P*P == (2**len(stabs))*P
+
+    N = 2**len(stabs)
+
+    P, Q, R, S = projs
+    assert P == S
+    #print(P*Q == Q*P) # False
+    #print(R*Q == Q*R) # False
+    #print(R*P == P*R) # False
+
+    #test_projector((1/N)*P)
+    #test_projector((1/N)*Q)
+    #test_projector((1/N)*R)
+    where = lambda u : numpy.where(u)[0]
+
+    #r = 1./(2**51)  # found by inspection ...
+    #P1 = r*P*Q*R
+    P1 = P*Q*R
+    u = rand_vec(2**P1.n)
+    u = P1(u)
+    print("u:", len(where(u)))
+
+    if 0:
+        P1 = (1/N)*P
+        Q1 = (1/N)*Q
+        R1 = (1/N)*R
+    
+        u = rand_vec(2**P1.n)
+        v = rand_vec(2**Q1.n)
+        w = rand_vec(2**R1.n)
+    
+        u = P1(u)
+        u *= (1/norm(u))
+        v = Q1(v)
+        v *= (1/norm(v))
+        w = R1(v)
+        w *= (1/norm(w))
+    
+        uv = u*v
+        uw = u*w
+        vw = v*w
+        uvw = u*v*w
+    
+        print("uv:", len(where(uv)))
+        print("uw:", len(where(uw)))
+        print("vw:", len(where(vw)))
+        print("uvw:", len(where(uvw)))
+
+
+def rand_vec(N):
+    u = numpy.zeros((N,), dtype=scalar)
+    u[:] = 1
+    for i in range(100):
+        i0 = max(0, randint(-N, N-1))
+        i1 = min(N-1, randint(i0, 2*N-1))
+        #u[i0:i1] *= -1
+        u[i0:i1] += randint(-1, 1)
+    return u
+
+def test_projector(P):
+    print("test_projector")
+
+    N = 2**P.n
+
+    u = rand_vec(N)
+    u *= 1./norm(u)
+
+    #print("u =")
+    #print(u[:100])
+
+    print("|u| =", norm(u))
+    print("v = P(u)")
+    v = P(u)
+    print("|v| =", norm(v))
+    print("v = v/|v|")
+    v *= 1/norm(v)
+    print("|v| =", norm(v))
+    #for i in range(N):
+        #if abs(v[i]) > EPSILON:
+    print(len(numpy.where(v)[0]))   
+
+    print("v =")
+    print("u = P(v)")
+    u = P(v)
+    print("|u| =", norm(u))
+    #print("u =")
+    #print(u[:100])
+
+    print("u==v:", numpy.allclose(u, v))
+
+    #print("P==PP",  P == P*P ) # True
+
+
+def main_five():
+
+    make_op = Operator.make_op
+    make_I = Operator.make_I
+
+    n = argv.get("n", 5)
+    I = make_I(n)
+
+    if n == 5:
+        stabs = "XZZXI IXZZX XIXZZ ZXIXZ".split() # five qubit code
+    elif n == 10:
+        stabs = []
+        for k in range(n-1):
+            stab = ''.join("XZIZXIIIII"[(j-k)%n] for j in range(n))
+            stabs.append(stab)
+    elif n == 17:
+        stabs = []
+        for k in range(n-1):
+            stab = ''.join("XZIIZXIIIIIIIIIII"[(j-k)%n] for j in range(n))
+            stabs.append(stab)
+    else:
+        assert 0
+    print(stabs)
+
+    stabs = [make_op(decl) for decl in stabs]
+
+    for a in stabs:
+        for b in stabs:
+            assert a*b == b*a
+        write("/")
+    print()
+
+    print("building P...")
+    P = None
+    for ops in cross([(None, op) for op in stabs]):
+        ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
+        op = reduce(mul, ops)
+        P = op if P is None else op+P
+
+    if n < 12:
+        print("P*P == P")
+        assert P*P == (2**len(stabs))*P
+
+    if argv.show:
+        space = Space(n)
+        print(space.opstr(P))
+        return
+
+    def tensor(g, twist=False):
+        A = make_I(n)
+        for k in range(n):
+            if twist:
+                op = [g, ~g][n%2]
+            else:
+                op = g
+            A *= Operator.make_tensor1(n, op, k)
+        return A
+
+    i = 1j
+    A = (1/2)*Gate((2, 2), [[-1+i, -1+i],[1+i,-1-i]])
+    B = (1/2)*Gate((2, 2), [[-1-i, -1-i],[1-i,-1+i]])
+    C = (1/sqrt(2))*Gate((2,2), [[1+i,0],[0,1-i]])
+    H = Gate.H
+    S = Gate.S
+
+    #print(S*Z*~S == Z)
+    #print(S*X*~S == Y)
+    #print(S*Y*~S == -X)
+    #return
+
+    S = Gate.S
+    H = Gate.H
+
+    print("building G")
+    G = mulclose([S, H])
+    print(len(G))
+
+    twist = argv.twist
+    count = 0
+    for g in G:
+        T = tensor(g, twist)
+        if T*P == P*T:
+            write("+")
+            count += 1
+        else:
+            write(".")
+    print()
+    print("count:", count)
+
+
+def main_twist():
+
+    make_op = Operator.make_op
+    make_I = Operator.make_I
+
+    if argv.five:
+        stabs = "XZZXI IXZZX XIXZZ ZXIXZ".split() # five qubit code
+    elif argv.surface:
+        stabs = "XIXXI IXXIX ZZZII IIZZZ".split() # five qubit surface code
+    elif argv.thirteen:
+        n = 13
+        stab = "ZXIIIXZIIIIII"
+        assert len(stab) == n
+        stabs = []
+        for i in range(12):
+            stabs.append(stab)
+            stab = ''.join(stab[(j+1)%n] for j in range(n)) # cyclic shift
+    else:
+        assert 0
+
+    n = len(stabs[0])
+    I = make_I(n)
+
+    def twist(stab):
+        l0 = {'I':'I', 'X':'X', 'Z':'Z'}
+        l1 = {'I':'I', 'X':'Z', 'Z':'X'}
+        stab = [[l0,l1][i%2][c] for i, c in enumerate(stab)]
+        stab = ''.join(stab)
+        return stab
+
+    if argv.twist:
+        stabs = [twist(stab) for stab in stabs]
+
+    pair = []
+    for stab in stabs:
+        pair.append( stab + "I"*n )
+        pair.append( "I"*n + stab )
+    stabs = pair
+
+    print(stabs)
+    stabs = [make_op(decl) for decl in stabs]
+
+    if n < 10:
+        for a in stabs:
+            for b in stabs:
+                assert a*b == b*a
+                write(".")
+        print()
+    else:
+        for trial in range(0):
+            a = choice(stabs)
+            b = choice(stabs)
+            assert a*b == b*a
+            write(".")
+        print()
+
+    print("building P...")
+
+    space = Space(2*n)
+
+    if 0:
+        P = None
+        for ops in cross([(None, op) for op in stabs]):
+            ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
+            op = reduce(mul, ops)
+            P = op if P is None else op+P
+
+    else:
+        P = space.I
+        for stab in stabs:
+            P = P*(stab + I)
+
+    if n < 12:
+        print("P*P == P")
+        assert P*P == (2**len(stabs))*P
+
+    if 0:
+        A = space.I
+        for i in range(n):
+            B = space.make_cx(i, i+n)
+            #if i%2:
+            #    HH = space.make_tensor1(H, i) * space.make_tensor1(H, i+n)
+            #    B = HH * B * HH
+            A = A*B
+
+    if 0:
+        print("control cliffords...")
+        G = make_cliffords(1)
+        if argv.idx is not None:
+            g = G[argv.idx]
+            print(g)
+            G = [g]
+        for g in G:
+            A = space.I
+            for i in range(n):
+                B = space.make_control(g, i, i+n)
+                A = A*B
+            if P*A == A*P:
+                write("+")
+            else:
+                write(".")
+        print()
+    
+    print("clifford transversal...")
+    C2 = make_cliffords(2, pauli=False)
+    print("C2:", len(C2))
+    C1 = make_cliffords(1)
+    C11 = [g@h for g in C1 for h in C1]
+    print("C11:", len(C11))
+    SWAP = Gate.SWAP
+    C11 = C11 + [SWAP*g for g in C11]
+    print("C11:", len(C11))
+
+    for g in C2:
+        if g in C11:
+            write("/")
+            continue
+        A = space.I
+        for i in range(n):
+            B = space.make_tensor2(g, i, i+n)
+            A = A*B
+        if P*A == A*P:
+            print("+")
+            print(g.shortstr())
+        else:
+            write(".")
+    print()
+    
+
+    
+
+
 def main_832():
     """ Build the [[8,3,2]] code.
 
-    We number qubits of the cube like this:
+    We _number qubits of the cube like this:
     0 ----------- 1
     |\           /|
     | \         / |
@@ -1893,7 +2518,7 @@ def test_toric():
     """
     Moussa transverse S gate on 8-qubit toric code
 
-    qubits are numbered:
+    qubits are _numbered:
 
     +-0-+-1-
     |   |
@@ -2162,7 +2787,7 @@ def main_clifford():
     assert is_clifford2(CCZ)
 
 
-def test_clifford():
+def test_clifford_1():
     n = 1
     space = Space(n)
     G = mulclose([Gate.Z, Gate.H])
@@ -2326,6 +2951,8 @@ def main_identities():
 
 
 if __name__ == "__main__":
+    from time import time
+    t0 = time()
 
     _seed = argv.get("seed")
     if _seed is not None:
@@ -2336,5 +2963,5 @@ if __name__ == "__main__":
     fn = eval(name)
     fn()
 
-    print("%s(): OK"%name)
+    print("%s(): %.3f seconds, OK\n"%(name, time() - t0))
 

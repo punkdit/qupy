@@ -136,7 +136,6 @@ class Matrix(object):
         self.A = A
         m, n = A.shape
         self.shape = A.shape
-        assert n%2 == 0
         self.n = n
         self.m = m
         self.key = A.tobytes() # careful !!
@@ -286,6 +285,9 @@ class Matrix(object):
         n = M.n//2
         A = Matrix.symplectic_form(n)
         return M.transpose() * A * M == A
+
+    def is_zero(M):
+        return numpy.allclose(M.A, 0)
 
     def normal_form(self):
         A = self.A
@@ -649,6 +651,58 @@ def test():
     assert S*S == I
 
 
+def build_code(stabs):
+    m = len(stabs)
+    n = len(stabs[0])
+    A = zeros2(m, 2*n)
+    for i,stab in enumerate(stabs):
+        for j,c in enumerate(stab):
+            if c=='I':
+                pass
+            elif c=='X' or c=='Y':
+                A[i,j] = 1
+            elif c=='Z' or c=='Y':
+                A[i,j+n] = 1
+    return A
+
+def test_code():
+    stabs = "IXXXX XIZZX ZXIZZ XZXIZ ZIZIZ".split()
+    A = build_code(stabs)
+    m, nn = A.shape
+    n = nn//2
+
+    #A = A.transpose()
+    print(A)
+    A = Matrix(A)
+    F = Matrix.symplectic_form(n)
+    lhs = A*F*A.transpose()
+    assert lhs.is_zero()
+
+    B = row_reduce(A.A)
+    B = Matrix(B)
+    lhs = B*F*B.transpose()
+    assert lhs.is_zero()
+
+    W = zeros2(m+1, 2*n)
+    W[:m] = A.A
+    for v in cross([(0,1)]*2*n):
+        v = array2(v)
+        if v.sum()==0:
+            continue
+        v.shape = (2*n,)
+        W[m] = v
+        #print(W)
+        #if v[6]==1:
+        #    break
+        M = Matrix(W)
+        if (M*F*M.transpose()).is_zero():
+            break
+    print(W)
+    M = Matrix(W)
+    print(M*F*M.transpose())
+
+
+
 if __name__ == "__main__":
 
     name = argv.next()
@@ -666,5 +720,7 @@ if __name__ == "__main__":
 
         test_symplectic()
         test_isotropic()
+
+    print("OK\n")
 
 

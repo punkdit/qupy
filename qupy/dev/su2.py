@@ -113,6 +113,8 @@ def build():
 
     global Octa, Tetra, Icosa, Sym2, Sym3, Pauli, RealPauli, RealCliff, Cliff, PauliT, PauliR, PauliS
 
+    print("build()")
+
     # ----------------------------------
     #
     
@@ -912,6 +914,22 @@ def make_code(pauli, name=None):
         code = StabilizerCode(pauli, "XXII ZZII IIXX IIZZ")
     elif name=="five":
         code = StabilizerCode(pauli, "XZZXI IXZZX XIXZZ ZXIXZ", "XXXXX ZZZZZ")
+    elif name=="ten":
+        stabs = ['XZIZXIIIII', 'IXZIZXIIII', 'IIXZIZXIII', 
+            'IIIXZIZXII', 'IIIIXZIZXI', 'IIIIIXZIZX', 
+            'XIIIIIXZIZ', 'ZXIIIIIXZI', 'IZXIIIIIXZ']
+        stabs = [pauli.parse(s) for s in stabs]
+        code = StabilizerCode(pauli, stabs)
+    elif name=="seventeen":
+        stabs = ['XZIIZXIIIIIIIIIII', 'IXZIIZXIIIIIIIIII', 'IIXZIIZXIIIIIIIII', 
+            'IIIXZIIZXIIIIIIII', 'IIIIXZIIZXIIIIIII', 'IIIIIXZIIZXIIIIII', 
+            'IIIIIIXZIIZXIIIII', 'IIIIIIIXZIIZXIIII', 'IIIIIIIIXZIIZXIII', 
+            'IIIIIIIIIXZIIZXII', 'IIIIIIIIIIXZIIZXI', 'IIIIIIIIIIIXZIIZX', 
+            'XIIIIIIIIIIIXZIIZ', 'ZXIIIIIIIIIIIXZII', 'IZXIIIIIIIIIIIXZI', 
+            'IIZXIIIIIIIIIIIXZ']
+        assert len(stabs) == 16
+        stabs = [pauli.parse(s) for s in stabs]
+        code = StabilizerCode(pauli, stabs)
     elif name=="surface":
         code = StabilizerCode(pauli, "ZZZII IIZZZ XIXXI IXXIX", "XXIII ZIIZI")
     elif name=="seven":
@@ -938,6 +956,8 @@ def make_code(pauli, name=None):
         .Z..ZZZ.
         """.replace(".", "I")
         code = StabilizerCode(pauli, s)
+    else:
+        assert 0
     return code
 
 
@@ -967,7 +987,10 @@ def test_code():
     Z = pauli.Z
 
     op = build_code(pauli)
-    #print(op)
+    print(dir(op))
+    for k in op.keys:
+        print(k)
+    print(op)
 
     if op is not None:
         ops = [op]
@@ -2353,7 +2376,7 @@ if __name__ == "__main__":
 
     name = argv.next() or "main"
 
-    if name in "test_rand test_macwilliams test_gcolor test_gf4".split() or 1:
+    if name in "test_rand test_macwilliams test_gcolor test_gf4".split():
         pass
     else:
         build()
