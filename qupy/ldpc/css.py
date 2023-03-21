@@ -581,7 +581,9 @@ class CSSCode(object):
     d = distance
     """
 
-    def distance(self):
+
+
+    def x_distance(self):
         Lx = list(solve.span(self.Lx))
         dx = self.n
         for u in solve.span(self.Hx):
@@ -590,7 +592,9 @@ class CSSCode(object):
                 d = w.sum()
                 if 0<d<dx:
                     dx = d
+        return dx
 
+    def z_distance(self):
         Lz = list(solve.span(self.Lz))
         dz = self.n
         for u in solve.span(self.Hz):
@@ -599,6 +603,11 @@ class CSSCode(object):
                 d = w.sum()
                 if 0<d<dz:
                     dz = d
+        return dz
+
+    def distance(self):
+        dx = self.x_distance()
+        dz = self.z_distance()
         return dx, dz
 
     @classmethod
