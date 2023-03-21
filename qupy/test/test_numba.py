@@ -1234,6 +1234,53 @@ def main_vasmer():
     assert T*P == P*T
 
 
+def main_16_6_4():
+
+    make_op = Operator.make_op
+    make_I = Operator.make_I
+
+    n = 16
+    I = make_I(n)
+
+    H = parse("""
+    11111111........
+    ....11111111....
+    ........11111111
+    11..11..11..11..
+    .11..11..11..11.
+    """)
+    assert rank(H) == len(H)
+
+    ops = """11111111........  ....11111111....  ........11111111
+    11..11..11..11..  .11..11..11..11.""".replace('.','I')
+    xops = ops.replace('1', 'X')
+    zops = ops.replace('1', 'Z')
+    stabs = [make_op(op) for op in xops.split() + zops.split()]
+
+    for a in stabs:
+        for b in stabs:
+            assert a*b == b*a
+        #print("/", end="", flush=True)
+
+    P = None
+    for ops in cross([(None, op) for op in stabs]):
+        ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
+        op = reduce(mul, ops)
+        P = op if P is None else op+P
+
+    #assert P*P == (2**len(stabs))*P
+
+    op = I
+    for i in range(16):
+        #T = [Gate.T, ~Gate.T][i%2]
+        if i in [0,2,5,7,8,10,13,15]:
+            T = Gate.T
+        else:
+            T = ~Gate.T
+        op *= Operator.make_tensor1(n,  T, i)
+    print(op*P == P*op)
+
+
 def main_kagome():
     make_op = Operator.make_op
     make_I = Operator.make_I
