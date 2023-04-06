@@ -584,7 +584,7 @@ class CSSCode(object):
 
 
     def x_distance(self):
-        Lx = list(solve.span(self.Lx))
+        Lx = [v for v in solve.span(self.Lx) if v.sum()]
         dx = self.n
         for u in solve.span(self.Hx):
             for v in Lx:
