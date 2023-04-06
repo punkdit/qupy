@@ -1269,29 +1269,38 @@ def main_16_6_4():
         P = op if P is None else op+P
 
     #assert P*P == (2**len(stabs))*P
+    op = I
+    for i in range(16):
+        if i in [0,1,2,3,4,5,6,7,8,9,10,11] or 1:
+            S = Gate.S
+        else:
+            S = ~Gate.S
+        op *= Operator.make_tensor1(n,  S, i)
+    result = (op*P == P*op)
+    print(result)
 
-    count = -1
-    modulus = argv.get("modulus", 5)
-    idx = argv.get("idx", 0)
-    for bits in numpy.ndindex((2,)*n):
-
-        count += 1
-        if (count%modulus) != idx:
-            continue
-        op = I
-        for i in range(16):
-            #T = [Gate.T, ~Gate.T][i%2]
-            #if i in [0,2,5,7,8,10,13,15]:
-            if bits[i]==0:
-                T = Gate.T
-            else:
-                T = ~Gate.T
-            op *= Operator.make_tensor1(n,  T, i)
-        result = (op*P == P*op)
-        print(result, bits)
-        if result:
-            print("found:", bits)
-            break
+#    count = -1
+#    modulus = argv.get("modulus", 5)
+#    idx = argv.get("idx", 0)
+#    for bits in numpy.ndindex((2,)*n):
+#
+#        count += 1
+#        if (count%modulus) != idx:
+#            continue
+#        op = I
+#        for i in range(16):
+#            #T = [Gate.T, ~Gate.T][i%2]
+#            #if i in [0,2,5,7,8,10,13,15]:
+#            if bits[i]==0:
+#                T = Gate.T
+#            else:
+#                T = ~Gate.T
+#            op *= Operator.make_tensor1(n,  T, i)
+#        result = (op*P == P*op)
+#        print(result, bits)
+#        if result:
+#            print("found:", bits)
+#            break
 
 
 def main_kagome():
