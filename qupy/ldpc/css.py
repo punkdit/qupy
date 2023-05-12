@@ -583,7 +583,7 @@ class CSSCode(object):
 
 
 
-    def x_distance(self):
+    def x_distance(self, min_d=1):
         Lx = [v for v in solve.span(self.Lx) if v.sum()]
         dx = self.n
         for u in solve.span(self.Hx):
@@ -592,9 +592,11 @@ class CSSCode(object):
                 d = w.sum()
                 if 0<d<dx:
                     dx = d
+            if dx==min_d:
+                return dx
         return dx
 
-    def z_distance(self):
+    def z_distance(self, min_d=1):
         Lz = [v for v in solve.span(self.Lz) if v.sum()]
         dz = self.n
         for u in solve.span(self.Hz):
@@ -603,11 +605,13 @@ class CSSCode(object):
                 d = w.sum()
                 if 0<d<dz:
                     dz = d
+            if dz==min_d:
+                return dz
         return dz
 
-    def distance(self):
-        dx = self.x_distance()
-        dz = self.z_distance()
+    def distance(self, min_d=1):
+        dx = self.x_distance(min_d)
+        dz = self.z_distance(min_d)
         return dx, dz
 
     @classmethod
