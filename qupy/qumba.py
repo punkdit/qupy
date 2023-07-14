@@ -1197,6 +1197,7 @@ def main_13():
 
 
 def main_vasmer():
+    "this code is a [[10, 1, 2]]"
 
     make_op = Operator.make_op
     make_I = Operator.make_I
