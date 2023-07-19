@@ -737,10 +737,10 @@ class Space(object):
         zop = self.make_zop(zidxs)
         xop = self.make_xop(xidxs)
         lhs = zop * xop
-        if decl.count('Y') % 2:
-            lhs = 1j * lhs
-            #print(lhs, lhs.r)
-            #print(lhs.inverse, lhs.inverse.r)
+        e = decl.count('Y') % 4
+        lhs = (-1j)**e * lhs
+        #print(lhs, lhs.r)
+        #print(lhs.inverse, lhs.inverse.r)
         return lhs
 
     def make_control(self, A, i, j):
@@ -1233,6 +1233,76 @@ def main_vasmer():
     T *= CCZ
 
     assert T*P == P*T
+
+
+def main_transverse_T():
+
+    space = Space(1)
+    op = space.make_tensor1(Gate.Y, 0)
+    assert space.opstr(op)=="Y"
+
+    space = Space(2)
+    op = space.make_tensor1(Gate.Y, 0) * space.make_tensor1(Gate.Y, 1)
+    assert space.opstr(op)=="YY"
+
+    assert Gate.Y == -1j*Gate.Z*Gate.X
+
+    I, X, Y, T = Gate.I, Gate.X, Gate.Y, Gate.T
+    TiXT = ~T * X * T
+    TXTi = T * X * ~T
+    #op = reduce(mul, [make_tensor1(n, TiXT, i) for i in range(n)])
+    #print(space.opstr(4*op))
+
+    assert( TiXT == (1/2**0.5)*(X - Y) )
+    assert( TXTi == (1/2**0.5)*(X + Y) )
+
+    assert( TXTi@TXTi == (1/2)*(X+Y)@(X+Y) )
+    assert( TXTi@TXTi == (1/2)*(X@X + X@Y + Y@X + Y@Y) )
+    
+    assert( TiXT@TiXT == (1/2)*(X-Y)@(X-Y) )
+    assert( TiXT@TiXT == (1/2)*(X@X - X@Y - Y@X + Y@Y) )
+    
+    assert I == Y*(~Y)
+    
+    n = argv.get("n", 4)
+    print("n =", n)
+
+    space = Space(n)
+    make_op = Operator.make_op
+    make_I = Operator.make_I
+    make_tensor1 = Operator.make_tensor1
+
+    Xn = make_op("X"*n)
+    In = make_I(n)
+    assert Xn*Xn == In
+
+    Un = reduce(mul, [make_tensor1(n, Gate.T, i) for i in range(n)])
+    Uni = reduce(mul, [make_tensor1(n, ~Gate.T, i) for i in range(n)])
+    assert reduce(mul, [Un]*8) == In
+    assert Un*Uni == In
+
+    op = 4 * ( Un*Xn*Uni )
+    print(space.opstr(op))
+
+    op = 4 * ( Uni*Xn*Un )
+    print(space.opstr(op))
+
+    stabs = [-make_op(decl) for decl in "ZIII IZII IIZI IIIZ".split()]
+    
+    for a in stabs:
+        for b in stabs:
+            assert a*b == b*a
+        #print("/", end="", flush=True)
+
+    P = None
+    for ops in cross([(None, op) for op in stabs]):
+        ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
+        op = reduce(mul, ops)
+        P = op if P is None else op+P
+
+    assert P*P == (2**len(stabs))*P
+
+    print(space.opstr(P))
 
 
 def main_16_6_4():
