@@ -18,7 +18,7 @@ from qupy.tool import cross, choose
 from qupy.argv import argv
 from qupy.smap import SMap
 from qupy.ldpc.solve import zeros2, shortstr, solve, dot2, array2, eq2, parse, pseudo_inverse, identity2
-from qupy.ldpc.solve import enum2, row_reduce
+from qupy.ldpc.solve import enum2, row_reduce, intersect
 from qupy.ldpc.css import CSSCode
 from qupy.ldpc.decoder import StarDynamicDistance
 
@@ -363,9 +363,6 @@ def test_symplectic():
         lhs = CN_01 * CN_10 * CN_01
         assert lhs == rhs
 
-    #print(Matrix.cnot(3, 0, 2))
-
-    #if 0:
     cnot = Matrix.cnot
     hadamard = Matrix.hadamard
     n = 2
@@ -455,12 +452,12 @@ def test_symplectic():
 
     n = 3
     trivial = CSSCode(
-        Lx=parse("1.."), Lz=parse("1.."), Hx=zeros2(0, n), Hz=parse(".1. ..1"))
+        Lx=parse("1.."), Lz=parse("1.."), Hx=zeros2(0, n), Hz=parse(".1.\n..1"))
 
     assert trivial.row_equal(CSSCode.get_trivial(3, 0))
 
     repitition = CSSCode(
-        Lx=parse("111"), Lz=parse("1.."), Hx=zeros2(0, n), Hz=parse("11. .11"))
+        Lx=parse("111"), Lz=parse("1.."), Hx=zeros2(0, n), Hz=parse("11.\n.11"))
 
     assert not trivial.row_equal(repitition)
 
@@ -494,6 +491,57 @@ def test_symplectic():
         #print(op(trivial).longstr())
         assert op(trivial).row_equal(repitition)
     
+
+def test_double():
+
+    if 0:
+        print("F =")
+        print(Matrix.symplectic_form(2))
+        print("CNOT =")
+        print(Matrix.cnot(2, 0, 1))
+        print("S_0 =")
+        print(Matrix.sgate(2, 0))
+        print("S_1 =")
+        print(Matrix.sgate(2, 1))
+    
+    cnot = Matrix.cnot
+    hadamard = Matrix.hadamard
+    n = 2
+    gen = [cnot(n, 0, 1), cnot(n, 1, 0), hadamard(n, 0), hadamard(n, 1)]
+    for A in gen:
+        assert A.is_symplectic()
+    Cliff2 = mulclose_fast(gen)
+    assert len(Cliff2)==72 # index 10 in Sp(2, 4)
+
+    #if 0:
+    F = Matrix.symplectic_form(2)
+    def lhs(a, b):
+        A = array2([[a, 0, b, 0], [0, a, 0, b]])
+        return Matrix(A)
+    def rhs(a, b):
+        A = array2([[a, b, 0, 0], [0, 0, b, a]])
+        return Matrix(A)
+    for g in Cliff2:
+        for (a,b) in [(0,1), (1,0), (1,1)]:
+            A = lhs(a, b)
+            assert (A*F*A.transpose()).is_zero()
+            B = rhs(a, b)
+            assert (B*F*B.transpose()).is_zero()
+            Ag = A*g
+            W = intersect(Ag.A, B.A)
+            #if Ag != B:
+            if len(W) != 2:
+                #print(len(W))
+                #print(Ag)
+                #print("!=")
+                #print(B)
+                #print()
+                break
+        else:
+            print("g =")
+            print(g)
+            return
+    print("done")
 
 def get_transvect(n):
     gen = []
@@ -717,9 +765,8 @@ if __name__ == "__main__":
         fn()
 
     else:
-
         test_symplectic()
-        test_isotropic()
+        test_isotropic() # SLOW
 
     print("OK\n")
 
