@@ -2378,10 +2378,15 @@ def main_8T():
 
     T, Td = Gate.T, ~Gate.T
     A = None
+    for i, B in enumerate([T]*8):
+        B = code.make_tensor1(B, i)
+        A = B if A is None else B*A
+    assert A*code.P == code.P*A
+
+    A = None
     for i, B in enumerate([T, Td, Td, T, Td, T, T, Td]):
         B = code.make_tensor1(B, i)
         A = B if A is None else B*A
-
     assert A*code.P == code.P*A
 
     basis = []
