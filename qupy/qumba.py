@@ -1276,8 +1276,11 @@ def main_transverse_T():
     In = make_I(n)
     assert Xn*Xn == In
 
-    Un = reduce(mul, [make_tensor1(n, Gate.T, i) for i in range(n)])
-    Uni = reduce(mul, [make_tensor1(n, ~Gate.T, i) for i in range(n)])
+    T, Ti = Gate.T, ~Gate.T
+    #Un = reduce(mul, [make_tensor1(n, T, i) for i in range(n)])
+    #Uni = reduce(mul, [make_tensor1(n, ~T, i) for i in range(n)])
+    Un = reduce(mul, [make_tensor1(n, [T,Ti][i%2], i) for i in range(n)])
+    Uni = reduce(mul, [make_tensor1(n, [Ti,T][i%2], i) for i in range(n)])
     assert reduce(mul, [Un]*8) == In
     assert Un*Uni == In
 
@@ -3100,8 +3103,13 @@ if __name__ == "__main__":
         numpy.random.seed(_seed)
 
     name = argv.next() or "test"
-    fn = eval(name)
-    fn()
+    if argv.profile:
+        import cProfile as profile
+        profile.run("%s()"%name)
+    else:
+        fn = eval(name)
+        fn()
 
     print("%s(): %.3f seconds, OK\n"%(name, time() - t0))
+
 
