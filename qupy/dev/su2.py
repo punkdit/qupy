@@ -1478,7 +1478,22 @@ def test_molien4():
 
     basis = [getattr(algebra, name) for name in names]
 
-    G = eval(argv.get("G2", "Tetra")) # the "internal" group
+    if argv.T:
+        # ----------------------------------
+        #
+    
+        gen = [
+            #[[0, 1], [1, 0]],  # X
+            [[1, 0], [0, cyclotomic(8)]], # T
+        ]
+        gen = [Qu((2, 2), 'ud', v) for v in gen]
+    
+        G = Group(gen, "T")
+        assert len(G)==8, len(G)
+
+    else:
+        G = eval(argv.get("G2", "Tetra")) # the "internal" group
+
     N = len(G)
     G.build()
 

@@ -225,6 +225,7 @@ def test_unwrap():
     """)
 
     code = CSSCode(Hx=Hx, Hz=Hz, Tx=Tx, Tz=Tz, Lx=Lx, Lz=Lz, check=True)
+    print(code)
     print(code.longstr())
 
 
