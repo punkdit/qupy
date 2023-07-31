@@ -543,7 +543,10 @@ class CSSCode(object):
         ops = [self.Lx, self.Lz, self.Hx, self.Tz, self.Hz, self.Tx]
         ops = [op[:, cols] for op in ops]
         Lx, Lz, Hx, Tz, Hz, Tx = ops
-        code = CSSCode(Lx, Lz, Hx, Tz, Hz, Tx)
+        Gx, Gz = self.Gx, self.Gz
+        Gx = Gx[:, cols] if Gx is not None else None
+        Gz = Gz[:, cols] if Gz is not None else None
+        code = CSSCode(Lx, Lz, Hx, Tz, Hz, Tx, Gx, Gz)
         return code
 
     def glue(self, i1, i2):
