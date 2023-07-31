@@ -536,6 +536,16 @@ class CSSCode(object):
                 lines.append("%s()"%name)
         return '\n'.join(lines)
 
+    def permute(self, f):
+        n = self.n
+        cols = [f[i] for i in range(n)]
+        #print("cols:", cols)
+        ops = [self.Lx, self.Lz, self.Hx, self.Tz, self.Hz, self.Tx]
+        ops = [op[:, cols] for op in ops]
+        Lx, Lz, Hx, Tz, Hz, Tx = ops
+        code = CSSCode(Lx, Lz, Hx, Tz, Hz, Tx)
+        return code
+
     def glue(self, i1, i2):
         assert i1!=i2
 
