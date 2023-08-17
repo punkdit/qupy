@@ -390,6 +390,9 @@ class Qu(AbstractQu):
         return r < epsilon
     __eq__ = is_close # good idea?
 
+    def is_zero(self):
+        return numpy.allclose(self.v, 0)
+
     def norm(self):
         v = self.v
         v = v.ravel()
