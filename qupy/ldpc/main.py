@@ -7,7 +7,7 @@ import numpy.random as ra
 from numpy.linalg import lstsq
 
 from qupy.ldpc.css import CSSCode, randcss
-from qupy.ldpc.solve import shortstr, zeros2, array2, dot2, parse
+from qupy.ldpc.solve import shortstr, zeros2, array2, dot2, parse, linear_independent
 from qupy.tool import write, choose
 from qupy.argv import argv
 
@@ -62,6 +62,31 @@ def strong_morthogonal(G, m):
     return True
 
 
+
+def bigger(H, weight=6):
+    m, n = H.shape
+    H1 = H.copy()
+    for i in range(m):
+        row = H[i]
+        while 1:
+            j = randint(0, m-1)
+            if j==i:
+                continue
+            sow = H[j]
+            tow = (row+sow)%2
+            if tow.sum()==weight:
+                break
+        H1[i] = tow
+    H1 = linear_independent(H1)
+    print(len(H1), m)
+    while len(H1) < m:
+        rows = list(H1)
+        row = H[randint(0, m-1)]
+        rows.append(row)
+        H1 = array2(rows)
+        H1 = linear_independent(H1)
+    print(len(H1))
+    return H1
 
 
 
@@ -216,10 +241,10 @@ def main():
         toric = Toric2D(li, lj, si, sj)
         Hx, Hz = toric.Hx, toric.Hz
         strop = toric.strop
-        print("Hx:")
-        print(shortstr(Hx))
-        print("Hz:")
-        print(shortstr(Hz))
+        #print("Hx:")
+        #print(shortstr(Hx))
+        #print("Hz:")
+        #print(shortstr(Hz))
         #print("Lx:")
         #print(shortstr(toric.Lx))
         code = CSSCode(Hx=Hx, Hz=Hz, Lx=toric.Lx, Lz=toric.Lz)
@@ -760,6 +785,11 @@ def main():
         from qupy.ldpc.gallagher import get_code
         code = get_code(argv.code)
 
+    if argv.bigger:
+        for weight in [6]:
+            Hx = bigger(code.Hx, weight)
+            Hz = bigger(code.Hz, weight)
+            code = CSSCode(Hx=Hx, Hz=Hz)
 
     if argv.truncate:
         idx = argv.truncate
