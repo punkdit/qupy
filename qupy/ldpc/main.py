@@ -11,7 +11,7 @@ from qupy.ldpc.solve import shortstr, zeros2, array2, dot2, parse, linear_indepe
 from qupy.tool import write, choose
 from qupy.argv import argv
 
-from qupy.ldpc.decoder import Decoder, RandomDecoder
+from qupy.ldpc.decoder import Decoder, RandomDecoder, PMADecoder
 #from qupy.ldpc.dynamic import Tanner
 from qupy.ldpc.bpdecode import RadfordBPDecoder
 from qupy.ldpc.cluster import ClusterCSSDecoder

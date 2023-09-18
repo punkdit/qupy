@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-from random import randint, seed
+from random import randint, seed, choice, shuffle
 
 import numpy
 import numpy.random as ra
 from numpy.linalg import lstsq
 
 from qupy.ldpc.css import CSSCode, randcss
-from qupy.ldpc.solve import shortstr, zeros2, array2, dot2, parse, linear_independent
+from qupy.ldpc.solve import shortstr, zeros2, array2, dot2, parse, linear_independent, solve, rank
 from qupy.tool import write, choose
 from qupy.argv import argv
 
@@ -15,9 +15,6 @@ from qupy.ldpc.bpdecode import RadfordBPDecoder
 from qupy.ldpc.cluster import ClusterCSSDecoder
 
 
-if __name__ == "__main__":
-    import os
-    datestr = os.popen('date "+%F %H:%M:%S"').read().strip()
 
 
 def bigger(H, weight=6):
@@ -46,10 +43,47 @@ def bigger(H, weight=6):
     return H1
 
 
+def make_bigger(H, weight=6): # why is this slower ?!?
+    m, n = H.shape
+    rows = []
+    for i in range(m):
+      for j in range(i+1, m):
+        u = (H[i]+H[j])%2
+        if u.sum() == weight:
+            rows.append(u)
+    #print("rows:", len(rows))
+    #R = array2(rows)
+    #print(rank(R), m)
+    while 1:
+        shuffle(rows)
+        #H1 = [choice(rows) for i in range(m)]
+        H1 = rows #[:m]
+        H1 = array2(H1)
+        H1 = linear_independent(H1)
+        while len(H1)<m:
+            u = H[randint(0, m-1)]
+            v = solve(H1.transpose(), u)
+            if v is None:
+                u.shape = (1, n)
+                H1 = numpy.concatenate((H1, u))
+                #print(len(H1), m)
+        H1 = array2(H1)
+        assert rank(H1) == m
+        yield H1
+        
+
+
+def reweight_slow(code):
+    while 1:
+        Hx = bigger(code.Hx)
+        Hz = bigger(code.Hz)
+        yield CSSCode(Hx=Hx, Hz=Hz, Lx=code.Lx, Lz=code.Lz, build=False)
+        write("/")
+
 def reweight(code):
-    Hx = bigger(code.Hx)
-    Hz = bigger(code.Hz)
-    return CSSCode(Hx=Hx, Hz=Hz)
+    for (Hx, Hz) in zip(make_bigger(code.Hx), make_bigger(code.Hz)):
+        yield CSSCode(Hx=Hx, Hz=Hz, Lx=code.Lx, Lz=code.Lz, build=False)
+        write("/")
 
 
 def main():
@@ -73,12 +107,17 @@ def main():
     #print(shortstr(toric.Lx))
     code = CSSCode(Hx=Hx, Hz=Hz, Lx=toric.Lx, Lz=toric.Lz)
 
-    dup = argv.get("dup", 4)
-    codes = [reweight(code) for i in range(dup)]
+    dup = argv.get("dup", 1)
+    print("building...")
+    codes = reweight(code)
+    codes = [codes.__next__() for i in range(dup)]
+    print("done")
 
-    N = argv.get('N', 0)
-    p = argv.get('p', 0.03)
-    weight = argv.weight
+    N = argv.get('N', 10)
+    p = argv.get('p', 0.04)
+    if argv.silent:
+        global write
+        write = lambda s:None
 
     decoders = [RadfordBPDecoder(2, code.Hz) for code in codes]
 
@@ -92,19 +131,24 @@ def main():
     failcount = 0
     nonuniq = 0
 
+    scramble = lambda err_op, H:(err_op + dot2(ra.binomial(1, 0.5, (len(H),)), H)) % 2
+
     for i in range(N):
 
         # We use Hz to look at X type errors (bitflip errors)
         err_op = ra.binomial(1, p, (code.n,))
-        err_op = err_op.astype(numpy.int32)
 
         write(str(err_op.sum()))
 
         s = dot2(code.Hz, err_op)
         write(":s%d:"%s.sum())
 
+        _err_op = scramble(err_op, code.Hx)
+        _err_op = scramble(_err_op, code.Lx)
+        #print(_err_op)
+        #_err_op = err_op
         for decoder in decoders:
-            op = decoder.decode(p, err_op, verbose=False, argv=argv)
+            op = decoder.decode(p, _err_op, verbose=False, argv=argv)
             if op is not None:
                 break
 
@@ -165,36 +209,20 @@ def main():
         write(c+' ')
         count += success
 
-    if hasattr(decoder, 'fini'):
-        decoder.fini()
-
     if N:
         print()
         print(datestr)
         print(argv)
         print("error rate = %.8f" % (1. - 1.*count / (i+1)))
-        print("fail rate = %.8f" % (1.*failcount / (i+1)))
+        print("fail rate  = %.8f" % (1.*failcount / (i+1)))
         print("nonuniq = %d" % nonuniq)
         print("distance <= %d" % distance)
 
     
-
-class MultiDecoder(object):
-    def __init__(self, decode0, decode1):
-        self.decode0 = decode0
-        self.decode1 = decode1
-
-    def decode(self, p, err_op, **kw):
-        decode0 = self.decode0
-        decode1 = self.decode1
-        op = decode0.decode(p, err_op, **kw)
-        if op is None:
-            write("F")
-            op = decode1.decode(p, err_op, **kw)
-        return op
-
-
 if __name__ == "__main__":
+
+    import os
+    datestr = os.popen('date "+%F %H:%M:%S"').read().strip()
 
     from time import time
     start_time = time()
