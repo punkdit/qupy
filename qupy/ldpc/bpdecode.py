@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 
 import sys, os
+import subprocess
+PIPE = subprocess.PIPE
+DEVNULL = subprocess.DEVNULL
+
 from math import *
 from random import *
 import time
@@ -293,7 +297,7 @@ class RadfordBPDecoder(BaseDecoder):
         self.m = m # rows
         self.n = n # cols
 
-        stem = 'tempcode_%.6d'%randint(0, 999999)
+        stem = 'tempcode_%.6d'%randint(0, 99999999)
         save_alist(stem+'.alist', H)
         r = os.system('./alist-to-pchk -t %s.alist %s.pchk' % (stem, stem))
         assert r==0
@@ -308,14 +312,6 @@ class RadfordBPDecoder(BaseDecoder):
                 pass
 
     def decode(self, p, err, max_iter=None, verbose=False, **kw):
-#        if verbose:
-#            print
-#            print "RadfordBPDecoder.decode:"
-#            print shortstr(err)
-#            syndrome = self.check(err)
-#            print "syndrome:"
-#            print shortstr(syndrome)
-
         d = self.d
         assert d==2
 
@@ -327,29 +323,23 @@ class RadfordBPDecoder(BaseDecoder):
             os.unlink('%s.out'%stem)
         except:
             pass
-        cmd = './decode %s.pchk - %s.out bsc %.4f prprp %d' % (
-            stem, stem, p, max_iter)
-        #print(cmd)
-        #c_in = os.popen(cmd, 'w', 0)
-        c_in = os.popen(cmd, 'w')
-        #c_in, c_out = os.popen2(cmd, 'b', 0)
+
+        cmd = './decode %s.pchk - %s.out bsc %.4f prprp %d' % (stem, stem, p, max_iter)
+        p = subprocess.Popen(cmd, shell=True,
+            stdin=PIPE, stdout=DEVNULL,
+            stderr=DEVNULL, close_fds=True)
 
         for x in err:
-            print(x, file=c_in)
+            data = ("%s\n"%x).encode() 
+            p.stdin.write(data)
 
-        c_in.close()
+        p.stdin.close()
+        p.wait()
 
         op = open('%s.out'%stem).read()
 
-        #op = c_out.read()
-        #print("[%s]" % repr(op), end="")
         op = [int(c) for c in op.strip()]
         syndrome = self.check(op)
-#        if verbose:
-#            print "result:"
-#            print shortstr(op)
-#            print "syndrome:"
-#            print shortstr(syndrome)
 
         if syndrome.sum() == 0:
             return (err + op) % d

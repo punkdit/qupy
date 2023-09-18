@@ -163,10 +163,7 @@ def main():
                 continue
             write("%d:"%op.sum())
 
-            #print "is_stab:"
-            #print strop(op)
             # Are we in the image of Hx ? If so, then success.
-            #success = code.is_stab(op)
             success = dot2(code.Lz, op).sum()==0
 
             if success and op.sum():
@@ -176,32 +173,8 @@ def main():
 
             c = '.' if success else 'x'
 
-            if argv.k_rank:
-
-                # XX this does not work very well...
-
-                a = dot2(code.Lz, op)
-                assert (a.sum()==0) == success
-
-                if not success:
-                    #r = -1. // (a.sum()**0.5) # sqrt ??
-                    r = -1. / a.sum()
-                    k_ranks += r*a
-                else:
-                    #r = 1. / (code.k**0.5)
-                    r = 1. / code.k
-                    k_ranks += r*a
-
-                k_record.append((a, success))
-
-
             if op.sum() and not success:
                 distance = min(distance, op.sum())
-
-            if not success and argv.showfail:
-                print()
-                print("FAIL:")
-                print(shortstr(err_op))
 
         else:
             failcount += 1
