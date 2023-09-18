@@ -798,8 +798,7 @@ def main():
 
     for arg in argv:
         if arg.endswith('.ldpc'):
-            code = CSSCode.load(arg, build=build, check=check,
-                rebuild=argv.rebuild)
+            code = CSSCode.load(arg, build=build, check=check, rebuild=argv.rebuild)
     
             if argv.rebuild:
                 code.save(arg)
@@ -1008,6 +1007,10 @@ def main():
     if argv.weight2:
         # run through all weight=1 errors
         N = code.n**2
+
+    if argv.silent:
+        global write
+        write = lambda s:None
 
     for i in range(N):
 

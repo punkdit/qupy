@@ -460,6 +460,8 @@ class CSSCode(object):
         f = open(name)
         data = f.read()
         data = data.replace('.', '0')
+        data = data.replace('X', '1')
+        data = data.replace('Z', '1')
         lines = data.split('\n')
         name = None
         items = {}
