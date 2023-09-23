@@ -86,12 +86,16 @@ def main():
     assert ( mul * (v1 @ v0) ).is_zero()
 
     A = counit * mul * (X @ I) * comul
-    print(A.is_zero())
+    assert A.is_zero()
 
     assert mul * (X@X) == X*mul
     assert (X@X) * comul == comul*X
     assert counit * X == counit
     assert X * unit == unit
+
+    assert green(2, 1) * green(1, 2) + (X@I) * green(2, 1) * green(1, 2) * (X@I) == I@I
+
+    print(red(0, 1) * green(1, 0))
 
 
 
