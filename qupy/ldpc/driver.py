@@ -43,7 +43,7 @@ def bigger(H, weight=6):
     return H1
 
 
-def make_bigger(H, weight=6): # why is this slower ?!?
+def make_bigger(H, weight=6):
     m, n = H.shape
     rows = []
     for i in range(m):
@@ -56,9 +56,7 @@ def make_bigger(H, weight=6): # why is this slower ?!?
     #print(rank(R), m)
     while 1:
         shuffle(rows)
-        #H1 = [choice(rows) for i in range(m)]
-        H1 = rows #[:m]
-        H1 = array2(H1)
+        H1 = array2(rows)
         H1 = linear_independent(H1)
         while len(H1)<m:
             u = H[randint(0, m-1)]
