@@ -3097,6 +3097,25 @@ def main_identities():
                 print(lhs, "==", rhs)
     
 
+def main_CCZ():
+
+    n = 3
+    space = Space(n)
+
+    pauli = []
+    for name, op in space.get_basis():
+        pauli.append(op)
+        #pauli.append(1j*op)
+        #pauli.append(-op)
+        #pauli.append(-1j*op)
+
+    CCZ = space.make_ccz(0, 1, 2)
+
+    for g in pauli:
+        h = CCZ * g * CCZ.inverse
+        print(space.opstr(g), "-->", space.opstr(2*h))
+
+
 
 if __name__ == "__main__":
     from time import time
