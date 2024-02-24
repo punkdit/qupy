@@ -52,7 +52,7 @@ def main():
     assert green(2, 2) == v0 @ v0 @ ~v0 @ ~v0 + v1 @ v1 @ ~v1 @ ~v1 
     assert green(1,2).shape == (v0@v0@ ~v0).shape
 
-    #print(red(2, 2).shortstr() )
+    print(red(2, 2).shortstr() )
 
     mul = green(1, 2)
     comul = green(2, 1)

@@ -1235,6 +1235,61 @@ def main_vasmer():
     assert T*P == P*T
 
 
+def main_20_2_6():
+    make_op = Operator.make_op
+    make_I = Operator.make_I
+    make_tensor1 = Operator.make_tensor1
+
+    n = 20
+    I = make_I(n)
+    stabs = """
+    XX.X..XX.X.X....X...
+    ZZ.Z..ZZ.Z.Z....Z...
+    ..X...XX......XX.XXX
+    ..Z...ZZ......ZZ.ZZZ
+    ...X....X.X.XX..X.XX
+    ...Z....Z.Z.ZZ..Z.ZZ
+    ....XX..XXXX..XX....
+    ....ZZ..ZZZZ..ZZ....
+    X......X....X......X
+    Z......Z....Z......Z
+    .X.XX...X...........
+    .Z.ZZ...Z...........
+    ..X..XX..X..........
+    ..Z..ZZ..Z..........
+    ..........X..XX..X..
+    ..........Z..ZZ..Z..
+    ...........X...XX.X.
+    ...........Z...ZZ.Z.
+    """.strip()
+    stabs = [make_op(decl) for decl in stabs.split()]
+
+    for a in stabs:
+        for b in stabs:
+            assert a*b == b*a
+        #print("/", end="", flush=True)
+
+    print("P =")
+    P = None
+    for ops in cross([(None, op) for op in stabs]):
+        ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
+        op = reduce(mul, ops)
+        P = op if P is None else op+P
+    print("P*P == P")
+    #assert P*P == (2**len(stabs))*P
+
+    idxs = [0,1,2,8,10,9,11,17,18,19]
+    assert len(idxs)==10
+    g = I
+    for i in range(n):
+        if i in idxs:
+            g = g*make_tensor1(n, Gate.S, i)
+        else:
+            g = g*make_tensor1(n, ~Gate.S, i)
+    print("P*g == g*P")
+    assert P*g == g*P
+
+
 def main_transverse_T():
 
     space = Space(1)
