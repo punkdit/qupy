@@ -71,6 +71,7 @@ else:
     
     assert X*X == I
     assert Z*Z == I
+    assert Y*Y == I
     assert S*S == Z
     assert T*T == S
     
@@ -703,6 +704,23 @@ class Space(object):
         op = Operator.make_tensor2(n, A, idx, jdx, **kw)
         return op
 
+    def X(self, i):
+        return self.make_tensor1(X, i)
+
+    def Z(self, i):
+        return self.make_tensor1(Z, i)
+
+    def Y(self, i):
+        return self.make_tensor1(Y, i)
+
+    def H(self, i):
+        op = self.make_tensor1(H, i)
+        return op
+
+    def S(self, i):
+        op = self.make_tensor1(S, i)
+        return op
+
     def make_xop(self, idxs):
         n = self.n
         key = "make_xop", n, tuple(idxs)
@@ -752,10 +770,38 @@ class Space(object):
         return op
 
     def make_cx(self, i, j):
-        return self.make_control(X, i, j)
+        return self.make_control(X, j, i) # <---- reversed args !!! XXX
+    CX = make_cx
 
     def make_cz(self, i, j):
         return self.make_control(Z, i, j)
+    CZ = make_cz
+
+    def make_cy(self, i, j):
+        return self.make_control(Y, j, i) # <---- reversed args !!! XXX
+    CY = make_cy
+
+    def P(self, *perm):
+        assert len(perm) == self.n
+        idxs = []
+        for (i,j) in enumerate(perm):
+            if i!=j:
+                idxs.append((i,j))
+        #print("P:", idxs)
+        assert len(idxs) == 2, "not implemented %s"%(perm,)
+        return self.make_swap(*idxs[0])
+
+    def get_expr(self, expr, rev=False):
+        if expr == ():
+            op = self.I
+        elif type(expr) is tuple:
+            if rev:
+                expr = reversed(expr)
+            op = reduce(mul, [self.get_expr(e) for e in expr]) # recurse
+        else:
+            expr = "self."+expr
+            op = eval(expr, {"self":self})
+        return op
 
     def make_ccz(self, i, j, k):
         n = self.n
@@ -765,6 +811,14 @@ class Space(object):
         assert i!=j!=k
         assert i!=k
         op = Operator.make_ccz(n, i, j, k)
+        return op
+
+    def make_swap(self, i, j):
+        n = self.n
+        assert 0<=i<n
+        assert 0<=j<n
+        assert i != j
+        op = Operator.make_swap(n, i, j)
         return op
     
     def get_basis(self):
