@@ -1078,7 +1078,7 @@ def main(l):
 
 if __name__=="__main__":
 
-    from qupy.tool.argv import Argv
+    from qupy.argv import Argv
 
     argv = Argv()
     n = argv.get('n', 1)
