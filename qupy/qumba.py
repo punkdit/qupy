@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 """
 Construct transversal S gate on a folded surface code.
@@ -1289,6 +1289,101 @@ def main_vasmer():
     assert T*P == P*T
 
 
+def main_24():
+
+    make_op = Operator.make_op
+    make_I = Operator.make_I
+
+    n = 24
+    I = make_I(n)
+    Xlines = ["IIIIXIIXIIIXIIIXXXIIIIII",
+        "IIIXXIIIIIIIIXIXIIIIXIXI",
+        "XIIIIIIIIIXIIXIIIIXIIIXX",
+        "IIIIIIIIXIIIIIXIIIXXIXIX",
+        "XIIIIIXXIIXIXIIIXIIIIIII",
+        "IIXIIIIIIIIXIXXXIIIIIIIX",
+        "IIIXXIXIIIIIIIIIXIIXIXII",
+        "IXXIIXIIIXIXIIIIIXIIIIII",
+        "XIIIIXIXXIIIIIIIIXXIIIII",
+        "IIXIIIXIIXIIXIXIIIIIIXII"]
+    
+    Zlines = ["IIIIZIIZIIIZIIIZZZIIIIII",
+        "IIIZZIIIIIIIIZIZIIIIZIZI",
+        "ZIIIIIIIIIZIIZIIIIZIIIZZ",
+        "IIIIIIIIZIIIIIZIIIZZIZIZ",
+        "ZIIIIIZZIIZIZIIIZIIIIIII",
+        "IIZIIIIIIIIZIZZZIIIIIIIZ",
+        "IIIZZIZIIIIIIIIIZIIZIZII",
+        "IZZIIZIIIZIZIIIIIZIIIIII",
+        "ZIIIIZIZZIIIIIIIIZZIIIII",
+        "IIZIIIZIIZIIZIZIIIIIIZII"]
+
+    stabs = " ".join(Xlines+Zlines)
+    stabs = [make_op(decl) for decl in stabs.split()]
+
+    #for a in stabs:
+    #    for b in stabs:
+    #        assert a*b == b*a
+    #    #print("/", end="", flush=True)
+
+    if 0:
+        P = None
+        for ops in cross([(None, op) for op in stabs]):
+            ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
+            op = reduce(mul, ops)
+            P = op if P is None else op+P
+            #print(".", end='', flush=True)
+        #print()
+
+    else:
+        P = I
+        for stab in stabs:
+            P = P*(stab + I)
+
+    #print("assert:")
+    #assert P*P == (2**len(stabs))*P
+    #print("OK")
+
+    #op = parse_csslo(n, "T[0][1][2][3][4][5][6][7][8][9][11][12][15][16][18][20][21][22] T3[10][13][14][17][19][23]")
+    #op = parse_csslo(n, "S[0][1][2][3][4][5][6][7][8][9][11][12][15][16][18][20][21][22] S3[10][13][14][17][19][23]")
+    op = parse_csslo(n, "S[11][12][14][15][16][17][18][19][20][23]")
+    
+    print( op*P == P*op )
+
+
+def parse_csslo(n, desc):
+    print("parse_csslo(%r)"%desc)
+    T = None
+    send = {
+        "T" : Gate.T,
+        "T3" : Gate.T**3,
+        "T5" : Gate.T**5,
+        "T7" : Gate.T**7,
+        "S" : Gate.S,
+        "S3" : Gate.S**3,
+        "Z" : Gate.Z,
+        #"CZ" : Gate.CZ,
+    }
+    for item in desc.split():
+        stem = item.split("[")[0]
+        g = send.get(stem)
+        assert g is not None, stem
+        idxs = item[len(stem):]
+        assert idxs[0] == "["
+        assert idxs[-1] == "]"
+        idxs = idxs[1:-1].split("][")
+        idxs = [int(i) for i in idxs]
+        for idx in idxs:
+            #print(g, idx)
+            U = Operator.make_tensor1(n, g, idx)
+            if T is None:
+                T = U
+            else:
+                T = U*T
+    return T
+
+
+
 def main_20_2_6():
     make_op = Operator.make_op
     make_I = Operator.make_I
@@ -1936,7 +2031,7 @@ def main_twist():
 
 
 def main_832():
-    """ Build the [[8,3,2]] code.
+    r""" Build the [[8,3,2]] code.
 
     We _number qubits of the cube like this:
     0 ----------- 1
