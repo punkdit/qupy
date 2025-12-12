@@ -1326,19 +1326,9 @@ def main_24():
     #        assert a*b == b*a
     #    #print("/", end="", flush=True)
 
-    if 0:
-        P = None
-        for ops in cross([(None, op) for op in stabs]):
-            ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
-            op = reduce(mul, ops)
-            P = op if P is None else op+P
-            #print(".", end='', flush=True)
-        #print()
-
-    else:
-        P = I
-        for stab in stabs:
-            P = P*(stab + I)
+    P = I
+    for stab in stabs:
+        P = P*(stab + I)
 
     #print("assert:")
     #assert P*P == (2**len(stabs))*P
@@ -1346,7 +1336,9 @@ def main_24():
 
     #op = parse_csslo(n, "T[0][1][2][3][4][5][6][7][8][9][11][12][15][16][18][20][21][22] T3[10][13][14][17][19][23]")
     #op = parse_csslo(n, "S[0][1][2][3][4][5][6][7][8][9][11][12][15][16][18][20][21][22] S3[10][13][14][17][19][23]")
-    op = parse_csslo(n, "S[11][12][14][15][16][17][18][19][20][23]")
+    #op = parse_csslo(n, "S[11][12][14][15][16][17][18][19][20][23]") # FAIL
+    op = parse_csslo(n, "Z[2][8][10][11][12][14][17][18][19][20][21][22][23] CZ[2,3][2,4][2,5][2,7][2,9][2,12][3,5][3,8][3,14][4,5][4,8][4,14][5,7][5,8][5,9][5,12][5,14][7,8][7,14][8,9][8,12][9,14][12,14]")
+
     
     print( op*P == P*op )
 
@@ -1366,20 +1358,28 @@ def parse_csslo(n, desc):
     }
     for item in desc.split():
         stem = item.split("[")[0]
-        g = send.get(stem)
-        assert g is not None, stem
-        idxs = item[len(stem):]
-        assert idxs[0] == "["
-        assert idxs[-1] == "]"
-        idxs = idxs[1:-1].split("][")
-        idxs = [int(i) for i in idxs]
-        for idx in idxs:
-            #print(g, idx)
-            U = Operator.make_tensor1(n, g, idx)
-            if T is None:
-                T = U
-            else:
-                T = U*T
+        if stem == "CZ":
+            idxs = item[len(stem):]
+            assert idxs[0] == "["
+            assert idxs[-1] == "]"
+            idxs = idxs[1:-1].split("][")
+            idxs = [eval(pair) for pair in idxs]
+            for pair in idxs:
+                U = Operator.make_control(n, Gate.Z, pair[1], pair[0])
+                T = U if T is None else U*T
+
+        else:
+            g = send.get(stem)
+            assert g is not None, stem
+            idxs = item[len(stem):]
+            assert idxs[0] == "["
+            assert idxs[-1] == "]"
+            idxs = idxs[1:-1].split("][")
+            idxs = [int(i) for i in idxs]
+            for idx in idxs:
+                #print(g, idx)
+                U = Operator.make_tensor1(n, g, idx)
+                T = U if T is None else U*T
     return T
 
 
