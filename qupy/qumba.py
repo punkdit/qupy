@@ -1296,19 +1296,17 @@ def main_tesseract():
 
     n = 16
     I = make_I(n)
-    stabs = ("XXIXXIIXII IXXXIXIIXI IIIXXXXIIX " 
-        "ZZIIIIIIZI IIIZZIIIZI IZIZIIIIIZ IIZIIZIIIZ IIIZIZIZII IIIIZIZZII")
     stabs = """
-    XIIIIXXIIXXXXXII
-    IXIIIXIXXXIXIXIX
-    IIXIIXIXXIXIXXXI
-    IIIXIIXXIXIIXXXX
-    IIIIXIXIXIXXIXXX
-    ZIIIIZZIIZZZZZII
-    IZIIIZIZZZIZIZIZ
-    IIZIIZIZZIZIZZZI
-    IIIZIIZZIZIIZZZZ
-    IIIIZIZIZIZZIZZZ
+    XXXX....XXXX....
+    XX..XX..XX..XX..
+    X.X.X.X.X.X.X.X.
+    XXXXXXXXXXXXXXXX
+    ........XXXXXXXX
+    ZZZZZZZZ........
+    ZZZZ....ZZZZ....
+    ZZ..ZZ..ZZ..ZZ..
+    Z.Z.Z.Z.Z.Z.Z.Z.
+    ZZZZZZZZZZZZZZZZ
     """
     stabs = [make_op(decl) for decl in stabs.split()]
 
@@ -1326,17 +1324,20 @@ def main_tesseract():
     assert P*P == (2**len(stabs))*P
 
     T = I
-    pairs = [
-        (0, 5), (1, 4), (2, 8), (3, 7), 
-        (6, 9), (10, 11), (12, 13), (14, 15)]
-    pairs = [(9, 10), (3, 8), (0, 13), (1, 14), (11, 12), (5, 6), (2, 15), (4, 7)]
-
-    for (i,j) in pairs:
-        print((i,j))
-        T *= Operator.make_tensor1(n, Gate.T, i)
-        T *= Operator.make_tensor1(n, ~Gate.T, j)
+    for i in range(n):
+        print(i, end=' ', flush=True)
+        j = i+8
+        T *= Operator.make_control(n, X, i, j)
+        if i%2 == 0:
+            T *= Operator.make_tensor1(n, Gate.T, i)
+            T *= Operator.make_tensor1(n, ~Gate.T, j)
+        else:
+            T *= Operator.make_tensor1(n, ~Gate.T, i)
+            T *= Operator.make_tensor1(n, Gate.T, j)
+        T *= Operator.make_control(n, X, i, j)
+    print()
         
-    print( T*P == P*T )
+    assert( T*P == P*T )
 
 
 
