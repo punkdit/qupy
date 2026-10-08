@@ -1289,6 +1289,57 @@ def main_vasmer():
     assert T*P == P*T
 
 
+def main_tesseract():
+
+    make_op = Operator.make_op
+    make_I = Operator.make_I
+
+    n = 16
+    I = make_I(n)
+    stabs = ("XXIXXIIXII IXXXIXIIXI IIIXXXXIIX " 
+        "ZZIIIIIIZI IIIZZIIIZI IZIZIIIIIZ IIZIIZIIIZ IIIZIZIZII IIIIZIZZII")
+    stabs = """
+    XIIIIXXIIXXXXXII
+    IXIIIXIXXXIXIXIX
+    IIXIIXIXXIXIXXXI
+    IIIXIIXXIXIIXXXX
+    IIIIXIXIXIXXIXXX
+    ZIIIIZZIIZZZZZII
+    IZIIIZIZZZIZIZIZ
+    IIZIIZIZZIZIZZZI
+    IIIZIIZZIZIIZZZZ
+    IIIIZIZIZIZZIZZZ
+    """
+    stabs = [make_op(decl) for decl in stabs.split()]
+
+    for a in stabs:
+        for b in stabs:
+            assert a*b == b*a
+        #print("/", end="", flush=True)
+
+    P = None
+    for ops in cross([(None, op) for op in stabs]):
+        ops = [op for op in ops if op is not None] or [Operator.make_I(n)]
+        op = reduce(mul, ops)
+        P = op if P is None else op+P
+
+    assert P*P == (2**len(stabs))*P
+
+    T = I
+    pairs = [
+        (0, 5), (1, 4), (2, 8), (3, 7), 
+        (6, 9), (10, 11), (12, 13), (14, 15)]
+    pairs = [(9, 10), (3, 8), (0, 13), (1, 14), (11, 12), (5, 6), (2, 15), (4, 7)]
+
+    for (i,j) in pairs:
+        print((i,j))
+        T *= Operator.make_tensor1(n, Gate.T, i)
+        T *= Operator.make_tensor1(n, ~Gate.T, j)
+        
+    print( T*P == P*T )
+
+
+
 def main_24():
 
     make_op = Operator.make_op
