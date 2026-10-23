@@ -15,13 +15,19 @@ from random import shuffle, seed, choice, randint
 from functools import reduce
 from operator import mul, matmul
 
-import psutil
-proc = psutil.Process()
-def showmem(desc):
-    print(desc)
-    print(proc.memory_info())
-def showmem(desc):
-    pass
+import sys
+
+if not sys.warnoptions:
+    import warnings
+    warnings.simplefilter("ignore")
+
+#import psutil
+#proc = psutil.Process()
+#def showmem(desc):
+#    print(desc)
+#    print(proc.memory_info())
+#def showmem(desc):
+#    pass
 
 import numpy
 from numpy.linalg import norm
@@ -52,7 +58,7 @@ from qupy.util import mulclose
 
 write = lambda *args: print(*args, flush=True, end="")
 
-print("scalar:", scalar)
+print("scalar:", scalar, "EPSILON:", EPSILON)
 
 r2 = math.sqrt(2)
 
@@ -145,6 +151,16 @@ class Operator(object):
             close = close and numpy.allclose(lhs[idx:idx+M], rhs[idx:idx+M])
             idx += M
         return close
+
+    def diff(lhs, rhs):
+        assert lhs.n == rhs.n
+        n = lhs.n
+        N = 2**n
+        u = numpy.random.normal(size=(N,))
+        u = u.astype(scalar)
+        lhs = lhs(u)
+        rhs = rhs(u)
+        return lhs-rhs
 
     def __eq_fast__(lhs, rhs):
         assert lhs.n == rhs.n
@@ -1321,7 +1337,14 @@ def main_tesseract():
         op = reduce(mul, ops)
         P = op if P is None else op+P
 
-    assert P*P == (2**len(stabs))*P
+    #assert P*P == (2**len(stabs))*P
+    lhs, rhs = P*P, (2**len(stabs))*P
+    assert lhs == rhs
+
+    print(Gate.H)
+    Z4 = Gate.T*Gate.H
+    X4 = Gate.H * Z4 * Gate.H
+    #X4 = Gate.T
 
     T = I
     for i in range(n):
@@ -1329,14 +1352,20 @@ def main_tesseract():
         j = i+8
         T *= Operator.make_control(n, X, i, j)
         if i%2 == 0:
-            T *= Operator.make_tensor1(n, Gate.T, i)
-            T *= Operator.make_tensor1(n, ~Gate.T, j)
+            T *= Operator.make_tensor1(n, Z4, i)
+            T *= Operator.make_tensor1(n, ~X4, j)
         else:
-            T *= Operator.make_tensor1(n, ~Gate.T, i)
-            T *= Operator.make_tensor1(n, Gate.T, j)
+            T *= Operator.make_tensor1(n, ~Z4, i)
+            T *= Operator.make_tensor1(n, X4, j)
         T *= Operator.make_control(n, X, i, j)
     print()
-        
+#    print("done")
+#    TP = T*P
+#    print("done")
+#    PT = P*T
+#    print("done")
+    #TP.diff(PT)
+    #print(TP.diff(TP))
     assert( T*P == P*T )
 
 
